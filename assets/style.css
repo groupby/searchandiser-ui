@@ -1,0 +1,53 @@
+li {
+  list-style: none;
+}
+
+
+/* flex bar */
+
+.gb-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.gb-bar > * {
+  flex: 1;
+}
+
+.gb-bar .selectedNavigation {
+  flex: 3;
+}
+
+.gb-bar .paging {
+  flex: 1;
+}
+
+
+/* flex main */
+
+.gb-main {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.gb-main .availableNavigation {
+  flex: 1;
+}
+
+.gb-main .results {
+  flex: 4;
+}
+
+
+/* flex list */
+
+.gb-list {
+  display: flex;
+}
+
+.gb-list > * {
+  flex-grow: 1;
+}

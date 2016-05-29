@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Searchandiser UI Demo</title>
+    <meta name="description" content="Searchandiser UI Demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/style.css" charset="utf-8">
+    <script src="lib/riot.js"></script>
+    <script src="dist/searchandiser-ui-0.0.0.js"></script>
+  </head>
+
+  <body>
+
+    <div class="query"></div>
+    <div class="gb-bar">
+      <div class="selectedNavigation"></div>
+      <div class="paging"></div>
+    </div>
+    <div class="gb-bar">
+      <div class="didYouMean"></div>
+      <div class="relatedSearches"></div>
+    </div>
+    <div class="gb-main">
+      <div class="availableNavigation"></div>
+      <div class="results"></div>
+    </div>
+
+    <script>
+      searchandiser({
+        customerId: 'crateandbarreldemo',
+        structure: {
+          title: 'title',
+          image: 'wideImage',
+          price: 'price'
+        }
+      });
+      searchandiser.search('');
+      searchandiser.attach('query', '.query');
+      searchandiser.attach('paging', '.paging');
+      searchandiser.attach('results', '.results');
+      searchandiser.attach('available-navigation', '.availableNavigation');
+      searchandiser.attach('selected-navigation', '.selectedNavigation');
+      searchandiser.attach('did-you-mean', '.didYouMean');
+      searchandiser.attach('related-searches', '.relatedSearches');
+    </script>
+
+  </body>
+
+</html>

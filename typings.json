@@ -1,18 +1,9 @@
 {
-  "name": "groupby-api",
+  "name": "searchandiser-ui",
   "version": false,
-  "ambientDependencies": {
-    "axios": "registry:dt/axios#0.9.1+20160317120654",
-    "chai": "github:DefinitelyTyped/DefinitelyTyped/chai/chai.d.ts#855569dbc86b619aa3bbfab98f3ff2e6b55b5fcd",
-    "es6-shim": "registry:dt/es6-shim#0.31.2+20160317120654",
-    "mocha": "github:DefinitelyTyped/DefinitelyTyped/mocha/mocha.d.ts#855569dbc86b619aa3bbfab98f3ff2e6b55b5fcd",
-    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#855569dbc86b619aa3bbfab98f3ff2e6b55b5fcd",
-    "qs": "registry:dt/qs#0.0.0+20160317120654",
-    "sinon": "github:DefinitelyTyped/DefinitelyTyped/sinon/sinon.d.ts#6a24a980eddf0c5b43e1aee82d6ae5ecba5abd86"
-  },
-  "dependencies": {
-    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958",
-    "nock": "registry:npm/nock#0.7.0+20160211003958",
-    "object-assign": "registry:npm/object-assign#4.0.1+20160301180549"
+  "ambientDependencies": {},
+  "dependencies": {},
+  "globalDevDependencies": {
+    "riot": "github:effervescentia/typed-riot/global#09745da532a7c35c682fafc0c077b1d140773a83"
   }
 }

@@ -1,12 +1,14 @@
 .vscode/launch.json
 .DS_Store
 .tmp
+*.log
 tmp
 node_modules
 typings
-lib/**/*.js
+src/**/*.js
 test/**/*.js
 examples/**/*.js
 coverage
 .idea
-dist
+compiled-tags
+bower_components

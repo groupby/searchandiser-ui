@@ -59,8 +59,8 @@ Add the JavaScript that will attach the service to the div's above.
 <body>
 <!-- please note, this uses GroupBy's CDN, we recommend you put these JavaScript files
      in your web server or on your own CDN as uptime and speed are not guaranteed -->
-<script src="://cdn.groupbycloud.com/dist/api-javascript-1.0.16.min.js"></script>
-<script src="://cdn.groupbycloud.com/dist/api-javascript-searchandiser-1.0.16.min.js"></script>
+<script src="://cdn.groupbycloud.com/dist/searchandiser-ui-1.0.16.min.js"></script>
+<script src="://cdn.groupbycloud.com/dist/searchandiser-ui-searchandiser-1.0.16.min.js"></script>
 <script>
 
     var config = {
