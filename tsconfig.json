@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "commonjs",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+    "outDir": "build"
+  },
+  "filesGlob": [
+    "lib/**/*.ts",
+    "typings/main.d.ts",
+    "test/**/*.ts",
+    "!node_modules/**/*.ts"
+  ],
+  "files": [
+    "lib/all.d.ts",
+    "lib/api-javascript.ts",
+    "lib/core/bridge.ts",
+    "lib/core/query.ts",
+    "lib/request-models.ts",
+    "lib/response-models.ts",
+    "lib/util.ts",
+    "test/bridge.ts",
+    "test/fixtures.ts",
+    "test/query.ts"
+  ],
+  "atom": {
+    "rewriteTsconfig": true,
+    "formatOnSave": true
+  },
+  "formatCodeOptions": {
+    "indentSize": 2,
+    "tabSize": 2
+  }
+}
