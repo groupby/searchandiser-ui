@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This script creates a release of the JavaScript API and makes it available on the groupby CDN.
+# This script creates a release of the Searchandiser UI and makes it available on the groupby CDN.
 
 # read version number from standard in.
 currentBranch=`git name-rev --name-only HEAD`
