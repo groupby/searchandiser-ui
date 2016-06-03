@@ -12,8 +12,8 @@ if [[ ! "${newVersion}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 # retag package json.
-sed  -i "s/\"version\":\s*\"${currentVersion}\"/\"version\": \"${newVersion}\"/g" package.json
-sed  -i "s/-${currentVersion}/-${newVersion}/g" README.md
+perl -pi -e "s,\"version\":\s*\"${currentVersion}\",\"version\": \"${newVersion}\",g" package.json
+perl -pi -e "s,-${currentVersion},-${newVersion},g" README.md
 
 git add package.json README.md
 git commit -m "bumped version from ${currentVersion} --> ${newVersion}" || exit 1

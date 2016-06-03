@@ -10,7 +10,7 @@ GroupBy commerce platform.
 For instructions to integrate with an existing NodeJS application please read this file.
 [README.nodejs.md](README.nodejs.md)
 
-There are two ways to implement in an existing website, the prefered way is to have the searchandiser
+There are two ways to implement in an existing website, the preferred way is to have the searchandiser
 API generate the HTML on your page and hookup the eventing for you.  This way you will inherit
 all the best practices for your website in seconds.
 
@@ -55,42 +55,48 @@ Add the JavaScript that will attach the service to the div's above.
 
 ```html
 <html>
-<head></head>
-<body>
-<!-- please note, this uses GroupBy's CDN, we recommend you put these JavaScript files
-     in your web server or on your own CDN as uptime and speed are not guaranteed -->
-<script src="://cdn.groupbycloud.com/dist/searchandiser-ui-1.0.16.min.js"></script>
-<script src="://cdn.groupbycloud.com/dist/searchandiser-ui-searchandiser-1.0.16.min.js"></script>
-<script>
+  <head>
+    <script src="https://cdn.jsdelivr.net/riot/2.4/riot.min.js"></script>
+    <!-- please note, this uses GroupBy's CDN, we recommend you put these JavaScript files
+    in your web server or on your own CDN as uptime and speed are not guaranteed -->
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.0.min.js"></script>
+  </head>
+  <body>
 
-    var config = {
-        area: 'Production',
-        collection: 'Products',
-        language: 'en',
-        // tell the renderer what a record looks like
-        recordStructure: {
-            title: 'title',
-            imagePrefix: 'http://example.com/images',
-            image: 'image_url',
-            imageSuffix: '.png',
-            description: 'desc_en'
+    <div class="query"></div>
+    <div class="gb-bar">
+      <div class="selectedNavigation"></div>
+      <div class="paging"></div>
+    </div>
+    <div class="gb-bar">
+      <div class="didYouMean"></div>
+      <div class="relatedSearches"></div>
+    </div>
+    <div class="gb-main">
+      <div class="availableNavigation"></div>
+      <div class="results"></div>
+    </div>
+
+    <script>
+      searchandiser({
+        customerId: 'crateandbarreldemo',
+        structure: {
+          title: 'title',
+          image: 'wideImage',
+          price: 'price'
         }
-    };
+      });
+      searchandiser.search('');
+      searchandiser.attach('query', '.query');
+      searchandiser.attach('paging', '.paging');
+      searchandiser.attach('results', '.results');
+      searchandiser.attach('available-navigation', '.availableNavigation');
+      searchandiser.attach('selected-navigation', '.selectedNavigation');
+      searchandiser.attach('did-you-mean', '.didYouMean');
+      searchandiser.attach('related-searches', '.relatedSearches');
+    </script>
 
-    var searchandiser = new Searchandiser(config);    
-    searchandiser.attach('query', '#query');
-    searchandiser.attach('didYouMean', '#didYouMean');
-    searchandiser.attach('relatedSearches', '#relatedSearches');
-    searchandiser.attach('selectedNavigation', '#selectedNavigation');
-    searchandiser.attach('availableNavigation', '#availableNavigation');
-    searchandiser.attach('paging', '#paging');
-    searchandiser.attach('results', '#results', function(id) {
-       // event to handle results click
-    });
-    searchandiser.attach('template', '#template');
-
-</script>
-</body>
+  </body>
 </html>
 ```
 
