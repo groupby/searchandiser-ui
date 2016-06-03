@@ -12,3 +12,5 @@ coverage
 .idea
 compiled-tags
 bower_components
+
+dist/
