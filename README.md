@@ -24,28 +24,33 @@ displayed.
 
 ```html
 <html>
-<head>...</head>
-<body>
-  <!-- the search box -->
-  <div id="query"></div>
-  <!-- Spelling suggestions from the engine -->
-  <div id="didYouMean"></div>
-  <!-- Related searches defined by the merchandisers -->
-  <div id="relatedSearches"></div>
-  <!-- Selected navigations that represent the
-       filters selected by the user -->
-  <div id="selectedNavigation"></div>
-  <!-- Based on the current search and navigation state
-       these are the available filters that can be used -->
-  <div id="availableNavigation"></div>
-  <!-- Paging elements -->
-  <div id="paging"></div>
-  <!-- Records that match the search and nav state -->
-  <div id="results"></div>
-  <!-- If a rule has been fired this is where the template
-       zones will be unpacked -->
-  <div id="template"></div>
-</body>
+  <head>...</head>
+  <body>
+
+    <!-- the search box -->
+    <div class="query"></div>
+    <div class="gb-bar">
+      <!-- Selected navigations that represent the
+           filters selected by the user -->
+      <div class="selectedNavigation"></div>
+      <!-- Paging elements -->
+      <div class="paging"></div>
+    </div>
+    <div class="gb-bar">
+      <!-- Spelling suggestions from the engine -->
+      <div class="didYouMean"></div>
+      <!-- Related searches defined by the merchandisers -->
+      <div class="relatedSearches"></div>
+    </div>
+    <div class="gb-main">
+      <!-- Based on the current search and navigation state
+           these are the available filters that can be used -->
+      <div class="availableNavigation"></div>
+      <!-- Records that match the search and nav state -->
+      <div class="results"></div>
+    </div>
+
+  </body>
 </html>
 ```
 
@@ -59,7 +64,7 @@ Add the JavaScript that will attach the service to the div's above.
     <script src="https://cdn.jsdelivr.net/riot/2.4/riot.min.js"></script>
     <!-- please note, this uses GroupBy's CDN, we recommend you put these JavaScript files
     in your web server or on your own CDN as uptime and speed are not guaranteed -->
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.1.min.js"></script>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.1.js"></script>
   </head>
   <body>
 
