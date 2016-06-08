@@ -62,8 +62,6 @@ Add the JavaScript that will attach the service to the div's above.
 <html>
   <head>
     <script src="https://cdn.jsdelivr.net/riot/2.4/riot.min.js"></script>
-    <!-- please note, this uses GroupBy's CDN, we recommend you put these JavaScript files
-    in your web server or on your own CDN as uptime and speed are not guaranteed -->
     <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.1.js"></script>
   </head>
   <body>
