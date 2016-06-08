@@ -21,8 +21,8 @@ export class Searchandiser {
     riot.observable(Searchandiser.el);
   }
 
-  static attach(tagName: Component, cssSelector: string, handler?: (tag) => void) {
-    riot.mount(cssSelector, `gb-${tagName}`, { srch: Searchandiser });
+  static attach(tagName: Component, cssSelector: string, options: any = {}, handler?: (tag) => void) {
+    riot.mount(cssSelector, `gb-${tagName}`, Object.assign(options, { srch: Searchandiser }));
   }
 
   static search(query: string | Query) {

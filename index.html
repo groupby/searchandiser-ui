@@ -34,13 +34,17 @@
           title: 'title',
           image: 'wideImage',
           price: 'price'
-        }
+        },
+        // stylish: true
       });
       searchandiser.search('');
       searchandiser.attach('query', '.query');
       searchandiser.attach('paging', '.paging');
       searchandiser.attach('results', '.results');
-      searchandiser.attach('available-navigation', '.availableNavigation');
+      searchandiser.attach('available-navigation', '.availableNavigation', {
+        stylish: true,
+        // badge: false
+      });
       searchandiser.attach('selected-navigation', '.selectedNavigation');
       searchandiser.attach('did-you-mean', '.didYouMean');
       searchandiser.attach('related-searches', '.relatedSearches');

@@ -1,5 +1,5 @@
-li {
-  list-style: none;
+body {
+  margin: 0;
 }
 
 
@@ -9,10 +9,9 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
 }
 
-.gb-bar > * {
+.gb-bar> * {
   flex: 1;
 }
 
@@ -30,7 +29,7 @@ li {
 .gb-main {
   display: flex;
   justify-content: center;
-  text-align: center;
+  /*text-align: center;*/
 }
 
 .gb-main .availableNavigation {
@@ -48,6 +47,6 @@ li {
   display: flex;
 }
 
-.gb-list > * {
+.gb-list> * {
   flex-grow: 1;
 }
