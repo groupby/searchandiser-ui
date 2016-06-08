@@ -34,8 +34,6 @@
     <script>
       searchandiser({
         customerId: 'crateandbarreldemo',
-        // collection: 'default',
-        // area: 'Production',
 
         structure: {
           title: 'title',
@@ -43,16 +41,14 @@
           price: 'price'
         },
 
-        // stylish: true
+        stylish: true
       });
       searchandiser.search('');
       searchandiser.attach('query', '.query');
       searchandiser.attach('paging', '.paging');
       searchandiser.attach('results', '.results');
       searchandiser.attach('record-count', '.recordCount');
-      searchandiser.attach('available-navigation', '.availableNavigation', {
-        // badge: false
-      });
+      searchandiser.attach('available-navigation', '.availableNavigation');
       searchandiser.attach('selected-navigation', '.selectedNavigation');
       searchandiser.attach('did-you-mean', '.didYouMean');
       searchandiser.attach('related-searches', '.relatedSearches');

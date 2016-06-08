@@ -83,17 +83,24 @@ Add the JavaScript that will attach the service to the div's above.
     <script>
       searchandiser({
         customerId: 'crateandbarreldemo',
+        // collection: 'default',
+        // area: 'Production',
+
         structure: {
           title: 'title',
           image: 'wideImage',
           price: 'price'
-        }
+        },
+
+        // stylish: true
       });
       searchandiser.search('');
       searchandiser.attach('query', '.query');
       searchandiser.attach('paging', '.paging');
       searchandiser.attach('results', '.results');
-      searchandiser.attach('available-navigation', '.availableNavigation');
+      searchandiser.attach('available-navigation', '.availableNavigation', {
+        // badge: false
+      });
       searchandiser.attach('selected-navigation', '.selectedNavigation');
       searchandiser.attach('did-you-mean', '.didYouMean');
       searchandiser.attach('related-searches', '.relatedSearches');
@@ -107,3 +114,14 @@ Add the JavaScript that will attach the service to the div's above.
 
 To theme the results use CSS for each of the elements.  For a complete style reference see this
 document: [docs/css-reference.md](docs/css-reference.md)
+
+## Components:
+
+ - `query`
+ - `paging`
+ - `results`
+ - `record-count`
+ - `available-navigation`
+ - `selected-navigation`
+ - `did-you-mean`
+ - `related-searches`
