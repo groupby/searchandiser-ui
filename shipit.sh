@@ -19,16 +19,16 @@ git add package.json README.md
 git commit -m "bumped version from ${currentVersion} --> ${newVersion}" || exit 1
 git push || exit 1
 
-# build distribution.
-gulp build
-echo "Built new versions in dist"
-ls dist
+# # build distribution.
+# gulp build
+# echo "Built new versions in dist"
+# ls dist
 
-# checkout gh-pages
-git checkout gh-pages || exit 1
-git add dist || exit 1
-git commit -m "built and deployed version: ${newVersion}" || exit 1
-git push || exit 1
-
-echo "Going back to original branch: ${currentBranch}"
-git checkout ${currentBranch}
+# # checkout gh-pages
+# git checkout gh-pages || exit 1
+# git add dist || exit 1
+# git commit -m "built and deployed version: ${newVersion}" || exit 1
+# git push || exit 1
+#
+# echo "Going back to original branch: ${currentBranch}"
+# git checkout ${currentBranch}
