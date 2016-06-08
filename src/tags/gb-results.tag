@@ -1,5 +1,4 @@
 <gb-results>
-  <h2>Results ({ total })</h2>
   <div each="{ records }">
     <a href="#">
       <img src="{ allMeta[struct.image] }" alt="" />
@@ -15,7 +14,6 @@
 
     opts.srch.el.on('results', () => {
       this.records = opts.srch.results.records;
-      this.total = opts.srch.results.totalRecordCount;
       this.update();
     });
   </script>
