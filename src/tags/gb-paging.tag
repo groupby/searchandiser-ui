@@ -1,6 +1,8 @@
 <gb-paging>
-  <a href="#" onclick="{ prevPage }">Prev</a>
-  <a href="#" onclick="{ nextPage }">Next</a>
+  <div class="gb-paging { opts.stylish ? 'gb-stylish' : '' }">
+    <a class="gb-paging__link prev" href="#" onclick="{ prevPage }"><span class="gb-paging__icon prev">←</span> Prev</a>
+    <a class="gb-paging__link next" href="#" onclick="{ nextPage }">Next <span class="gb-paging__icon next">→</span></a>
+  </div>
 
   <script>
     opts.srch.el.on('results', () => {
@@ -32,4 +34,11 @@
       return skip >= 0 ? skip : 0;
     };
   </script>
+
+  <style scoped>
+    .gb-stylish .gb-paging__link {
+      padding: 5px 14px;
+      text-decoration: none;
+    }
+  </style>
 </gb-paging>

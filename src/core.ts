@@ -1,7 +1,5 @@
 import { Query, BrowserBridge, Results } from 'groupby-api';
-// import riot = require('riot');
-
-declare var riot;
+import riot = require('riot');
 
 export class Searchandiser {
 
