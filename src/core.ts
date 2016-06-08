@@ -22,7 +22,7 @@ export class Searchandiser {
   }
 
   static attach(tagName: Component, cssSelector: string, options: any = {}, handler?: (tag) => void) {
-    riot.mount(cssSelector, `gb-${tagName}`, Object.assign(options, { srch: Searchandiser }));
+    riot.mount(cssSelector, `gb-${tagName}`, Object.assign({ stylish: Searchandiser.CONFIG.stylish }, options, { srch: Searchandiser }));
   }
 
   static search(query: string | Query) {
@@ -58,6 +58,7 @@ export interface ISearchandiserConfig {
   area?: string;
   collection?: string;
   language?: string;
+  stylish?: boolean;
 
   structure?: {
     title?: string;
