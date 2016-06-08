@@ -24,12 +24,14 @@ export class Searchandiser {
   }
 
   static search(query: string | Query) {
-    this.bridge.search(query, (err, res) => {
-      if (typeof query === 'string') {
-        Searchandiser.query = new Query(query);
-      } else {
-        Searchandiser.query = query;
-      }
+    const queryObj = typeof query === 'string' ? new Query(query) : query;
+    queryObj.withConfiguration({
+      collection: Searchandiser.CONFIG.collection,
+      area: Searchandiser.CONFIG.area,
+      language: Searchandiser.CONFIG.language
+    });
+    this.bridge.search(queryObj, (err, res) => {
+      Searchandiser.query = queryObj;
       Searchandiser.results = res;
       Searchandiser.el.trigger('results');
       console.log(res);
