@@ -14,6 +14,7 @@ fi
 # retag package json.
 perl -pi -e "s,\"version\":\s*\"${currentVersion}\",\"version\": \"${newVersion}\",g" package.json
 perl -pi -e "s,-${currentVersion},-${newVersion},g" README.md
+perl -pi -e "s,-${currentVersion},-${newVersion},g" index.html
 
 git add package.json README.md
 git commit -m "bumped version from ${currentVersion} --> ${newVersion}" || exit 1
