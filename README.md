@@ -1,9 +1,6 @@
 GroupBy Searchandiser UI
 ========
 
-![license](https://img.shields.io/github/license/groupby/searchandiser-ui.svg)
-[![npm](https://img.shields.io/npm/dm/searchandiser-ui.svg)](https://www.npmjs.com/package/searchandiser-ui)
-[![npm](https://img.shields.io/npm/v/searchandiser-ui.svg)](https://www.npmjs.com/package/searchandiser-ui)
 
 The following instructions assume that you are creating a search & merch single page app using the
 GroupBy commerce platform.  
@@ -81,7 +78,7 @@ Add the JavaScript that will attach the service to the div's above.
 
     <script>
       searchandiser({
-        customerId: 'crateandbarreldemo',
+        customerId: '<customer id>',
         // collection: 'default',
         // area: 'Production',
 
