@@ -12,9 +12,9 @@
   "filesGlob": [
     "src/**/*.ts",
     "test/**/*/ts",
+    "node_modules/groupby-api/**/*.d.ts",
     "!dist",
-    "!node_modules",
-    "node_modules/groupby-api/**/*.d.ts"
+    "!node_modules"
   ],
   "atom": {
     "rewriteTsconfig": true,
@@ -25,9 +25,8 @@
     "tabSize": 2
   },
   "files": [
-    "src/all.d.ts",
-    "src/core.ts",
-    "src/searchandiser-ui.ts",
+    "src/index.ts",
+    "src/searchandiser.ts",
     "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
   ]
 }

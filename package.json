@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "UI components for the GroupBy Searchandiser API.",
   "typescript": {
-    "definition": "build/searchandiser-ui.d.ts"
+    "dist": "build/definitions/searchandiser-ui.d.ts"
   },
   "main": "index.js",
   "directories": {

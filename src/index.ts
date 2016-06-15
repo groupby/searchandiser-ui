@@ -1,6 +1,6 @@
-/// <reference path="./all.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 
-import { Searchandiser } from './core';
+import { Searchandiser } from './searchandiser';
 import './tags/gb-query.tag';
 import './tags/gb-results.tag';
 import './tags/gb-record-count.tag';

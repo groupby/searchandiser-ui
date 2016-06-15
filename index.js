@@ -1,1 +1,1 @@
-module.exports = require('./build/searchandiser-ui');
+module.exports = require('./dist/searchandiser-ui');
