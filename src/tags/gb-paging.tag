@@ -5,12 +5,11 @@
   </div>
 
   <script>
-    opts.flux.on('results', () => this.update());
+    opts.flux.on(opts.flux.RESULTS, () => this.update());
 
-    this.nextPage = () => opts.flux.nextPage()
-      .then(() => opts.srch.trigger());
-    this.prevPage = () => opts.flux.lastPage()
-      .then(() => opts.srch.trigger());
+    this.nextPage = () => opts.flux.nextPage().catch(this.handleErr);
+    this.prevPage = () => opts.flux.lastPage().catch(this.handleErr);
+    this.handleErr = err => console.error(err.message);
   </script>
 
   <style scoped>

@@ -66,6 +66,6 @@
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
-    "groupby-api": "^1.0.24"
+    "groupby-api": "^1.0.27"
   }
 }

@@ -8,13 +8,8 @@
   </li>
 
   <script>
-    this.send = () => opts.flux.refine(this.generateSelectedRefinement())
-      .then(() => opts.srch.trigger());
-    this.generateSelectedRefinement = () => {
-      const refinement = Object.assign({}, opts.ref, { navigationName: this.parent.nav.name });
-      delete refinement['count'];
-      return refinement;
-    };
+    const utils = require('../utils');
+    this.send = () => this.parent.flux.refine(utils.toRefinement(opts.ref, this.parent.nav));
   </script>
 
   <style scoped>

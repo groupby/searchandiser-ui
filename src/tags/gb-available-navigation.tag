@@ -1,22 +1,20 @@
 <gb-available-navigation>
   <div class="gb-side-nav { stylish ? 'gb-stylish' : '' }">
-    <div class="gb-nav" each={ nav in navs }>
+    <div class="gb-nav" each={ nav in available }>
       <h4 class="gb-nav__title">{ nav.displayName }</h4>
       <ul class="gb-nav__list">
-        <gb-available-refinement each={ ref in nav.refinements } srch={ srch } flux={ flux } ref={ ref }></gb-available-refinement>
+        <gb-available-refinement each={ ref in nav.refinements } ref={ ref }></gb-available-refinement>
       </ul>
     </div>
   </div>
 
   <script>
     require('./gb-available-refinement.tag');
-
-    this.srch = opts.srch;
     this.flux = opts.flux;
     this.stylish = opts.stylish;
     this.badge = opts.badge === undefined ? true : opts.badge;
 
-    opts.flux.on('results', () => this.update({ navs: opts.flux.results.availableNavigation }));
+    opts.flux.on(opts.flux.RESULTS, () => this.update({ available: opts.flux.results.availableNavigation }));
   </script>
 
   <style scoped>

@@ -7,9 +7,8 @@
   </ul>
 
   <script>
-    opts.flux.on('results', () => this.update({ didYouMean: opts.flux.results.didYouMean }));
-
-    this.send = (event) => opts.srch.search(event.target.text)
-      .then(() => opts.srch.trigger());
+    opts.flux.on(opts.flux.RESULTS, () => this.update({ didYouMean: opts.flux.results.didYouMean }));
+    this.send = (event) => opts.flux.search(event.target.text)
+      .then(() => opts.flux.emit('override_query'));
   </script>
 </gb-did-you-mean>

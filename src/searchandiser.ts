@@ -1,4 +1,4 @@
-import { Query, BrowserBridge, Results, FluxCapacitor } from 'groupby-api';
+import { Query, BrowserBridge, Results, FluxCapacitor, Events } from 'groupby-api';
 import riot = require('riot');
 
 export class Searchandiser {
@@ -22,31 +22,16 @@ export class Searchandiser {
       area: Searchandiser.CONFIG.area,
       language: Searchandiser.CONFIG.language
     });
+    Object.assign(Searchandiser.flux, Events, { OVERRIDE_QUERY: 'override_query' });
     riot.observable(Searchandiser.el);
-    riot.observable(Searchandiser.flux);
   }
 
   static attach(tagName: Component, cssSelector: string, options: any = {}, handler?: (tag) => void) {
     riot.mount(cssSelector, `gb-${tagName}`, Object.assign({ stylish: Searchandiser.CONFIG.stylish }, options, { srch: Searchandiser, flux: Searchandiser.flux }));
   }
 
-  static search(query: string | Query) {
-    const queryObj = typeof query === 'string' ? new Query(query) : query;
-    this.flux.search(queryObj.build().query)
-      .then(() => Searchandiser.trigger());
-  }
-
-  static refine(refinement) {
-    this.flux.refine(refinement)
-      .then(() => Searchandiser.trigger());
-  }
-
-  static trigger() {
-    console.log(this.flux.results)
-    Searchandiser.query = this.flux.query;
-    Searchandiser.results = this.flux.results;
-    Searchandiser.flux.trigger('results');
-    Searchandiser.el.trigger('results');
+  static search(query?: string) {
+    return this.flux.search(query);
   }
 }
 

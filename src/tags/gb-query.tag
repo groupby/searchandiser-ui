@@ -2,9 +2,8 @@
   <input class="gb-search-box { opts.stylish ? 'gb-stylish' : '' }" type="text" name="searchBox" oninput="{ updateResults }" placeholder="Search...">
 
   <script>
-    this.updateResults = () => opts.flux.search(this.searchBox.value)
-      .then(() => opts.srch.trigger());
-    opts.flux.on('reset', () => this.searchBox.value = opts.flux.query.build().query);
+    this.updateResults = () => opts.flux.reset(this.searchBox.value);
+    opts.flux.on('override_query', () => this.searchBox.value = opts.flux.query.build().query);
   </script>
 
   <style scoped>
