@@ -11,17 +11,10 @@
   },
   "filesGlob": [
     "src/**/*.ts",
-    "typings/index.d.ts",
-    "test/**/*.ts",
-    "!node_modules/**/*.d.ts",
-    "node_modules/groupby-api/**/groupby-api.d.ts"
-  ],
-  "files": [
-    "src/all.d.ts",
-    "src/core.ts",
-    "src/searchandiser-ui.ts",
-    "typings/index.d.ts",
-    "node_modules/groupby-api/build/groupby-api.d.ts"
+    "test/**/*/ts",
+    "!dist",
+    "!node_modules",
+    "node_modules/groupby-api/**/*.d.ts"
   ],
   "atom": {
     "rewriteTsconfig": true,
@@ -30,5 +23,11 @@
   "formatCodeOptions": {
     "indentSize": 2,
     "tabSize": 2
-  }
+  },
+  "files": [
+    "src/all.d.ts",
+    "src/core.ts",
+    "src/searchandiser-ui.ts",
+    "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
+  ]
 }
