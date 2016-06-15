@@ -12,9 +12,6 @@
   <script>
     this.struct = opts.srch.CONFIG.structure;
 
-    opts.srch.el.on('results', () => {
-      this.records = opts.srch.results.records;
-      this.update();
-    });
+    opts.flux.on('results', () => this.update({ records: opts.flux.results.records }));
   </script>
 </gb-results>

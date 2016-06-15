@@ -1,9 +1,10 @@
-import { Query, BrowserBridge, Results } from 'groupby-api';
+import { Query, BrowserBridge, Results, FluxCapacitor } from 'groupby-api';
 import riot = require('riot');
 
 export class Searchandiser {
 
   private static CONFIG: ISearchandiserConfig & any = {};
+  static flux: FluxCapacitor & any;
   static bridge: BrowserBridge;
   static query: Query;
   static results: Results;
@@ -16,26 +17,36 @@ export class Searchandiser {
   constructor(config: ISearchandiserConfig & any = {}) {
     Searchandiser.CONFIG = config;
     Searchandiser.bridge = new BrowserBridge(config.customerId);
-    riot.observable(Searchandiser.el);
-  }
-
-  static attach(tagName: Component, cssSelector: string, options: any = {}, handler?: (tag) => void) {
-    riot.mount(cssSelector, `gb-${tagName}`, Object.assign({ stylish: Searchandiser.CONFIG.stylish }, options, { srch: Searchandiser }));
-  }
-
-  static search(query: string | Query) {
-    const queryObj = typeof query === 'string' ? new Query(query) : query;
-    queryObj.withConfiguration({
+    Searchandiser.flux = new FluxCapacitor(config.customerId, {
       collection: Searchandiser.CONFIG.collection,
       area: Searchandiser.CONFIG.area,
       language: Searchandiser.CONFIG.language
     });
-    this.bridge.search(queryObj, (err, res) => {
-      Searchandiser.query = queryObj;
-      Searchandiser.results = res;
-      Searchandiser.el.trigger('results');
-      console.log(res);
-    });
+    riot.observable(Searchandiser.el);
+    riot.observable(Searchandiser.flux);
+  }
+
+  static attach(tagName: Component, cssSelector: string, options: any = {}, handler?: (tag) => void) {
+    riot.mount(cssSelector, `gb-${tagName}`, Object.assign({ stylish: Searchandiser.CONFIG.stylish }, options, { srch: Searchandiser, flux: Searchandiser.flux }));
+  }
+
+  static search(query: string | Query) {
+    const queryObj = typeof query === 'string' ? new Query(query) : query;
+    this.flux.search(queryObj.build().query)
+      .then(() => Searchandiser.trigger());
+  }
+
+  static refine(refinement) {
+    this.flux.refine(refinement)
+      .then(() => Searchandiser.trigger());
+  }
+
+  static trigger() {
+    console.log(this.flux.results)
+    Searchandiser.query = this.flux.query;
+    Searchandiser.results = this.flux.results;
+    Searchandiser.flux.trigger('results');
+    Searchandiser.el.trigger('results');
   }
 }
 

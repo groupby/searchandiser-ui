@@ -8,21 +8,13 @@
   </li>
 
   <script>
-    const srch = this.parent.srch;
-
-    this.send = () => {
-      const selectedRefinement = this.generateSelectedRefinement();
-      srch.search(srch.query.withSelectedRefinements(selectedRefinement));
-      srch.state.refinements.push(selectedRefinement);
+    this.send = () => opts.flux.refine(this.generateSelectedRefinement())
+      .then(() => opts.srch.trigger());
+    this.generateSelectedRefinement = () => {
+      const refinement = Object.assign({}, opts.ref, { navigationName: this.parent.nav.name });
+      delete refinement['count'];
+      return refinement;
     };
-
-    this.generateSelectedRefinement = () => new Object({
-      navigationName: this.parent.nav.name,
-      type: opts.ref.type,
-      value: opts.ref.value,
-      low: opts.ref.low,
-      high: opts.ref.high
-    });
   </script>
 
   <style scoped>

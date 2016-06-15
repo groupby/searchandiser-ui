@@ -7,11 +7,9 @@
   </ul>
 
   <script>
-    opts.srch.el.on('results', () => {
-      this.relatedSearches = opts.srch.results.relatedQueries;
-      this.update();
-    });
+    opts.flux.on('results', () => this.update({ relatedSearches: opts.flux.results.relatedQueries }));
 
-    this.send = (event) => opts.srch.search(event.target.text);
+    this.send = (event) => opts.flux.search(event.target.text)
+      .then(() => opts.srch.trigger());
   </script>
 </gb-related-searches>

@@ -2,11 +2,10 @@
   <h2>{ first } - { last } of { total } Products</h2>
 
   <script>
-    opts.srch.el.on('results', () => {
-      this.first = opts.srch.results.pageInfo.recordStart;
-      this.last = opts.srch.results.pageInfo.recordEnd;
-      this.total = opts.srch.results.totalRecordCount;
-      this.update();
-    });
+    opts.flux.on('results', () => this.update({
+      first: opts.flux.results.pageInfo.recordStart,
+      last: opts.flux.results.pageInfo.recordEnd,
+      total: opts.flux.results.totalRecordCount
+    }));
   </script>
 </gb-record-count>

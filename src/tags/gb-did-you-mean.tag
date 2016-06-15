@@ -7,11 +7,9 @@
   </ul>
 
   <script>
-    opts.srch.el.on('results', () => {
-      this.didYouMean = opts.srch.results.didYouMean;
-      this.update();
-    });
+    opts.flux.on('results', () => this.update({ didYouMean: opts.flux.results.didYouMean }));
 
-    this.send = (event) => opts.srch.search(event.target.text);
+    this.send = (event) => opts.srch.search(event.target.text)
+      .then(() => opts.srch.trigger());
   </script>
 </gb-did-you-mean>
