@@ -3,31 +3,24 @@ import riot = require('riot');
 
 export class Searchandiser {
 
-  private static CONFIG: ISearchandiserConfig & any = {};
+  static config: ISearchandiserConfig & any = {};
   static flux: FluxCapacitor & any;
-  static bridge: BrowserBridge;
-  static query: Query;
-  static results: Results;
-  static state: ISearchState & any = {
-    lastStep: 0,
-    refinements: []
-  };
-  static el: any = {};
 
   constructor(config: ISearchandiserConfig & any = {}) {
-    Searchandiser.CONFIG = config;
-    Searchandiser.bridge = new BrowserBridge(config.customerId);
+    Searchandiser.config = config;
     Searchandiser.flux = new FluxCapacitor(config.customerId, {
-      collection: Searchandiser.CONFIG.collection,
-      area: Searchandiser.CONFIG.area,
-      language: Searchandiser.CONFIG.language
+      collection: Searchandiser.config.collection,
+      area: Searchandiser.config.area,
+      language: Searchandiser.config.language
     });
     Object.assign(Searchandiser.flux, Events, { OVERRIDE_QUERY: 'override_query' });
-    riot.observable(Searchandiser.el);
   }
 
   static attach(tagName: Component, cssSelector: string, options: any = {}, handler?: (tag) => void) {
-    riot.mount(cssSelector, `gb-${tagName}`, Object.assign({ stylish: Searchandiser.CONFIG.stylish }, options, { srch: Searchandiser, flux: Searchandiser.flux }));
+    riot.mount(cssSelector, `gb-${tagName}`, Object.assign({ stylish: Searchandiser.config.stylish }, options, {
+      config: Searchandiser.config,
+      flux: Searchandiser.flux
+    }));
   }
 
   static search(query?: string) {
@@ -35,10 +28,13 @@ export class Searchandiser {
   }
 }
 
-export interface ISearchState {
-  lastStep: number;
-  refinements: any[];
-}
+// let CONFIG: ISearchandiserConfig & any = {};
+//
+// export function Searchandiser2() {
+//   function configure(config: ISearchandiserConfig & any = CONFIG) {
+//     Object.assign(this, new Searchandiser());
+//   }
+// }
 
 export type Component = 'query' |
   'didYouMean' |

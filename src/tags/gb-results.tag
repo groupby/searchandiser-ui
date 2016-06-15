@@ -10,7 +10,7 @@
   </div>
 
   <script>
-    this.struct = opts.srch.CONFIG.structure;
+    this.struct = opts.config.structure;
 
     opts.flux.on(opts.flux.RESULTS, () => this.update({ records: opts.flux.results.records }));
   </script>
