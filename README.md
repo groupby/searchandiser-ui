@@ -26,20 +26,26 @@ displayed.
 
     <!-- the search box -->
     <div class="query"></div>
-    <div class="gb-bar">
+    <div>
       <!-- Selected navigations that represent the
            filters selected by the user -->
       <div class="selectedNavigation"></div>
+      <!-- Record start, end and total -->
+      <div class="recordCount"></div>
       <!-- Paging elements -->
       <div class="paging"></div>
     </div>
-    <div class="gb-bar">
+    <div>
       <!-- Spelling suggestions from the engine -->
       <div class="didYouMean"></div>
       <!-- Related searches defined by the merchandisers -->
       <div class="relatedSearches"></div>
     </div>
-    <div class="gb-main">
+    <!-- Template from activated Rule -->
+    <div class="spotlightTemplate">
+      <!-- template content will be conditionally rendered -->
+    </div>
+    <div>
       <!-- Based on the current search and navigation state
            these are the available filters that can be used -->
       <div class="availableNavigation"></div>
@@ -63,15 +69,19 @@ Add the JavaScript that will attach the service to the div's above.
   <body>
 
     <div class="query"></div>
-    <div class="gb-bar">
+    <div>
       <div class="selectedNavigation"></div>
+      <div class="recordCount"></div>
       <div class="paging"></div>
     </div>
-    <div class="gb-bar">
+    <div>
       <div class="didYouMean"></div>
       <div class="relatedSearches"></div>
     </div>
-    <div class="gb-main">
+    <div class="spotlightTemplate">
+      <!-- template content -->
+    </div>
+    <div>
       <div class="availableNavigation"></div>
       <div class="results"></div>
     </div>
@@ -88,18 +98,30 @@ Add the JavaScript that will attach the service to the div's above.
           price: 'price'
         },
 
+        // enable some default styling
         // stylish: true
       });
       searchandiser.search('');
       searchandiser.attach('query', '.query');
+
+      // Elements can also be found automatically if their
+      // class name matches the component name.
+      // e.g. to attach the query component to '.query':
+      // searchandiser.attach('query');
+
       searchandiser.attach('paging', '.paging');
       searchandiser.attach('results', '.results');
       searchandiser.attach('available-navigation', '.availableNavigation', {
+        // hide the refinement count
         // badge: false
       });
       searchandiser.attach('selected-navigation', '.selectedNavigation');
       searchandiser.attach('did-you-mean', '.didYouMean');
       searchandiser.attach('related-searches', '.relatedSearches');
+
+      // To register templates use the name of the template
+      // and a css selector
+      searchandiser.template('My Spotlight Template', '.spotlightTemplate');
     </script>
 
   </body>
@@ -121,3 +143,4 @@ document: [docs/css-reference.md](docs/css-reference.md)
  - `selected-navigation`
  - `did-you-mean`
  - `related-searches`
+ - `template`
