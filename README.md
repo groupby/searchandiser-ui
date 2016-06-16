@@ -64,7 +64,7 @@ Add the JavaScript that will attach the service to the div's above.
 ```html
 <html>
   <head>
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.2.js"></script>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.3.js"></script>
   </head>
   <body>
 
