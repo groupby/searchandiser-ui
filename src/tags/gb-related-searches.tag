@@ -7,8 +7,7 @@
   </ul>
 
   <script>
-    opts.flux.on(opts.flux.RESULTS, () => this.update({ relatedSearches: opts.flux.results.relatedQueries }));
-    this.send = (event) => opts.flux.search(event.target.text)
-      .then(() => opts.flux.emit('override_query'));
+    opts.flux.on(opts.flux.RESULTS, res => this.update({ relatedSearches: res.relatedQueries }));
+    this.send = (event) => opts.flux.rewrite(event.target.text);
   </script>
 </gb-related-searches>

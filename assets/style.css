@@ -1,5 +1,9 @@
 body {
-  margin: 0;
+  margin: 16px;
+}
+
+.gb-filler {
+  flex: 1;
 }
 
 
@@ -11,16 +15,12 @@ body {
   justify-content: center;
 }
 
-.gb-bar> * {
+.gb-rewrite> * {
   flex: 1;
 }
 
 .gb-bar .selectedNavigation {
   flex: 3;
-}
-
-.gb-bar .paging {
-  flex: 1;
 }
 
 

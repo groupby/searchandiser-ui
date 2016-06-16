@@ -11,10 +11,10 @@
   <script>
     require('./gb-available-refinement.tag');
     this.flux = opts.flux;
-    this.stylish = opts.stylish;
+    this.stylish = opts.config.stylish;
     this.badge = opts.badge === undefined ? true : opts.badge;
 
-    opts.flux.on(opts.flux.RESULTS, () => this.update({ available: opts.flux.results.availableNavigation }));
+    opts.flux.on(opts.flux.RESULTS, res => this.update({ available: res.availableNavigation }));
   </script>
 
   <style scoped>

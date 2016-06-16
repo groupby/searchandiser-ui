@@ -1,15 +1,8 @@
 /// <reference path="../typings/index.d.ts" />
 
-import { Searchandiser } from './searchandiser';
-import './tags/gb-query.tag';
-import './tags/gb-results.tag';
-import './tags/gb-record-count.tag';
-import './tags/gb-paging.tag';
-import './tags/gb-related-searches.tag';
-import './tags/gb-did-you-mean.tag';
-import './tags/gb-available-navigation.tag';
-import './tags/gb-selected-navigation.tag';
+import { InitSearchandiser } from './searchandiser';
+import './tags/index';
 
 if (!window['searchandiser']) {
-  window['searchandiser'] = Searchandiser;
+  window['searchandiser'] = InitSearchandiser();
 }

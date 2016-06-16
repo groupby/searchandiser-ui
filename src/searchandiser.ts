@@ -1,40 +1,31 @@
 import { Query, BrowserBridge, Results, FluxCapacitor, Events } from 'groupby-api';
+import { pluck } from './utils';
 import riot = require('riot');
 
-export class Searchandiser {
+let CONFIG: SearchandiserConfig & any = {};
 
-  static config: ISearchandiserConfig & any = {};
-  static flux: FluxCapacitor & any;
-
-  constructor(config: ISearchandiserConfig & any = {}) {
-    Searchandiser.config = config;
-    Searchandiser.flux = new FluxCapacitor(config.customerId, {
-      collection: Searchandiser.config.collection,
-      area: Searchandiser.config.area,
-      language: Searchandiser.config.language
-    });
-    Object.assign(Searchandiser.flux, Events, { OVERRIDE_QUERY: 'override_query' });
-  }
-
-  static attach(tagName: Component, cssSelector: string, options: any = {}, handler?: (tag) => void) {
-    riot.mount(cssSelector, `gb-${tagName}`, Object.assign({ stylish: Searchandiser.config.stylish }, options, {
-      config: Searchandiser.config,
-      flux: Searchandiser.flux
-    }));
-  }
-
-  static search(query?: string) {
-    return this.flux.search(query);
+export function InitSearchandiser() {
+  return function configure(config: SearchandiserConfig & any = CONFIG) {
+    const flux = new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language'));
+    Object.assign(flux, Events);
+    Object.assign(configure, new Searchandiser(flux, config));
   }
 }
 
-// let CONFIG: ISearchandiserConfig & any = {};
-//
-// export function Searchandiser2() {
-//   function configure(config: ISearchandiserConfig & any = CONFIG) {
-//     Object.assign(this, new Searchandiser());
-//   }
-// }
+class Searchandiser {
+
+  constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) { }
+
+  attach = (tagName: Component, cssSelector: string = `.${tagName}`, options: any = {}, handler?: (tag) => void) => {
+    riot.mount(cssSelector, `gb-${tagName}`, Object.assign(options, this));
+  };
+
+  template = (templateName: string, cssSelector: string, options: any = {}) => {
+    this.attach('template', cssSelector, Object.assign(options, { templateName }));
+  };
+
+  search = (query?: string) => this.flux.search(query);
+}
 
 export type Component = 'query' |
   'didYouMean' |
@@ -45,7 +36,7 @@ export type Component = 'query' |
   'results' |
   'template';
 
-export interface ISearchandiserConfig {
+export interface SearchandiserConfig {
   customerId: string,
   area?: string;
   collection?: string;

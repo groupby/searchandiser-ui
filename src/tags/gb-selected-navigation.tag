@@ -12,6 +12,6 @@
 
     this.flux = opts.flux;
     opts.flux.on(opts.flux.REFINEMENTS_CHANGED, ({ selected }) => this.update({ selected }));
-    opts.flux.on(opts.flux.RESET, () => this.update({ selected: opts.flux.results.selected }));
+    opts.flux.on(opts.flux.RESET, res => this.update({ selected: res.selected }));
   </script>
 </gb-selected-navigation>
