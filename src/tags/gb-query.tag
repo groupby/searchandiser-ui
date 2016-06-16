@@ -1,5 +1,5 @@
 <gb-query>
-  <div class="gb-query { opts.config.stylish ? 'gb-stylish' : '' }">
+  <div class="gb-query { opts.style() }">
     <input class="gb-query__box" type="text" name="searchBox" oninput={ updateResults } placeholder="Search...">
     <a class="gb-query__reset" onclick={ clearQuery }>×</a>
   </div>

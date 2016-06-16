@@ -1,5 +1,5 @@
 <gb-available-refinement>
-  <li class="gb-ref { parent.stylish ? 'gb-stylish' : '' }">
+  <li class="gb-ref { parentOpts.style() }">
     <a class="gb-ref__link" href="#" onclick={ send }>
       <span class="gb-ref__title">{ ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high }</span>
       <span class="gb-filler"></span>
@@ -9,7 +9,8 @@
 
   <script>
     const utils = require('../utils');
-    this.send = () => this.parent.flux.refine(utils.toRefinement(opts.ref, this.parent.nav));
+    this.parentOpts = this.parent.parent.opts;
+    this.send = () => this.parentOpts.flux.refine(utils.toRefinement(opts.ref, this.parent.nav));
   </script>
 
   <style scoped>

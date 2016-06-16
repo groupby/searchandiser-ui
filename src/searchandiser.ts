@@ -25,6 +25,8 @@ class Searchandiser {
   };
 
   search = (query?: string) => this.flux.search(query);
+
+  style = () => this.config.stylish ? 'gb-stylish' : '';
 }
 
 export type Component = 'query' |

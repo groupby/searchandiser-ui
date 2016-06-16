@@ -1,5 +1,5 @@
 <gb-paging>
-  <div class="gb-paging { opts.config.stylish ? 'gb-stylish' : '' }">
+  <div class="gb-paging { opts.style() }">
     <a class="gb-paging__link prev { isFirst() ? 'disabled' : '' }" href="#" onclick="{ prevPage }"><span class="gb-paging__icon">←</span> Prev</a>
     <a class="gb-paging__link next { isLast() ? 'disabled' : '' }" href="#" onclick="{ nextPage }">Next <span class="gb-paging__icon">→</span></a>
   </div>

@@ -3,7 +3,11 @@ body {
 }
 
 .gb-filler {
-  flex: 1;
+  flex-grow: 1;
+}
+
+.gb-page-info> * {
+  flex: none;
 }
 
 
@@ -15,11 +19,11 @@ body {
   justify-content: center;
 }
 
-.gb-rewrite> * {
+.gb-bar> * {
   flex: 1;
 }
 
-.gb-bar .selectedNavigation {
+.gb-bar .selected-navigation {
   flex: 3;
 }
 
@@ -32,7 +36,7 @@ body {
   /*text-align: center;*/
 }
 
-.gb-main .availableNavigation {
+.gb-main .available-navigation {
   flex: 1;
   min-width: 250px;
 }

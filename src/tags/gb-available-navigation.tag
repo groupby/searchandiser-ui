@@ -1,5 +1,5 @@
 <gb-available-navigation>
-  <div class="gb-side-nav { stylish ? 'gb-stylish' : '' }">
+  <div class="gb-side-nav { opts.style() }">
     <div class="gb-nav" each={ nav in available }>
       <h4 class="gb-nav__title">{ nav.displayName }</h4>
       <ul class="gb-nav__list">
@@ -10,8 +10,6 @@
 
   <script>
     require('./gb-available-refinement.tag');
-    this.flux = opts.flux;
-    this.stylish = opts.config.stylish;
     this.badge = opts.badge === undefined ? true : opts.badge;
 
     opts.flux.on(opts.flux.RESULTS, res => this.update({ available: res.availableNavigation }));
