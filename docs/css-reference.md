@@ -10,6 +10,9 @@ query
 `.gb-query__box`
 `.gb-query__reset`
 
+raw-query
+---
+
 paging
 ---
 `.gb-paging`
@@ -36,7 +39,7 @@ available-navigation
 `.gb-ref__title`
 `.gb-ref__badge`
 
-selected-navigation
+breadcrumbs
 ---
 <!-- TODO -->
 

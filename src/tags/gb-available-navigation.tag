@@ -3,7 +3,7 @@
     <div class="gb-nav" each={ nav in available }>
       <h4 class="gb-nav__title">{ nav.displayName }</h4>
       <ul class="gb-nav__list">
-        <gb-selected-refinement each={ ref in selectedRefinements(nav).refinements }></gb-selected-refinement>
+        <gb-selected-refinement if={ showSelected } each={ ref in selectedRefinements(nav).refinements }></gb-selected-refinement>
         <gb-available-refinement each={ ref in nav.refinements }></gb-available-refinement>
       </ul>
     </div>
@@ -14,6 +14,7 @@
     require('./gb-selected-refinement.tag');
 
     this.badge = opts.badge === undefined ? true : opts.badge;
+    this.showSelected = opts.showSelected === undefined ? true : opts.showSelected
     this.selectedRefinements = navigation => this.selected.find(nav => nav.name === navigation.name);
     opts.flux.on(opts.flux.RESULTS, res => this.update({
       available: res.availableNavigation,

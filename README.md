@@ -29,7 +29,7 @@ displayed.
     <div>
       <!-- Selected navigations that represent the
            filters selected by the user -->
-      <div class="selectedNavigation"></div>
+      <div class="breadcrumbs"></div>
       <!-- Record start, end and total -->
       <div class="recordCount"></div>
       <!-- Paging elements -->
@@ -70,7 +70,7 @@ Add the JavaScript that will attach the service to the `div`s above.
 
     <div class="query"></div>
     <div>
-      <div class="selectedNavigation"></div>
+      <div class="breadcrumbs"></div>
       <div class="recordCount"></div>
       <div class="paging"></div>
     </div>
@@ -115,7 +115,7 @@ Add the JavaScript that will attach the service to the `div`s above.
         // hide the refinement count
         // badge: false
       });
-      searchandiser.attach('selected-navigation', '.selectedNavigation');
+      searchandiser.attach('breadcrumbs', '.breadcrumbs');
       searchandiser.attach('did-you-mean', '.didYouMean');
       searchandiser.attach('related-searches', '.relatedSearches');
 
@@ -136,11 +136,12 @@ document: [docs/css-reference.md](docs/css-reference.md)
 ## Components:
 
  - `query`
+ - `raw-query`
  - `paging`
  - `results`
  - `record-count`
  - `available-navigation`
- - `selected-navigation`
+ - `breadcrumbs`
  - `did-you-mean`
  - `related-searches`
  - `template`
