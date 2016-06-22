@@ -1,7 +1,7 @@
 <gb-results>
   <div each="{ records }">
     <a href="#">
-      <img src="{ allMeta[struct.image] }" alt="" />
+      <img src={ allMeta[struct.image] } alt="" />
     </a>
     <a href="#">
       <p>{ allMeta[struct.title] }</p>
