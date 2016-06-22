@@ -69,6 +69,7 @@ Add the JavaScript that will attach the service to the `div`s above.
   <body>
 
     <div class="query"></div>
+    <input type="text" class="raw-query">
     <div>
       <div class="breadcrumbs"></div>
       <div class="recordCount"></div>
@@ -84,6 +85,15 @@ Add the JavaScript that will attach the service to the `div`s above.
     <div>
       <div class="availableNavigation"></div>
       <div class="results"></div>
+      <div class="raw-results">
+        <a href="#">
+          <img src="{ allMeta['image'] }" alt="" />
+        </a>
+        <a href="#">
+          <p>{ allMeta['title'] }</p>
+          <p>{ allMeta['price'] }</p>
+        </a>
+      </div>
     </div>
 
     <script>
@@ -109,8 +119,16 @@ Add the JavaScript that will attach the service to the `div`s above.
       // e.g. to attach the query component to '.query':
       // searchandiser.attach('query');
 
+      // Attach the query field functionality directly to
+      // an <input> element
+      searchandiser.attach('raw-query', '.raw-query');
+
       searchandiser.attach('paging', '.paging');
       searchandiser.attach('results', '.results');
+
+      // Use a custom template for rendering search results
+      searchandiser.attach('raw-results', '.raw-results');
+
       searchandiser.attach('available-navigation', '.availableNavigation', {
         // hide the refinement count
         // badge: false,
@@ -141,6 +159,7 @@ document: [docs/css-reference.md](docs/css-reference.md)
  - `raw-query`
  - `paging`
  - `results`
+ - `raw-results`
  - `record-count`
  - `available-navigation`
  - `breadcrumbs`
