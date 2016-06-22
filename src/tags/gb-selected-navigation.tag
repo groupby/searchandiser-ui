@@ -1,8 +1,8 @@
 <gb-selected-navigation>
   <ul class="gb-list">
-    <li each={ nav in selected } nav={ nav }>
+    <li each={ nav in selected }>
       <ul class="gb-list">
-        <gb-selected-refinement each={ ref in nav.refinements } ref={ ref }></gb-selected-refinement>
+        <gb-selected-refinement each={ ref in nav.refinements }></gb-selected-refinement>
       </ul>
     </li>
   </ul>

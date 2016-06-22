@@ -3,7 +3,7 @@
     <div class="gb-nav" each={ nav in available }>
       <h4 class="gb-nav__title">{ nav.displayName }</h4>
       <ul class="gb-nav__list">
-        <gb-available-refinement each={ ref in nav.refinements } ref={ ref }></gb-available-refinement>
+        <gb-available-refinement each={ ref in nav.refinements }></gb-available-refinement>
       </ul>
     </div>
   </div>

@@ -59,7 +59,7 @@ displayed.
 
 ###Step 2
 
-Add the JavaScript that will attach the service to the div's above.
+Add the JavaScript that will attach the service to the `div`s above.
 
 ```html
 <html>

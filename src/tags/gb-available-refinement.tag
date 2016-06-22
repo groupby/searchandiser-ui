@@ -3,14 +3,14 @@
     <a class="gb-ref__link" href="#" onclick={ send }>
       <span class="gb-ref__title">{ ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high }</span>
       <span class="gb-filler"></span>
-      <span class="gb-ref__badge" if={ parent.badge }>{ ref.count }</span>
+      <span class="gb-ref__badge" if={ badge }>{ ref.count }</span>
     </a>
   </li>
 
   <script>
     const utils = require('../utils');
     this.parentOpts = this.parent.parent.opts;
-    this.send = () => this.parentOpts.flux.refine(utils.toRefinement(opts.ref, this.parent.nav));
+    this.send = () => this.parentOpts.flux.refine(utils.toRefinement(this.ref, this.nav));
   </script>
 
   <style scoped>

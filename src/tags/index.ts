@@ -7,3 +7,4 @@ import './gb-did-you-mean.tag';
 import './gb-available-navigation.tag';
 import './gb-selected-navigation.tag';
 import './gb-template.tag';
+import './gb-category-menu.tag';
