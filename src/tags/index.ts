@@ -1,4 +1,5 @@
 import './gb-query.tag';
+import './gb-raw-query.tag';
 import './gb-results.tag';
 import './gb-record-count.tag';
 import './gb-paging.tag';
