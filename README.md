@@ -64,7 +64,7 @@ Add the JavaScript that will attach the service to the `div`s above.
 ```html
 <html>
   <head>
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.3.js"></script>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.4.js"></script>
   </head>
   <body>
 
@@ -113,7 +113,9 @@ Add the JavaScript that will attach the service to the `div`s above.
       searchandiser.attach('results', '.results');
       searchandiser.attach('available-navigation', '.availableNavigation', {
         // hide the refinement count
-        // badge: false
+        // badge: false,
+        // hide selected refinements
+        // showSelected: false
       });
       searchandiser.attach('breadcrumbs', '.breadcrumbs');
       searchandiser.attach('did-you-mean', '.didYouMean');
