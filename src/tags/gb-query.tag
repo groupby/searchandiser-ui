@@ -1,15 +1,13 @@
 <gb-query>
   <div class="gb-query { opts.style() }">
-    <input class="gb-query__box" type="text" placeholder="Search...">
+    <input class="gb-query__box" name="searchBox" type="text" placeholder="Search...">
     <a class="gb-query__reset" onclick={ clearQuery }>×</a>
   </div>
 
   <script>
     require('./gb-raw-query.tag')
-    this.on('mount', () => {
-      console.log(riot.mount);
-      riot.mount('.gb-query__box', 'gb-raw-query', opts);
-    });
+    this.on('mount', () => riot.mount('.gb-query__box', 'gb-raw-query', opts));
+    this.clearQuery = () => opts.flux.reset(this.searchBox.value = '');
   </script>
 
   <style scoped>
