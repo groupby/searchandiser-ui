@@ -5,7 +5,11 @@
   </div>
 
   <script>
-    this.on('before-mount', () => riot.mount('gb-raw-query', '.gb-query__box', opts));
+    require('./gb-raw-query.tag')
+    this.on('mount', () => {
+      console.log(riot.mount);
+      riot.mount('.gb-query__box', 'gb-raw-query', opts);
+    });
   </script>
 
   <style scoped>
