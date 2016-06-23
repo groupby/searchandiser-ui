@@ -1,17 +1,12 @@
 <gb-results>
-  <div each="{ records }">
-    <a href="#">
-      <img src={ Array.isArray(allMeta[struct.image]) ? allMeta[struct.image][0] : allMeta[struct.image] } alt="" />
-    </a>
-    <a href="#">
-      <p>{ allMeta[struct.title] }</p>
-      <p>{ allMeta[struct.price] }</p>
-    </a>
-  </div>
+  <gb-raw-results flux={ opts.flux }>
+    <gb-product></gb-product>
+  </gb-raw-results>
 
   <script>
-    this.struct = opts.config.structure;
+    require('./gb-raw-results.tag');
+    require('./gb-product.tag');
 
-    opts.flux.on(opts.flux.RESULTS, res => this.update({ records: res.records }));
+    this.struct = opts.config.structure;
   </script>
 </gb-results>

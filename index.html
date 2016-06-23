@@ -35,8 +35,8 @@
           <span class="gb-filler"></span>
           <div class="paging"></div>
         </div>
-        <div class="results"></div>
-        <!-- <div class="raw-results">
+        <!-- <div class="results"></div> -->
+        <div class="raw-results">
           <a href="#">
             <img src="{ allMeta[struct.image] }" alt="" />
           </a>
@@ -45,117 +45,118 @@
             <p>{ allMeta[struct.price] }</p>
           </a>
         </div>
-      </div> -->
+      </div>
+    </div>
 
-        <script>
-          searchandiser({
-            customerId: 'crateandbarreldemo',
+    <script>
+      searchandiser({
+        customerId: 'crateandbarreldemo',
 
-            structure: {
-              title: 'title',
-              image: 'wideImage',
-              price: 'price'
-            },
+        structure: {
+          title: 'title',
+          image: 'wideImage',
+          price: 'price'
+        },
 
-            stylish: true
-          });
-          searchandiser.search('');
-          searchandiser.attach('query');
-          // searchandiser.attach('raw-query');
-          searchandiser.attach('category-menu', '.category-menu', {
-            sections: [{
-              name: 'Brands',
-              field: 'brand',
-              query: 'Le Creuset',
-              items: [
-                'All-Clad', 'Bodum', 'Breville', 'Calaphon', 'Chilewich', 'Cuisinart',
-                'Dash', 'Global', 'KitchenAid', 'Le Creuset', 'Lodge', 'Marin',
-                'Nordic Wave', 'OXO', 'Schmidt Brothers', 'Shun', 'Simmons',
-                'simplehuman', 'Vitamix', 'Work'
-              ]
-            }, {
-              name: 'Dining & Entertainment',
-              query: 'dining',
-              subsections: [{
-                name: 'Dinnerware',
-                items: ['Bowl', 'Set', 'Dinner Plate', 'Salad Plate', 'Mug']
-              }, {
-                name: 'Flatware',
-                items: ['Flatware', 'Serving sets', 'Spoon', 'Knife', 'Fork']
-              }, {
-                name: 'Drinkware',
-                items: ['Mug', 'Wine', 'Highball', 'Bar tools', 'Wine accessories']
-              }, {
-                name: 'Serveware',
-                items: ['Serving Bowl', 'Platter', 'Baker', 'Bowl', 'Pitcher']
-              }]
-            }, {
-              name: 'Kitchen',
-              query: 'kitchen',
-              subsections: [{
-                name: 'Cookware & Bakeware',
-                items: ['Baker', 'Cookware Set', 'Frypan', 'Dutch Oven', 'Sauce Pan']
-              }, {
-                name: 'Cutlery',
-                items: ['Knife Block', "Chef's Knife", 'Utility Knife', 'Santoku Knife', 'Paring Knife']
-              }, {
-                name: 'Appliances & Electronice',
-                items: ['Mixer', 'Blender', 'Accessories', 'Toaster', 'Waffle & Pizzelle Makers']
-              }, {
-                name: 'Accessories',
-                items: ['Bar tools', 'Jar', 'Canisters', 'Mill', 'Utensils']
-              }]
-            }, {
-              name: 'Decor & Pillows',
-              query: 'decor',
-              subsections: [{
-                name: 'Pillows & Throws',
-                items: ['Decorative Pillows', 'Throws', 'Pillow Inserts', 'Pillow', 'Area Rug']
-              }, {
-                name: 'Candle Holders & Vases',
-                items: ['Candle', 'Candle Holder', 'Vase', 'Hurricane', 'Lantern']
-              }, {
-                name: 'Wall Decor & Mirrors',
-                items: ['Print', 'Frame', 'Wall Mirror', 'Shelf/Ledge', 'Art']
-              }, {
-                name: 'Home Accessories',
-                items: ['Basket', 'Object', 'Plant', 'Branch', 'Bin']
-              }]
-            }, {
-              name: 'Bed & Bath',
-              query: 'bedroom',
-              subsections: [{
-                name: 'Bedding',
-                items: ['Sheets', 'Duvets Cover', 'Pillow Sham', 'Pillowcases', 'Quilt']
-              }, {
-                name: 'Bath',
-                items: ['Basket', 'Shower Curtain', 'Bath Rug', 'Wall Mirror', 'Bath Towel']
-              }]
-            }, {
-              name: 'Outdoor',
-              query: 'grill',
-              subsections: [{
-                name: 'Entertaining',
-                items: ['Drinkware', 'Glass', 'Accessories', 'Grill Tools', 'Flatware']
-              }, {
-                name: 'Dining',
-                items: ['Side Chair', 'Arm Chair', 'Counter Stool', 'Bench', 'Work Station']
-              }, {
-                name: 'Accessories',
-                items: ['Outdoor Rug', 'Area Rug', 'Planter', 'Lanter', 'Door Mat']
-              }]
-            }]
-          });
-          searchandiser.attach('paging');
-          searchandiser.attach('results');
-          // searchandiser.attach('raw-results');
-          searchandiser.attach('record-count');
-          searchandiser.attach('available-navigation');
-          searchandiser.attach('breadcrumbs');
-          searchandiser.attach('did-you-mean');
-          searchandiser.attach('related-searches');
-          searchandiser.template('Product Spotlight', '.spotlight-template');
-        </script>
+        stylish: true
+      });
+      searchandiser.search('');
+      searchandiser.attach('query');
+      // searchandiser.attach('raw-query');
+      searchandiser.attach('category-menu', '.category-menu', {
+        sections: [{
+          name: 'Brands',
+          field: 'brand',
+          query: 'Le Creuset',
+          items: [
+            'All-Clad', 'Bodum', 'Breville', 'Calaphon', 'Chilewich', 'Cuisinart',
+            'Dash', 'Global', 'KitchenAid', 'Le Creuset', 'Lodge', 'Marin',
+            'Nordic Wave', 'OXO', 'Schmidt Brothers', 'Shun', 'Simmons',
+            'simplehuman', 'Vitamix', 'Work'
+          ]
+        }, {
+          name: 'Dining & Entertainment',
+          query: 'dining',
+          subsections: [{
+            name: 'Dinnerware',
+            items: ['Bowl', 'Set', 'Dinner Plate', 'Salad Plate', 'Mug']
+          }, {
+            name: 'Flatware',
+            items: ['Flatware', 'Serving sets', 'Spoon', 'Knife', 'Fork']
+          }, {
+            name: 'Drinkware',
+            items: ['Mug', 'Wine', 'Highball', 'Bar tools', 'Wine accessories']
+          }, {
+            name: 'Serveware',
+            items: ['Serving Bowl', 'Platter', 'Baker', 'Bowl', 'Pitcher']
+          }]
+        }, {
+          name: 'Kitchen',
+          query: 'kitchen',
+          subsections: [{
+            name: 'Cookware & Bakeware',
+            items: ['Baker', 'Cookware Set', 'Frypan', 'Dutch Oven', 'Sauce Pan']
+          }, {
+            name: 'Cutlery',
+            items: ['Knife Block', "Chef's Knife", 'Utility Knife', 'Santoku Knife', 'Paring Knife']
+          }, {
+            name: 'Appliances & Electronice',
+            items: ['Mixer', 'Blender', 'Accessories', 'Toaster', 'Waffle & Pizzelle Makers']
+          }, {
+            name: 'Accessories',
+            items: ['Bar tools', 'Jar', 'Canisters', 'Mill', 'Utensils']
+          }]
+        }, {
+          name: 'Decor & Pillows',
+          query: 'decor',
+          subsections: [{
+            name: 'Pillows & Throws',
+            items: ['Decorative Pillows', 'Throws', 'Pillow Inserts', 'Pillow', 'Area Rug']
+          }, {
+            name: 'Candle Holders & Vases',
+            items: ['Candle', 'Candle Holder', 'Vase', 'Hurricane', 'Lantern']
+          }, {
+            name: 'Wall Decor & Mirrors',
+            items: ['Print', 'Frame', 'Wall Mirror', 'Shelf/Ledge', 'Art']
+          }, {
+            name: 'Home Accessories',
+            items: ['Basket', 'Object', 'Plant', 'Branch', 'Bin']
+          }]
+        }, {
+          name: 'Bed & Bath',
+          query: 'bedroom',
+          subsections: [{
+            name: 'Bedding',
+            items: ['Sheets', 'Duvets Cover', 'Pillow Sham', 'Pillowcases', 'Quilt']
+          }, {
+            name: 'Bath',
+            items: ['Basket', 'Shower Curtain', 'Bath Rug', 'Wall Mirror', 'Bath Towel']
+          }]
+        }, {
+          name: 'Outdoor',
+          query: 'grill',
+          subsections: [{
+            name: 'Entertaining',
+            items: ['Drinkware', 'Glass', 'Accessories', 'Grill Tools', 'Flatware']
+          }, {
+            name: 'Dining',
+            items: ['Side Chair', 'Arm Chair', 'Counter Stool', 'Bench', 'Work Station']
+          }, {
+            name: 'Accessories',
+            items: ['Outdoor Rug', 'Area Rug', 'Planter', 'Lanter', 'Door Mat']
+          }]
+        }]
+      });
+      searchandiser.attach('paging');
+      // searchandiser.attach('results');
+      searchandiser.attach('raw-results');
+      searchandiser.attach('record-count');
+      searchandiser.attach('available-navigation');
+      searchandiser.attach('breadcrumbs');
+      searchandiser.attach('did-you-mean');
+      searchandiser.attach('related-searches');
+      searchandiser.template('Product Spotlight', '.spotlight-template');
+    </script>
 
   </body>
 
