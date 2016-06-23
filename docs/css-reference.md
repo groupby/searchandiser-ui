@@ -10,9 +10,6 @@ query
 `.gb-query__box`
 `.gb-query__reset`
 
-raw-query
----
-
 paging
 ---
 `.gb-paging`
@@ -21,7 +18,9 @@ paging
 
 results
 ---
-<!-- TODO -->
+`.gb-results`
+`.gb-results__item`
+`.gb-product`
 
 record-count
 ---

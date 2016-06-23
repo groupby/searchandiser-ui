@@ -133,7 +133,13 @@ Add the JavaScript that will attach the service to the `div`s above.
       searchandiser.attach('results', '.results');
 
       // Use a custom template for rendering search results
-      searchandiser.attach('raw-results', '.raw-results');
+      searchandiser.attach('raw-results', '.raw-results', {
+        css: {
+          results: 'my-results-class',
+          resultsItem: 'my-resultsItem-class',
+          product: 'my-product-class'
+        }
+      });
 
       searchandiser.attach('available-navigation', '.availableNavigation', {
         // hide the refinement count

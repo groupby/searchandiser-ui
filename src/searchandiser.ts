@@ -2,10 +2,8 @@ import { Query, BrowserBridge, Results, FluxCapacitor, Events } from 'groupby-ap
 import { pluck } from './utils';
 import riot = require('riot');
 
-let CONFIG: SearchandiserConfig & any = {};
-
 export function InitSearchandiser() {
-  return function configure(config: SearchandiserConfig & any = CONFIG) {
+  return function configure(config: SearchandiserConfig & any = {}) {
     const flux = new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language'));
     Object.assign(flux, Events);
     Object.assign(configure, new Searchandiser(flux, config));
