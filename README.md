@@ -26,6 +26,8 @@ displayed.
 
     <!-- the search box -->
     <div class="query"></div>
+    <!-- Optionally inject into an input element directly -->
+    <input type="text" class="raw-query">
     <div>
       <!-- Selected navigations that represent the
            filters selected by the user -->
@@ -51,6 +53,16 @@ displayed.
       <div class="availableNavigation"></div>
       <!-- Records that match the search and nav state -->
       <div class="results"></div>
+      <!-- Optionally construct your own product template -->
+      <div class="raw-results">
+        <a href="#">
+          <img src="{ allMeta['image'] }" alt="" />
+        </a>
+        <a href="#">
+          <p>{ allMeta['title'] }</p>
+          <p>{ allMeta['price'] }</p>
+        </a>
+      </div>
     </div>
 
   </body>
@@ -86,13 +98,7 @@ Add the JavaScript that will attach the service to the `div`s above.
       <div class="availableNavigation"></div>
       <div class="results"></div>
       <div class="raw-results">
-        <a href="#">
-          <img src="{ allMeta['image'] }" alt="" />
-        </a>
-        <a href="#">
-          <p>{ allMeta['title'] }</p>
-          <p>{ allMeta['price'] }</p>
-        </a>
+        <!-- product template -->
       </div>
     </div>
 
