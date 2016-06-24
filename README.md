@@ -114,6 +114,25 @@ Add the JavaScript that will attach the service to the `div`s above.
           price: 'price'
         },
 
+        sayt: {
+          products: 4,
+          queries: 5,
+
+          // disable auto-search behaviour
+          // autoSearch: false,
+          //
+          // disable highlighting in autocomplete
+          // highlight: false,
+          //
+          // the field in your data which represents product categories
+          // categoryField: 'productCategory',
+          //
+          // filter the navigations returned
+          // navigationNames: {
+          //  brand: 'Brand'
+          // }
+        },
+
         // enable some default styling
         // stylish: true
       });

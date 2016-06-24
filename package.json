@@ -67,6 +67,6 @@
   },
   "dependencies": {
     "groupby-api": "^1.0.28",
-    "sayt": "0.0.2"
+    "sayt": "0.0.5"
   }
 }

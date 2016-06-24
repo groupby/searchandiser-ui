@@ -28,6 +28,8 @@
     "src/index.ts",
     "src/searchandiser.ts",
     "src/tags/index.ts",
+    "src/tags/sayt/autocomplete.ts",
+    "src/tags/sayt/query-wrapper.ts",
     "src/utils.ts",
     "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
   ]

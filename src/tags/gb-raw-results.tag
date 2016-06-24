@@ -10,7 +10,6 @@
   <script>
     this.struct = this.parent ? this.parent.struct : opts.config.structure;
     const css = opts.css;
-    console.log(css);
     opts.flux.on(opts.flux.RESULTS, res => this.update({ records: res.records }));
     this.userStyle = key => css ? css[key]: '';
   </script>
@@ -18,6 +17,9 @@
   <style scoped>
     .gb-stylish.gb-results {
       list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
     }
 
     .gb-stylish .gb-product {
@@ -26,6 +28,10 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+    }
+
+    .gb-stylish .gb-product .gb-product__image {
+      width: 380px;
     }
   </style>
 </gb-raw-results>

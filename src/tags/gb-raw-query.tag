@@ -1,21 +1,24 @@
 <gb-raw-query>
   <script>
-    const sayt = require('sayt');
-    const config = opts.config;
+    require('./sayt/gb-sayt.tag');
+    const queryWrapper = require('./sayt/query-wrapper');
 
-    this.on('before-mount', () => {
-      this.root.oninput = () => {
-        opts.flux.reset(this.root.value);
-        // sayt.autocomplete(this.root.value)
-        //   .then(console.log)
-        //   .catch(console.error);
-      };
-      // sayt.configure({
-      //   subdomain: config.customerId,
-      //   collection: config.collection,
-      //   productSearch: { area: config.area }
-      // });
-    });
+    if (opts.sayt === undefined ? true : opts.sayt) queryWrapper.mount(this, opts);
+    this.on('before-mount', () => this.root.addEventListener('input', () => opts.flux.reset(this.root.value)));
     opts.flux.on(opts.flux.REWRITE_QUERY, query => this.root.value = query);
   </script>
+
+  <style>
+    .gb-query-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .gb-sayt-target {
+      z-index: 10;
+      position: absolute;
+      min-width: 175px;
+      background-color: #fff;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    }
+  </style>
 </gb-raw-query>

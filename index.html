@@ -58,10 +58,24 @@
           price: 'price'
         },
 
+        sayt: {
+          products: 12,
+          queries: 8,
+          // autoSearch: false,
+          // highlight: false,
+          categoryField: 'QtopRatedType',
+          navigationNames: {
+            brand: 'Brand'
+          },
+          allowedNavigations: ['brand']
+        },
+
         stylish: true
       });
       searchandiser.search('');
-      searchandiser.attach('query');
+      searchandiser.attach('query', '.query', {
+        // sayt: false,
+      });
       // searchandiser.attach('raw-query');
       searchandiser.attach('category-menu', '.category-menu', {
         sections: [{
