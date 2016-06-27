@@ -34,6 +34,8 @@ displayed.
       <div class="breadcrumbs"></div>
       <!-- Record start, end and total -->
       <div class="recordCount"></div>
+      <!-- Page size selector -->
+      <div class="page-size"></div>
       <!-- Paging elements -->
       <div class="paging"></div>
     </div>
@@ -85,6 +87,7 @@ Add the JavaScript that will attach the service to the `div`s above.
     <div>
       <div class="breadcrumbs"></div>
       <div class="recordCount"></div>
+      <div class="page-size"></div>
       <div class="paging"></div>
     </div>
     <div>
@@ -107,6 +110,12 @@ Add the JavaScript that will attach the service to the `div`s above.
         customerId: '<customer id>',
         // collection: 'default',
         // area: 'Production',
+
+        // default page size
+        // pageSize: 20,
+
+        // page size options
+        // pageSizes: [10, 20, 50],
 
         structure: {
           title: 'title',
@@ -162,6 +171,7 @@ Add the JavaScript that will attach the service to the `div`s above.
       searchandiser.attach('raw-query', '.raw-query');
 
       searchandiser.attach('paging', '.paging');
+      searchandiser.attach('page-size', '.page-size');
       searchandiser.attach('results', '.results');
 
       // Use a custom template for rendering search results
