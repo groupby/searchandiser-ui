@@ -4,7 +4,7 @@ import riot = require('riot');
 
 export function InitSearchandiser() {
   return function configure(config: SearchandiserConfig & any = {}) {
-    const flux = new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language'));
+    const flux = new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize'));
     Object.assign(flux, Events);
     Object.assign(configure, new Searchandiser(flux, config));
   }
@@ -42,6 +42,7 @@ export interface SearchandiserConfig {
   area?: string;
   collection?: string;
   language?: string;
+  pageSize?: number;
   stylish?: boolean;
 
   structure?: {

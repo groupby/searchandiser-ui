@@ -19,6 +19,7 @@
     </div>
     <div class="gb-bar">
       <div class="breadcrumbs"></div>
+      <div class="page-size"></div>
     </div>
     <div class="gb-bar">
       <div class="did-you-mean"></div>
@@ -51,6 +52,8 @@
     <script>
       searchandiser({
         customerId: 'crateandbarreldemo',
+        pageSize: 12,
+        pageSizes: [12, 24, 50],
 
         structure: {
           title: 'title',
@@ -74,7 +77,7 @@
       });
       searchandiser.search('');
       searchandiser.attach('query', '.query', {
-        // sayt: false,
+        // sayt: false
       });
       // searchandiser.attach('raw-query');
       searchandiser.attach('category-menu', '.category-menu', {
@@ -162,6 +165,7 @@
         }]
       });
       searchandiser.attach('paging');
+      searchandiser.attach('page-size');
       searchandiser.attach('results');
       // searchandiser.attach('raw-results');
       searchandiser.attach('record-count');
