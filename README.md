@@ -76,7 +76,7 @@ Add the JavaScript that will attach the service to the `div`s above.
 ```html
 <html>
   <head>
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.7.js"></script>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.8.js"></script>
   </head>
   <body>
 
