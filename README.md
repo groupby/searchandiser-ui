@@ -137,6 +137,19 @@ Add the JavaScript that will attach the service to the `div`s above.
         // stylish: true
       });
       searchandiser.search('');
+
+      // Usage of the attach method looks like the following:
+      // The callback his passed a single parameter, a tag instance representing the mounted component
+      // See the riot.js documentation (http://riotjs.com/guide/#mounting) for available lifecycle events
+      // searchandiser.attach(<tag name>, [<css selector>], [<argument dictionary>], [<callback>]);
+
+      // In order to call some code once the component is rendered:
+      // searchandiser.attach('query', '.query', {}, function(tag) {
+      //   tag.on('mount', function() {
+      //     operate on the rendered elements
+      //   });
+      // });
+
       searchandiser.attach('query', '.query');
 
       // Elements can also be found automatically if their

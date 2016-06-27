@@ -15,7 +15,8 @@ class Searchandiser {
   constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) { }
 
   attach = (tagName: Component, cssSelector: string = `.${tagName}`, options: any = {}, handler?: (tag) => void) => {
-    riot.mount(cssSelector, `gb-${tagName}`, Object.assign(options, this));
+    const tag = riot.mount(cssSelector, `gb-${tagName}`, Object.assign(options, this));
+    if (handler && tag.length) handler(tag[0]);
   };
 
   template = (templateName: string, cssSelector: string, options: any = {}) => {
