@@ -1,11 +1,13 @@
 <gb-category-section>
   <div class="gb-category-section { parentOpts.style() }">
-    <a if={ opts.named } class="gb-category-section__header" href="#">{ name }</a>
-    <a each={ item in items } class="gb-category-section__link" href="#">{ item }</a>
+    <a if={ opts.named } class="gb-category-section__header" href="#" onmouseover={ updateSectionImages } data-try={ name }>{ name }</a>
+    <a each={ item in items } class="gb-category-section__link" href="#" onmouseover={ updateCategoryImages }>{ item }</a>
   </div>
 
   <script>
     this.parentOpts = this.parent.parent.opts;
+    this.updateSectionImages = this.parent.parent.updateSectionImages;
+    this.updateCategoryImages = this.parent.parent.updateCategoryImages;
   </script>
 
   <style scoped>

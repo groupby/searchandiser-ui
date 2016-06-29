@@ -11,17 +11,19 @@
   </div>
 
   <script>
-    const { Query, BrowserBridge } = require('groupby-api').Query;
+    const sayt = require('sayt');
     this.parentOpts = this.parent.opts;
-    this.cached = {};
+    const saytConfig = Object.assign({ products: 4 }, this.parentOpts.config.sayt);
 
-    this.updateIt = opts => {
-      const query = new Query(opts.query ? opts.query : '');
-      if (opts.refinements) {
-        query.withSelectedRefinements(...opts.refinements);
-      }
-      // this.update({ results:  })
-    };
+    sayt.configure({
+      subdomain: this.parentOpts.config.customerId,
+      collection: this.parentOpts.config.collection,
+      autocomplete: { },
+      productSearch: { area: this.parentOpts.config.area, numProducts: saytConfig.products }
+    });
+
+    this.updateSectionImages = event => console.dir(event.target);
+    this.updateCategoryImages = event => console.dir(event.target);
   </script>
 
   <style scoped>

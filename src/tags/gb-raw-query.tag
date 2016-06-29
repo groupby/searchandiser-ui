@@ -2,8 +2,9 @@
   <script>
     require('./sayt/gb-sayt.tag');
     const queryWrapper = require('./sayt/query-wrapper');
+    const saytEnabled = opts.sayt === undefined ? true : opts.sayt;
 
-    if (opts.sayt === undefined ? true : opts.sayt) queryWrapper.mount(this, opts);
+    if (saytEnabled) queryWrapper.mount(this, opts);
     this.on('before-mount', () => this.root.addEventListener('input', () => opts.flux.reset(this.root.value)));
     opts.flux.on(opts.flux.REWRITE_QUERY, query => this.root.value = query);
   </script>

@@ -1,14 +1,18 @@
 <gb-paging>
   <div class="gb-paging { opts.style() }">
+    <a class="gb-paging__link first { isFirst() ? 'disabled' : '' }" href="#" onclick="{ firstPage }"><span class="gb-paging__icon">←←</span> First</a>
     <a class="gb-paging__link prev { isFirst() ? 'disabled' : '' }" href="#" onclick="{ prevPage }"><span class="gb-paging__icon">←</span> Prev</a>
     <a class="gb-paging__link next { isLast() ? 'disabled' : '' }" href="#" onclick="{ nextPage }">Next <span class="gb-paging__icon">→</span></a>
+    <a class="gb-paging__link last { isLast() ? 'disabled' : '' }" href="#" onclick="{ lastPage }">Last <span class="gb-paging__icon">→→</span></a>
   </div>
 
   <script>
     opts.flux.on(opts.flux.RESULTS, () => this.update());
 
-    this.nextPage = () => !this.isLast() && opts.flux.nextPage();
-    this.prevPage = () => !this.isFirst() && opts.flux.lastPage();
+    this.firstPage = () => !this.isLast() && opts.flux.page.reset();
+    this.nextPage = () => !this.isLast() && opts.flux.page.next();
+    this.prevPage = () => !this.isFirst() && opts.flux.page.prev();
+    this.lastPage = () => !this.isLast() && opts.flux.page.last();
     this.isFirst = () => opts.flux.results.pageInfo.recordStart === 1;
     this.isLast = () => opts.flux.results.pageInfo.recordEnd === opts.flux.results.totalRecordCount;
   </script>

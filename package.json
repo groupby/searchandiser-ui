@@ -61,12 +61,12 @@
     "run-sequence": "^1.1.2",
     "sinon": "^1.16.1",
     "ts-loader": "^0.8.2",
-    "typescript": "^1.5.3",
+    "typescript": "^2.0.0-dev.20160628",
     "webpack": "^1.13.1",
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
-    "groupby-api": "^1.0.29",
+    "groupby-api": "^1.0.32",
     "sayt": "0.0.5"
   }
 }

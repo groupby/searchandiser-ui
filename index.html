@@ -39,7 +39,7 @@
         <div class="results"></div>
         <!-- <div class="raw-results">
           <a href="#">
-            <img src="{ allMeta[struct.image] }" alt="" />
+            <img riot-src="{ allMeta[struct.image] }" alt="" />
           </a>
           <a href="#">
             <p>{ allMeta[struct.title] }</p>
@@ -52,8 +52,8 @@
     <script>
       searchandiser({
         customerId: 'crateandbarreldemo',
-        pageSize: 12,
-        pageSizes: [12, 24, 50],
+        // pageSize: 12,
+        pageSizes: [10, 25, 50],
 
         structure: {
           title: 'title',
@@ -165,7 +165,9 @@
         }]
       });
       searchandiser.attach('paging');
-      searchandiser.attach('page-size');
+      searchandiser.attach('page-size', '.page-size', {
+        // resetOffset: true
+      });
       searchandiser.attach('results');
       // searchandiser.attach('raw-results');
       searchandiser.attach('record-count');
