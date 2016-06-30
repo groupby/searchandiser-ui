@@ -56,7 +56,7 @@ displayed.
       <div class="availableNavigation"></div>
       <!-- Records that match the search and nav state -->
       <div class="results"></div>
-      <!-- Optionally construct your own product template -->
+      <!-- Optionally construct your own product template 
       <div class="raw-results">
         <a href="#">
           <img src="{ allMeta['image'] }" alt="" />
@@ -66,6 +66,7 @@ displayed.
           <p>{ allMeta['price'] }</p>
         </a>
       </div>
+      -->
     </div>
 
   </body>
