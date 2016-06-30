@@ -26,8 +26,9 @@ displayed.
 
     <!-- the search box -->
     <div class="query"></div>
-    <!-- Optionally inject into an input element directly -->
+    <!-- Optionally inject into an input element directly 
     <input type="text" class="raw-query">
+    -->
     <div>
       <!-- Selected navigations that represent the
            filters selected by the user -->
