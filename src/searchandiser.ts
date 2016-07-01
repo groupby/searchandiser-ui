@@ -2,12 +2,16 @@ import { Query, BrowserBridge, Results, FluxCapacitor, Events } from 'groupby-ap
 import { pluck } from './utils';
 import riot = require('riot');
 
-export function InitSearchandiser() {
+export function initSearchandiser() {
   return function configure(config: SearchandiserConfig & any = {}) {
-    const flux = new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize'));
+    const flux = initCapacitor(config);
     Object.assign(flux, Events);
     Object.assign(configure, new Searchandiser(flux, config));
   }
+}
+
+function initCapacitor(config: SearchandiserConfig) {
+  return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize'));
 }
 
 class Searchandiser {
@@ -26,6 +30,8 @@ class Searchandiser {
   search = (query?: string) => this.flux.search(query);
 
   style = () => this.config.stylish ? 'gb-stylish' : '';
+
+  clone = () => initCapacitor(this.config);
 }
 
 export type Component = 'query' |

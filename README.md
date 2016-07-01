@@ -45,6 +45,9 @@ displayed.
       <div class="didYouMean"></div>
       <!-- Related searches defined by the merchandisers -->
       <div class="relatedSearches"></div>
+      <!-- A static refinement dropdown for a single navigation.
+           Uses a semi-detached search state. -->
+      <div class="filter"></div>
     </div>
     <!-- Template from activated Rule -->
     <div class="spotlightTemplate">
@@ -59,7 +62,9 @@ displayed.
       <!-- Optionally construct your own product template 
       <div class="raw-results">
         <a href="#">
-          <img src="{ allMeta['image'] }" alt="" />
+          <!-- Using 'riot-src' ensures that there are no errors
+               loading invalid image urls -->
+          <img riot-src="{ allMeta['image'] }" alt="" />
         </a>
         <a href="#">
           <p>{ allMeta['title'] }</p>
@@ -138,10 +143,13 @@ Add the JavaScript that will attach the service to the `div`s above.
           // the field in your data which represents product categories
           // categoryField: 'productCategory',
           //
-          // filter the navigations returned
+          // rename navigations on the fly
           // navigationNames: {
-          //  brand: 'Brand'
-          // }
+          //   brand: 'Brand'
+          // },
+          //
+          // filter the navigations returned
+          // allowedNavigations: [ 'brand' ]
         },
 
         // enable some default styling
@@ -161,7 +169,10 @@ Add the JavaScript that will attach the service to the `div`s above.
       //   });
       // });
 
-      searchandiser.attach('query', '.query');
+      searchandiser.attach('query', '.query', {
+        // disable Searchandise-As-You-Type
+        // sayt: false
+      });
 
       // Elements can also be found automatically if their
       // class name matches the component name.
@@ -188,8 +199,16 @@ Add the JavaScript that will attach the service to the `div`s above.
       searchandiser.attach('available-navigation', '.availableNavigation', {
         // hide the refinement count
         // badge: false,
+        //
         // hide selected refinements
         // showSelected: false
+      });
+      searchandiser.attach('filter', '.filter', {
+        // the field to draw refinements from
+        // field: 'categories',
+        //
+        // adds an option that clears the refinement
+        // matchAll: 'All Categories'
       });
       searchandiser.attach('breadcrumbs', '.breadcrumbs');
       searchandiser.attach('did-you-mean', '.didYouMean');

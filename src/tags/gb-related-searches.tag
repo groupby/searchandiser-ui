@@ -1,5 +1,4 @@
 <gb-related-searches>
-  <h3>Related Queries:</h3>
   <ul class="gb-list">
     <li each="{ related in relatedSearches }">
       <a href="#" onclick="{ send }">{ related }</a>

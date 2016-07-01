@@ -1,5 +1,4 @@
 <gb-did-you-mean>
-  <h3>Did You Mean:</h3>
   <ul class="gb-list">
     <li each="{ dym in didYouMean }">
       <a href="#" onclick="{ send }">{ dym }</a>

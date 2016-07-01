@@ -11,3 +11,4 @@ import './gb-breadcrumbs.tag';
 import './gb-template.tag';
 import './gb-category-menu.tag';
 import './gb-page-size.tag';
+import './gb-filter.tag';

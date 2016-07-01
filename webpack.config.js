@@ -17,6 +17,7 @@ module.exports = {
       { test: /\.tag$/, exclude: /node_modules/, loader: 'riotjs-loader' }
     ],
     loaders: [
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader' },
       { test: /\.tag$/, exclude: /node_modules/, loader: 'babel-loader', query: { presets: ['es2015'] } }
     ]
