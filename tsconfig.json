@@ -37,6 +37,7 @@
     "test/fixtures.ts",
     "test/page-size.ts",
     "test/paging.ts",
+    "test/raw-query.ts",
     "test/record-count.ts",
     "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
   ]

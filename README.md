@@ -177,7 +177,24 @@ Add the JavaScript that will attach the service to the `div`s above.
 
       searchandiser.attach('query', '.query', {
         // disable Searchandise-As-You-Type
-        // sayt: false
+        // sayt: false,
+        //
+        // disable updating results as you type
+        // autoSearch: false,
+        //
+        // when 'autoSearch' is off, searches will result in
+        // a redirect to the following url.
+        // defaults to 'search'
+        // searchUrl: '/my/search/path',
+        //
+        // the query parameter to hold the search field
+        // value when redirecting
+        // defaults to 'q'
+        // queryParam: 'queryString'
+        //
+        // e.g. searching for 'shoes' with the above configuration
+        // would redirect to the URL
+        // 'example.com/my/search/path?queryString=shoes'
       });
 
       // Elements can also be found automatically if their

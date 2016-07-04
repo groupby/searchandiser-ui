@@ -11,12 +11,17 @@
   </script>
 
   <style scoped>
+    .gb-stylish.gb-query {
+      display: flex;
+      align-items: baseline;
+    }
     .gb-stylish .gb-query__box {
       padding: 6px 12px;
       font-size: 14px;
     }
     .gb-stylish .gb-query__reset {
       color: #888;
+      padding: 4px;
     }
     .gb-stylish .gb-query__reset:hover {
       color: black;

@@ -1,11 +1,24 @@
 <gb-raw-query>
   <script>
     require('./sayt/gb-sayt.tag');
+    const ENTER_KEY = 13;
     const queryWrapper = require('./sayt/query-wrapper');
+    const autoSearch = opts.autoSearch === undefined ? true : opts.autoSearch;
     const saytEnabled = opts.sayt === undefined ? true : opts.sayt;
+    const queryParam = opts.queryParam === undefined ? 'q' : opts.queryParam;
+    const searchUrl = `${opts.searchUrl === undefined ? 'search' : opts.searchUrl}?${queryParam}=`;
 
+    const inputValue = () => this.root.value;
     if (saytEnabled) queryWrapper.mount(this, opts);
-    this.on('before-mount', () => this.root.addEventListener('input', () => opts.flux.reset(this.root.value)));
+    if (autoSearch)  {
+      this.on('before-mount', () => this.root.addEventListener('input', () => opts.flux.reset(inputValue())));
+    } else {
+      this.on('before-mount', () => this.root.addEventListener('keydown', (event) => {
+        switch(event.keyCode) {
+          case ENTER_KEY: return window.location.replace(`${searchUrl}${inputValue()}`);
+        }
+      }));
+    }
     opts.flux.on(opts.flux.REWRITE_QUERY, query => this.root.value = query);
   </script>
 
