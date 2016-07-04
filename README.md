@@ -26,15 +26,19 @@ displayed.
 
     <!-- the search box -->
     <div class="query"></div>
-    <!-- Optionally inject into an input element directly 
+    <!-- Optionally inject into an input element directly
     <input type="text" class="raw-query">
     -->
     <div>
       <!-- Selected navigations that represent the
            filters selected by the user -->
       <div class="breadcrumbs"></div>
-      <!-- Record start, end and total -->
-      <div class="recordCount"></div>
+      <!-- Record start, end and total.
+           This component allows you to provide your own template
+           for displaying the record count-->
+      <div class="recordCount">
+        <h2>{ first } - { last } of { total } Products</h2>
+      </div>
       <!-- Page size selector -->
       <div class="page-size"></div>
       <!-- Paging elements -->
@@ -59,7 +63,7 @@ displayed.
       <div class="availableNavigation"></div>
       <!-- Records that match the search and nav state -->
       <div class="results"></div>
-      <!-- Optionally construct your own product template 
+      <!-- Optionally construct your own product template
       <div class="raw-results">
         <a href="#">
           <!-- Using 'riot-src' ensures that there are no errors
@@ -93,7 +97,9 @@ Add the JavaScript that will attach the service to the `div`s above.
     <input type="text" class="raw-query">
     <div>
       <div class="breadcrumbs"></div>
-      <div class="recordCount"></div>
+      <div class="recordCount">
+        <h2>{ first } - { last } of { total } Products</h2>
+      </div>
       <div class="page-size"></div>
       <div class="paging"></div>
     </div>

@@ -4,7 +4,10 @@
   "ambientDependencies": {},
   "dependencies": {},
   "globalDevDependencies": {
-    "riot": "github:effervescentia/typed-riot/global#09745da532a7c35c682fafc0c077b1d140773a83"
+    "chai": "registry:dt/chai#3.4.0+20160601211834",
+    "mocha": "registry:dt/mocha#2.2.5+20160619032855",
+    "riot": "github:effervescentia/typed-riot/global#09745da532a7c35c682fafc0c077b1d140773a83",
+    "sinon": "registry:dt/sinon#1.16.0+20160517064723"
   },
   "globalDependencies": {
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",

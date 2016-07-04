@@ -1,5 +1,5 @@
 <gb-record-count>
-  <h2>{ first } - { last } of { total } Products</h2>
+  <yield/>
 
   <script>
     opts.flux.on(opts.flux.RESULTS, res => this.update({

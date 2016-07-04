@@ -9,12 +9,12 @@
   <script>
     opts.flux.on(opts.flux.RESULTS, () => this.update());
 
-    this.firstPage = () => !this.isLast() && opts.flux.page.reset();
+    this.firstPage = () => !this.isFirst() && opts.flux.page.reset();
     this.nextPage = () => !this.isLast() && opts.flux.page.next();
     this.prevPage = () => !this.isFirst() && opts.flux.page.prev();
     this.lastPage = () => !this.isLast() && opts.flux.page.last();
-    this.isFirst = () => opts.flux.results.pageInfo.recordStart === 1;
-    this.isLast = () => opts.flux.results.pageInfo.recordEnd === opts.flux.results.totalRecordCount;
+    this.isFirst = () => !opts.flux.page.hasPrevious;
+    this.isLast = () => !opts.flux.page.hasNext;
   </script>
 
   <style scoped>

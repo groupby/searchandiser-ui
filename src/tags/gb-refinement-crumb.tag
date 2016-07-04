@@ -1,6 +1,6 @@
 <gb-refinement-crumb>
   <li>
-    <a href="#" onclick={ remove }>×</a> <b>{ nav.displayName }: { ref.type === 'Value' ? ref.value : ref.low + ' .. ' + ref.high }</b>
+    <a href="#" onclick={ remove }>×</a> <b>{ nav.displayName }: { ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high }</b>
   </li>
 
   <script>

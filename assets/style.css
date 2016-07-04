@@ -6,10 +6,6 @@ body {
   flex-grow: 1;
 }
 
-.gb-page-info> * {
-  flex: none;
-}
-
 
 /* flex bar */
 

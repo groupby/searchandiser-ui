@@ -24,10 +24,10 @@
       const searchRequest = opts.flux.query.build();
       flux.query.withConfiguration({ refinements: [] });
       if (searchRequest.refinements) flux.query.withSelectedRefinements(...searchRequest.refinements.filter(ref => ref.navigationName !== navField));
-      flux.search(searchRequest.query);
+      flux.search(searchRequest.query)
+        .then(res => this.update({ navigation: res.availableNavigation.find(isTargetNav) }));
       this.update({  selected: res.selectedNavigation.find(isTargetNav) });
     });
-    flux.on(opts.flux.RESULTS, res => this.update({ navigation: res.availableNavigation.find(isTargetNav) }));
 
     if (!opts.native) {
       require('tether-select/dist/css/select-theme-default.css');
@@ -35,7 +35,7 @@
     }
   </script>
 
-  <style>
+  <style scoped>
     .gb-stylish .gb-ref__badge {
       display: inline-block;
       min-width: 10px;

@@ -2,9 +2,10 @@ var webpack = require('webpack');
 var pjson = require('./package.json');
 
 module.exports = {
+  entry: './src/index.ts',
   output: { filename: pjson.name + '-' + pjson.version + '.js' },
   resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.ts', '.js'],
+    extensions: ['', '.ts', '.js'],
     modulesDirectories: ['bower_components', 'node_modules']
   },
   plugins: [

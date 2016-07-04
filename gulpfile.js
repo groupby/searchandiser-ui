@@ -9,8 +9,7 @@ require('require-dir')('build/tasks');
  */
 gulp.task('default', function(cb) {
   runSequence(
-    'ci',
-    'webpack:bundle',
+    'build',
     cb
   );
 });

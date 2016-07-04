@@ -11,7 +11,7 @@
   },
   "filesGlob": [
     "src/**/*.ts",
-    "test/**/*/ts",
+    "test/**/*.ts",
     "node_modules/groupby-api/**/*.d.ts",
     "!dist",
     "!node_modules"
@@ -31,6 +31,13 @@
     "src/tags/sayt/autocomplete.ts",
     "src/tags/sayt/query-wrapper.ts",
     "src/utils.ts",
+    "test/bootstrap.ts",
+    "test/breadcrumbs.ts",
+    "test/did-you-mean.ts",
+    "test/fixtures.ts",
+    "test/page-size.ts",
+    "test/paging.ts",
+    "test/record-count.ts",
     "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
   ]
 }

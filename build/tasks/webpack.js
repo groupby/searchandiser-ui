@@ -5,7 +5,7 @@ var gulp = require('gulp'),
 
 gulp.task('webpack:bundle', function() {
   return gulp.src(paths.src + '/index.ts')
-    .pipe(webpack(require('../../webpack.config')))
+    .pipe(webpack(require('../../webpack.conf')))
     .pipe(gulp.dest('dist/'));
 });
 
