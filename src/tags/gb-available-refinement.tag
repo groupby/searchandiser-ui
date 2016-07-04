@@ -29,7 +29,7 @@
       color: black;
       font-size: 14px;
       text-decoration: none;
-      align-items: center;
+      align-items: baseline;
     }
 
     .gb-stylish .gb-ref__link:hover {
@@ -39,8 +39,8 @@
     .gb-stylish .gb-ref__badge {
       display: inline-block;
       min-width: 10px;
-      max-height: 12px;
-      padding: 3px 7px;
+      max-height: 20px;
+      padding: 4px 7px;
       border-radius: 10px;
       font-size: 12px;
       font-weight: bold;
