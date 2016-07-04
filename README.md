@@ -203,7 +203,8 @@ Add the JavaScript that will attach the service to the `div`s above.
       // searchandiser.attach('query');
 
       // Attach the query field functionality directly to
-      // an <input> element
+      // an <input> element. The 'raw-query' component accepts
+      // the same options as 'query'
       searchandiser.attach('raw-query', '.raw-query');
 
       searchandiser.attach('paging', '.paging');
