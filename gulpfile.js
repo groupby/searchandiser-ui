@@ -21,8 +21,7 @@ gulp.task('default', function(cb) {
 gulp.task('build', function(cb) {
   runSequence(
     'clean',
-    'typings:install',
-    'webpack:bundle',
+    'typings:install', ['webpack:bundle', 'webpack:minify'],
     cb
   );
 });
