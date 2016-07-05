@@ -1,0 +1,279 @@
+﻿@media print {
+
+/* default font styling for all elements */
+html * { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+
+/* style for a caption that is inline with other text */
+.inlineCaption {display:inline;font-weight:bold;color: #333333;}
+
+/* class to specifically hide element during printing */
+.noPrint { display:none; }
+
+/* class to indicate that a page break should follow the element */
+.breakAfter { page-break-after:always; }
+
+/* class to indicate that a page break should follow the element */
+.breakBefore { page-break-before:always; }
+
+/******************************************************************************************/
+/* styles that control the layout of the admin page                                       */
+/******************************************************************************************/
+
+#storeHeader { display:none;}
+#footer {display:none;}
+
+/* style for the header panel */
+#rightSidebar { display:none; width:1px; overflow:hidden; }
+
+/* style for the footer panel */
+#leftSidebar { display:none; width:1px; overflow:hidden; }
+
+/* provide margin for main panel - otherwise right border fails to print in IE */
+#mainPanel { margin:4px; }
+
+/******************************************************************************************/
+/* styles for the standard page header                                                    */
+/******************************************************************************************/
+
+/* container for the page header */
+div.pageHeader { margin-bottom:6px; }
+
+/* page caption container */
+div.pageHeader div.caption { }
+
+/* page caption */
+div.pageHeader div.caption h1
+{
+	margin: 0 0 12px 0;
+	color: #232323;
+	font-size: 24px;
+	border-bottom:solid 1px black;
+}
+
+/* usually for instructional text for top of page */
+div.pageHeader div.content { }
+
+/* for subcaption */
+div.pageHeader div.content h2
+{
+	display:inline;
+	margin:0px;
+	font-size:16px;
+}
+
+/******************************************************************************************/
+/* end styles for the standard page header                                                */
+/******************************************************************************************/
+
+/******************************************************************************************/
+/* styles for table that lays out a form of data (such as an invoice)                     */
+/******************************************************************************************/
+
+/* table style */
+table.form 
+{
+	margin:4px 0px;
+	border:solid 1px black;
+	border-collapse:collapse;
+ 	page-break-inside:avoid;
+	width:100%;
+}
+
+/* style common to headers and cells */
+table.form td, table.form th
+{
+	padding:4px 8px;
+	font-size: 10px;
+}
+
+/* styling for header cells  */
+table.form th { font-weight:bold; font-size:10px; }
+
+/* styling for header cell intended for vertical text */
+table.form th.verticalText
+{
+	width:10px;
+	font-size:10px;
+	text-align:center;
+	vertical-align:middle;
+}
+
+/* additional styling for header cell */
+table.form th.header { text-align:left; }
+
+/* additional styling for caption */
+table.form th.header span.caption { font-size:20px; }
+
+/* style for cell that contains an address */
+table.form td.address { width:180px; }
+
+/* style for cell on right that should expand to the full width possible */
+table.form td.expand { width:504px; }
+
+/* style for cell that contains a datasheet */
+table.form td.dataSheet { padding:0px; }
+
+/* style for font within the datasheet */
+table.form td.dataSheet * { font-size:12px; }
+
+/* additional styling for datasheet that appears within a form */
+table.form table.dataSheet { margin-bottom:-1px; }
+
+/* styling for the total row */
+table.dataSheet tr.totalRow td, table.dataSheet tr.totalRow th
+{
+	border-top: double 3px gray;
+	border-bottom: double 3px gray;
+}
+
+/* this is the container for the order summary on the view order page */
+table.form td.orderSummary { width:202px;padding:10px; }
+
+/* style for the caption of the order summary panel */
+table.form td.orderSummary h3 { margin: 0 0 2px 0; }
+
+/* style for the invoice caption */
+h1.invoice 
+{
+	margin: 0 0 6px 0;
+	font-size:24px;
+	font-weight:bold;
+}
+
+/* style for the store name */
+h1.storeName
+{
+	margin: 0 0 6px 0;
+	font-size:18px;
+	font-weight:bold;
+}
+
+/******************************************************************************************/
+/* end styles for table that lays out a form of data (such as an invoice)                 */
+/******************************************************************************************/
+
+/******************************************************************************************/
+/* styles for generic table of data rows                                                  */
+/******************************************************************************************/
+
+/* table style */
+table.dataSheet { border: solid 1px black; }
+
+/* style common to headers and cells */
+table.dataSheet td, table.dataSheet th
+{
+	padding:8px 12px;
+	border-bottom: dashed 1px black;
+	border-left:solid 1px black;
+}
+
+table.dataSheet td.underline
+{
+	border:1px solid #000000;
+}
+
+/* styling for header cells  */
+table.dataSheet th { font-weight:bold; }
+
+/******************************************************************************************/
+/* end styles for generic table of data rows                                              */
+/******************************************************************************************/
+
+/******************************************************************************************/
+/* styles for confirm and pay (checkout/payment.aspx)                                     */
+/******************************************************************************************/
+
+/*---------------------------------------*/
+/*- styles for layout of payment page -- */
+/*---------------------------------------*/
+
+/* style for the summary pane of the payment information section */
+.paymentMethodSummary { width:170px;padding: 10px; }
+div.paymentMethodSummary { float:left; }
+
+/* style for the payment method listing of the payment information section */
+.paymentMethodList { width:545px;border-left:1px dashed #000000; }
+div.paymentMethodList { float:right; }
+
+/* style for a content section in the summary pane */
+.paymentMethodSummary div.summarySection { margin-bottom:20px; }
+
+/* style for the header of the summary section */
+.paymentMethodSummary div.summarySection div.summarySectionHeader { }
+
+/* style for the caption of the section header */
+.paymentMethodSummary div.summarySection div.summarySectionHeader h3 { margin: 0 0 2px 0; }
+
+/* style for the content of the summary section */
+paymentMethodSummary div.summarySection div.summarySectionContent { }
+
+/*---------------------------------------*/
+/*- styles for order summary ----------- */
+/*---------------------------------------*/
+
+/* style for the summary pane of the payment information section */
+.paymentMethodSummary { width:170px;padding: 10px; }
+
+/* style for the order summary that appears in a summary section */
+table.orderSummary { width:100%; }
+
+/* column that displays the heading for the amounts in the order summary table */
+table.orderSummary th { text-align:right;font-weight:normal; white-space:nowrap; }
+
+/* column that displays amounts in the order summary table */
+table.orderSummary td { text-align:right; width:80px; }
+
+/* row that contains the divider between subtotals and total */
+table.orderSummary tr.totalDivider { }
+
+/* cell that contains the divider between subtotals and total */
+table.orderSummary tr.totalDivider td { }
+
+/* divider between subtotals and total */
+table.orderSummary tr.totalDivider td hr { }
+
+/******************************************************************************************/
+/* end styles for confirm and pay (checkout/payment.aspx)                                 */
+/******************************************************************************************/
+
+/* style for buttons*/ 
+input.button, a.button
+{
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	background-color: #000000;
+	font-size: 9px;
+	text-transform: uppercase;
+	color: #FFFFFF;
+	padding: 2px 5px 2px 5px;
+	border: 1px solid #6F0701;
+	font-weight: bold;
+	cursor:pointer;
+	margin: 0;
+	text-align:center;
+	text-decoration:none;
+	vertical-align: middle;
+}
+
+/* used wherever a list of order items is displayed */
+table.itemList { width:100%; }
+
+/* default column header styling for item list */
+table.itemList th.header{margin:0px; background-color: #000000; padding:2px; color: #FFFFFF;}
+/* default data cell styling for item list*/
+table.itemList td { padding:3px 2px; } 
+table.itemList td a{color: #FFFFFF;}
+
+/* header styling for items column */
+table.itemList th.items { }
+
+/* styling for items column */
+table.itemList td.items { }
+
+/* header styling for items column */
+table.itemList th.price { }
+
+/* styling for price column */
+table.itemList td.price { }
+
+/* close the print media selector */
+}

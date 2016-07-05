@@ -1,0 +1,134 @@
+﻿/************ STYLES FOR WEBPARTS ************/
+
+/* styling for part title */
+.WebPart_PartTitle
+{
+	border: 1px solid #C4C4C4;
+	background-color: #E8E8E8;
+	padding: 0 2px;
+	height:25px;
+	margin: 5px 0 0 0;
+}
+
+/* this adds a little margin to the verb icons */
+.WebPart_PartTitle a
+{
+	margin: 0 3px 0 0;
+}
+
+/* styling for admin part */
+.WebPart_AdminPart
+{
+	border: 1px solid #C4C4C4;
+	padding: 8px;
+	margin: 2px 0 0 0;
+}
+
+/* style for the webparts page editor */
+#webpartsPanel
+{
+	background: url(images/WebpartBodyBg.gif) repeat; 
+	margin-top:10px;
+	margin-bottom: 0;
+	border:solid 1px #51626C;
+	border-bottom:0;
+	padding:4px;
+	clear:both;
+}
+
+#webpartsPanel .outerFrame { width:100%; }
+#webpartsPanel .outerFrame tbody td{ color:#515151; }
+
+/* used to display a content section in the webparts page editor */
+#webpartsPanel .section 
+{
+	background: #FFFFFF;
+	border: solid 1px #8EA0AA;
+	font-family:Verdana;
+	width:100%;
+	margin-bottom:10px;
+}
+
+/* header for content section in the webparts page editor */
+#webpartsPanel .section .header 
+{
+	padding: 0 0 0 3px;
+	background: #BDCDFF url(images/webpartsHeaderBg.gif) repeat-x;
+	border-bottom: solid 1px #8FA0AB;
+	height:25px;
+}
+
+/* the header / caption of a content section */
+#webpartsPanel .section .header H2
+{
+	margin:0px;
+	margin-right:10px;
+	line-height:25px;
+	font-size:12px;
+	display:inline;
+}
+
+/* links within the header of a content section */
+#webpartsPanel .section .header a
+{
+	text-decoration:underline;
+}
+
+#webpartsPanel .EditorZone
+{
+	background: #FFFFFF;
+	border: solid 1px #8FA0AA;
+	font-family:Verdana;
+	padding:6px;
+	width:100%;
+	margin-bottom:10px;
+}
+
+#webpartsPanel .EditorZoneHeader
+{
+	padding: 0 2px;
+	background: url(images/webpartsHeaderBg.gif) repeat-x;
+	border:1px solid #8FA0AA;
+	height:25px;
+	font-weight:bold;
+ }
+
+#webpartsPanel .EditorZoneFooter
+{
+	text-align:left;
+	
+}
+
+#webpartsPanel .EditorZoneFooter input
+{
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	background:#5872CB url(images/button_bg.gif) repeat-x;
+	font-size: 9px;
+	text-transform: uppercase;
+	color: #134FA3;
+	padding: 2px 5px 2px 5px;
+	border: 1px solid #8FA0AA;
+	font-weight: bold;
+	cursor:pointer;
+	margin: 0;
+	text-align:center;
+	text-decoration:none;
+	vertical-align: middle;
+}
+
+#webpartsPanel .EditorZoneFooter input:hover
+{
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	background:#5872CB url(images/button_bg_hover.gif) repeat-x;
+	font-size: 9px;
+	text-transform: uppercase;
+	color: #675D29 ;
+	padding: 2px 5px 2px 5px;
+	border: 1px solid #8FA0AA;
+	font-weight: bold;
+	cursor:pointer;
+	margin: 0;
+	text-align:center;
+	text-decoration:none;
+	vertical-align: middle;
+}
