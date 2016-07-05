@@ -5,7 +5,13 @@
     </a>
     <a class="gb-product__info-link" href="#">
       <p>{ allMeta[struct.title] }</p>
+<div hide={ allMeta[struct.salePrice] != allMeta[struct.price] }>
       <p>{ allMeta[struct.price] }</p>
+</div>
+<div if={ allMeta[struct.salePrice] != allMeta[struct.price]}>
+      <p style="text-decoration: line-through">{ allMeta[struct.price] }</p>
+      <p style="color: red">{ allMeta[struct.salePrice] }</p>
+</div>
     </a>
   </div>
 
