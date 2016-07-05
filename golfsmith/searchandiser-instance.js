@@ -1,12 +1,17 @@
+
+
 searchandiser({
   customerId: 'golfsmith',
-  // pageSize: 12,
+  pageSize: 20,
   pageSizes: [10, 25, 50],
 
   structure: {
-  title: 'title',
-  image: 'Image_URL',
-  price: 'Regular_Price'
+    title: 'title',
+    image: 'Image_URL',
+    price: 'Regular_Price',
+    manufacturer: 'Mfr_Name',
+    salePrice: 'Sale_Price',
+    buyUrl: 'Buy_URL' 
   },
   sayt: {
   products: 12,
@@ -21,3 +26,7 @@ searchandiser({
   },
   stylish: true
 });
+
+searchandiser.search('golf');
+
+searchandiser.attach('raw-results', '#test');

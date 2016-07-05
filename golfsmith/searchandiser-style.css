@@ -1,0 +1,7 @@
+.gb-results {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: outside none none;
+  margin: 0px;
+  padding: 0px;
+}
