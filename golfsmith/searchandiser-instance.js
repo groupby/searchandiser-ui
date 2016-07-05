@@ -27,6 +27,6 @@ searchandiser({
   stylish: true
 });
 
-searchandiser.search('golf');
+searchandiser.search('TaylorMade');
 
 searchandiser.attach('raw-results', '#test');
