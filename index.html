@@ -36,6 +36,7 @@
           <div class="record-count">
             <h2>{ first } - { last } of { total } Products</h2>
           </div>
+          <div class="select"></div>
           <div class="filter"></div>
           <div class="sort"></div>
           <div class="page-size"></div>
@@ -81,6 +82,16 @@
         stylish: true
       });
       searchandiser.search('');
+      // searchandiser.attach('select', '.select', {
+      //   native: true,
+      //   options: [{
+      //     label: 'First',
+      //     value: {
+      //       field: 'x',
+      //       order: 'y'
+      //     }
+      //   }]
+      // });
       searchandiser.attach('query', '.query', {
         // sayt: false,
         // autoSearch: false,
@@ -182,6 +193,7 @@
         matchAll: 'All Categories'
       });
       searchandiser.attach('sort', '.sort', {
+        // native: true,
         options: [{
           label: 'Price Low to High',
           value: {
