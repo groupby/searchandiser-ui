@@ -1,55 +1,34 @@
 <gb-filter>
-  <select class="gb-navigation-dropdown { opts.style() }" name="navigationDropdown" onchange={ navigate } placeholder={ title }>
-    <option if={ opts.matchAll } value="*">{ opts.matchAll }</option>
-    <option each={ navigation.refinements } value={ value } data-count={ count } selected={ value === selectedRefinement().value }>{ value }</option>
-  </select>
+  <gb-select name="selectElement" update={ navigate } native={ opts.native } label={ label } clear={ clear }></gb-select>
 
   <script>
-    const navField = opts.field;
+    require('./gb-select.tag');
     const utils = require('../utils');
+    const navField = opts.field;
     const flux = opts.clone();
     const isTargetNav = (nav) => nav.name === navField;
+    const convertRefinements = (navigations) => navigations.find(isTargetNav).refinements.map(ref => ({ label: ref.value, value: ref }))
+    const updateValues = (res) => this.selectElement._tag.update({ options: convertRefinements(res.availableNavigation) });
 
+    this.label = opts.label || 'Filter';
+    this.clear = opts.clear || 'Unfiltered';
     this.selectedRefinement = () => this.selected ? this.selected.refinements[0] : {};
-    this.navigate = (event) => {
-      if (this.selected) opts.flux.unrefine(utils.toRefinement(this.selectedRefinement(), this.selected), { skipSearch: true });
-      if (event.target.value === '*') {
+    this.navigate = (value) => {
+      if (this.selected) opts.flux.unrefine(this.selected, { skipSearch: true });
+      if (value === '*') {
         opts.flux.reset();
       } else {
-        opts.flux.refine({ navigationName: navField, type: 'Value', value: event.target.value });
+        opts.flux.refine(this.selected = utils.toRefinement(value, { name: navField }));
       }
     };
 
     opts.flux.on(opts.flux.RESULTS, res => {
-      const searchRequest = opts.flux.query.build();
+      const searchRequest = opts.flux.query.rawRequest;
+      // TODO this is probably broken in terms of state propagation
       flux.query.withConfiguration({ refinements: [] });
       if (searchRequest.refinements) flux.query.withSelectedRefinements(...searchRequest.refinements.filter(ref => ref.navigationName !== navField));
-      flux.search(searchRequest.query)
-        .then(res => this.update({ navigation: res.availableNavigation.find(isTargetNav) }));
-      this.update({  selected: res.selectedNavigation.find(isTargetNav) });
+
+      flux.search(searchRequest.query).then(updateValues);
     });
-
-    if (!opts.native) {
-      require('tether-select/dist/css/select-theme-default.css');
-      this.on('mount', () => new (require('tether-select'))({ el: this.navigationDropdown }));
-    }
   </script>
-
-  <style scoped>
-    .gb-stylish .gb-ref__badge {
-      display: inline-block;
-      min-width: 10px;
-      max-height: 12px;
-      padding: 3px 7px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: bold;
-      line-height: 1;
-      color: #fff;
-      background-color: #ccc;
-      text-align: center;
-      white-space: nowrap;
-      vertical-align: middle;
-    }
-  </style>
 </gb-filter>
