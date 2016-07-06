@@ -52,12 +52,15 @@
       font-size: 14px;
       border: none;
       cursor: pointer;
-      padding: 16px;
+      padding: 8px 16px;
       width: 100%;
       background-color: #eee;
       border: 2px solid #ddd;
       border-radius: 4px;
       white-space: nowrap;
+    }
+    .gb-select__button:focus {
+      outline: none;
     }
     .gb-select__arrow {
       margin-left: 10px;
@@ -76,10 +79,10 @@
       display: block;
       text-decoration: none;
       color: black;
-      padding: 4px 6px;
+      padding: 10px 12px;
     }
     .gb-select__content a:hover {
-      background-color: #f1f1f1;
+      background-color: #eee;
     }
   </style>
 </gb-select>
