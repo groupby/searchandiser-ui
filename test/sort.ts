@@ -15,7 +15,7 @@ describe('gb-sort tag', () => {
   it('mounts tag', () => {
     const tag = mount();
     expect(tag).to.be.ok;
-    expect(html.querySelector(`gb-select`)).to.be.ok;
+    expect(html.querySelector(`gb-select.${TAG}`)).to.be.ok;
   });
 
   it('should expose properties', () => {

@@ -3,6 +3,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
+import '../src/tags/gb-select.tag';
 import '../src/tags/gb-page-size.tag';
 
 const TAG = 'gb-page-size';
@@ -15,8 +16,8 @@ describe('gb-page-size tag', () => {
   it('mounts tag', () => {
     const tag = mount();
     expect(tag).to.be.ok;
-    expect(selectElement()).to.be.ok;
-    expect(html.querySelectorAll(`option`).length).to.eq(4);
+    expect(html.querySelector(`gb-select.${TAG}`)).to.be.ok;
+    expect(html.querySelectorAll('option').length).to.eq(4);
   });
 
   it('should expose functions', () => {
@@ -48,7 +49,7 @@ describe('gb-page-size tag', () => {
   it('should not reset paging by default', (done) => {
     const tag = mount({
       resize: (newSize, reset) => {
-        expect(newSize).to.eq('50');
+        expect(newSize).to.eq(50);
         expect(reset).to.be.undefined;
         done();
       }
@@ -73,10 +74,10 @@ describe('gb-page-size tag', () => {
   }
 
   function selectElement(): HTMLSelectElement {
-    return <HTMLSelectElement>html.querySelector(`select.${TAG}`);
+    return <HTMLSelectElement>html.querySelector('select');
   }
 });
 
-function mount(options: any = {}, additional: any = {}): Riot.Tag.Instance {
-  return riot.mount(TAG, Object.assign({ flux: mockFlux(options), config: {} }, additional))[0];
+function mount(options: any = {}, additional: any = {}, native: boolean = true): Riot.Tag.Instance {
+  return riot.mount(TAG, Object.assign({ flux: mockFlux(options), config: {}, native }, additional))[0];
 }
