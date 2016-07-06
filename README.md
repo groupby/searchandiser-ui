@@ -39,6 +39,8 @@ displayed.
       <div class="recordCount">
         <h2>{ first } - { last } of { total } Products</h2>
       </div>
+      <!-- Sort dropdown -->
+      <div class="sort"></div>
       <!-- Page size selector -->
       <div class="page-size"></div>
       <!-- Paging elements -->
@@ -66,8 +68,8 @@ displayed.
       <!-- Optionally construct your own product template
       <div class="raw-results">
         <a href="#">
-          <!-- Using 'riot-src' ensures that there are no errors
-               loading invalid image urls -->
+          // Using 'riot-src' ensures that there are no errors
+          // loading invalid image urls
           <img riot-src="{ allMeta['image'] }" alt="" />
         </a>
         <a href="#">
@@ -233,6 +235,30 @@ Add the JavaScript that will attach the service to the `div`s above.
         //
         // adds an option that clears the refinement
         // matchAll: 'All Categories'
+      });
+      searchandiser.attach('sort', '.sort', {
+        // An array of sorting options
+        // options: [{
+        //   label: 'Price Low to High',
+        //   value: {
+        //     field: 'price',
+        //     order: 'Ascending'
+        //   }
+        // }, {
+        //   label: 'Price High to Low',
+        //   value: {
+        //     field: 'price',
+        //     order: 'Descending'
+        //   }
+        // }],
+        //
+        // The label that will be displayed when
+        // no sort is selected
+        // default: 'Sort',
+        //
+        // The label that will be displayed as
+        // an option to clear the sort
+        // clear: 'Unsorted'
       });
       searchandiser.attach('breadcrumbs', '.breadcrumbs');
       searchandiser.attach('did-you-mean', '.didYouMean');
