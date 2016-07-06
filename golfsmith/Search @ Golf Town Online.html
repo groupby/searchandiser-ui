@@ -1555,13 +1555,15 @@ Sys.WebForms.PageRequestManager.getInstance()._updateControls(['tctl00$wpm$Searc
                                 <img src="./Search @ Golf Town Online_files/rate_90.gif">
                             </div>
                         </div>
-                        <div if="{ allMeta[struct.price] != allMeta[struct.salePrice] }">
-                            <p>Orig: { allMeta[struct.price] }</p>
-                            <p style="color: red">SAVE: ${ allMeta[struct.price] - allMeta[struct.salePrice] }</p>
-                            <p>${ allMeta[struct.salePrice] }</p>
+                        <div style="margin: 1px 0 0 0; height:24px;">
                         </div>
-                        <div if="{ allMeta[struct.price] == allMeta[struct.salePrice] }">
-                            <p>${ allMeta[struct.price] }</p>
+                        <div class="desc-bottom" if="{ allMeta[struct.price] != allMeta[struct.salePrice] }">
+                            <div class="MSRP_Price">Orig: <span class="msrp">${ allMeta[struct.price] }</span></div>
+                            <div class="Save_Price">SAVE: <span class="msrp">${ allMeta[struct.price] - allMeta[struct.salePrice] }</span></div>
+                            <div class="Now_Price"><span>${ allMeta[struct.salePrice] }</span></div>
+                        </div>
+                        <div class="desc-bottom" if="{ allMeta[struct.price] == allMeta[struct.salePrice] }">
+                            <div class="Now_Price"><span>${ allMeta[struct.price] }</span></div>
                         </div>
                     </div>
                 </div>
