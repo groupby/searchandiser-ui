@@ -65,6 +65,7 @@
     "merge-stream": "^0.1.8",
     "mocha": "^2.2.5",
     "nock": "^8.0.0",
+    "object-assign": "^4.1.0",
     "require-dir": "^0.3.0",
     "riot": "^2.4.1",
     "riotjs-loader": "^3.0.0",
