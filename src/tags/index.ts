@@ -13,3 +13,4 @@ import './gb-category-menu.tag';
 import './gb-page-size.tag';
 import './gb-filter.tag';
 import './gb-sort.tag';
+import './gb-select.tag';
