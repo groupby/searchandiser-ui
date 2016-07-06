@@ -37,6 +37,7 @@
             <h2>{ first } - { last } of { total } Products</h2>
           </div>
           <div class="filter"></div>
+          <div class="sort"></div>
           <div class="page-size"></div>
           <div class="paging"></div>
         </div>
@@ -179,6 +180,21 @@
       searchandiser.attach('filter', '.filter', {
         field: 'QtopRatedType',
         matchAll: 'All Categories'
+      });
+      searchandiser.attach('sort', '.sort', {
+        options: [{
+          label: 'Price Low to High',
+          value: {
+            field: 'price',
+            order: 'Ascending'
+          }
+        }, {
+          label: 'Price High to Low',
+          value: {
+            field: 'price',
+            order: 'Descending'
+          }
+        }]
       });
       // searchandiser.attach('raw-results');
       searchandiser.attach('record-count');

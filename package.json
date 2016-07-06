@@ -78,7 +78,7 @@
   },
   "dependencies": {
     "es6-promise": "^3.2.1",
-    "groupby-api": "^1.0.34",
+    "groupby-api": "^1.0.35",
     "sayt": "0.0.5",
     "tether-select": "^1.1.0"
   }
