@@ -19,8 +19,8 @@
       <div class="category-menu"></div>
     </div>
     <div class="gb-bar">
+      Results for:
       <div class="breadcrumbs"></div>
-
     </div>
     <div class="gb-bar">
       <div class="did-you-mean"></div>
@@ -211,7 +211,10 @@
       // searchandiser.attach('raw-results');
       searchandiser.attach('record-count');
       searchandiser.attach('available-navigation');
-      searchandiser.attach('breadcrumbs');
+      searchandiser.attach('breadcrumbs', '.breadcrumbs', {
+        // hideQuery: true,
+        // hideRefinements: true
+      });
       searchandiser.attach('did-you-mean');
       searchandiser.attach('related-searches');
       searchandiser.template('Product Spotlight', '.spotlight-template');

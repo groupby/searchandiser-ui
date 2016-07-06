@@ -260,7 +260,13 @@ Add the JavaScript that will attach the service to the `div`s above.
         // an option to clear the sort
         // clear: 'Unsorted'
       });
-      searchandiser.attach('breadcrumbs', '.breadcrumbs');
+      searchandiser.attach('breadcrumbs', '.breadcrumbs', {
+        // hide the current query from the breadcrumbs
+        // hideQuery: true,
+        //
+        // hide refinements from the breadcrumbs
+        // hideRefinements: true
+      });
       searchandiser.attach('did-you-mean', '.didYouMean');
       searchandiser.attach('related-searches', '.relatedSearches');
 
