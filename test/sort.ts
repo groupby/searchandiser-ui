@@ -15,20 +15,14 @@ describe('gb-sort tag', () => {
   it('mounts tag', () => {
     const tag = mount();
     expect(tag).to.be.ok;
-    expect(html.querySelector(`select.${TAG}`)).to.be.ok;
+    expect(html.querySelector(`gb-select`)).to.be.ok;
   });
 
-  it('should register for results', (done) => {
-    mount({
-      on: (event) => {
-        expect(event).to.eq(Events.RESULTS);
-        done();
-      }
-    });
-  });
-
-  it('should expose functions', () => {
+  it('should expose properties', () => {
     const tag = mount();
+    expect(tag['label']).to.be.ok;
+    expect(tag['clear']).to.be.ok;
+    expect(tag['sorts']).to.be.ok;
     expect(tag['updateSort']).to.be.ok;
   });
 
@@ -39,7 +33,7 @@ describe('gb-sort tag', () => {
         done();
       }
     });
-    tag['updateSort']({ target: { value: JSON.stringify({ field: 'this', order: 'Ascending' }) } });
+    tag['updateSort']({ field: 'this', order: 'Ascending' });
   });
 
   it('should be able to clear sort', (done) => {
@@ -49,10 +43,10 @@ describe('gb-sort tag', () => {
       },
       search: () => done()
     });
-    tag['updateSort']({ target: { value: '*' } });
+    tag['updateSort']('*');
   });
 });
 
-function mount(options: any = {}): Riot.Tag.Instance {
-  return riot.mount(TAG, { flux: mockFlux(options) })[0];
+function mount(options: any = {}, native: boolean = false): Riot.Tag.Instance {
+  return riot.mount(TAG, { flux: mockFlux(options), native })[0];
 }

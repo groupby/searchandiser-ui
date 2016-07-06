@@ -3,7 +3,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
-import '../src/tags/gb-breadcrumbs.tag';
+import '../src/tags/breadcrumbs/gb-breadcrumbs.tag';
 
 const TAG = 'gb-breadcrumbs';
 
@@ -22,8 +22,8 @@ describe('gb-breadcrumbs tag', () => {
     let count = 0;
     mount({
       on: (event) => {
-        expect(event).to.be.oneOf([Events.REFINEMENTS_CHANGED, Events.RESET]);
-        if (++count === 2) done();
+        expect(event).to.be.oneOf([Events.REFINEMENTS_CHANGED, Events.RESET, Events.RESULTS]);
+        if (++count === 3) done();
       }
     });
   });

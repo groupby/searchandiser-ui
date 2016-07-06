@@ -4,6 +4,7 @@
     const ENTER_KEY = 13;
     const queryWrapper = require('./sayt/query-wrapper');
     const autoSearch = opts.autoSearch === undefined ? true : opts.autoSearch;
+    const staticSearch = opts.staticSearch === undefined ? false : opts.staticSearch;
     const saytEnabled = opts.sayt === undefined ? true : opts.sayt;
     const queryParam = opts.queryParam === undefined ? 'q' : opts.queryParam;
     const searchUrl = `${opts.searchUrl === undefined ? 'search' : opts.searchUrl}?${queryParam}=`;
@@ -12,10 +13,16 @@
     if (saytEnabled) queryWrapper.mount(this, opts);
     if (autoSearch)  {
       this.on('before-mount', () => this.root.addEventListener('input', () => opts.flux.reset(inputValue())));
-    } else {
+    } else if (staticSearch) {
       this.on('before-mount', () => this.root.addEventListener('keydown', (event) => {
         switch(event.keyCode) {
           case ENTER_KEY: return window.location.replace(`${searchUrl}${inputValue()}`);
+        }
+      }));
+    } else {
+      this.on('before-mount', () => this.root.addEventListener('keydown', (event) => {
+        switch(event.keyCode) {
+          case ENTER_KEY: return opts.flux.reset(inputValue());
         }
       }));
     }
