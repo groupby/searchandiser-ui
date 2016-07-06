@@ -1,3 +1,7 @@
+#ctl00_wpm_SearchPage_ctl09_ProductList {
+  width: 784px;
+}
+
 .gb-results {
   display: flex;
   flex-wrap: wrap;
@@ -7,6 +11,10 @@
   justify-content: space-around;
 }
 
+.gb-results__item {
+  width: 190px;
+}
+
 .gb-product > div {
   height: 396px;
   margin-bottom: 5px;
@@ -14,4 +22,16 @@
 
 .desc-bottom {
   text-align: left;
+  display: table-cell;
+  vertical-align: bottom;
+  height: 50px;
+  width: 146.117px;
+}
+
+.arrow-bottom {
+  text-align: right;
+  display: table-cell;
+  vertical-align: bottom;
+  width: 33.833px;
+  padding-right: 5px;
 }
