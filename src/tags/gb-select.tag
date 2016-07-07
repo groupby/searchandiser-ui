@@ -1,55 +1,60 @@
 <gb-select>
-  <select if={ native } name="nativeSelect" onchange={ updateSelection }>
-    <option if={ !hasDefault } value="" selected disabled>{ label() }</option>
+  <select if={ native } name="nativeSelect" onchange={ selectNative }>
+    <option if={ !hasDefault } value="" selected disabled>{ selectLabel() }</option>
     <option each={ option in options } value={ optionValue(option) }>{ optionLabel(option) }</option>
   </select>
-  <div if={ !native } class="gb-select">
-    <button type="button" class="gb-select__button">
-      <span>{ label() }</span>
+  <div if={ !native } class="gb-select { hover ? 'hoverable' : 'clickable' }">
+    <button type="button" class="gb-select__button" name="selectButton" onfocus={ prepFocus } onclick={ unFocus }>
+      <span>{ selectLabel() }</span>
       <img class="gb-select__arrow" src="assets/arrow-down.svg" alt="" />
     </button>
     <div class="gb-select__content">
       <a value="" if={ !hasDefault && selectedOption } onclick={ clearSelection }>{ clear }</a>
-      <a each={ option in options } onclick={ selectOption } value={ optionValue(option) }>{ optionLabel(option) }</a>
+      <a each={ option in options } onclick={ selectCustom } value={ optionValue(option) }>{ optionLabel(option) }</a>
     </div>
   </div>
 
   <script>
     const label = opts.label || 'Select';
-    const updateCb = opts.update;
-    const updateOptions = (selected) => {
-      this.nativeSelect.options[0].disabled = !selected;
-      this.update({ selected });
-    };
-    const sendUpdate = (value) => {
-      if (updateCb) {
-        try {
-          updateCb(JSON.parse(value));
-        } catch(e) {
-          updateCb(value ? value : '*');
-        }
-      }
-    };
+    const callback = opts.update;
 
-    this.optionValue = (option) => typeof option === 'object' ? JSON.stringify(option.value) : option;
-    this.optionLabel = (option) => typeof option === 'object' ? option.label : option;
-
+    this.hover = opts.hover === undefined ? true : opts.hover;
+    this.native = opts.native === undefined ? false : opts.native;
+    this.clear = opts.clear === undefined ? 'Unselect' : opts.clear;
     this.hasDefault = opts.default === undefined ? false : opts.default;
     this.options = opts.options || [];
     if (this.hasDefault) this.selectedOption = this.options[0];
-    this.clear = opts.clear === undefined ? 'Unselect' : opts.clear;
-    this.label = () => this.selectedOption ? this.selectedOption : (this.selected ? this.clear : label);
-    this.native = opts.native === undefined ? false : opts.native;
-    this.updateSelection = (event) => {
-      updateOptions(event.target.value !== '');
-      sendUpdate(event.target.value);
-      this.update({ selectedOption: event.target.text });
+
+    this.selectLabel = () => this.selectedOption ? this.selectedOption : (this.selected ? this.clear : label);
+    this.optionValue = (option) => typeof option === 'object' ? JSON.stringify(option.value) : option;
+    this.optionLabel = (option) => typeof option === 'object' ? option.label : option;
+    this.prepFocus = () => this.focused = false;
+    this.unFocus = () => {
+      this.focused = this.hover || !this.focused;
+      if (!this.focused) this.selectButton.blur();
     };
-    this.selectOption = (event) => {
-      this.update({ selectedOption: event.target.text });
-      sendUpdate(event.target.value);
+
+    const selectOption = (selectedOption, value) => {
+      this.update({ selectedOption });
+      if (callback) {
+        try {
+          callback(JSON.parse(value));
+        } catch(e) {
+          callback(value ? value : '*');
+        }
+      }
     };
-    this.clearSelection = () => this.update({ selectedOption: undefined });
+    this.selectNative = (event) => {
+      const selected = event.target.value !== '';
+      this.nativeSelect.options[0].disabled = !selected;
+      this.update({ selected });
+      selectOption(event.target.text, event.target.value);
+    };
+    this.selectCustom = (event) => {
+      this.selectButton.blur();
+      selectOption(event.target.text, event.target.value);
+    };
+    this.clearSelection = () => selectOption(undefined, '*');
   </script>
 
   <style scoped>
@@ -57,10 +62,13 @@
       position: relative;
       display: inline-block;
     }
-    .gb-select:hover .gb-select__content {
+    .gb-select.hoverable:hover .gb-select__content,
+    .gb-select.clickable .gb-select__button:focus + .gb-select__content,
+    .gb-select__content:hover {
       display: block;
     }
-    .gb-select:hover .gb-select__button {
+    .gb-select:hover .gb-select__button,
+    .gb-select .gb-select__button:focus {
       border-color: #aaa;
     }
     .gb-select__button {
