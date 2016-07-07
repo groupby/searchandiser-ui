@@ -209,7 +209,16 @@ Add the JavaScript that will attach the service to the `div`s above.
       // the same options as 'query'
       searchandiser.attach('raw-query', '.raw-query');
 
-      searchandiser.attach('paging', '.paging');
+      searchandiser.attach('paging', '.paging', {
+        // show page selection links
+        // showPages: true,
+        //
+        // set the limit of visible page selection links
+        // limit: 7,
+        //
+        // hide 'first' and 'last' links
+        // showTerminals: false
+      });
       searchandiser.attach('page-size', '.page-size');
       searchandiser.attach('results', '.results');
 
