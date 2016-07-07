@@ -1,0 +1,8 @@
+body .search_result_item .product_info .item_title a.title {
+  font-family: Arial;
+  font-weight: bold;
+}
+
+.gb-results li:last-child .horiz_line {
+  display: none;
+}
