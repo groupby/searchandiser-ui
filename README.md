@@ -16,14 +16,28 @@ Implementing on an existing website
 
 ###Step 1
 
-Ensure that there are `div` tags on your site with IDs that correspond to the elements that will be
+Add the JavaScript that will attach the service to the `div`s above.
+
+```html
+<html>
+  <head>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.11.js"></script>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
+
+###Step 2
+
+Ensure that there are `div` tags on your site with IDs or classes that correspond to the elements that will be
 displayed.
 
 ```html
 <html>
   <head>...</head>
   <body>
-
     <!-- the search box -->
     <div class="query"></div>
     <!-- Optionally inject into an input element directly
@@ -65,60 +79,34 @@ displayed.
       <div class="availableNavigation"></div>
       <!-- Records that match the search and nav state -->
       <div class="results"></div>
-      <!-- Optionally construct your own product template
-      <div class="raw-results">
-        <a href="#">
-          // Using 'riot-src' ensures that there are no errors
-          // loading invalid image urls
-          <img riot-src="{ allMeta['image'] }" alt="" />
-        </a>
-        <a href="#">
-          <p>{ allMeta['title'] }</p>
-          <p>{ allMeta['price'] }</p>
-        </a>
-      </div>
+      <!-- Optionally construct your own product template by using the raw-results class -->
+      <!-- <div class="raw-results">
+            <a href="#">
+              // Using 'riot-src' ensures that there are no errors
+              // loading invalid image urls
+            <img riot-src="{ allMeta['image'] }" alt="" />
+            </a>
+            <a href="#">
+              <p>{ allMeta['title'] }</p>
+              <p>{ allMeta['price'] }</p>
+            </a>
+          </div>
       -->
     </div>
-
+    <script>...</script>
   </body>
 </html>
 ```
 
-###Step 2
+###Step 3
 
-Add the JavaScript that will attach the service to the `div`s above.
+Use the searchandiser method to set up your configurations in a script tag at the bottom of your body.
 
 ```html
 <html>
-  <head>
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.11.js"></script>
-  </head>
+  <head>...</head>
   <body>
-
-    <div class="query"></div>
-    <input type="text" class="raw-query">
-    <div>
-      <div class="breadcrumbs"></div>
-      <div class="recordCount">
-        <h2>{ first } - { last } of { total } Products</h2>
-      </div>
-      <div class="page-size"></div>
-      <div class="paging"></div>
-    </div>
-    <div>
-      <div class="didYouMean"></div>
-      <div class="relatedSearches"></div>
-    </div>
-    <div class="spotlightTemplate">
-      <!-- template content -->
-    </div>
-    <div>
-      <div class="availableNavigation"></div>
-      <div class="results"></div>
-      <div class="raw-results">
-        <!-- product template -->
-      </div>
-    </div>
+    ...
 
     <script>
       searchandiser({
@@ -166,7 +154,7 @@ Add the JavaScript that will attach the service to the `div`s above.
       searchandiser.search('');
 
       // Usage of the attach method looks like the following:
-      // The callback his passed a single parameter, a tag instance representing the mounted component
+      // The callback has passed a single parameter, a tag instance representing the mounted component
       // See the riot.js documentation (http://riotjs.com/guide/#mounting) for available lifecycle events
       // searchandiser.attach(<tag name>, [<css selector>], [<argument dictionary>], [<callback>]);
 
@@ -176,7 +164,6 @@ Add the JavaScript that will attach the service to the `div`s above.
       //     operate on the rendered elements
       //   });
       // });
-
       searchandiser.attach('query', '.query', {
         // disable Searchandise-As-You-Type
         // sayt: false,
@@ -274,12 +261,11 @@ Add the JavaScript that will attach the service to the `div`s above.
       // and a css selector
       searchandiser.template('My Spotlight Template', '.spotlightTemplate');
     </script>
-
   </body>
 </html>
 ```
 
-###Step 3
+###Step 4
 
 To theme the results use CSS for each of the elements.  For a complete style reference see this
 document: [docs/css-reference.md](docs/css-reference.md)
