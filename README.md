@@ -4,8 +4,6 @@ GroupBy Searchandiser UI
 
 The following instructions assume that you are creating a search & merch single page app using the
 GroupBy commerce platform.  
-For instructions to integrate with an existing NodeJS application please read this file.
-[README.nodejs.md](README.nodejs.md)
 
 There are two ways to implement in an existing website, the preferred way is to have the searchandiser
 API generate the HTML on your page and hookup the eventing for you.  This way you will inherit
