@@ -16,7 +16,7 @@ Implementing on an existing website
 
 ###Step 1
 
-Ensure that there are `div` tags on your site with IDs that correspond to the elements will be
+Ensure that there are `div` tags on your site with IDs that correspond to the elements that will be
 displayed.
 
 ```html
