@@ -11,12 +11,12 @@ There are two ways to implement in an existing website, the preferred way is to 
 API generate the HTML on your page and hookup the eventing for you.  This way you will inherit
 all the best practices for your website in seconds.
 
-Implementing on an existing website
+Implementing on an existing website:
 ---
 
 ###Step 1
 
-Add the JavaScript that will attach the service to the `div`s above.
+Add the searchandiser CDN to the head in your html file.
 
 ```html
 <html>
