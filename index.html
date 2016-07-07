@@ -93,7 +93,7 @@
       // });
       searchandiser.attach('query', '.query', {
         // sayt: false,
-        // autoSearch: false,
+        autoSearch: false,
         // searchUrl: '/search',
         // queryParam: 'query'
       });
@@ -184,17 +184,20 @@
       });
       searchandiser.attach('paging');
       searchandiser.attach('page-size', '.page-size', {
+        onHover: false,
         // native: true,
         // resetOffset: true
       });
       searchandiser.attach('results');
       searchandiser.attach('filter', '.filter', {
         // native: true,
+        onHover: false,
         field: 'QtopRatedType',
         matchAll: 'All Categories'
       });
       searchandiser.attach('sort', '.sort', {
         // native: true,
+        onHover: false,
         options: [{
           label: 'Price Low to High',
           value: {

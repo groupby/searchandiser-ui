@@ -1,5 +1,5 @@
 <gb-page-size>
-  <gb-select class="gb-page-size" options={ pageSizes } native={ opts.native } default="true" update={ updatePageSize }></gb-select>
+  <gb-select class="gb-page-size" options={ pageSizes } native={ opts.native } default="true" update={ updatePageSize } hover={ opts.onHover }></gb-select>
 
   <script>
     this.pageSizes = opts.config.pageSizes || [10, 25, 50, 100];

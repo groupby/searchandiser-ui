@@ -1,9 +1,9 @@
 <gb-paging>
   <div class="gb-paging { opts.style() }">
-    <a class="gb-paging__link first { isFirst() ? 'disabled' : '' }" href="#" onclick={ firstPage }><span class="gb-paging__icon">←←</span> First</a>
-    <a class="gb-paging__link prev { isFirst() ? 'disabled' : '' }" href="#" onclick={ prevPage }><span class="gb-paging__icon">←</span> Prev</a>
-    <a class="gb-paging__link next { isLast() ? 'disabled' : '' }" href="#" onclick={ nextPage }>Next <span class="gb-paging__icon">→</span></a>
-    <a class="gb-paging__link last { isLast() ? 'disabled' : '' }" href="#" onclick={ lastPage }>Last <span class="gb-paging__icon">→→</span></a>
+    <a class="gb-paging__link first { isFirst() ? 'disabled' : '' }" href="#" onclick={ firstPage }><span class="gb-paging__icon">←</span> First</a>
+    <a class="gb-paging__link prev { isFirst() ? 'disabled' : '' }" href="#" onclick={ prevPage }><span class="gb-paging__icon">&lt;</span> Prev</a>
+    <a class="gb-paging__link next { isLast() ? 'disabled' : '' }" href="#" onclick={ nextPage }>Next <span class="gb-paging__icon">&gt;</span></a>
+    <a class="gb-paging__link last { isLast() ? 'disabled' : '' }" href="#" onclick={ lastPage }>Last <span class="gb-paging__icon">→</span></a>
   </div>
 
   <script>

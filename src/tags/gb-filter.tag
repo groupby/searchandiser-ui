@@ -1,5 +1,5 @@
 <gb-filter>
-  <gb-select name="selectElement" update={ navigate } native={ opts.native } label={ label } clear={ clear }></gb-select>
+  <gb-select name="selectElement" update={ navigate } native={ opts.native } label={ label } clear={ clear } hover={ opts.onHover }></gb-select>
 
   <script>
     require('./gb-select.tag');
@@ -12,7 +12,6 @@
 
     this.label = opts.label || 'Filter';
     this.clear = opts.clear || 'Unfiltered';
-    this.selectedRefinement = () => this.selected ? this.selected.refinements[0] : {};
     this.navigate = (value) => {
       if (this.selected) opts.flux.unrefine(this.selected, { skipSearch: true });
       if (value === '*') {

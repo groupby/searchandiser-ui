@@ -1,5 +1,5 @@
 <gb-sort>
-  <gb-select class="gb-sort" options={ sorts } native={ opts.native } label={ label } clear={ clear } update={ updateSort }></gb-select>
+  <gb-select class="gb-sort" options={ sorts } native={ opts.native } label={ label } clear={ clear } update={ updateSort } hover={ opts.onHover }></gb-select>
 
   <script>
     require('./gb-select.tag');
