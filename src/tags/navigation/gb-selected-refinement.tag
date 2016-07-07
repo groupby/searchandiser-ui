@@ -5,7 +5,7 @@
   </li>
 
   <script>
-    const utils = require('../utils');
+    const utils = require('../../utils');
     this.parentOpts = this.parent.parent.opts;
     this.remove = () => this.parentOpts.flux.unrefine(utils.toRefinement(this.ref, this.nav));
   </script>
