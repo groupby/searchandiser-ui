@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Searchandiser UI Demo</title>
+    <meta name="description" content="Searchandiser UI Demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/style.css" charset="utf-8">
+    <script src="../dist/searchandiser-ui-0.0.12.js"></script>
+  </head>
+
+  <body>
+
+    <div class="details">
+      <h1>{ record.allMeta[struct.title] }</h1>
+      <h2>{ record.allMeta[struct.price] }</h2>
+      <img riot-src="{ record.allMeta[struct.image] }" alt="" />
+    </div>
+
+    <script>
+      searchandiser({
+        customerId: 'crateandbarreldemo',
+        structure: {
+          title: 'title',
+          image: 'wideImage',
+          price: 'price'
+        }
+      });
+      searchandiser.attach('details');
+    </script>
+  </body>
+
+</html>

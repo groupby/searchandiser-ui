@@ -1,7 +1,7 @@
 <gb-query>
   <div class="gb-query { opts.style() }">
     <input class="gb-query__box" name="searchBox" type="text" placeholder="Search..." autofocus>
-    <a class="gb-query__reset" onclick={ clearQuery }>×</a>
+    <a class="gb-query__reset" onclick={ clearQuery }>&times;</a>
   </div>
 
   <script>

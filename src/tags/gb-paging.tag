@@ -1,6 +1,6 @@
 <gb-paging>
   <div class="gb-paging { opts.style() }">
-    <a class="gb-paging__link first { isFirst() ? 'disabled' : '' }" if={ showTerminals } onclick={ firstPage }><span class="gb-paging__icon">←</span> First</a>
+    <a class="gb-paging__link first { isFirst() ? 'disabled' : '' }" if={ showTerminals } onclick={ firstPage }><span class="gb-paging__icon">&larr;</span> First</a>
     <a class="gb-paging__link prev { isFirst() ? 'disabled' : '' }" onclick={ prevPage }><span class="gb-paging__icon">&lt;</span> Prev</a>
     <span class="gb-paging__pages" if={ showPages }>
       <span class="gb-paging__ellipsis" if={ !isFirst() && this.currentPage() >= this.halfOffset }>&hellip;</span>
@@ -8,7 +8,7 @@
       <span class="gb-paging__ellipsis" if={ !isLast() }>&hellip;</span>
     </span>
     <a class="gb-paging__link next { isLast() ? 'disabled' : '' }" onclick={ nextPage }>Next <span class="gb-paging__icon">&gt;</span></a>
-    <a class="gb-paging__link last { isLast() ? 'disabled' : '' }" if={ showTerminals } onclick={ lastPage }>Last <span class="gb-paging__icon">→</span></a>
+    <a class="gb-paging__link last { isLast() ? 'disabled' : '' }" if={ showTerminals } onclick={ lastPage }>Last <span class="gb-paging__icon">&rarr;</span></a>
   </div>
 
   <script>

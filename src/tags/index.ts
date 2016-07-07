@@ -2,6 +2,8 @@ import './navigation/gb-available-navigation.tag';
 import './breadcrumbs/gb-breadcrumbs.tag';
 import './category-menu/gb-category-menu.tag';
 import './gb-query.tag';
+import './gb-details.tag';
+import './gb-raw.tag';
 import './gb-raw-query.tag';
 import './gb-results.tag';
 import './gb-raw-results.tag';
