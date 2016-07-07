@@ -1,0 +1,41 @@
+a.xxssi_button,
+a.xxssi_button:link,
+a.xxssi_button:active,
+a.xxssi_button:visited,
+a.xxssi_button:hover{
+	background: #005daa;
+	border: 1px solid #999999;
+	color: #ffffff;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 24px;
+	padding: 3px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+body a.xxssi_buttonDisabled,
+body a.xxssi_buttonDisabled:link,
+body a.xxssi_buttonDisabled:active,
+body a.xxssi_buttonDisabled:visited,
+body a.xxssi_buttonDisabled:hover{
+	color: #cccccc;
+	cursor: default;
+}
+
+a.xxssi_link,
+a.xxssi_link:link,
+a.xxssi_link:active,
+a.xxssi_link:visited{
+	color: #005DAA !important;
+	font-family: Arial, Helvetica, sans-serif !important;
+	font-size: 12px !important;
+	font-weight: normal !important;
+	text-decoration: none !important;
+	white-space: nowrap !important;
+	cursor: hand !important;
+	outline: none !important;
+}
+a.xxssi_link:hover{
+	text-decoration: underline !important;
+}

@@ -1,0 +1,133 @@
+/* Start of Reset CSS - Needs to be at top of CSS file */
+a,abbr,acronym,address,applet,article,aside,audio,b,blockquote,big,body,center,canvas,caption,cite,code,command,datalist,dd,del,details,dfn,dl,div,dt,em,embed,fieldset,figcaption,figure,font,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,keygen,label,legend,li,meter,nav,object,output,ol,p,pre,progress,q,s,samp,section,small,span,source,strike,strong,sub,sup,table,tbody,tfoot,thead,th,tr,tdvideo,tt,u,var{background:transparent;border:0 none;font-size:100%;margin:0;padding:0;border:0;outline:0;vertical-align:top}
+body{font:14px Arial, Helvetica, sans-serif;color:#4D4D4D;position:relative;min-width:966px;}
+html,body{height:100%;}
+p{padding-bottom:20px;}
+a{outline:none;cursor:pointer;text-decoration:none;color:#00A9CC;}
+.link-4,a:hover{text-decoration:underline}
+*h1,h2,h3,h4,h5,h6{line-height:1.3em;}
+h1{font-size:30px;font-weight:normal;line-height:32px;letter-spacing:0px;font-family:'MuseoSlab-500';color:#4D4D4D;}
+h2{font-size:20px;font-weight:normal;line-height:30px;letter-spacing:0px;font-family:'MuseoSlab-500';color:#4D4D4D;}
+h3{font-size:24px;font-weight:normal;font-family:'MuseoSlab-500';color:#72c267;} 
+h4{font-size:20px;font-weight:normal;font-family:'MuseoSlab-500';}  
+h5{font-size:16px;font-weight:normal;font-family:'MuseoSlab-500';color:#4D4D4D;}  
+h6{font-size:12px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;}
+ul{list-style:none;margin:0;padding:0;}
+table, tbody, tfoot, thead, tr, th, td {margin:0;	padding:0;	border:0;	outline:0;	font-size:100%;	vertical-align:baseline;	background:transparent;}
+td {vertical-align: top;}
+/* End of Reset CSS - Needs to be at top of CSS file */
+.pageTitle {
+	font-family: Arial, Helvetica, sans-serif; 
+	text-align:left;
+	font-size:16px;
+	color:rgb(0,93,170);
+	font-weight:bold;
+	text-indent:0px;
+	padding:3px;
+	border-spacing:0px;
+}
+header #logo {margin:15px 0px 0px 0px;width:209px;height:86px;background:url(/OA_HTML/images/template/ssilogo.png) no-repeat;cursor:pointer;}
+.menu {
+	position:relative;
+	width:640px;
+	float:left;
+	position:relative;
+	z-index:20;
+	font-family:'MuseoSans-300';
+	font-weight:normal;
+	font-size:18px;
+	text-transform:none;
+	background: #e5e5e5;
+	background: url(/OA_HTML/images/template/ssiButtonGreyBackground.png);
+/* gradiant background white top to light blue bottom
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">
+  <linearGradient id="grad-ucgg-generated" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+    <stop offset="100%" stop-color="#e6f3fb" stop-opacity="1"/>
+  </linearGradient>
+  <rect x="0" y="0" width="1" height="1" fill="url(#grad-ucgg-generated)" />
+</svg>
+*/	
+/*	background: -moz-linear-gradient(top, #ffffff 0%, #e6f3fb 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e6f3fb));
+	background: -webkit-linear-gradient(top, #ffffff 0%,#e6f3fb 100%);
+	background: -o-linear-gradient(top, #ffffff 0%,#e6f3fb 100%);
+	background: -ms-linear-gradient(top, #ffffff 0%,#e6f3fb 100%);
+	background: linear-gradient(to bottom, #ffffff 0%,#e6f3fb 100%);*/
+	filter:none;
+	border-radius:5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-khtml-border-radius: 5px;  	
+/*	box-shadow:0 2px 6px rgba(0,0,0,.06);*/
+	box-shadow:0 1px 1px rgba(0,0,0,0.25);
+	behavior: url(/OA_HTML/css/PIE.htc);	
+}
+.menu li.active, .menu > li:hover, .menu > li.sfHover {
+	background: #009cc4;
+	background: url(/OA_HTML/images/template/ssiLightBlueBackground.png);
+/*	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzU1OTdkMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjIyJSIgc3RvcC1jb2xvcj0iIzQ3OGNjYiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjcxJSIgc3RvcC1jb2xvcj0iIzE2NjZiNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ijg0JSIgc3RvcC1jb2xvcj0iIzBhNWRiMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMTU2YWUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+*//* dark blue gradiant top to darker blue bottom
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">
+  <linearGradient id="grad-ucgg-generated" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#5597d1" stop-opacity="1"/>
+    <stop offset="22%" stop-color="#478ccb" stop-opacity="1"/>
+    <stop offset="71%" stop-color="#1666b6" stop-opacity="1"/>
+    <stop offset="84%" stop-color="#0a5db1" stop-opacity="1"/>
+    <stop offset="100%" stop-color="#0156ae" stop-opacity="1"/>
+  </linearGradient>
+  <rect x="0" y="0" width="1" height="1" fill="url(#grad-ucgg-generated)" />
+</svg>
+*/
+/*	background: -moz-linear-gradient(top, #5597d1 0%, #478ccb 22%, #1666b6 71%, #0a5db1 84%, #0156ae 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5597d1), color-stop(22%,#478ccb), color-stop(71%,#1666b6), color-stop(84%,#0a5db1), color-stop(100%,#0156ae));
+	background: -webkit-linear-gradient(top, #5597d1 0%,#478ccb 22%,#1666b6 71%,#0a5db1 84%,#0156ae 100%);
+	background: -o-linear-gradient(top, #5597d1 0%,#478ccb 22%,#1666b6 71%,#0a5db1 84%,#0156ae 100%);
+	background: -ms-linear-gradient(top, #5597d1 0%,#478ccb 22%,#1666b6 71%,#0a5db1 84%,#0156ae 100%);
+	background: linear-gradient(to bottom, #5597d1 0%,#478ccb 22%,#1666b6 71%,#0a5db1 84%,#0156ae 100%);*/
+	filter:none;
+	box-shadow:0 2px 6px rgba(0,0,0,.15);
+	behavior: url(/OA_HTML/css/PIE.htc);
+}
+.button-nav-green{
+	display:inline-block;
+/*	border: 1px solid #DDD;*/
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-khtml-border-radius: 	5px;
+/*	text-shadow: 0 1px 1px white;*/
+/*	box-shadow:0 1px 1px #fff;*/
+	font-family:'MuseoSans-300';
+	font-weight:normal;
+	font-size:18px;
+	color:#FFF;
+	text-transform:none;
+	text-decoration:none;
+	line-height:41px;
+/*	height:41px;*/
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px;
+	text-align:center;
+	width:320px;
+	white-space: nowrap;
+	vertical-align: middle;
+	background: transparent;
+	cursor: pointer;
+	border-color: #ddd;
+	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+	background: url(/OA_HTML/images/template/ssiButtonGreenBackground.png);
+ 	filter:none;
+/*	background-color:#E0E0E0;
+	background: -webkit-linear-gradient(top, white, #E0E0E0);
+	background:    -moz-linear-gradient(top, white, #E0E0E0);
+	background:     -ms-linear-gradient(top, white, #E0E0E0);
+	background:      -o-linear-gradient(top, white, #E0E0E0);
+	background:      linear-gradient(top, white, #E0E0E0);
+	-pie-background:      linear-gradient(top, white, #E0E0E0);
+*/
+	box-shadow:0 1px 1px rgba(0,0,0,0.25);
+	behavior: url(PIE.htc);
+}
