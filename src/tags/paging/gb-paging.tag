@@ -2,11 +2,13 @@
   <div class="gb-paging { opts.style() }">
     <a class="gb-paging__link first { isFirst() ? 'disabled' : '' }" if={ showTerminals } onclick={ firstPage }><span class="gb-paging__icon">&larr;</span> First</a>
     <a class="gb-paging__link prev { isFirst() ? 'disabled' : '' }" onclick={ prevPage }><span class="gb-paging__icon">&lt;</span> Prev</a>
-    <span class="gb-paging__pages" if={ showPages }>
+    <ul class="gb-paging__pages" if={ showPages }>
       <span class="gb-paging__ellipsis" if={ !isFirst() && this.currentPage() > this.halfOffset }>&hellip;</span>
-      <a class="gb-paging__page { currentPage() + 1 === page ? 'selected' : '' }" href="#" each={ page in pages() } onclick={ jumpTo }>{ page }</a>
+      <li each={ page in pages() }>
+        <a class="gb-paging__page { currentPage() + 1 === page ? 'selected' : '' }" onclick={ jumpTo }>{ page }</a>
+      </li>
       <span class="gb-paging__ellipsis" if={ !isLast() && this.currentPage() < this.totalPages() - this.halfOffset }>&hellip;</span>
-    </span>
+    </ul>
     <a class="gb-paging__link next { isLast() ? 'disabled' : '' } { !showPages ? 'expand' : '' }" onclick={ nextPage }>Next <span class="gb-paging__icon">&gt;</span></a>
     <a class="gb-paging__link last { isLast() ? 'disabled' : '' }" if={ showTerminals } onclick={ lastPage }>Last <span class="gb-paging__icon">&rarr;</span></a>
   </div>
@@ -66,6 +68,11 @@
 
     .gb-stylish .gb-paging__pages {
       margin: auto;
+      list-style: none;
+    }
+
+    .gb-stylish .gb-paging__pages li {
+      display: inline;
     }
 
     .gb-stylish .gb-paging__page {
