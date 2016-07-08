@@ -1,6 +1,7 @@
 import './navigation/gb-available-navigation.tag';
 import './breadcrumbs/gb-breadcrumbs.tag';
 import './category-menu/gb-category-menu.tag';
+import './paging/gb-paging.tag';
 import './gb-query.tag';
 import './gb-details.tag';
 import './gb-raw.tag';
@@ -9,7 +10,6 @@ import './gb-raw-submit.tag';
 import './gb-results.tag';
 import './gb-raw-results.tag';
 import './gb-record-count.tag';
-import './gb-paging.tag';
 import './gb-related-searches.tag';
 import './gb-did-you-mean.tag';
 import './gb-template.tag';
