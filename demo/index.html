@@ -40,6 +40,8 @@
           <div class="filter"></div>
           <div class="sort"></div>
           <div class="page-size"></div>
+        </div>
+        <div class="gb-bar">
           <div class="paging"></div>
         </div>
         <div class="results"></div>
@@ -184,7 +186,9 @@
           }]
         }]
       });
-      searchandiser.attach('paging');
+      searchandiser.attach('paging', '.paging', {
+        showPages: true
+      });
       searchandiser.attach('page-size', '.page-size', {
         onHover: false,
         // native: true,
