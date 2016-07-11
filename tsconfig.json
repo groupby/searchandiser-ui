@@ -40,6 +40,7 @@
     "test/raw-query.ts",
     "test/record-count.ts",
     "test/sort.ts",
+    "node_modules/groupby-api/custom_typings/filter-object.d.ts",
     "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
   ]
 }

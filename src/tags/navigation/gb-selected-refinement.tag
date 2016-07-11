@@ -1,6 +1,6 @@
 <gb-selected-refinement>
   <li class="gb-ref { parentOpts.style() }">
-    <a class="gb-ref__link" href="#" onclick={ remove }>×</a>
+    <a class="gb-ref__link" href="#" onclick={ remove }>&times;</a>
     <span class="gb-ref__value">{ ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high }</span>
   </li>
 
