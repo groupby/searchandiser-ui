@@ -17,6 +17,8 @@
 			
 			  Search Results - SCHOOL SPECIALTY MARKETPLACE
 		</title>
+		<script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.11.js"></script>
+		<link href="./searchandiser-results-style.css" rel="stylesheet" type="text/css">
 
 
 
@@ -1521,7 +1523,7 @@ $('#searchText').sayt({
 				<input id="did_you_mean_input" value="" type="hidden">
 				<h2>Search instead for
 				<span class="search_terms">
-					<a id="did_you_mean_href" href="https://store.schoolspecialty.com/OA_HTML/xxssi_ibeSearchResults.jsp?query=Mechanical%20pencil%20OR" school="" smart="" pencil"="" automatic&idx="0&amp;ps=15&amp;r=~TAXONOMY+LEV1=School+-+Office+Supplies~TAXONOMY+LEV2=Pens+-+Pencils+-+Markers~TAXONOMY+LEV3%3DPencils+-+Mechanical~Brand=Pentel~Brand=BIC&amp;searchType=productResults&amp;requiredFields=&amp;minisite=10206&quot;">
+					<a id="did_you_mean_href" href="https://store.schoolspecialty.com/OA_HTML/xxssi_ibeSearchResults.jsp?query=Mechanical%20pencil%20OR" school="" smart="" pencil="" automatic&idx="0&amp;ps=15&amp;r=~TAXONOMY+LEV1=School+-+Office+Supplies~TAXONOMY+LEV2=Pens+-+Pencils+-+Markers~TAXONOMY+LEV3%3DPencils+-+Mechanical~Brand=Pentel~Brand=BIC&amp;searchType=productResults&amp;requiredFields=&amp;minisite=10206&quot;">
 						<span id="did_you_mean_terms">Mechanical pencil OR "school smart pencil" automatic</span>
 					</a>
 				</span>?
@@ -1756,941 +1758,91 @@ $10 - $25 (10)
 		YUI.com.schoolspecialty.ebs.istore.cartActions.seeItemPrice(productItem);
 	}
 </script>
-							<div class="grid margin-top10">
 
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=389314">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609104&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_036.png" alt="Mechanical Pencils, Item Number 1065331">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1065331</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=389314">Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.7 mm Tip, Blue</a>
-										</div>
-										<div class="item_desc">
-										Pentel 0.7 mm Blue Sharp Mechanical Pencil features a 4 mm tip design making it perfect for use with rulers<span class="ellipsis">...</span><span class="full_description">
-	and templates. Pencil with concealed eraser has superior construction 
-that meets the rigorous demands of	professionals as well as students. It
- can be refilled using Pentel super hi-polymer lead.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
+<div class="grid margin-top10">
+	<div class="search_result_item">
+		<div class="product_image">
+			<a href="{ allMeta[struct.productLink] }">
+				<img class="product" src="https://store.schoolspecialty.com/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName={ allMeta[struct.image] }&Rendition=Medium">
+			</a>
+		</div>
+		<div class="product_info">
+			<div class="item_number">
+				<span>{ allMeta[struct.itemNum] }</span><span></span>
+			</div>
+			<div class="item_title">
+				<a class="title gb-product__info-link" href="{ allMeta[struct.productLink] }">
+					{ allMeta[struct.title] }
+				</a>
+			</div>
+			<div class="item_desc" >
+				<div if="{ allMeta[struct.description] }"> 
+					{ truncateParagraph(allMeta[struct.description], 110) }<span class="full_description">
+				</div>
+			</div>
+			<div class="item_icons">
+			</div>
+			<div class="notice">
+				<div class="bottom">
+					<div class="shipping_notice" if="{ allMeta[struct.freeShippingEligible] == 'Y' }">
+						<a href="#">
+							<p>
+								<span class="dotted_underline">
+									<img src="https://store.schoolspecialty.com/OA_HTML/images/template/ssiBoxGreen.png">
+									Qualifies for free shipping.
+								</span>
+							</p>
+						</a>
+					</div>
+					<div class="shipping_notice" if="{ allMeta[struct.freeShippingEligible] == 'N' }">
+						<a href="#">
+							<p>
+								<span class="dotted_underline">
+									<img src="https://store.schoolspecialty.com/OA_HTML/xxssi/customerDashboard/shippingIconSM.gif">
+									Does not qualify for free shipping.
+									<br>
+									<span class="freight_msg">Price displayed does not reflect freight charges.</span>
+								</span>
+							</p>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="product_price">
+			<div id="searchPriceHTML_389314">
+				<div>
+					<div class="your_price">
+						<span class="label">Web Price</span>
+						<span class="price">${ Number(allMeta[struct.webPrice]).toFixed(2) }</span>
+					</div>
+				</div>
+				<div>
+					<div class="savings" if="{ allMeta[struct.webPrice] != 0 }">List Price<span class="list_price">${ Number(allMeta[struct.listPrice]) }</span>You Save<span class="percent">{ percentSaved(allMeta[struct.listPrice], allMeta[struct.webPrice]) }%</span>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div id="err_msg_389314" class="error-msg"></div>
+				<div class="user_input">
+					<span class="qty_box">QTY</span>
+					<span class="input_box">
+						<input value="1" class="text input_field" name="qty" id="js-quantity_389314" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
+						<input id="item_id_389314" name="item_id" value="389314" type="hidden">
+						<input id="item_number_389314" name="item_number" value="1065331" type="hidden">
+						<input id="item_name_389314" name="item_name" value="Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.7 mm Tip, Blue" type="hidden">
+						<input id="item_image_389314" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609104&amp;Rendition=Small" type="hidden">
+					</span>
+					<div>
+						<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('389314');">Add to Cart</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="horiz_line"></div>
+</div>
 
-			<div id="searchPriceHTML_389314"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$5.92</span></div></div><div><div class="savings">List Price<span class="list_price">$7.89</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_389314" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_389314" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_389314" name="item_id" value="389314" type="hidden">
-													<input id="item_number_389314" name="item_number" value="1065331" type="hidden">
-													<input id="item_name_389314" name="item_name" value="Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.7 mm Tip, Blue" type="hidden">
-													<input id="item_image_389314" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609104&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('389314');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=389311">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609103&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_058.png" alt="Mechanical Pencils, Item Number 1065329">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1065329</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=389311">Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.5 mm Tip, Green</a>
-										</div>
-										<div class="item_desc">
-										Pentel 0.5 mm Green Sharp Mechanical Pencil features a 4 mm tip design making it perfect for use with rulers<span class="ellipsis">...</span><span class="full_description">
-	and templates. Pencil with concealed eraser has superior construction 
-that meets the rigorous demands of	professionals as well as students. It
- can be refilled using Pentel super hi-polymer lead.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_389311"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$5.92</span></div></div><div><div class="savings">List Price<span class="list_price">$7.89</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_389311" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_389311" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_389311" name="item_id" value="389311" type="hidden">
-													<input id="item_number_389311" name="item_number" value="1065329" type="hidden">
-													<input id="item_name_389311" name="item_name" value="Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.5 mm Tip, Green" type="hidden">
-													<input id="item_image_389311" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609103&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('389311');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=392223">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609105&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_046.png" alt="Mechanical Pencils, Item Number 1065332">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1065332</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=392223">Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.9 mm Tip, Yellow</a>
-										</div>
-										<div class="item_desc">
-										Pentel 0.9 mm Yellow Sharp Mechanical Pencil features a 4 mm tip design making it perfect for use with rulers<span class="ellipsis">...</span><span class="full_description">
-	and templates. Pencil with concealed eraser has superior construction 
-that meets the rigorous demands of	professionals as well as students. It
- can be refilled using Pentel super hi-polymer lead.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_392223"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$5.92</span></div></div><div><div class="savings">List Price<span class="list_price">$7.89</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_392223" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_392223" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_392223" name="item_id" value="392223" type="hidden">
-													<input id="item_number_392223" name="item_number" value="1065332" type="hidden">
-													<input id="item_name_392223" name="item_name" value="Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.9 mm Tip, Yellow" type="hidden">
-													<input id="item_image_392223" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609105&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('392223');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=389310">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609102&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_008.png" alt="Mechanical Pencils, Item Number 1065327">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1065327</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=389310">Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.5 mm Tip,<span class="ellipsis">...</span><span class="full_description">	Burgundy</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel 0.5 mm Burgundy Sharp Mechanical Pencil features a 4 mm tip design making it perfect for use with<span class="ellipsis">...</span><span class="full_description">
-	rulers and templates. Pencil with concealed eraser has superior 
-construction that meets the rigorous demands	of professionals as well as
- students. It can be refilled using Pentel super hi-polymer lead.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_389310"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$5.92</span></div></div><div><div class="savings">List Price<span class="list_price">$7.89</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_389310" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_389310" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_389310" name="item_id" value="389310" type="hidden">
-													<input id="item_number_389310" name="item_number" value="1065327" type="hidden">
-													<input id="item_name_389310" name="item_name" value="Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.5 mm Tip, Burgundy" type="hidden">
-													<input id="item_image_389310" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609102&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('389310');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=390074">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609101&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_033.png" alt="Mechanical Pencils, Item Number 1065326">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1065326</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=390074">Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.5 mm Tip, Black</a>
-										</div>
-										<div class="item_desc">
-										Pentel 0.5 mm Black Sharp Mechanical Pencil features a 4 mm tip design making it perfect for use with rulers<span class="ellipsis">...</span><span class="full_description">
-	and templates. Pencil with concealed eraser has superior construction 
-that meets the rigorous demands of	professionals as well as students. It
- can be refilled using Pentel super hi-polymer lead.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_390074"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$5.92</span></div></div><div><div class="savings">List Price<span class="list_price">$7.89</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_390074" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_390074" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_390074" name="item_id" value="390074" type="hidden">
-													<input id="item_number_390074" name="item_number" value="1065326" type="hidden">
-													<input id="item_name_390074" name="item_name" value="Pentel Sharp Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.5 mm Tip, Black" type="hidden">
-													<input id="item_image_390074" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1609101&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('390074');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=1677381">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1624248&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_014.png" alt="Mechanical Pencils, Item Number 1312610">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1312610</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=1677381">Pentel Graph Gear 1000 Refillable Automatic Drafting Mechanical Pencil with Lead and Refill<span class="ellipsis">...</span><span class="full_description">	Eraser, 0.9 mm Tip, Yellow</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel Graph Gear 1000 0.9 mm Yellow Mechanical Pencil features a 4 mm tip design that is perfect for use<span class="ellipsis">...</span><span class="full_description">
-	with rulers and templates. This superior drafting pencil is ideal for 
-professionals and enthusiasts. Pencil	has finely chiseled metallic grip 
-featuring soft, latex-free pads. It has built-in lead hardness indicator
-	for easy identification of your lead type. Pencil comes with 
-dual-action retractor that advances and retracts	tip to avoid breaking 
-of lead. It utilizes Pentel super hi-polymer lead and Z2-1 refill 
-eraser.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_1677381"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$18.82</span></div></div><div><div class="savings">List Price<span class="list_price">$25.09</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_1677381" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_1677381" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_1677381" name="item_id" value="1677381" type="hidden">
-													<input id="item_number_1677381" name="item_number" value="1312610" type="hidden">
-													<input id="item_name_1677381" name="item_name" value="Pentel Graph Gear 1000 Refillable Automatic Drafting Mechanical Pencil with Lead and Refill Eraser, 0.9 mm Tip, Yellow" type="hidden">
-													<input id="item_image_1677381" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1624248&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('1677381');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=1677379">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1624246&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_050.png" alt="Mechanical Pencils, Item Number 1312608">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1312608</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=1677379">Pentel Graph Gear 1000 Refillable Automatic Drafting Mechanical Pencil with Lead and Refill<span class="ellipsis">...</span><span class="full_description">	Eraser, 0.5 mm Tip, Gray</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel Graph Gear 1000 0.5 mm Gray Mechanical Pencil features a 4 mm tip design that is perfect for use with<span class="ellipsis">...</span><span class="full_description">
-	rulers and templates. This superior drafting pencil is ideal for 
-professionals and enthusiasts. Pencil has	finely chiseled metallic grip 
-featuring soft, latex-free pads. It has built-in lead hardness indicator
- for	easy identification of your lead type. Pencil comes with 
-dual-action retractor that advances and retracts tip	to avoid breaking 
-of lead. It utilizes Pentel super hi-polymer lead and Z2-1 refill 
-eraser.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_1677379"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$18.82</span></div></div><div><div class="savings">List Price<span class="list_price">$25.09</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_1677379" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_1677379" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_1677379" name="item_id" value="1677379" type="hidden">
-													<input id="item_number_1677379" name="item_number" value="1312608" type="hidden">
-													<input id="item_name_1677379" name="item_name" value="Pentel Graph Gear 1000 Refillable Automatic Drafting Mechanical Pencil with Lead and Refill Eraser, 0.5 mm Tip, Gray" type="hidden">
-													<input id="item_image_1677379" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1624246&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('1677379');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=1677380">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1624247&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_062.png" alt="Mechanical Pencils, Item Number 1312609">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1312609</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=1677380">Pentel Graph Gear 1000 Refillable Automatic Drafting Mechanical Pencil with Lead and Refill<span class="ellipsis">...</span><span class="full_description">	Eraser, 0.7 mm Tip, Blue</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel Graph Gear 1000 0.7 mm Blue Mechanical Pencil features a 4 mm tip design that is perfect for use with<span class="ellipsis">...</span><span class="full_description">
-	rulers and templates. This superior drafting pencil is ideal for 
-professionals and enthusiasts. Pencil has	finely chiseled metallic grip 
-featuring soft, latex-free pads. It has built-in lead hardness indicator
- for	easy identification of your lead type. Pencil comes with 
-dual-action retractor that advances and retracts tip	to avoid breaking 
-of lead. It utilizes Pentel super hi-polymer lead and Z2-1 refill 
-eraser.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_1677380"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$18.82</span></div></div><div><div class="savings">List Price<span class="list_price">$25.09</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_1677380" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_1677380" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_1677380" name="item_id" value="1677380" type="hidden">
-													<input id="item_number_1677380" name="item_number" value="1312609" type="hidden">
-													<input id="item_name_1677380" name="item_name" value="Pentel Graph Gear 1000 Refillable Automatic Drafting Mechanical Pencil with Lead and Refill Eraser, 0.7 mm Tip, Blue" type="hidden">
-													<input id="item_image_1677380" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1624247&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('1677380');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=441383">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1619053&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_048.png" alt="Mechanical Pencils, Item Number 1110920">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1110920</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=441383">Pentel Side FX Automatic Mechanical Pencil with Retractable Eraser, 0.7 mm Tip, Blue</a>
-										</div>
-										<div class="item_desc">
-										Pentel Side FX 0.7 mm Blue Mechanical Pencil features no-slip, latex-free grip to offer writing comfort.<span class="ellipsis">...</span><span class="full_description">
-	Pencil has convenient side button that moves the lead without changing 
-hand position. It comes with a dial	that can be turned left to advance 
-jumbo eraser and turned right to retract. It utilizes Pentel super	
-hi-polymer lead and E10 jumbo refill eraser.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_441383"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$2.69</span></div></div><div><div class="savings">List Price<span class="list_price">$3.59</span>You Save<span class="percent">25.1%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_441383" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_441383" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_441383" name="item_id" value="441383" type="hidden">
-													<input id="item_number_441383" name="item_number" value="1110920" type="hidden">
-													<input id="item_name_441383" name="item_name" value="Pentel Side FX Automatic Mechanical Pencil with Retractable Eraser, 0.7 mm Tip, Blue" type="hidden">
-													<input id="item_image_441383" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1619053&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('441383');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=441252">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1619160&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_066.png" alt="Mechanical Pencils, Item Number 1113058">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1113058</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=441252">Pentel Side FX Automatic Mechanical Pencil with Retractable Eraser, 0.5 mm Tip, Black</a>
-										</div>
-										<div class="item_desc">
-										Pentel Side FX 0.5 mm Gray Mechanical Pencil features no-slip, latex-free grip to offer writing comfort.<span class="ellipsis">...</span><span class="full_description">
-	Pencil has convenient side button that moves the lead without changing 
-hand position. It comes with a dial	that can be turned left to advance 
-jumbo eraser and turned right to retract. It utilizes Pentel super	
-hi-polymer lead and E10 jumbo refill eraser.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_441252"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$2.69</span></div></div><div><div class="savings">List Price<span class="list_price">$3.59</span>You Save<span class="percent">25.1%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_441252" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_441252" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_441252" name="item_id" value="441252" type="hidden">
-													<input id="item_number_441252" name="item_number" value="1113058" type="hidden">
-													<input id="item_name_441252" name="item_name" value="Pentel Side FX Automatic Mechanical Pencil with Retractable Eraser, 0.5 mm Tip, Black" type="hidden">
-													<input id="item_image_441252" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1619160&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('441252');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=2450648">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1632325&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_026.png" alt="Mechanical Pencils, Item Number 1382770">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1382770</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=2450648">Pentel Icy Multi-Purpose Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.5<span class="ellipsis">...</span><span class="full_description">	mm Stationary Tip, Gray, Pack of 24</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel Icy 0.5 mm Gray Mechanical Pencil features trendy and color-tinted barrels. Pencil reduces writing<span class="ellipsis">...</span><span class="full_description">
-	fatigue with comfortable and extra-soft grip that is free from latex. 
-Pencil is pre-loaded with Pentel super	hi-polymer HB lead and does not 
-require sharpening. It is very strong and creates a clear dark line. 
-Pencil	has long lasting metal clip to withstand repeated use. It can be 
-refilled using Pentel super hi-polymer lead	and PDE-1 refill eraser. 
-Pencil is sold as 24 per pack.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_2450648"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$24.52</span></div></div><div><div class="savings">List Price<span class="list_price">$32.69</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_2450648" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_2450648" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_2450648" name="item_id" value="2450648" type="hidden">
-													<input id="item_number_2450648" name="item_number" value="1382770" type="hidden">
-													<input id="item_name_2450648" name="item_name" value="Pentel Icy Multi-Purpose Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.5 mm Stationary Tip, Gray, Pack of 24" type="hidden">
-													<input id="item_image_2450648" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1632325&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('2450648');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=2450649">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1632326&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_011.png" alt="Mechanical Pencils, Item Number 1382771">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1382771</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=2450649">Pentel Icy Multi-Purpose Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.7<span class="ellipsis">...</span><span class="full_description">	mm Stationary Tip, Blue, Pack of 24</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel Icy 0.7 mm Blue Mechanical Pencil features trendy and color-tinted barrels. Pencil reduces writing<span class="ellipsis">...</span><span class="full_description">
-	fatigue with comfortable and extra-soft grip that is free from latex. 
-Pencil is pre-loaded with Pentel super	hi-polymer HB lead and does not 
-require sharpening. It is very strong and creates a clear dark line. 
-Pencil	has long lasting metal clip to withstand repeated use. It can be 
-refilled using Pentel super hi-polymer lead	and PDE-1 refill eraser. 
-Pencil is sold as 24 per pack.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_2450649"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$24.52</span></div></div><div><div class="savings">List Price<span class="list_price">$32.69</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_2450649" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_2450649" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_2450649" name="item_id" value="2450649" type="hidden">
-													<input id="item_number_2450649" name="item_number" value="1382771" type="hidden">
-													<input id="item_name_2450649" name="item_name" value="Pentel Icy Multi-Purpose Refillable Automatic Mechanical Pencil with Lead and Refill Eraser, 0.7 mm Stationary Tip, Blue, Pack of 24" type="hidden">
-													<input id="item_image_2450649" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1632326&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('2450649');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=412213">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1617399&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_032.png" alt="Mechanical Pencils, Item Number 1081022">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1081022</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=412213">Pentel Twist-Eraser III Refillable Automatic Mechanical Pencil with Comfort Grip, Lead and<span class="ellipsis">...</span><span class="full_description">	Eraser, 0.9 mm Protective Tip, Blue</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel Twist-Erase III 0.9 mm Blue Mechanical Pencil features latex- free grip to offer maximum comfort as<span class="ellipsis">...</span><span class="full_description">
-	well as control. Pencil has a strong and well-balanced barrel. Pencil 
-comes pre-loaded Pentel super	hi-polymer HB lead and does not require 
-sharpening. It is very strong and creates a clear dark line. Pencil	
-reduces lead breakage with protective tip design that stabilizes lead. 
-Pencil comes with twist-up eraser to	avoid smudges, paper tears and 
-ghosts. It can be refilled using Pentel super hi-polymer lead and E10 
-eraser.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_412213"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$4.72</span></div></div><div><div class="savings">List Price<span class="list_price">$6.29</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_412213" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_412213" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_412213" name="item_id" value="412213" type="hidden">
-													<input id="item_number_412213" name="item_number" value="1081022" type="hidden">
-													<input id="item_name_412213" name="item_name" value="Pentel Twist-Eraser III Refillable Automatic Mechanical Pencil with Comfort Grip, Lead and Eraser, 0.9 mm Protective Tip, Blue" type="hidden">
-													<input id="item_image_412213" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1617399&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('412213');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=412214">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1617398&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_069.png" alt="Mechanical Pencils, Item Number 1081021">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1081021</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=412214">Pentel Twist-Eraser III Refillable Automatic Mechanical Pencil with Comfort Grip, Lead and<span class="ellipsis">...</span><span class="full_description">	Eraser, 0.9 mm Protective Tip, Black</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel Twist-Erase III 0.9 mm Black Mechanical Pencil features latex- free grip to offer maximum comfort as<span class="ellipsis">...</span><span class="full_description">
-	well as control. Pencil has a strong and well-balanced barrel. Pencil 
-comes pre-loaded Pentel super	hi-polymer HB lead and does not require 
-sharpening. It is very strong and creates a clear dark line. Pencil	
-reduces lead breakage with protective tip design that stabilizes lead. 
-Pencil comes with twist-up eraser to	avoid smudges, paper tears and 
-ghosts. It can be refilled using Pentel super hi-polymer lead and E10 
-eraser.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_412214"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$4.72</span></div></div><div><div class="savings">List Price<span class="list_price">$6.29</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_412214" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_412214" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_412214" name="item_id" value="412214" type="hidden">
-													<input id="item_number_412214" name="item_number" value="1081021" type="hidden">
-													<input id="item_name_412214" name="item_name" value="Pentel Twist-Eraser III Refillable Automatic Mechanical Pencil with Comfort Grip, Lead and Eraser, 0.9 mm Protective Tip, Black" type="hidden">
-													<input id="item_image_412214" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1617398&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('412214');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="horiz_line"></div>
-
-								<div class="search_result_item">
-									<div class="product_image">
-										<a href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=402667">
-											<img class="product" data-large="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1617084&amp;Rendition=Medium" src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/xxssi_ibeGetWCCImage_056.png" alt="Mechanical Pencils, Item Number 1077187">
-										</a>
-									</div>
-									<div class="product_info">
-										<div class="item_number">
-											<span>1077187</span><span></span>
-										</div>
-										<div class="item_title">
-											<a class="title" href="https://store.schoolspecialty.com/OA_HTML/ibeCCtpItmDspRte.jsp?minisite=10206&amp;item=402667">Pentel Twist-Eraser III Refillable Automatic Mechanical Pencil with Comfort Grip, Lead and<span class="ellipsis">...</span><span class="full_description">	Eraser, 0.5 mm Protective Tip, Black</span></a>
-										</div>
-										<div class="item_desc">
-										Pentel Twist-Erase III 0.5 mm Black Mechanical Pencil features latex- free grip to offer maximum comfort as<span class="ellipsis">...</span><span class="full_description">
-	well as control. Pencil has a strong and well-balanced barrel. Pencil 
-comes pre-loaded Pentel super	hi-polymer HB lead and does not require 
-sharpening. It is very strong and creates a clear dark line. Pencil	
-reduces lead breakage with protective tip design that stabilizes lead. 
-Pencil comes with twist-up eraser to	avoid smudges, paper tears and 
-ghosts. It can be refilled using Pentel super hi-polymer lead and E10 
-eraser.</span>
-										</div>
-										<div class="item_icons">
-											
-										</div>
-										<div class="notice">
-											<div class="bottom">
-												<div class="shipping_notice ">
-													<a href="javascript:void(0);" onclick="com.schoolspecialty.ebs.iStore.displayShippingPolicy('/OA_HTML/xxssi_ibeShippingPolicy\.jsp?type=IBE&amp;name=xxssi_shipping_policy');">
-														<p>
-															<span class="dotted_underline"><img src="Search%20Results%20-%20SCHOOL%20SPECIALTY%20MARKETPLACE_files/ssiBoxGreen.png">
-Qualifies for free shipping.</span>
-														</p>
-													</a>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="product_price">
-
-			<div id="searchPriceHTML_402667"><div><div class="your_price"><span class="label">Web Price</span><span class="price">$4.72</span></div></div><div><div class="savings">List Price<span class="list_price">$6.29</span>You Save<span class="percent">25%</span></div></div></div>
-
-										<div>
-											<div id="err_msg_402667" class="error-msg"></div>
-											<div class="user_input">
-												<span class="qty_box">QTY</span>
-												<span class="input_box">
-													<input value="1" class="text input_field" name="qty" id="js-quantity_402667" onfocus="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.remove(this);" onblur="YUI.com.schoolspecialty.ebs.istore.items.defaultQty.add(this);" autocomplete="off" type="text">
-													<input id="item_id_402667" name="item_id" value="402667" type="hidden">
-													<input id="item_number_402667" name="item_number" value="1077187" type="hidden">
-													<input id="item_name_402667" name="item_name" value="Pentel Twist-Eraser III Refillable Automatic Mechanical Pencil with Comfort Grip, Lead and Eraser, 0.5 mm Protective Tip, Black" type="hidden">
-													<input id="item_image_402667" name="item_image" value="/OA_HTML/xxssi_ibeGetWCCImage.jsp?docName=F1617084&amp;Rendition=Small" type="hidden">
-												</span>
-												<div>
-													<a href="javascript:void(0)" class="button_dk_blue white plain add_cart" onclick="addProductDetailItemToCart('402667');">Add to Cart</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-
-						</div>
 						<div class="margin-top10 pagination">
 							<ul class="paging">
 								<li><a href="#" class="headline">Page 1 of 3</a></li>
@@ -2975,5 +2127,6 @@ Qualifies for free shipping.</span>
 <noscript></noscript></div><script id="" type="text/javascript">(function(a,c,d,b,e){a[c]=a[c]||{};a[c][d]=a[c][d]||{q:[],track:function(a,b,c){this.q.push({r:a,e:b,t:c||+new Date})}};a=b.createElement(e);b=b.getElementsByTagName(e)[0];a.async=1;a.src="//info.schoolspecialtynews.com/cdnr/35/acton/bn/tracker/19145";b.parentNode.insertBefore(a,b)})(window,"ActOn","Beacon",document,"script");ActOn.Beacon.track();</script><div style="display: none; visibility: hidden;">
 <script>!function(b,e,f,g,a,c,d){b.fbq||(a=b.fbq=function(){a.callMethod?a.callMethod.apply(a,arguments):a.queue.push(arguments)},b._fbq||(b._fbq=a),a.push=a,a.loaded=!0,a.version="2.0",a.queue=[],c=e.createElement(f),c.async=!0,c.src=g,d=e.getElementsByTagName(f)[0],d.parentNode.insertBefore(c,d))}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","1402168380043993");fbq("track","PageView");</script>
 <noscript></noscript>
-</div></body></html>
+</div><script type="text/javascript" src="./searchandiser-instance.js"></script></body></html>
+
 <!-- ibeCZzdBottom.jsp end -->

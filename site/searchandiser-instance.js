@@ -1,5 +1,10 @@
 searchandiser({
     customerId: 'schoolspecialty',
+    collection: 'schoolspecialty1products10206',
+    // default page size
+    pageSize: 20,
+    // page size options
+    pageSizes: [10, 20, 50],
     structure: {
         title: 'title',
         description: 'description',
@@ -33,7 +38,7 @@ searchandiser({
         productLength: 'Product_Length',
         productHeight: 'Product_Height',
         productWidth: 'Product_Width',
-        vinylColor: 'Vinyl_Color', // test case has a bug here....
+        vinylColor: 'Vinyl_Color', // Product #1392200 which is being considered for the demo path has "SPECIFY" for its Vinyl Color, a bug in SchoolSpecialty's database 
         weightCapacity: 'Weight_Capacity',
         
         //Ball
@@ -48,4 +53,32 @@ searchandiser({
 });
 
 searchandiser.search('');
+searchandiser.attach('raw-results', '.grid.margin-top10');
 
+function truncateParagraph(desc, maxLength) {
+    desc = desc.split(" ");
+    var count = 0;
+    var max = desc.length;
+    var arr = [];
+
+    for (var i = 0; i < max; i++) {
+        var add = desc[i].length + 1
+        if (count + add <= maxLength) {
+            count += add;
+            arr.push(desc[i]);
+        } else {
+            max = 0;
+        }
+    }
+
+    arr = arr.join(" ");
+    arr = arr.replace(/(\.*)$/, '');
+    return arr + "...";
+}
+
+function percentSaved(listPrice, savingPrice) {
+    var amountSaved = listPrice - savingPrice
+    var percentSaved = amountSaved/listPrice * 100
+    var formatedPercent = Number((percentSaved).toFixed(1))
+    return formatedPercent;
+}
