@@ -9,6 +9,7 @@ import './gb-raw-query.tag';
 import './gb-raw-submit.tag';
 import './gb-results.tag';
 import './gb-raw-results.tag';
+import './gb-import.tag';
 import './gb-record-count.tag';
 import './gb-related-searches.tag';
 import './gb-did-you-mean.tag';
