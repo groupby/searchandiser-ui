@@ -7,7 +7,7 @@
     <meta name="description" content="Searchandiser UI Demo">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="assets/style.css" charset="utf-8">
-    <script src="../dist/searchandiser-ui-0.0.14.js"></script>
+    <script src="dist/searchandiser-ui-0.0.14.js"></script>
   </head>
 
   <body>
@@ -30,9 +30,7 @@
     <div class="gb-main">
       <div class="available-navigation"></div>
       <div class="products">
-        <div class="spotlight-template">
-          <img src="http://placeholder.pics/svg/900x300/DEDEDE/555555/spotlight" />
-        </div>
+        <div class="spotlight-template"></div>
         <div class="gb-bar">
           <div class="record-count">
             <h2>{ first } - { last } of { total } Products</h2>
@@ -226,7 +224,10 @@
       });
       searchandiser.attach('did-you-mean');
       searchandiser.attach('related-searches');
-      searchandiser.template('Product Spotlight', '.spotlight-template');
+      searchandiser.template('Product Spotlight', '.spotlight-template', {
+        url: 'templates/spotlight.html',
+        raw: true
+      });
     </script>
 
   </body>
