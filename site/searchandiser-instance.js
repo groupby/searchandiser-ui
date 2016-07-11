@@ -73,7 +73,7 @@ function truncateParagraph(desc, maxLength) {
 
     arr = arr.join(" ");
     arr = arr.replace(/(\.*)$/, '');
-    return arr + "...";
+    return arr + "…";
 }
 
 function percentSaved(listPrice, savingPrice) {
