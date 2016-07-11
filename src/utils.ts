@@ -7,9 +7,9 @@ export function pluck(obj: any, ...keys: string[]): any {
 }
 
 export function getParam(param): string | null {
-  const queryParam = window.location.search
+  const queryParams = window.location.search
     .substring(1)
-    .split('&')
-    .find(value => value.startsWith(param));
-  return queryParam && queryParam.includes('=') ? queryParam.split('=')[1] : null;
+    .split('&');
+  const index = queryParams.findIndex(value => value.indexOf(param) === 0);
+  return index !== -1 && queryParams[index].includes('=') ? queryParams[index].split('=')[1] : null;
 }
