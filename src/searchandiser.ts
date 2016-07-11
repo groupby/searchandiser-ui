@@ -11,6 +11,7 @@ export function initSearchandiser() {
 }
 
 function initCapacitor(config: SearchandiserConfig) {
+  if (config.pageSizes) config.pageSize = config.pageSizes[0];
   return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize'));
 }
 
@@ -49,6 +50,7 @@ export interface SearchandiserConfig {
   collection?: string;
   language?: string;
   pageSize?: number;
+  pageSizes?: number[];
   stylish?: boolean;
 
   structure?: {
