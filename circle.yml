@@ -1,6 +1,9 @@
 dependencies:
   pre:
     - sudo apt-get update && sudo apt-get install jq
+    - git config --global user.email "ops@groubyinc.com"
+    - git config --global user.name "GroupBy Ops"
+    - git config --global push.default simple
 
 deployment:
   npm:
