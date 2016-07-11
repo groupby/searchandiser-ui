@@ -147,9 +147,15 @@ Use the searchandiser method to set up your configurations in a script tag at th
         },
 
         // enable some default styling
-        // stylish: true
+        // stylish: true,
+        //
+        // disable a default empty search at page load
+        // initialSearch: false
       });
-      searchandiser.search('');
+
+      // Manually make your own query, all components will update accordingly.
+      // Make sure to disable 'initialSearch'.
+      // searchandiser.search('red shoes');
 
       // Usage of the attach method looks like the following:
       // The callback has passed a single parameter, a tag instance representing the mounted component
