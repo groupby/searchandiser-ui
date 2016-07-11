@@ -4,14 +4,12 @@
   </div>
 
   <script>
+    const utils = require('../utils');
     const idParam = opts.idParam || 'id';
-    const queryParam = window.location.search
-      .substring(1)
-      .split('&')
-      .find(value => value.startsWith(idParam));
+    const query = utils.getParam(idParam);
 
     this.struct = opts.config.structure;
     opts.flux.on(opts.flux.DETAILS, (record) => this.update({ record }));
-    if (queryParam && queryParam.includes('=')) opts.flux.details(queryParam.split('=')[1]);
+    if (query) opts.flux.details(query);
   </script>
 </gb-details>
