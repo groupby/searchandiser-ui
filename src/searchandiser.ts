@@ -4,9 +4,10 @@ import riot = require('riot');
 
 export function initSearchandiser() {
   return function configure(config: SearchandiserConfig & any = {}) {
-    const flux = initCapacitor(config);
+    const finalConfig = Object.assign({ initialSearch: true }, config);
+    const flux = initCapacitor(finalConfig);
     Object.assign(flux, Events);
-    Object.assign(configure, new Searchandiser(flux, config));
+    Object.assign(configure, new Searchandiser(flux, finalConfig));
   }
 }
 
@@ -17,7 +18,9 @@ function initCapacitor(config: SearchandiserConfig) {
 
 class Searchandiser {
 
-  constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) { }
+  constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) {
+    if (config.initialSearch) flux.search('');
+  }
 
   attach = (tagName: Component, cssSelector: string = `.${tagName}`, options: any = {}, handler?: (tag) => void) => {
     const tag = riot.mount(cssSelector, `gb-${tagName}`, Object.assign(options, this));
@@ -32,7 +35,7 @@ class Searchandiser {
 
   style = () => this.config.stylish ? 'gb-stylish' : '';
 
-  clone = () => initCapacitor(this.config);
+  clone = () => initCapacitor(Object.assign({}, this.config, { initialSearch: false }));
 }
 
 export type Component = 'query' |
@@ -52,6 +55,7 @@ export interface SearchandiserConfig {
   pageSize?: number;
   pageSizes?: number[];
   stylish?: boolean;
+  initialSearch?: boolean;
 
   structure?: {
     title?: string;
