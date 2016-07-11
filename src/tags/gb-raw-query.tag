@@ -2,12 +2,14 @@
   <script>
     require('./sayt/gb-sayt.tag');
     const ENTER_KEY = 13;
+    const { getParam } = require('../utils');
     const queryWrapper = require('./sayt/query-wrapper');
     const autoSearch = opts.autoSearch === undefined ? true : opts.autoSearch;
     const staticSearch = opts.staticSearch === undefined ? false : opts.staticSearch;
     const saytEnabled = opts.sayt === undefined ? true : opts.sayt;
     const queryParam = opts.queryParam === undefined ? 'q' : opts.queryParam;
     const searchUrl = `${opts.searchUrl === undefined ? 'search' : opts.searchUrl}?${queryParam}=`;
+    const queryFromUrl = getParam(queryParam);
 
     const inputValue = () => this.root.value;
     if (saytEnabled) queryWrapper.mount(this, opts);
@@ -27,6 +29,7 @@
       }));
     }
     opts.flux.on(opts.flux.REWRITE_QUERY, query => this.root.value = query);
+    if (queryFromUrl) opts.flux.rewrite(queryFromUrl);
   </script>
 
   <style>
