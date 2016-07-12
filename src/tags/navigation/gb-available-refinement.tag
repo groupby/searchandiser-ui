@@ -8,7 +8,7 @@
   </li>
 
   <script>
-    const utils = require('../utils');
+    const utils = require('../../utils');
     this.parentOpts = this.parent.parent.opts;
     this.send = () => this.parentOpts.flux.refine(utils.toRefinement(this.ref, this.nav));
   </script>

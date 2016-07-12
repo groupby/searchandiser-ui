@@ -1,11 +1,9 @@
-riot.tag('raw', '<span></span>', function (opts) {
-    this.updateContent = function () {
-        this.root.innerHTML = opts.content;
-    };
+<gb-raw>
+  <span></span>
 
-    this.on('update', function() {
-        this.updateContent();
-    });
-
+  <script>
+    this.updateContent = () => this.root.innerHTML = opts.content;
+    this.on('update', () => this.updateContent());
     this.updateContent();
-});
+  </script>
+</gb-raw>

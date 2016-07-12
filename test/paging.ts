@@ -3,7 +3,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
-import '../src/tags/gb-paging.tag';
+import '../src/tags/paging/gb-paging.tag';
 
 const TAG = 'gb-paging';
 

@@ -1,6 +1,6 @@
 <gb-refinement-crumb>
   <li class="gb-refinement-crumb { parentOpts.style() }">
-    <a href="#" onclick={ remove }>×</a> <b>{ nav.displayName }: { ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high }</b>
+    <a onclick={ remove }>&times;</a> <b>{ nav.displayName }: { ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high }</b>
   </li>
 
   <script>
@@ -12,6 +12,10 @@
   <style>
     .gb-stylish.gb-refinement-crumb {
       display: flex;
+    }
+
+    .gb-stylish.gb-refinement-crumb a {
+      cursor: pointer;
     }
   </style>
 </gb-refinement-crumb>

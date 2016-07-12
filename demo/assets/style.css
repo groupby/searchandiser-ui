@@ -16,12 +16,16 @@ body {
   padding: 4px 6px;
 }
 
-.gb-bar> * {
-  flex-grow: 1;
-}
-
 .gb-bar .selected-navigation {
   flex: 3;
+}
+
+.gb-bar .filter {
+  margin-left: auto;
+}
+
+.gb-bar .paging {
+  width: 100%;
 }
 
 

@@ -7,13 +7,15 @@
     <meta name="description" content="Searchandiser UI Demo">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="assets/style.css" charset="utf-8">
-    <script src="dist/searchandiser-ui-0.0.11.js"></script>
+    <script src="dist/searchandiser-ui-0.0.17.js"></script>
   </head>
 
   <body>
 
     <div class="query"></div>
     <!-- <input type="text" class="raw-query"> -->
+    <button type="button" class="raw-submit">Search</button>
+    <!-- <input type="button" class="raw-submit"> -->
     <div class="gb-bar">
       <div class="category-menu"></div>
     </div>
@@ -28,9 +30,7 @@
     <div class="gb-main">
       <div class="available-navigation"></div>
       <div class="products">
-        <div class="spotlight-template">
-          <img src="http://placeholder.pics/svg/900x300/DEDEDE/555555/spotlight" />
-        </div>
+        <div class="spotlight-template"></div>
         <div class="gb-bar">
           <div class="record-count">
             <h2>{ first } - { last } of { total } Products</h2>
@@ -39,6 +39,8 @@
           <div class="filter"></div>
           <div class="sort"></div>
           <div class="page-size"></div>
+        </div>
+        <div class="gb-bar">
           <div class="paging"></div>
         </div>
         <div class="results"></div>
@@ -57,8 +59,7 @@
     <script>
       searchandiser({
         customerId: 'crateandbarreldemo',
-        // pageSize: 12,
-        pageSizes: [10, 25, 50],
+        pageSizes: [12, 24, 50],
 
         structure: {
           title: 'title',
@@ -80,7 +81,6 @@
 
         stylish: true
       });
-      searchandiser.search('');
       // searchandiser.attach('select', '.select', {
       //   native: true,
       //   options: [{
@@ -97,6 +97,7 @@
         // searchUrl: '/search',
         // queryParam: 'query'
       });
+      searchandiser.attach('raw-submit');
       // searchandiser.attach('raw-query');
       searchandiser.attach('category-menu', '.category-menu', {
         sections: [{
@@ -182,7 +183,9 @@
           }]
         }]
       });
-      searchandiser.attach('paging');
+      searchandiser.attach('paging', '.paging', {
+        showPages: true
+      });
       searchandiser.attach('page-size', '.page-size', {
         onHover: false,
         // native: true,
@@ -221,7 +224,10 @@
       });
       searchandiser.attach('did-you-mean');
       searchandiser.attach('related-searches');
-      searchandiser.template('Product Spotlight', '.spotlight-template');
+      searchandiser.template('Product Spotlight', '.spotlight-template', {
+        url: 'templates/spotlight.html',
+        raw: true
+      });
     </script>
 
   </body>

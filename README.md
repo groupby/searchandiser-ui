@@ -4,26 +4,38 @@ GroupBy Searchandiser UI
 
 The following instructions assume that you are creating a search & merch single page app using the
 GroupBy commerce platform.  
-For instructions to integrate with an existing NodeJS application please read this file.
-[README.nodejs.md](README.nodejs.md)
 
 There are two ways to implement in an existing website, the preferred way is to have the searchandiser
 API generate the HTML on your page and hookup the eventing for you.  This way you will inherit
 all the best practices for your website in seconds.
 
-Implementing on an existing website
+Implementing on an existing website:
 ---
 
 ###Step 1
 
-Ensure that there are `div` tags on your site with IDs that correspond to the elements that will be
+Add the searchandiser CDN to the head in your html file.
+
+```html
+<html>
+  <head>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.17.js"></script>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
+
+###Step 2
+
+Ensure that there are `div` tags on your site with IDs or classes that correspond to the elements that will be
 displayed.
 
 ```html
 <html>
   <head>...</head>
   <body>
-
     <!-- the search box -->
     <div class="query"></div>
     <!-- Optionally inject into an input element directly
@@ -65,60 +77,34 @@ displayed.
       <div class="availableNavigation"></div>
       <!-- Records that match the search and nav state -->
       <div class="results"></div>
-      <!-- Optionally construct your own product template
-      <div class="raw-results">
-        <a href="#">
-          // Using 'riot-src' ensures that there are no errors
-          // loading invalid image urls
-          <img riot-src="{ allMeta['image'] }" alt="" />
-        </a>
-        <a href="#">
-          <p>{ allMeta['title'] }</p>
-          <p>{ allMeta['price'] }</p>
-        </a>
-      </div>
+      <!-- Optionally construct your own product template by using the raw-results class -->
+      <!-- <div class="raw-results">
+            <a href="#">
+              // Using 'riot-src' ensures that there are no errors
+              // loading invalid image urls
+            <img riot-src="{ allMeta['image'] }" alt="" />
+            </a>
+            <a href="#">
+              <p>{ allMeta['title'] }</p>
+              <p>{ allMeta['price'] }</p>
+            </a>
+          </div>
       -->
     </div>
-
+    <script>...</script>
   </body>
 </html>
 ```
 
-###Step 2
+###Step 3
 
-Add the JavaScript that will attach the service to the `div`s above.
+Use the searchandiser method to set up your configurations in a script tag at the bottom of your body.
 
 ```html
 <html>
-  <head>
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.11.js"></script>
-  </head>
+  <head>...</head>
   <body>
-
-    <div class="query"></div>
-    <input type="text" class="raw-query">
-    <div>
-      <div class="breadcrumbs"></div>
-      <div class="recordCount">
-        <h2>{ first } - { last } of { total } Products</h2>
-      </div>
-      <div class="page-size"></div>
-      <div class="paging"></div>
-    </div>
-    <div>
-      <div class="didYouMean"></div>
-      <div class="relatedSearches"></div>
-    </div>
-    <div class="spotlightTemplate">
-      <!-- template content -->
-    </div>
-    <div>
-      <div class="availableNavigation"></div>
-      <div class="results"></div>
-      <div class="raw-results">
-        <!-- product template -->
-      </div>
-    </div>
+    ...
 
     <script>
       searchandiser({
@@ -161,12 +147,18 @@ Add the JavaScript that will attach the service to the `div`s above.
         },
 
         // enable some default styling
-        // stylish: true
+        // stylish: true,
+        //
+        // disable a default empty search at page load
+        // initialSearch: false
       });
-      searchandiser.search('');
+
+      // Manually make your own query, all components will update accordingly.
+      // Make sure to disable 'initialSearch'.
+      // searchandiser.search('red shoes');
 
       // Usage of the attach method looks like the following:
-      // The callback his passed a single parameter, a tag instance representing the mounted component
+      // The callback has passed a single parameter, a tag instance representing the mounted component
       // See the riot.js documentation (http://riotjs.com/guide/#mounting) for available lifecycle events
       // searchandiser.attach(<tag name>, [<css selector>], [<argument dictionary>], [<callback>]);
 
@@ -176,7 +168,6 @@ Add the JavaScript that will attach the service to the `div`s above.
       //     operate on the rendered elements
       //   });
       // });
-
       searchandiser.attach('query', '.query', {
         // disable Searchandise-As-You-Type
         // sayt: false,
@@ -209,7 +200,16 @@ Add the JavaScript that will attach the service to the `div`s above.
       // the same options as 'query'
       searchandiser.attach('raw-query', '.raw-query');
 
-      searchandiser.attach('paging', '.paging');
+      searchandiser.attach('paging', '.paging', {
+        // show page selection links
+        // showPages: true,
+        //
+        // set the limit of visible page selection links
+        // limit: 7,
+        //
+        // hide 'first' and 'last' links
+        // showTerminals: false
+      });
       searchandiser.attach('page-size', '.page-size');
       searchandiser.attach('results', '.results');
 
@@ -274,12 +274,11 @@ Add the JavaScript that will attach the service to the `div`s above.
       // and a css selector
       searchandiser.template('My Spotlight Template', '.spotlightTemplate');
     </script>
-
   </body>
 </html>
 ```
 
-###Step 3
+###Step 4
 
 To theme the results use CSS for each of the elements.  For a complete style reference see this
 document: [docs/css-reference.md](docs/css-reference.md)

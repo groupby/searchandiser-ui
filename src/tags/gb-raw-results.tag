@@ -16,6 +16,7 @@
 
   <style scoped>
     .gb-stylish.gb-results {
+      padding: 0;
       list-style: none;
       display: flex;
       flex-wrap: wrap;
