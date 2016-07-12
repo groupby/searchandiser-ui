@@ -16,7 +16,7 @@ function initCapacitor(config: SearchandiserConfig) {
   return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize'));
 }
 
-class Searchandiser {
+export class Searchandiser {
 
   constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) {
     if (config.initialSearch) flux.search('');

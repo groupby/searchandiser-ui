@@ -1,5 +1,5 @@
 <gb-breadcrumbs>
-  <ul class="gb-breadcrumbs { opts.style() } ">
+  <ul class="gb-breadcrumbs { opts.style() }">
     <li if={ !hideQuery && query }>{ query }</li>
     <li if={ !hideRefinements } each={ nav in selected }>
       <ul class="gb-nav-crumb">
