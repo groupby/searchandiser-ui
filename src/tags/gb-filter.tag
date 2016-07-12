@@ -7,7 +7,7 @@
     const navField = opts.field;
     const flux = opts.clone();
     const isTargetNav = (nav) => nav.name === navField;
-    const convertRefinements = (navigations) => navigations.find(isTargetNav).refinements.map(ref => ({ label: ref.value, value: ref }))
+    const convertRefinements = (navigations) => navigations.find(isTargetNav).refinements.map(ref => ({ label: ref.value, value: ref }));
     const updateValues = (res) => this.selectElement._tag.update({ options: convertRefinements(res.availableNavigation) });
 
     this.label = opts.label || 'Filter';
@@ -22,7 +22,7 @@
     };
 
     opts.flux.on(opts.flux.RESULTS, res => {
-      const searchRequest = opts.flux.query.rawRequest;
+      const searchRequest = opts.flux.query.raw;
       // TODO this is probably broken in terms of state propagation
       flux.query.withConfiguration({ refinements: [] });
       if (searchRequest.refinements) flux.query.withSelectedRefinements(...searchRequest.refinements.filter(ref => ref.navigationName !== navField));
