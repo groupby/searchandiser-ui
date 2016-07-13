@@ -1,7 +1,11 @@
 import './navigation/gb-available-navigation.tag';
 import './breadcrumbs/gb-breadcrumbs.tag';
 import './category-menu/gb-category-menu.tag';
+import './paging/gb-raw-paging.tag';
 import './paging/gb-paging.tag';
+import './paging/gb-terminal-pager.tag';
+import './paging/gb-pager.tag';
+import './paging/gb-pages.tag';
 import './gb-query.tag';
 import './gb-details.tag';
 import './gb-raw.tag';

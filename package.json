@@ -81,7 +81,7 @@
   },
   "dependencies": {
     "es6-promise": "^3.2.1",
-    "groupby-api": "^1.0.41",
+    "groupby-api": "^1.0.42",
     "sayt": "0.0.5"
   }
 }

@@ -42,6 +42,13 @@
         </div>
         <div class="gb-bar">
           <div class="paging"></div>
+          <!-- <div class="raw-paging">
+            <gb-terminal-pager>
+              <gb-pager>
+                <gb-pages></gb-pages>
+              </gb-pager>
+            </gb-terminal-pager>
+          </div> -->
         </div>
         <div class="results"></div>
         <!-- <div class="raw-results">
@@ -184,8 +191,11 @@
         }]
       });
       searchandiser.attach('paging', '.paging', {
-        showPages: true
+        pages: true
       });
+      // searchandiser.attach('raw-paging', '.raw-paging', {
+      //   pages: true
+      // });
       searchandiser.attach('page-size', '.page-size', {
         onHover: false,
         // native: true,
