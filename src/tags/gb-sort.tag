@@ -9,11 +9,12 @@
       { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
       { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
     ];
+    this.sortValues = () => this.sorts.map(sort => sort.value);
     this.updateSort = (value) => {
       if (value !== '*') {
-        opts.flux.sort(value);
+        opts.flux.sort(value, this.sortValues());
       } else {
-        opts.flux.query.withoutSorts(...this.sorts.map(sort => sort.value));
+        opts.flux.query.withoutSorts(...this.sortValues());
         opts.flux.search();
       }
     };
