@@ -19,7 +19,7 @@ function initCapacitor(config: SearchandiserConfig) {
 export class Searchandiser {
 
   constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) {
-    if (config.initialSearch) flux.search('');
+    if (config.initialSearch) this.search();
   }
 
   attach = (tagName: Component, cssSelector: string = `.${tagName}`, options: any = {}, handler?: (tag) => void) => {
@@ -31,7 +31,8 @@ export class Searchandiser {
     this.attach('template', cssSelector, Object.assign(options, { templateName }));
   };
 
-  search = (query?: string) => this.flux.search(query);
+  search = (query?: string) => this.flux.search(query)
+    .then(res => this.flux.emit(Events.PAGE_CHANGED, { pageIndex: 0, finalPage: this.flux.page.finalPage }));
 
   style = () => this.config.stylish ? 'gb-stylish' : '';
 
