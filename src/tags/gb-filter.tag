@@ -2,8 +2,7 @@
   <gb-select name="selectElement" update={ navigate } native={ opts.native } label={ label } clear={ clear } hover={ opts.onHover }></gb-select>
 
   <script>
-    require('./gb-select.tag');
-    const utils = require('../utils');
+    const { toRefinement } = require('../utils');
     const navField = opts.field;
     const flux = opts.clone();
     const isTargetNav = (nav) => nav.name === navField;
@@ -17,7 +16,7 @@
       if (value === '*') {
         opts.flux.reset();
       } else {
-        opts.flux.refine(this.selected = utils.toRefinement(value, { name: navField }));
+        opts.flux.refine(this.selected = toRefinement(value, { name: navField }));
       }
     };
 

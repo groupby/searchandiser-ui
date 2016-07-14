@@ -2,7 +2,6 @@
   <gb-select class="gb-sort" options={ sorts } native={ opts.native } update={ updateSort } hover={ opts.onHover } default="true"></gb-select>
 
   <script>
-    require('./gb-select.tag');
     const { checkNested } = require('../utils');
     this.sorts = checkNested(opts.config, 'tags', 'sort', 'options') ? opts.config.tags.sort.options
       : opts.options
