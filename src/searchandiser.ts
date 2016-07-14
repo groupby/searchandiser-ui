@@ -1,5 +1,5 @@
-import { Query, BrowserBridge, Results, FluxCapacitor, Events } from 'groupby-api';
-import { pluck } from './utils';
+import { Query, BrowserBridge, Results, FluxCapacitor, Events, Sort } from 'groupby-api';
+import { pluck, checkNested } from './utils';
 import riot = require('riot');
 
 export function initSearchandiser() {
@@ -13,7 +13,8 @@ export function initSearchandiser() {
 
 function initCapacitor(config: SearchandiserConfig) {
   if (config.pageSizes) config.pageSize = config.pageSizes[0];
-  return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize'));
+  if (checkNested(config, 'tags', 'sort', 'options')) config.sort = config.tags.sort.options.map(val => val.value);
+  return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize', 'sort'));
 }
 
 export class Searchandiser {
@@ -55,6 +56,12 @@ export interface SearchandiserConfig {
   language?: string;
   pageSize?: number;
   pageSizes?: number[];
+  sort?: Sort[];
+  tags: {
+    sort?: {
+      options?: any[]
+    };
+  };
   stylish?: boolean;
   initialSearch?: boolean;
 

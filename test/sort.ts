@@ -20,8 +20,6 @@ describe('gb-sort tag', () => {
 
   it('should expose properties', () => {
     const tag = mount();
-    expect(tag['label']).to.be.ok;
-    expect(tag['clear']).to.be.ok;
     expect(tag['sorts']).to.be.ok;
     expect(tag['updateSort']).to.be.ok;
   });
