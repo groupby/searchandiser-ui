@@ -3,7 +3,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
-import '../src/tags/gb-select.tag';
+import '../src/tags/select/gb-select.tag';
 import '../src/tags/gb-page-size.tag';
 
 const TAG = 'gb-page-size';
