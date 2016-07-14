@@ -7,8 +7,8 @@
     const limit = opts.limit === undefined ? 5 : opts.limit;
     this.style = this.parent ? this.parent.style : opts.style;
     this.pages = opts.pages === undefined ? false : opts.pages;
+    this.numeric = opts.numeric === undefined ? false : opts.numeric;
     this.terminals = opts.terminals === undefined ? true : opts.terminals;
-    this.numeric = opts.numeric === undefined ? true : opts.numeric;
     this.icons = opts.icons === undefined ? true : opts.icons;
 
     this.prev_label = this.parent ? this.parent.prev_label : opts.prev_label;

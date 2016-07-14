@@ -6,7 +6,7 @@
   <div if={ !native } class="gb-select { hover ? 'hoverable' : 'clickable' }">
     <button type="button" class="gb-select__button" name="selectButton" onfocus={ prepFocus } onclick={ unFocus }>
       <span>{ selectLabel() }</span>
-      <img class="gb-select__arrow" src="assets/arrow-down.svg" alt="" />
+      <img class="gb-select__arrow" src={ dataurl } alt="" />
     </button>
     <div class="gb-select__content">
       <a value="" if={ !hasDefault && selectedOption } onclick={ clearSelection }>{ clear }</a>
@@ -17,6 +17,7 @@
   <script>
     const label = opts.label || 'Select';
     const callback = opts.update;
+    this.dataurl = require('url!./arrow-down.png');
 
     this.hover = opts.hover === undefined ? true : opts.hover;
     this.native = opts.native === undefined ? false : opts.native;
@@ -90,7 +91,8 @@
     }
     .gb-select__arrow {
       margin-left: 10px;
-      height: 6px;
+      margin-top: 2px;
+      height: 24px;
     }
     .gb-select__content {
       display: none;
