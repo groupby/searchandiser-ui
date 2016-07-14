@@ -8,6 +8,7 @@
   <script>
     this.style = this.parent.style;
     this.terminals = this.parent.terminals;
+    this.numeric = this.parent.numeric;
     this.icons = this.parent.icons;
     this.prev_label = this.parent.prev_label || 'Prev';
     this.next_label = this.parent.next_label || 'Next';
