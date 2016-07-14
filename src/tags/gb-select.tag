@@ -23,7 +23,7 @@
     this.clear = opts.clear === undefined ? 'Unselect' : opts.clear;
     this.hasDefault = opts.default === undefined ? false : opts.default;
     this.options = opts.options || [];
-    if (this.hasDefault) this.selectedOption = this.options[0];
+    if (this.hasDefault) this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
 
     this.selectLabel = () => this.selectedOption ? this.selectedOption : (this.selected ? this.clear : label);
     this.optionValue = (option) => typeof option === 'object' ? JSON.stringify(option.value) : option;

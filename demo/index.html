@@ -86,6 +86,41 @@
           allowedNavigations: ['brand']
         },
 
+        tags: {
+          sort: {
+            options: [{
+              label: 'Relevance',
+              value: {
+                field: '_relevance'
+              }
+            }, {
+              label: 'Price Low to High',
+              value: {
+                field: 'price',
+                order: 'Ascending'
+              }
+            }, {
+              label: 'Price High to Low',
+              value: {
+                field: 'price',
+                order: 'Descending'
+              }
+            }, {
+              label: 'A-Z',
+              value: {
+                field: 'title',
+                order: 'Ascending'
+              }
+            }, {
+              label: 'Z-A',
+              value: {
+                field: 'title',
+                order: 'Descending'
+              }
+            }]
+          }
+        },
+
         stylish: true
       });
       // searchandiser.attach('select', '.select', {
@@ -210,32 +245,7 @@
       });
       searchandiser.attach('sort', '.sort', {
         // native: true,
-        onHover: false,
-        options: [{
-          label: 'Price Low to High',
-          value: {
-            field: 'price',
-            order: 'Ascending'
-          }
-        }, {
-          label: 'Price High to Low',
-          value: {
-            field: 'price',
-            order: 'Descending'
-          }
-        }, {
-          label: 'A-Z',
-          value: {
-            field: 'title',
-            order: 'Ascending'
-          }
-        }, {
-          label: 'Z-A',
-          value: {
-            field: 'title',
-            order: 'Descending'
-          }
-        }]
+        onHover: false
       });
       // searchandiser.attach('raw-results');
       searchandiser.attach('record-count');
