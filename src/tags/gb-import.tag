@@ -10,10 +10,12 @@
       const req = new XMLHttpRequest();
       req.onload = () => {
         const { responseText } = req;
-        if (isRaw) this.root.innerHTML = responseText;
-        else this.update({ responseText });
+        if (isRaw) {
+					this.root.innerHTML = responseText;
+        } else {
+					this.update({ responseText });
+				}
       };
-      console.log(opts);
       req.open('get', opts.url, true);
       req.send();
     };

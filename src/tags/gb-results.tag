@@ -4,7 +4,6 @@
   </gb-raw-results>
 
   <script>
-    require('./gb-raw-results.tag');
     require('./gb-product.tag');
 
     this.struct = opts.config.structure;

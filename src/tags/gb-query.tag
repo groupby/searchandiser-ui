@@ -5,7 +5,6 @@
   </div>
 
   <script>
-    require('./gb-raw-query.tag')
     this.on('mount', () => riot.mount('.gb-query__box', 'gb-raw-query', opts));
     this.clearQuery = () => opts.flux.reset(this.searchBox.value = '');
   </script>

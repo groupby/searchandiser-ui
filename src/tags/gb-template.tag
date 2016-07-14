@@ -9,7 +9,7 @@
     this.isActive = false;
     this.url = opts.url;
     this.raw = opts.raw === undefined ? false : opts.raw;
-    opts.flux.on(opts.flux.RESULTS, res => this.update({ isActive: res.template.name === opts.templateName }));
+    opts.flux.on(opts.flux.RESULTS, ({ template }) => this.update({ isActive: template.name === opts.templateName }));
   </script>
 
   <style scoped>

@@ -1,12 +1,12 @@
 <gb-related-searches>
   <ul class="gb-related-searches { opts.style() }">
-    <li class="gb-related-search" each="{ related in relatedSearches }">
-      <a class="gb-related-search__link" onclick="{ send }">{ related }</a>
+    <li class="gb-related-search" each={ related in relatedQueries }>
+      <a class="gb-related-search__link" onclick={ send }>{ related }</a>
     </li>
   </ul>
 
   <script>
-    opts.flux.on(opts.flux.RESULTS, res => this.update({ relatedSearches: res.relatedQueries }));
+    opts.flux.on(opts.flux.RESULTS, ({ relatedQueries }) => this.update({ relatedQueries }));
     this.send = (event) => opts.flux.rewrite(event.target.text);
   </script>
 

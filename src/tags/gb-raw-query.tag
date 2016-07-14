@@ -3,7 +3,7 @@
     require('./sayt/gb-sayt.tag');
     const ENTER_KEY = 13;
     const { getParam } = require('../utils');
-    const queryWrapper = require('./sayt/query-wrapper');
+    const { mount } = require('./sayt/query-wrapper');
     const autoSearch = opts.autoSearch === undefined ? true : opts.autoSearch;
     const staticSearch = opts.staticSearch === undefined ? false : opts.staticSearch;
     const saytEnabled = opts.sayt === undefined ? true : opts.sayt;
@@ -12,7 +12,7 @@
     const queryFromUrl = getParam(queryParam);
 
     const inputValue = () => this.root.value;
-    if (saytEnabled) queryWrapper.mount(this, opts);
+    if (saytEnabled) mount(this, opts);
     if (autoSearch)  {
       this.on('before-mount', () => this.root.addEventListener('input', () => opts.flux.reset(inputValue())));
     } else if (staticSearch) {
@@ -28,7 +28,7 @@
         }
       }));
     }
-    opts.flux.on(opts.flux.REWRITE_QUERY, query => this.root.value = query);
+    opts.flux.on(opts.flux.REWRITE_QUERY, (query) => this.root.value = query);
     if (queryFromUrl) opts.flux.rewrite(queryFromUrl);
   </script>
 

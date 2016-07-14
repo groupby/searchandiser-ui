@@ -4,9 +4,9 @@
   </div>
 
   <script>
-    const utils = require('../utils');
+    const { getParam } = require('../utils');
     const idParam = opts.idParam || 'id';
-    const query = utils.getParam(idParam);
+    const query = getParam(idParam);
 
     this.struct = opts.config.structure;
     opts.flux.on(opts.flux.DETAILS, (record) => this.update({ record }));
