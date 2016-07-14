@@ -1,13 +1,14 @@
 <gb-terminal-pager>
   <div class="gb-terminal-pager { style() }">
-    <a class="gb-terminal__link first { backDisabled ? 'disabled' : '' }" if={ terminals } onclick={ pager.first }><span if={ icons } class="gb-paging__icon">&larr;</span> { first_label }</a>
+    <a class="gb-terminal__link first { backDisabled ? 'disabled' : '' }" if={ terminals } onclick={ pager.first }><span if={ icons } class="gb-paging__icon">&larr;</span> { numeric ? 1 : first_label }</a>
     <yield/>
-    <a class="gb-terminal__link last { forwardDisabled ? 'disabled' : '' }" if={ terminals } onclick={ pager.last }>{ last_label } <span if={ icons } class="gb-paging__icon">&rarr;</span></a>
+    <a class="gb-terminal__link last { forwardDisabled ? 'disabled' : '' }" if={ terminals } onclick={ pager.last }>{ numeric ? lastPage : last_label } <span if={ icons } class="gb-paging__icon">&rarr;</span></a>
   </div>
 
   <script>
     this.style = this.parent.style;
     this.terminals = this.parent.terminals;
+    this.numeric = this.parent.numeric;
     this.icons = this.parent.icons;
     this.prev_label = this.parent.prev_label;
     this.next_label = this.parent.next_label;
