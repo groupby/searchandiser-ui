@@ -53,20 +53,23 @@
       productSearch: { area: opts.config.area, numProducts: saytConfig.products }
     });
 
-    this.search = event => {
+    this.search = (event) => {
       let node = event.target;
       while(node.tagName !== 'LI') node = node.parentNode;
       opts.flux.rewrite(node.getAttribute('data-value'));
     };
     const refine = (node, query) => {
       while(node.tagName !== 'LI') node = node.parentNode;
-      opts.flux.refine({ navigationName: node.getAttribute('data-field'), type: 'Value', value: node.getAttribute('data-refinement') })
-        .then(() => opts.flux.rewrite(query))
+      opts.flux.refine({
+        navigationName: node.getAttribute('data-field'),
+        type: 'Value',
+        value: node.getAttribute('data-refinement')
+      }).then(() => opts.flux.rewrite(query))
     };
-    this.searchRefinement = event => refine(event.target, '');
-    this.searchCategory = event => refine(event.target, this.originalQuery);
-    this.enhanceQuery = query => saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
-    this.enhanceCategoryQuery = query => {
+    this.searchRefinement = (event) => refine(event.target, '');
+    this.searchCategory = (event) => refine(event.target, this.originalQuery);
+    this.enhanceQuery = (query) => saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
+    this.enhanceCategoryQuery = (query) => {
       if (saytConfig.categoryField) {
         return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
       } else {
@@ -74,42 +77,42 @@
       }
     };
 
-    const searchProducts = query => {
+    const searchProducts = (query) => {
       if (saytConfig.products) {
         sayt.productSearch(query)
-          .then(res => this.update({ products: res.result.products }));
+          .then(({ result }) => ({ products }) => this.update({ products }));
       }
     };
-    const notifier = query => {
+    const notifier = (query) => {
       if (saytConfig.autoSearch) searchProducts(query);
       opts.flux.emit(opts.flux.REWRITE_QUERY, query);
     };
     this.on('before-mount', () => autocomplete.init(this.root, this.autocompleteList, notifier));
 
-    const processResults = result => {
-      let categories = [];
+    const processResults = (result) => {
+      let categoryResults = [];
       if (result.searchTerms && result.searchTerms[0].value === this.originalQuery) {
         const categoryQuery = result.searchTerms[0];
         result.searchTerms.splice(0, 1);
 
         if (this.categoryField && categoryQuery.additionalInfo[this.categoryField]) {
-          categories = categoryQuery.additionalInfo[this.categoryField]
-            .map(value => ({ category: value, value: categoryQuery.value })).slice(0, 3);
-          categories.unshift({ category: 'All Departments', value: categoryQuery.value });
+          categoryResults = categoryQuery.additionalInfo[this.categoryField]
+            .map((value) => ({ category: value, value: categoryQuery.value })).slice(0, 3);
+          categoryResults.unshift({ category: 'All Departments', value: categoryQuery.value });
         }
       }
       const navigations = result.navigations ? result.navigations
-        .map(nav => Object.assign(nav, { displayName: saytConfig.navigationNames[nav.name] ? saytConfig.navigationNames[nav.name] : nav.name }))
-        .filter(nav => saytConfig.allowedNavigations.includes(nav.name)) : [];
-      this.update({ results: result, navigations, queries: result.searchTerms, categoryResults: categories });
+        .map((nav) => Object.assign(nav, { displayName: saytConfig.navigationNames[nav.name] || nav.name }))
+        .filter(({ name }) => saytConfig.allowedNavigations.includes(name)) : [];
+      this.update({ results: result, navigations, queries: result.searchTerms, categoryResults });
     };
-    opts.flux.on('autocomplete', query => sayt.autocomplete(query)
-      .then(res => {
-        this.update({ originalQuery: query });
-        processResults(res.result);
+    opts.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
+      .then(({ result }) => {
+        this.update({ originalQuery });
+        processResults(result);
         if (this.queries) searchProducts(this.queries[0].value);
       })
-      .catch(err => console.error(err)));
+      .catch(console.error));
     opts.flux.on('autocomplete:hide', () => {
       autocomplete.reset();
       this.update({ queries: null });

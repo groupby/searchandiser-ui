@@ -9,7 +9,7 @@
       <img class="gb-select__arrow" src={ dataurl } alt="" />
     </button>
     <div class="gb-select__content">
-      <a value="" if={ !hasDefault && selectedOption } onclick={ clearSelection }>{ clear }</a>
+      <a if={ !hasDefault && selectedOption } onclick={ clearSelection } value="">{ clear }</a>
       <a each={ option in options } onclick={ selectCustom } value={ optionValue(option) }>{ optionLabel(option) }</a>
     </div>
   </div>

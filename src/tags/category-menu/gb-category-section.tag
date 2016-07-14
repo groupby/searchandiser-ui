@@ -1,7 +1,7 @@
 <gb-category-section>
   <div class="gb-category-section { parentOpts.style() }">
-    <a if={ opts.named } class="gb-category-section__header" href="#" onmouseover={ updateSectionImages } data-try={ name }>{ name }</a>
-    <a each={ item in items } class="gb-category-section__link" href="#" onmouseover={ updateCategoryImages }>{ item }</a>
+    <a if={ opts.named } class="gb-category-section__header" onmouseover={ updateSectionImages } data-try={ name }>{ name }</a>
+    <a each={ item in items } class="gb-category-section__link" onmouseover={ updateCategoryImages }>{ item }</a>
   </div>
 
   <script>

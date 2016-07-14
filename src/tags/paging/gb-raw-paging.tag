@@ -24,16 +24,17 @@
       jump: (page) => opts.flux.page.jump(page)
     };
 
-    opts.flux.on(opts.flux.PAGE_CHANGED, (pageInfo) => {
+    opts.flux.on(opts.flux.PAGE_CHANGED, ({ pageIndex, finalPage }) => {
       const pageNumbers = opts.flux.page.pageNumbers(limit);
+      const lastPage = finalPage + 1;
       this.update({
         pageNumbers,
-        currentPage: pageInfo.pageIndex + 1,
-        lastPage: pageInfo.finalPage + 1,
+        currentPage: pageIndex + 1,
+        lastPage,
         lowOverflow: pageNumbers[0] !== 1,
-        highOverflow: pageNumbers[pageNumbers.length - 1] !== pageInfo.finalPage + 1,
-        backDisabled: pageInfo.pageIndex === 0,
-        forwardDisabled: pageInfo.pageIndex === pageInfo.finalPage
+        highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
+        backDisabled: pageIndex === 0,
+        forwardDisabled: pageIndex === finalPage
       });
     });
   </script>

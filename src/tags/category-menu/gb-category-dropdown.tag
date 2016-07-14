@@ -18,12 +18,12 @@
     sayt.configure({
       subdomain: this.parentOpts.config.customerId,
       collection: this.parentOpts.config.collection,
-      autocomplete: { },
+      autocomplete: {},
       productSearch: { area: this.parentOpts.config.area, numProducts: saytConfig.products }
     });
 
-    this.updateSectionImages = event => console.dir(event.target);
-    this.updateCategoryImages = event => console.dir(event.target);
+    this.updateSectionImages = (event) => console.dir(event.target);
+    this.updateCategoryImages = (event) => console.dir(event.target);
   </script>
 
   <style scoped>

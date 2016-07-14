@@ -1,6 +1,6 @@
 <gb-breadcrumbs>
   <ul class="gb-breadcrumbs { opts.style() }">
-    <li if={ !hideQuery && query }>{ query }</li>
+    <li if={ !hideQuery && originalQuery }>{ originalQuery }</li>
     <li if={ !hideRefinements } each={ nav in selected }>
       <ul class="gb-nav-crumb">
         <gb-refinement-crumb each={ ref in nav.refinements }></gb-refinement-crumb>
@@ -10,12 +10,13 @@
 
   <script>
     require('./gb-refinement-crumb.tag');
+    const { REFINEMENTS_CHANGED, RESULTS, RESET } = opts.flux;
     this.hideQuery = opts.hideQuery === undefined ? false : opts.hideQuery;
     this.hideRefinements = opts.hideRefinements === undefined ? false : opts.hideRefinements;
 
-    opts.flux.on(opts.flux.REFINEMENTS_CHANGED, ({ selected }) => this.update({ selected }));
-    opts.flux.on(opts.flux.RESULTS, (res) => this.update({ query: res.originalQuery }));
-    opts.flux.on(opts.flux.RESET, (res) => this.update({ selected: [] }));
+    opts.flux.on(REFINEMENTS_CHANGED, ({ selected }) => this.update({ selected }));
+    opts.flux.on(RESULTS, ({ originalQuery }) => this.update({ originalQuery }));
+    opts.flux.on(RESET, () => this.update({ selected: [] }));
   </script>
 
   <style scoped>

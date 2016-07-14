@@ -2,6 +2,10 @@ export function toRefinement(ref, nav) {
   return Object.assign({}, pluck(ref, 'type', 'value', 'low', 'high'), { navigationName: nav.name });
 }
 
+export function displayRefinement(ref) {
+  return ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high;
+}
+
 export function pluck(obj: any, ...keys: string[]): any {
   return keys.reduce((res, key) => obj[key] ? Object.assign(res, { [key]: obj[key] }) : res, {});
 }

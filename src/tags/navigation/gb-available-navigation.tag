@@ -15,14 +15,14 @@
 
     this.badge = opts.badge === undefined ? true : opts.badge;
     this.showSelected = opts.showSelected === undefined ? true : opts.showSelected
-    this.processNavigations = res => {
+    this.processNavigations = (res) => {
       return res.selectedNavigation
-        .map(nav => Object.assign(nav, { selected: true }))
+        .map((nav) => Object.assign(nav, { selected: true }))
         .concat(res.availableNavigation)
         .reduce(this.combineNavigations, {});
     };
     this.combineNavigations = (processed, nav) => Object.assign(processed, { [nav.name]: Object.assign(processed[nav.name] ? processed[nav.name] : nav, { [nav.selected ? 'selected' : 'available']: nav.refinements }) });
-    opts.flux.on(opts.flux.RESULTS, res => this.update({ processed: this.processNavigations(res) }));
+    opts.flux.on(opts.flux.RESULTS, (res) => this.update({ processed: this.processNavigations(res) }));
   </script>
 
   <style scoped>

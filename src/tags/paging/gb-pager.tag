@@ -1,8 +1,8 @@
 <gb-pager>
   <div class="gb-pager { style() }">
-    <a class="gb-pager__link prev { backDisabled ? 'disabled' : '' }" onclick={ pager.prev }><span if={ icons } class="gb-paging__icon">&lt;</span> { prev_label }</a>
+    <a class="gb-pager__link prev { disabled: backDisabled }" onclick={ pager.prev }><span if={ icons } class="gb-paging__icon">&lt;</span> { prev_label }</a>
     <yield/>
-    <a class="gb-pager__link next { forwardDisabled ? 'disabled' : '' }" onclick={ pager.next }>{ next_label } <span if={ icons } class="gb-paging__icon">&gt;</span></a>
+    <a class="gb-pager__link next { disabled: forwardDisabled }" onclick={ pager.next }>{ next_label } <span if={ icons } class="gb-paging__icon">&gt;</span></a>
   </div>
 
   <script>

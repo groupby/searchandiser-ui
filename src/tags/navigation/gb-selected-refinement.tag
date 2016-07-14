@@ -1,13 +1,14 @@
 <gb-selected-refinement>
   <li class="gb-ref { parentOpts.style() }">
     <a class="gb-ref__link" href="#" onclick={ remove }>&times;</a>
-    <span class="gb-ref__value">{ ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high }</span>
+    <span class="gb-ref__value">{ toView(ref) }</span>
   </li>
 
   <script>
-    const utils = require('../../utils');
+    const { toRefinement, displayRefinement } = require('../../utils');
+    this.toView = displayRefinement;
     this.parentOpts = this.parent.parent.opts;
-    this.remove = () => this.parentOpts.flux.unrefine(utils.toRefinement(this.ref, this.nav));
+    this.remove = () => this.parentOpts.flux.unrefine(toRefinement(this.ref, this.nav));
   </script>
 
   <style scoped>
