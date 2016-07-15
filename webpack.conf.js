@@ -19,6 +19,7 @@ module.exports = {
     ],
     loaders: [
       { test: /\.css$/, loader: 'style-loader!css-loader' },
+      { test: /\.json$/, loader: 'json-loader' },
       { test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader' },
       { test: /\.tag$/, exclude: /node_modules/, loader: 'babel-loader', query: { presets: ['es2015'] } }
     ]
