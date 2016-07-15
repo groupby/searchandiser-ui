@@ -33,16 +33,6 @@ describe('gb-sort tag', () => {
     });
     tag['updateSort']({ field: 'this', order: 'Ascending' });
   });
-
-  it('should be able to clear sort', (done) => {
-    const tag = mount({
-      query: {
-        withoutSorts: (...sorts) => expect(sorts).to.eql([{ field: 'title', order: 'Descending' }, { field: 'title', order: 'Ascending' }])
-      },
-      search: () => done()
-    });
-    tag['updateSort']('*');
-  });
 });
 
 function mount(options: any = {}, native: boolean = false): Riot.Tag.Instance {

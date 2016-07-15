@@ -10,13 +10,6 @@
         { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
       ];
     this.sortValues = () => this.sorts.map(sort => sort.value);
-    this.updateSort = (value) => {
-      if (value !== '*') {
-        opts.flux.sort(value, this.sortValues());
-      } else {
-        opts.flux.query.withoutSorts(...this.sortValues());
-        opts.flux.search();
-      }
-    };
+    this.updateSort = (value) => opts.flux.sort(value, this.sortValues());
   </script>
 </gb-sort>
