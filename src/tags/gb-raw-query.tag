@@ -1,14 +1,15 @@
 <gb-raw-query>
   <script>
     require('./sayt/gb-sayt.tag');
+    const { unless } = require('../utils');
     const ENTER_KEY = 13;
     const { getParam } = require('../utils');
     const { mount } = require('./sayt/query-wrapper');
-    const autoSearch = opts.autoSearch === undefined ? true : opts.autoSearch;
-    const staticSearch = opts.staticSearch === undefined ? false : opts.staticSearch;
-    const saytEnabled = opts.sayt === undefined ? true : opts.sayt;
-    const queryParam = opts.queryParam === undefined ? 'q' : opts.queryParam;
-    const searchUrl = `${opts.searchUrl === undefined ? 'search' : opts.searchUrl}?${queryParam}=`;
+    const autoSearch = unless(opts.autoSearch, true);
+    const staticSearch = unless(opts.staticSearch, false);
+    const saytEnabled = unless(opts.sayt, true);
+    const queryParam = opts.queryParam || 'q';
+    const searchUrl = `${unless(opts.searchUrl, 'search')}?${queryParam}=`;
     const queryFromUrl = getParam(queryParam);
 
     const inputValue = () => this.root.value;

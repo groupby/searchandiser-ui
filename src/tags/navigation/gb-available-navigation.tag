@@ -12,9 +12,10 @@
   <script>
     require('./gb-available-refinement.tag');
     require('./gb-selected-refinement.tag');
+    const { unless } = require('../../utils');
 
-    this.badge = opts.badge === undefined ? true : opts.badge;
-    this.showSelected = opts.showSelected === undefined ? true : opts.showSelected
+    this.badge = unless(opts.badge, true);
+    this.showSelected = unless(opts.showSelected, true);
     this.processNavigations = (res) => {
       return res.selectedNavigation
         .map((nav) => Object.assign(nav, { selected: true }))

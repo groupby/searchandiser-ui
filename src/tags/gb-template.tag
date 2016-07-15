@@ -6,9 +6,10 @@
 
   <script>
     require('./gb-import.tag');
+    const { unless } = require('../utils');
     this.isActive = false;
     this.url = opts.url;
-    this.raw = opts.raw === undefined ? false : opts.raw;
+    this.raw = unless(opts.raw, false);
     opts.flux.on(opts.flux.RESULTS, ({ template }) => this.update({ isActive: template.name === opts.templateName }));
   </script>
 

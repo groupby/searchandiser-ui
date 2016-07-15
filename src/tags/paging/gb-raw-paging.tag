@@ -4,12 +4,13 @@
   </div>
 
   <script>
-    const limit = opts.limit === undefined ? 5 : opts.limit;
-    this.style = this.parent ? this.parent.style : opts.style;
-    this.pages = opts.pages === undefined ? false : opts.pages;
-    this.numeric = opts.numeric === undefined ? false : opts.numeric;
-    this.terminals = opts.terminals === undefined ? true : opts.terminals;
-    this.icons = opts.icons === undefined ? true : opts.icons;
+    const { unless } = require('../../utils');
+    const limit = unless(opts.limit, 5);
+    this.style = unless(opts.style, this.parent.style);
+    this.pages = unless(opts.pages, false);
+    this.numeric = unless(opts.numeric, false);
+    this.terminals = unless(opts.terminals, true);
+    this.icons = unless(opts.icons, true);
 
     this.prev_label = this.parent ? this.parent.prev_label : opts.prev_label;
     this.next_label = this.parent ? this.parent.next_label : opts.next_label;

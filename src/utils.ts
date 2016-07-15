@@ -3,7 +3,7 @@ export function toRefinement(ref, nav) {
 }
 
 export function displayRefinement(ref) {
-  return ref.type === 'Value' ? ref.value : ref.low + ' - ' + ref.high;
+  return ref.type === 'Value' ? ref.value : `${ref.low} - ${ref.high}`;
 }
 
 export function pluck(obj: any, ...keys: string[]): any {
@@ -26,3 +26,5 @@ export function getParam(param): string | null {
   const index = queryParams.findIndex(value => value.indexOf(param) === 0);
   return index !== -1 && queryParams[index].includes('=') ? queryParams[index].split('=')[1] : null;
 }
+
+export const unless = (obj: any, defaultObj: any) => obj == undefined ? defaultObj : obj;

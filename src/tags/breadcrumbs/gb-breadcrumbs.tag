@@ -10,9 +10,10 @@
 
   <script>
     require('./gb-refinement-crumb.tag');
+    const { unless } = require('../../utils');
     const { REFINEMENTS_CHANGED, RESULTS, RESET } = opts.flux;
-    this.hideQuery = opts.hideQuery === undefined ? false : opts.hideQuery;
-    this.hideRefinements = opts.hideRefinements === undefined ? false : opts.hideRefinements;
+    this.hideQuery = unless(opts.hideQuery, false);
+    this.hideRefinements = unless(opts.hideRefinements, false);
 
     opts.flux.on(REFINEMENTS_CHANGED, ({ selected }) => this.update({ selected }));
     opts.flux.on(RESULTS, ({ originalQuery }) => this.update({ originalQuery }));

@@ -6,7 +6,7 @@
   <div if={ !native } class="gb-select { hover ? 'hoverable' : 'clickable' }">
     <button type="button" class="gb-select__button" name="selectButton" onfocus={ prepFocus } onclick={ unFocus }>
       <span>{ selectLabel() }</span>
-      <img class="gb-select__arrow" src={ dataurl } alt="" />
+      <img class="gb-select__arrow" src={ iconUrl } alt="" />
     </button>
     <div class="gb-select__content">
       <a if={ !hasDefault && selectedOption } onclick={ clearSelection } value="">{ clear }</a>
@@ -15,47 +15,8 @@
   </div>
 
   <script>
-    const label = opts.label || 'Select';
-    const callback = opts.update;
-    this.dataurl = require('url!./arrow-down.png');
-
-    this.hover = opts.hover === undefined ? true : opts.hover;
-    this.native = opts.native === undefined ? false : opts.native;
-    this.clear = opts.clear === undefined ? 'Unselect' : opts.clear;
-    this.hasDefault = opts.default === undefined ? false : opts.default;
-    this.options = opts.options || [];
-    if (this.hasDefault) this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
-
-    this.selectLabel = () => this.selectedOption ? this.selectedOption : (this.selected ? this.clear : label);
-    this.optionValue = (option) => typeof option === 'object' ? JSON.stringify(option.value) : option;
-    this.optionLabel = (option) => typeof option === 'object' ? option.label : option;
-    this.prepFocus = () => this.focused = false;
-    this.unFocus = () => {
-      this.focused = this.hover || !this.focused;
-      if (!this.focused) this.selectButton.blur();
-    };
-
-    const selectOption = (selectedOption, value) => {
-      this.update({ selectedOption });
-      if (callback) {
-        try {
-          callback(JSON.parse(value));
-        } catch(e) {
-          callback(value ? value : '*');
-        }
-      }
-    };
-    this.selectNative = (event) => {
-      const selected = event.target.value !== '';
-      this.nativeSelect.options[0].disabled = !selected;
-      this.update({ selected });
-      selectOption(event.target.text, event.target.value);
-    };
-    this.selectCustom = (event) => {
-      this.selectButton.blur();
-      selectOption(event.target.text, event.target.value);
-    };
-    this.clearSelection = () => selectOption(undefined, '*');
+    const { Select } = require('./gb-select');
+    this.mixin(new Select());
   </script>
 
   <style scoped>

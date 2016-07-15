@@ -5,7 +5,8 @@
 	</div>
 
 	<script>
-    const isRaw = opts.raw === undefined ? false : opts.raw;
+		const { unless } = require('../utils');
+    const isRaw = unless(opts.raw, false);
     const loadFile = () => {
       const req = new XMLHttpRequest();
       req.onload = () => {

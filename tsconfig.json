@@ -30,6 +30,7 @@
     "src/tags/index.ts",
     "src/tags/sayt/autocomplete.ts",
     "src/tags/sayt/query-wrapper.ts",
+    "src/tags/select/gb-select.ts",
     "src/utils.ts",
     "test/bootstrap.ts",
     "test/breadcrumbs.ts",
