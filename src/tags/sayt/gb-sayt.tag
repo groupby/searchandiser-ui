@@ -80,7 +80,7 @@
     const searchProducts = (query) => {
       if (saytConfig.products) {
         sayt.productSearch(query)
-          .then(({ result }) => ({ products }) => this.update({ products }));
+          .then((res) => this.update({ products: res.result.products }));
       }
     };
     const notifier = (query) => {
