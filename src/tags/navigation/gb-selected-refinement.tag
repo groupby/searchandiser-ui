@@ -5,10 +5,9 @@
   </li>
 
   <script>
-    const { toRefinement, displayRefinement } = require('../../utils');
-    this.toView = displayRefinement;
-    this.parentOpts = this.parent.parent.opts;
-    this.remove = () => this.parentOpts.flux.unrefine(toRefinement(this.ref, this.nav));
+    const { Refinement } = require('./gb-refinement');
+    this.mixin(new Refinement());
+    this.remove = () => this.parentOpts.flux.unrefine(this.toRefinement(this.ref, this.nav));
   </script>
 
   <style scoped>

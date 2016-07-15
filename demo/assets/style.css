@@ -28,6 +28,14 @@ body {
   width: 100%;
 }
 
+.gb-bar .breadcrumb-label {
+  width: 100px;
+}
+
+.gb-bar .breadcrumbs {
+  width: 100%;
+}
+
 
 /* flex main */
 

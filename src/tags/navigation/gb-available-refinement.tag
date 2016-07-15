@@ -8,10 +8,9 @@
   </li>
 
   <script>
-    const { toRefinement, displayRefinement } = require('../../utils');
-    this.toView = displayRefinement;
-    this.parentOpts = this.parent.parent.opts;
-    this.send = () => this.parentOpts.flux.refine(toRefinement(this.ref, this.nav));
+    const { Refinement } = require('./gb-refinement');
+    this.mixin(new Refinement());
+    this.send = () => this.parentOpts.flux.refine(this.toRefinement(this.ref, this.nav));
   </script>
 
   <style scoped>

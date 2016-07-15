@@ -112,7 +112,7 @@
         processResults(result);
         if (this.queries) searchProducts(this.queries[0].value);
       })
-      .catch(console.error));
+      .catch((err) => console.error(err)));
     opts.flux.on('autocomplete:hide', () => {
       autocomplete.reset();
       this.update({ queries: null });

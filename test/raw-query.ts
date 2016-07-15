@@ -3,7 +3,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
-import '../src/tags/gb-raw-query.tag';
+import '../src/tags/query/gb-raw-query.tag';
 
 const TAG = 'gb-raw-query';
 

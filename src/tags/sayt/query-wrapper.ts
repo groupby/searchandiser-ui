@@ -1,18 +1,18 @@
-export function mount(tag: Riot.Tag.Instance, opts: any) {
-  tag.on('before-mount', initSayt(tag, opts));
-  tag.on('mount', wrapElement(tag.root, opts));
+export function mount(tag: Riot.Tag.Instance) {
+  tag.on('before-mount', initSayt(tag));
+  tag.on('mount', wrapElement(tag.root, tag.opts));
 }
 
-function initSayt(tag: Riot.Tag.Instance & any, opts: any): () => void {
+function initSayt(tag: Riot.Tag.Instance & any): () => void {
   const root: HTMLInputElement = <HTMLInputElement>tag.root;
   return () => {
     root.autocomplete = 'off';
-    document.addEventListener('click', () => opts.flux.emit('autocomplete:hide'));
+    document.addEventListener('click', () => tag.opts.flux.emit('autocomplete:hide'));
     root.addEventListener('input', () => {
       if (root.value) {
-        opts.flux.emit('autocomplete', root.value);
+        tag.opts.flux.emit('autocomplete', root.value);
       } else {
-        opts.flux.emit('autocomplete:hide');
+        tag.opts.flux.emit('autocomplete:hide');
       }
     });
   };

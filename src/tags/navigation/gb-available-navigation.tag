@@ -12,18 +12,8 @@
   <script>
     require('./gb-available-refinement.tag');
     require('./gb-selected-refinement.tag');
-    const { unless } = require('../../utils');
-
-    this.badge = unless(opts.badge, true);
-    this.showSelected = unless(opts.showSelected, true);
-    this.processNavigations = (res) => {
-      return res.selectedNavigation
-        .map((nav) => Object.assign(nav, { selected: true }))
-        .concat(res.availableNavigation)
-        .reduce(this.combineNavigations, {});
-    };
-    this.combineNavigations = (processed, nav) => Object.assign(processed, { [nav.name]: Object.assign(processed[nav.name] ? processed[nav.name] : nav, { [nav.selected ? 'selected' : 'available']: nav.refinements }) });
-    opts.flux.on(opts.flux.RESULTS, (res) => this.update({ processed: this.processNavigations(res) }));
+    const { Navigation } = require('./gb-navigation');
+    this.mixin(new Navigation());
   </script>
 
   <style scoped>
