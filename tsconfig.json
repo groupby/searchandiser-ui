@@ -12,6 +12,7 @@
   "filesGlob": [
     "src/**/*.ts",
     "test/**/*.ts",
+    "custom_typings/**/*.d.ts",
     "node_modules/groupby-api/**/*.d.ts",
     "!dist",
     "!node_modules"
@@ -42,6 +43,7 @@
     "src/tags/sayt/query-wrapper.ts",
     "src/tags/select/gb-select.ts",
     "src/tags/template/gb-template.ts",
+    "src/tags/tracker/gb-tracker.ts",
     "src/utils.ts",
     "test/bootstrap.ts",
     "test/breadcrumbs.ts",
@@ -52,6 +54,7 @@
     "test/raw-query.ts",
     "test/record-count.ts",
     "test/sort.ts",
+    "custom_typings/gb-tracker-client.d.ts",
     "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
   ]
 }

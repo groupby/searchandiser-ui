@@ -49,7 +49,8 @@ describe('gb-breadcrumbs tag', () => {
               return cb({ selected });
           }
         }
-      })
+      });
+
       const [tag] = riot.mount(TAG, { flux });
       tag.on('updated', () => {
         expect(tag['selected'].length).to.eq(1);
@@ -67,7 +68,8 @@ describe('gb-breadcrumbs tag', () => {
               return cb();
           }
         }
-      })
+      });
+
       const [tag] = riot.mount(TAG, { flux });
       tag.on('updated', () => {
         expect(tag['selected'].length).to.eq(0);
