@@ -14,10 +14,12 @@
       ];
     const sortValues = () => options.map(option => option.value);
     
+    this.updateValues = (value) => parentOpts.flux.sort(value, sortValues());
+    
     this.passthrough = Object.assign({}, parentOpts.__proto__, {
       options,
+      update: this.updateValues,
       hover: parentOpts.onHover,
-      update: (value) => parentOpts.flux.sort(value, sortValues()),
       default: true
     });
   </script>

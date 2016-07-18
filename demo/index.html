@@ -36,6 +36,9 @@
             <h2>{ first } - { last } of { total } Products</h2>
           </div>
           <div class="filter"></div>
+          <!-- <div class="raw-filter">
+           <a><marquee> { label }</marquee></a>
+          </div> -->
           <div class="sort"></div>
           <!-- <div class="raw-sort">
             <a>{ label }</a>
@@ -248,6 +251,7 @@
         field: 'QtopRatedType',
         matchAll: 'All Categories'
       });
+      // searchandiser.attach('raw-filter');
       searchandiser.attach('sort', '.sort', {
         // native: true,
         onHover: false

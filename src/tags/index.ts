@@ -14,6 +14,8 @@ import './page-size/gb-page-size.tag';
 import './page-size/gb-raw-page-size.tag';
 import './sort/gb-sort.tag';
 import './sort/gb-raw-sort.tag';
+import './filter/gb-filter.tag';
+import './filter/gb-raw-filter.tag';
 
 import './gb-details.tag';
 import './gb-raw.tag';
@@ -25,4 +27,3 @@ import './gb-record-count.tag';
 import './gb-related-searches.tag';
 import './gb-did-you-mean.tag';
 import './gb-template.tag';
-import './gb-filter.tag';

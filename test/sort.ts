@@ -2,8 +2,10 @@
 
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from './fixtures';
-import '../src/tags/gb-sort.tag';
+import { mockFlux } from './fixtures'; 
+// import '../src/tags/select/gb-raw-select.tag'
+import '../src/tags/sort/gb-raw-sort.tag';
+import '../src/tags/sort/gb-sort.tag';
 
 const TAG = 'gb-sort';
 
@@ -15,13 +17,14 @@ describe('gb-sort tag', () => {
   it('mounts tag', () => {
     const tag = mount();
     expect(tag).to.be.ok;
-    expect(html.querySelector(`gb-select.${TAG}`)).to.be.ok;
+    expect(html.querySelector(`gb-raw-select.${TAG}`)).to.be.ok;
   });
 
   it('should expose properties', () => {
     const tag = mount();
-    expect(tag['sorts']).to.be.ok;
-    expect(tag['updateSort']).to.be.ok;
+    const childTag = (<Element>tag.root).querySelector('gb-raw-sort')['_tag'];
+    expect(childTag.passthrough).to.be.ok;
+    expect(childTag.updateValues).to.be.ok;
   });
 
   it('should be able to sort results', (done) => {
@@ -31,7 +34,8 @@ describe('gb-sort tag', () => {
         done();
       }
     });
-    tag['updateSort']({ field: 'this', order: 'Ascending' });
+    const childTag = (<Element>tag.root).querySelector('gb-raw-sort')['_tag'];
+    childTag.updateValues({ field: 'this', order: 'Ascending' });
   });
 });
 
