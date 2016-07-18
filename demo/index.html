@@ -37,10 +37,10 @@
           </div>
           <div class="filter"></div>
           <div class="sort"></div>
-          <!-- <div class="page-size"></div> -->
-          <div class="raw-page-size">
+          <div class="page-size"></div>
+          <!-- <div class="raw-page-size">
             <a>{ label }</a>
-          </div>
+          </div> -->
         </div>
         <div class="gb-bar">
           <div class="paging"></div>
@@ -230,19 +230,15 @@
       searchandiser.attach('paging', '.paging', {
         pages: true
       });
-      // searchandiser.attach('raw-paging', '.raw-paging', {
-      //   pages: true
-      // });
+      // searchandiser.attach('raw-paging');
       searchandiser.attach('page-size', '.page-size', {
         onHover: false,
         // native: true,
         // resetOffset: true
       });
-      searchandiser.attach('raw-page-size', '.raw-page-size', {
-        native: true,
-        onHover: true
-      });
+      // searchandiser.attach('raw-page-size');
       searchandiser.attach('results');
+      // searchandiser.attach('raw-results');
       searchandiser.attach('filter', '.filter', {
         // native: true,
         onHover: false,
@@ -250,10 +246,9 @@
         matchAll: 'All Categories'
       });
       searchandiser.attach('sort', '.sort', {
-        native: true,
+        // native: true,
         onHover: false
       });
-      // searchandiser.attach('raw-results');
       searchandiser.attach('record-count');
       searchandiser.attach('available-navigation');
       searchandiser.attach('breadcrumbs', '.breadcrumbs', {
