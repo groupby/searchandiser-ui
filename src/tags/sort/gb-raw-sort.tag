@@ -4,7 +4,7 @@
   </gb-raw-select>
 
   <script>
-    const { checkNested } = require('../utils');
+    const { checkNested } = require('../../utils');
     const parentOpts = opts.passthrough || opts;
     const options = checkNested(parentOpts.config, 'tags', 'sort', 'options') ? parentOpts.config.tags.sort.options
       : parentOpts.options
