@@ -7,6 +7,7 @@ import './paging/gb-terminal-pager.tag';
 import './paging/gb-pager.tag';
 import './paging/gb-pages.tag';
 import './select/gb-select.tag';
+import './select/gb-raw-select.tag';
 import './query/gb-query.tag';
 import './query/gb-raw-query.tag';
 import './gb-details.tag';

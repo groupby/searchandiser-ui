@@ -54,8 +54,9 @@ export function Select() {
   };
 
   this.selectCustom = function(event: MouseEvent) {
+    const tag = (<Element>event.target).parentElement['_tag'];
     this.selectButton.blur();
-    this.selectOption(event.target['text'], event.target['value']);
+    this.selectOption(tag.label, tag.value);
   };
 
   this.clearSelection = function() {
