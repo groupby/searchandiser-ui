@@ -5,7 +5,7 @@
   </li>
 
   <script>
-    const { Refinement } = require('./gb-refinement');
+    import { Refinement } from './gb-refinement';
     this.mixin(new Refinement());
     this.remove = () => this.parentOpts.flux.unrefine(this.toRefinement(this.ref, this.nav));
   </script>

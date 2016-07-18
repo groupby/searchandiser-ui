@@ -8,7 +8,7 @@
   </li>
 
   <script>
-    const { Refinement } = require('./gb-refinement');
+    import { Refinement } from './gb-refinement';
     this.mixin(new Refinement());
     this.send = () => this.parentOpts.flux.refine(this.toRefinement(this.ref, this.nav));
   </script>

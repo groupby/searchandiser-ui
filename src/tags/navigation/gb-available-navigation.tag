@@ -10,9 +10,9 @@
   </div>
 
   <script>
-    require('./gb-available-refinement.tag');
-    require('./gb-selected-refinement.tag');
-    const { Navigation } = require('./gb-navigation');
+    import './gb-available-refinement.tag';
+    import './gb-selected-refinement.tag';
+    import { Navigation } from './gb-navigation';
     this.mixin(new Navigation());
   </script>
 

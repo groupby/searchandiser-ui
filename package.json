@@ -83,6 +83,7 @@
   "dependencies": {
     "es6-promise": "^3.2.1",
     "groupby-api": "^1.0.44",
+    "riot": "^2.5.0",
     "sayt": "0.0.5"
   }
 }

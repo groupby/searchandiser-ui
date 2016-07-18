@@ -1,7 +1,7 @@
 <gb-raw-query>
   <script>
-    require('../sayt/gb-sayt.tag');
-    const { Query } = require('./gb-query');
+    import '../sayt/gb-sayt.tag';
+    import { Query } from './gb-query';
     this.mixin(new Query());
   </script>
 

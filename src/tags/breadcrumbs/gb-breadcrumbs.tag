@@ -9,8 +9,8 @@
   </ul>
 
   <script>
-    require('./gb-refinement-crumb.tag');
-    const { Breadcrumbs } = require('./gb-breadcrumbs');
+    import './gb-refinement-crumb.tag';
+    import { Breadcrumbs } from './gb-breadcrumbs';
     this.mixin(new Breadcrumbs());
   </script>
 

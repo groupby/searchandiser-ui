@@ -4,7 +4,7 @@
   </div>
 
   <script>
-    const { Paging } = require('./gb-paging');
+    import { Paging } from './gb-paging';
     this.mixin(new Paging());
   </script>
 </gb-raw-paging>

@@ -4,7 +4,7 @@
   </li>
 
   <script>
-    const { toRefinement, displayRefinement } = require('../../utils');
+    import { toRefinement, displayRefinement } from '../../utils';
     this.toView = displayRefinement;
     this.parentOpts = this.parent.parent.opts;
     this.remove = () => this.parentOpts.flux.unrefine(toRefinement(this.ref, this.nav));

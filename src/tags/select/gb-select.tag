@@ -15,7 +15,7 @@
   </div>
 
   <script>
-    const { Select } = require('./gb-select');
+    import { Select } from './gb-select';
     this.mixin(new Select());
   </script>
 

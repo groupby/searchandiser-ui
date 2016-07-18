@@ -5,8 +5,8 @@
   </div>
 
   <script>
-    require('./gb-import.tag');
-    const { unless } = require('../utils');
+    import './gb-import.tag';
+    import { unless } from '../utils';
     this.isActive = false;
     this.url = opts.url;
     this.raw = unless(opts.raw, false);

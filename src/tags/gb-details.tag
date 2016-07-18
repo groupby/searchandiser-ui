@@ -4,7 +4,7 @@
   </div>
 
   <script>
-    const { getParam } = require('../utils');
+    import { getParam } from '../utils';
     const idParam = opts.idParam || 'id';
     const query = getParam(idParam);
 

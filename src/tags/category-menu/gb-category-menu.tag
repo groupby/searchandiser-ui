@@ -6,8 +6,8 @@
   </div>
 
   <script>
-    require('./gb-category-dropdown.tag');
-    require('./gb-category-section.tag');
+    import './gb-category-dropdown.tag';
+    import './gb-category-section.tag';
   </script>
 
   <style scoped>

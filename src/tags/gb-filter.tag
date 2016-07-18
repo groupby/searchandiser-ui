@@ -2,7 +2,7 @@
   <gb-select name="selectElement" update={ navigate } native={ opts.native } label={ label } clear={ clear } hover={ opts.onHover }></gb-select>
 
   <script>
-    const { toRefinement } = require('../utils');
+    import { toRefinement } from '../utils';
     const navField = opts.field;
     const flux = opts.clone();
     const isTargetNav = (nav) => nav.name === navField;

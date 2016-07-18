@@ -30,8 +30,8 @@
   </div>
 
   <script>
-    require('../gb-product.tag');
-    require('../gb-raw.tag');
+    import '../gb-product.tag';
+    import '../gb-raw.tag';
     const sayt = require('sayt');
     const autocomplete = require('./autocomplete');
     const defaultConfig = {
