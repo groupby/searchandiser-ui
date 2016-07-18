@@ -63,6 +63,14 @@ export function Select() {
   };
 }
 
+export function optionValue(option: any) {
+  return typeof option === 'object' ? JSON.stringify(option.value) : option;
+}
+
+export function optionLabel(option: any) {
+  return typeof option === 'object' ? option.label : option;
+}
+
 export interface SelectConfig {
   label?: string;
   update?: Function;

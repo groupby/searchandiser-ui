@@ -10,6 +10,9 @@ import './select/gb-select.tag';
 import './select/gb-raw-select.tag';
 import './query/gb-query.tag';
 import './query/gb-raw-query.tag';
+import './page-size/gb-page-size.tag';
+import './page-size/gb-raw-page-size.tag';
+
 import './gb-details.tag';
 import './gb-raw.tag';
 import './gb-raw-submit.tag';
@@ -20,6 +23,5 @@ import './gb-record-count.tag';
 import './gb-related-searches.tag';
 import './gb-did-you-mean.tag';
 import './gb-template.tag';
-import './gb-page-size.tag';
 import './gb-filter.tag';
 import './gb-sort.tag';

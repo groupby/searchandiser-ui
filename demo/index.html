@@ -37,7 +37,10 @@
           </div>
           <div class="filter"></div>
           <div class="sort"></div>
-          <div class="page-size"></div>
+          <!-- <div class="page-size"></div> -->
+          <div class="raw-page-size">
+            <a>{ label }</a>
+          </div>
         </div>
         <div class="gb-bar">
           <div class="paging"></div>
@@ -235,6 +238,10 @@
         // native: true,
         // resetOffset: true
       });
+      searchandiser.attach('raw-page-size', '.raw-page-size', {
+        native: true,
+        onHover: true
+      });
       searchandiser.attach('results');
       searchandiser.attach('filter', '.filter', {
         // native: true,
@@ -243,7 +250,7 @@
         matchAll: 'All Categories'
       });
       searchandiser.attach('sort', '.sort', {
-        // native: true,
+        native: true,
         onHover: false
       });
       // searchandiser.attach('raw-results');

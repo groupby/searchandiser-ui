@@ -3,8 +3,9 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
-import '../src/tags/select/gb-select.tag';
-import '../src/tags/gb-page-size.tag';
+import '../src/tags/select/gb-raw-select.tag';
+import '../src/tags/page-size/gb-raw-page-size.tag';
+import '../src/tags/page-size/gb-page-size.tag';
 
 const TAG = 'gb-page-size';
 
@@ -16,17 +17,18 @@ describe('gb-page-size tag', () => {
   it('mounts tag', () => {
     const tag = mount();
     expect(tag).to.be.ok;
-    expect(html.querySelector(`gb-select.${TAG}`)).to.be.ok;
+    expect(html.querySelector(`gb-raw-page-size`)).to.be.ok;
     expect(html.querySelectorAll('option').length).to.eq(4);
   });
 
-  it('should expose functions', () => {
+  it('should expose passthrough', () => {
     const tag = mount();
-    expect(tag['updatePageSize']).to.be.ok;
+    const childTag = (<Element>tag.root).querySelector('gb-raw-page-size')['_tag'];
+    expect(childTag['passthrough']).to.be.ok;
   });
 
   it('should have default options', () => {
-    mount();
+    const tag = mount();
     const select = selectElement();
     expect(select.options.length).to.eq(4);
     expect(select.options[0].value).to.eq('10');

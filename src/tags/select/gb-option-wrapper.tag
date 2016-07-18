@@ -2,7 +2,8 @@
   <yield/>
 
   <script>
-    this.value = typeof opts.option === 'object' ? JSON.stringify(opts.option.value) : opts.option;
-    this.label = typeof opts.option === 'object' ? opts.option.label : opts.option;
+    import { optionLabel, optionValue } from './gb-select';
+    this.label = optionLabel(opts.option);
+    this.value = optionValue(opts.option);
   </script>
 </gb-option-wrapper>

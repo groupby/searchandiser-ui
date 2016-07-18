@@ -24,8 +24,10 @@
 
   <script>
     import './gb-option-wrapper.tag';
-    import { Select } from './gb-select';
+    import { Select, optionLabel, optionValue } from './gb-select';
     this.mixin(new Select());
+    this.optionLabel = optionLabel;
+    this.optionValue = optionValue;
   </script>
 
   <style scoped>
