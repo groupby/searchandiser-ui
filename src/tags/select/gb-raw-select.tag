@@ -10,20 +10,20 @@
     </button>
     <ul class="gb-select__content">
       <li if={ !hasDefault && selectedOption } onclick={ clearSelection }>
-        <gb-select-option>
+        <gb-option-wrapper option={ clearOption }>
           <yield/>
-        </gb-select-option>
+        </gb-option-wrapper>
       </li>
       <li each={ option in options } onclick={ selectCustom }>
-        <gb-select-option option={ option }>
+        <gb-option-wrapper option={ option }>
           <yield/>
-        </gb-select-option>
+        </gb-option-wrapper>
       </li>
     </ul>
   </div>
 
   <script>
-    import './gb-select-option.tag';
+    import './gb-option-wrapper.tag';
     import { Select } from './gb-select';
     this.mixin(new Select());
   </script>
