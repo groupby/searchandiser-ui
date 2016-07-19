@@ -71,8 +71,14 @@
     <script>
       searchandiser({
         customerId: 'crateandbarreldemo',
+        area: 'Production',
+        collection: 'default',
+
         pageSizes: [12, 24, 50],
         fields: ['*'],
+
+        products: 12,
+        queries: 8,
 
         structure: {
           title: 'title',
@@ -81,15 +87,18 @@
         },
 
         sayt: {
-          products: 12,
-          queries: 8,
+          products: 13,
+          queries: 9,
           // autoSearch: false,
           // highlight: false,
           categoryField: 'QtopRatedType',
           navigationNames: {
             brand: 'Brand'
           },
-          allowedNavigations: ['brand']
+          allowedNavigations: ['brand'],
+
+          area: 'Development',
+          collection: 'productsonsale'
         },
 
         tags: {
