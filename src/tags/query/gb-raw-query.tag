@@ -2,7 +2,7 @@
   <script>
     import '../sayt/gb-sayt.tag';
     import { Query } from './gb-query';
-    this.mixin(new Query());
+    this.mixin(new Query().__proto__);
   </script>
 
   <style>

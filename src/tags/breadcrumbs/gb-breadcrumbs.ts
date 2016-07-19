@@ -1,8 +1,15 @@
 import { Events } from 'groupby-api';
 import { unless } from '../../utils';
 
-export function Breadcrumbs() {
-  this.init = function() {
+export class Breadcrumbs {
+
+  opts: any;
+  update: (any) => void;
+
+  hideQuery: boolean;
+  hideRefinements: boolean;
+
+  init() {
     this.hideQuery = unless(this.opts.hideQuery, false);
     this.hideRefinements = unless(this.opts.hideRefinements, false);
 

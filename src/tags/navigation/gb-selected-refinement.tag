@@ -6,7 +6,7 @@
 
   <script>
     import { Refinement } from './gb-refinement';
-    this.mixin(new Refinement());
+    this.mixin(new Refinement().__proto__);
     this.remove = () => this.parentOpts.flux.unrefine(this.toRefinement(this.ref, this.nav));
   </script>
 
