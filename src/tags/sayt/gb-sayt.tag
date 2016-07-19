@@ -51,7 +51,6 @@
       collection: saytConfig.collection || opts.config.collection,
       autocomplete: { 
         numSearchTerms: saytConfig.queries,
-        area: saytConfig.area || opts.config.area
       },
       productSearch: { area: saytConfig.area || opts.config.area, numProducts: saytConfig.products }
     });
