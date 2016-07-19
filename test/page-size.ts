@@ -28,7 +28,7 @@ describe('gb-page-size tag', () => {
   });
 
   it('should have default options', () => {
-    const tag = mount();
+    mount();
     const select = selectElement();
     expect(select.options.length).to.eq(4);
     expect(select.options[0].value).to.eq('10');
@@ -49,7 +49,7 @@ describe('gb-page-size tag', () => {
   });
 
   it('should not reset paging by default', (done) => {
-    const tag = mount({
+    mount({
       resize: (newSize, reset) => {
         expect(newSize).to.eq(50);
         expect(reset).to.be.undefined;
@@ -60,7 +60,7 @@ describe('gb-page-size tag', () => {
   });
 
   it('should allow reset paging', (done) => {
-    const tag = mount({
+    mount({
       resize: (newSize, reset) => {
         expect(reset).to.eq(0);
         done();

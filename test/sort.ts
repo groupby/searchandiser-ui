@@ -2,8 +2,7 @@
 
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from './fixtures'; 
-// import '../src/tags/select/gb-raw-select.tag'
+import { mockFlux } from './fixtures';
 import '../src/tags/sort/gb-raw-sort.tag';
 import '../src/tags/sort/gb-sort.tag';
 
