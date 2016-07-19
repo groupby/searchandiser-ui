@@ -3,14 +3,15 @@ import { unless } from '../../utils';
 export function Select() {
 
   this.init = function(): void {
+    const opts = this.opts.passthrough || this.opts;
     this.iconUrl = require('url!./arrow-down.png');
-    this.label = this.opts.label || 'Select';
-    this.clear = this.opts.clear || 'Unselect';
-    this.options = this.opts.options || [];
-    this.hover = unless(this.opts.hover, true);
-    this.native = unless(this.opts.native, false);
-    this.hasDefault = unless(this.opts.default, false);
-    this.callback = this.opts.update;
+    this.label = opts.label || 'Select';
+    this.clearOption = { label: opts.clear || 'Unselect' };
+    this.options = opts.options || [];
+    this.hover = unless(opts.hover, true);
+    this.native = unless(opts.native, false);
+    this.hasDefault = unless(opts.default, false);
+    this.callback = opts.update;
 
     if (this.hasDefault) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
@@ -18,12 +19,8 @@ export function Select() {
   }
 
   this.selectLabel = function(): string {
-    return this.selectedOption || (this.selected ? this.clear : this.label);
+    return this.selectedOption || (this.selected ? this.clearOption : this.label);
   };
-
-  this.optionValue = (option: any | string): string => typeof option === 'object' ? JSON.stringify(option.value) : option;
-
-  this.optionLabel = (option: any | string): string => typeof option === 'object' ? option.label : option;
 
   this.prepFocus = function() {
     return this.focused = false;
@@ -54,13 +51,24 @@ export function Select() {
   };
 
   this.selectCustom = function(event: MouseEvent) {
+    let node: Element & any = (<Element>event.target);
+    while (!node['_tag'] || node.tagName !== 'GB-OPTION-WRAPPER') node = node.parentElement;
+    const tag = node._tag;
     this.selectButton.blur();
-    this.selectOption(event.target['text'], event.target['value']);
+    this.selectOption(tag.label, tag.value);
   };
 
   this.clearSelection = function() {
     return this.selectOption(undefined, '*');
   };
+}
+
+export function optionValue(option: any) {
+  return typeof option === 'object' ? JSON.stringify(option.value) : option;
+}
+
+export function optionLabel(option: any) {
+  return typeof option === 'object' ? option.label : option;
 }
 
 export interface SelectConfig {

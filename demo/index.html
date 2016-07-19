@@ -35,10 +35,18 @@
           <div class="record-count">
             <h2>{ first } - { last } of { total } Products</h2>
           </div>
-          <div class="select"></div>
           <div class="filter"></div>
+          <!-- <div class="raw-filter">
+           <a><marquee> { label }</marquee></a>
+          </div> -->
           <div class="sort"></div>
+          <!-- <div class="raw-sort">
+            <a>{ label }</a>
+          </div> -->
           <div class="page-size"></div>
+          <!-- <div class="raw-page-size">
+            <a>{ label }</a>
+          </div> -->
         </div>
         <div class="gb-bar">
           <div class="paging"></div>
@@ -228,26 +236,27 @@
       searchandiser.attach('paging', '.paging', {
         pages: true
       });
-      // searchandiser.attach('raw-paging', '.raw-paging', {
-      //   pages: true
-      // });
+      // searchandiser.attach('raw-paging');
       searchandiser.attach('page-size', '.page-size', {
         onHover: false,
         // native: true,
         // resetOffset: true
       });
+      // searchandiser.attach('raw-page-size');
       searchandiser.attach('results');
+      // searchandiser.attach('raw-results');
       searchandiser.attach('filter', '.filter', {
         // native: true,
         onHover: false,
         field: 'QtopRatedType',
         matchAll: 'All Categories'
       });
+      // searchandiser.attach('raw-filter');
       searchandiser.attach('sort', '.sort', {
         // native: true,
         onHover: false
       });
-      // searchandiser.attach('raw-results');
+      // searchandiser.attach('raw-sort');
       searchandiser.attach('record-count');
       searchandiser.attach('available-navigation');
       searchandiser.attach('breadcrumbs', '.breadcrumbs', {
