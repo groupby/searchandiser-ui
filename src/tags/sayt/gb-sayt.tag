@@ -48,9 +48,12 @@
 
     sayt.configure({
       subdomain: opts.config.customerId,
-      collection: opts.config.collection,
-      autocomplete: { numSearchTerms: saytConfig.queries },
-      productSearch: { area: opts.config.area, numProducts: saytConfig.products }
+      collection: saytConfig.collection || opts.config.collection,
+      autocomplete: {  numSearchTerms: saytConfig.queries },
+      productSearch: {
+        area: saytConfig.area || opts.config.area,
+        numProducts: saytConfig.products
+      }
     });
 
     this.search = (event) => {
@@ -106,6 +109,7 @@
         .filter(({ name }) => saytConfig.allowedNavigations.includes(name)) : [];
       this.update({ results: result, navigations, queries: result.searchTerms, categoryResults });
     };
+
     opts.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
       .then(({ result }) => {
         this.update({ originalQuery });
