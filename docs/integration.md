@@ -73,4 +73,4 @@ searchandiser.attach('results', '.myResultsContainer');
 Start typing in your search box and watch your results update live. This is a
 very simple implementation of the `searchandiser-ui` framework, but should serve
 as a good jumping off point for a full-fledged implementation. Be sure to check
-out the [README](../README) for additional configuration options.
+out the [README](../README.md) for additional configuration options.
