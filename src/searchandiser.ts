@@ -14,7 +14,7 @@ export function initSearchandiser() {
 function initCapacitor(config: SearchandiserConfig) {
   if (config.pageSizes) config.pageSize = config.pageSizes[0];
   if (checkNested(config, 'tags', 'sort', 'options')) config.sort = config.tags.sort.options.map(val => val.value);
-  return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize', 'sort'));
+  return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize', 'sort', 'fields'));
 }
 
 export class Searchandiser {
