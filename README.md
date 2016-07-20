@@ -9,7 +9,9 @@ There are two ways to implement in an existing website, the preferred way is to 
 API generate the HTML on your page and hookup the eventing for you.  This way you will inherit
 all the best practices for your website in seconds.
 
-Implementing on an existing website:
+[Integrate with an existing website](blob/master/docs/integration);
+
+Implementing a simple website:
 ---
 
 ###Step 1
