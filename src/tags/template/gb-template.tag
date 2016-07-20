@@ -5,12 +5,8 @@
   </div>
 
   <script>
-    import './gb-import.tag';
-    import { unless } from '../utils';
-    this.isActive = false;
-    this.url = opts.url;
-    this.raw = unless(opts.raw, false);
-    opts.flux.on(opts.flux.RESULTS, ({ template }) => this.update({ isActive: template.name === opts.templateName }));
+    import { Template } from './gb-template';
+    this.mixin(new Template().__proto__);
   </script>
 
   <style scoped>

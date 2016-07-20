@@ -3,7 +3,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
-import '../src/tags/gb-record-count.tag';
+import '../src/tags/record-count/gb-record-count.tag';
 
 const TAG = 'gb-record-count';
 

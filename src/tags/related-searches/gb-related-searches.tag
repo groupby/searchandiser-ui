@@ -6,8 +6,8 @@
   </ul>
 
   <script>
-    opts.flux.on(opts.flux.RESULTS, ({ relatedQueries }) => this.update({ relatedQueries }));
-    this.send = (event) => opts.flux.rewrite(event.target.text);
+    import { RelatedSearches } from './gb-related-searches';
+    this.mixin(new RelatedSearches().__proto__);
   </script>
 
   <style scoped>

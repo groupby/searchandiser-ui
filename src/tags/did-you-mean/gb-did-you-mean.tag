@@ -6,8 +6,8 @@
   </ul>
 
   <script>
-    opts.flux.on(opts.flux.RESULTS, ({ didYouMean }) => this.update({ didYouMean }));
-    this.send = (event) => opts.flux.rewrite(event.target.text);
+    import { DidYouMean } from './gb-did-you-mean';
+    this.mixin(new DidYouMean().__proto__);
   </script>
 
   <style scoped>

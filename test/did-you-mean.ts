@@ -3,7 +3,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
-import '../src/tags/gb-did-you-mean.tag';
+import '../src/tags/did-you-mean/gb-did-you-mean.tag';
 
 const TAG = 'gb-did-you-mean';
 

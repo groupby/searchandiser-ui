@@ -8,10 +8,8 @@
   </ul>
 
   <script>
-    this.struct = this.parent ? this.parent.struct : opts.config.structure;
-    const css = opts.css;
-    opts.flux.on(opts.flux.RESULTS, ({ records }) => this.update({ records }));
-    this.userStyle = (key) => css ? css[key]: '';
+    import { Results } from './gb-results';
+    this.mixin(new Results().__proto__);
   </script>
 
   <style scoped>
