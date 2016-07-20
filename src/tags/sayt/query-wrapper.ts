@@ -1,3 +1,5 @@
+import debounce = require('debounce');
+
 export function mount(tag: Riot.Tag.Instance) {
   tag.on('before-mount', initSayt(tag));
   tag.on('mount', wrapElement(tag.root, tag.opts));
@@ -7,14 +9,17 @@ function initSayt(tag: Riot.Tag.Instance & any): () => void {
   const root: HTMLInputElement = <HTMLInputElement>tag.root;
   return () => {
     root.autocomplete = 'off';
-    document.addEventListener('click', () => tag.opts.flux.emit('autocomplete:hide'));
-    root.addEventListener('input', () => {
-      if (root.value) {
+    const minimumCharacters = tag.opts.config.sayt.minimumCharacters || 1;
+    const delay = tag.opts.config.sayt.delay || 0;
+    const debouncedSearch = debounce(() => {
+      if (root.value.length >= minimumCharacters) {
         tag.opts.flux.emit('autocomplete', root.value);
       } else {
         tag.opts.flux.emit('autocomplete:hide');
       }
-    });
+    }, delay);
+    document.addEventListener('click', () => tag.opts.flux.emit('autocomplete:hide'));
+    root.addEventListener('input', debouncedSearch);
   };
 }
 

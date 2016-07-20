@@ -145,7 +145,13 @@ Use the searchandiser method to set up your configurations in a script tag at th
           // },
           //
           // filter the navigations returned
-          // allowedNavigations: [ 'brand' ]
+          // allowedNavigations: [ 'brand' ],
+          //
+          // select minimum characters at which to start autocomplete
+          // minimumCharacters: 3,
+          //
+          // select delay to start autocomplete
+          // delay: 300
         },
 
         // enable some default styling

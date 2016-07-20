@@ -1,4 +1,5 @@
 /// <reference path="../typings/index.d.ts" />
+/// <reference path="../custom_typings/debounce.d.ts" />
 
 import { initSearchandiser, Searchandiser } from './searchandiser';
 import './tags/index';
