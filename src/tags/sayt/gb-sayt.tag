@@ -76,12 +76,20 @@
         value: node.getAttribute('data-refinement')
       }).then(() => opts.flux.rewrite(query))
     };
+
+    const takelast = (x) => {
+      // console.log(`${x} llllll`);
+      let s = x.split('>');
+      return s[s.length - 1];
+    };
+
     this.searchRefinement = (event) => refine(event.target, '');
     this.searchCategory = (event) => refine(event.target, this.originalQuery);
     this.enhanceQuery = (query) => saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
     this.enhanceCategoryQuery = (query) => {
       if (saytConfig.categoryField) {
-        return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
+        const sss = takelast(query.category);
+        return `<b>${query.value}</b> in <span class="gb-category-query">${sss}</span>`;
       } else {
         return query.value;
       }
