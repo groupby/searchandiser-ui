@@ -10,7 +10,9 @@ export class Refinement {
 
   init() {
     this.parentOpts = this.parent.parent.opts;
-    this.toView = displayRefinement;
+    this.toView = (this.parentOpts.transformRefinement) ? 
+    	((x) => this.parentOpts.transformRefinement(displayRefinement(x)))
+    	: displayRefinement;
     this.toRefinement = toRefinement;
   }
 };

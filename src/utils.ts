@@ -3,15 +3,7 @@ export function toRefinement(ref, nav) {
 }
 
 export function displayRefinement(ref) {
-  let value = null;
-  if (typeof ref.value === 'string') {
-    const split = ref.value.split('>');
-    value = camelize(split[split.length - 1]);
-  } else {
-    value = ref.value;
-  }
-
-  return ref.type === 'Value' ? value : `${ref.low} - ${ref.high}`;
+  return ref.type === 'Value' ? ref.value : `${ref.low} - ${ref.high}`;
 }
 
 export function pluck(obj:any, ...keys:string[]):any {
@@ -37,6 +29,6 @@ export function getParam(param):string | null {
 
 export const unless = (obj:any, defaultObj:any) => obj == undefined ? defaultObj : obj;
 
-function camelize(str) {
+export function camelize(str) {
   return str.toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 }
