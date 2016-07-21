@@ -17,7 +17,7 @@
         <h4 class="gb-navigation__title">{ displayName }</h4>
         <li class="gb-autocomplete__item" each={ value in values } data-value="{ displayName }: { value }" data-refinement={ value } data-field={ name }>
           <a class="gb-autocomplete__link" href="#" onclick={ searchRefinement }>
-            <gb-raw content="{ enhanceQuery(value) }"></gb-raw>
+            <gb-raw content="{ enhanceQuery2(value) }"></gb-raw>
           </a>
         </li>
       </virtual>
@@ -34,9 +34,9 @@
     import '../gb-raw.tag';
     import '../../utils.ts';
 
-    function camelize(str) {
+    const camelize = (str) => {
   return str.toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
-}
+};
 
 
     const sayt = require('sayt');
@@ -86,6 +86,8 @@
     this.searchRefinement = (event) => refine(event.target, '');
     this.searchCategory = (event) => refine(event.target, this.originalQuery);
     this.enhanceQuery = (query) => saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
+    this.enhanceQuery2 = query => `${camelize(saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query)}`;
+
     this.enhanceCategoryQuery = (query) => {
       if (saytConfig.categoryField) {
         const sss = takelast(query.category);
