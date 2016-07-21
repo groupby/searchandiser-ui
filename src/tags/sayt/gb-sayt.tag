@@ -32,6 +32,7 @@
   <script>
     import '../results/gb-product.tag';
     import '../gb-raw.tag';
+    import '../../utils.ts';
 
     function camelize(str) {
   return str.toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
@@ -107,7 +108,7 @@
         if (this.categoryField && categoryQuery.additionalInfo[this.categoryField]) {
           categoryResults = categoryQuery.additionalInfo[this.categoryField]
             .map((value) => ({ category: value, value: categoryQuery.value })).slice(0, 3);
-          categoryResults.unshift({ category: 'All Departments', value: categoryQuery.value });
+          // categoryResults.unshift({ category: 'All Departments', value: categoryQuery.value });
         }
       }
 
@@ -115,7 +116,7 @@
       const navigations = result.navigations ? result.navigations
         .map((nav) => Object.assign(nav, { 
           displayName: saytConfig.navigationNames[nav.name] || nav.name,
-          values: nav.values.map(camelize) }))
+          values: nav.values }))
         .filter(({ name }) => saytConfig.allowedNavigations.includes(name)) : [];
 
       this.update({ results: result, navigations, queries: result.searchTerms, categoryResults });
