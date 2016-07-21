@@ -32,6 +32,12 @@
   <script>
     import '../results/gb-product.tag';
     import '../gb-raw.tag';
+
+    function camelize(str) {
+  return str.toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+}
+
+
     const sayt = require('sayt');
     const autocomplete = require('./autocomplete');
     const defaultConfig = {
@@ -104,9 +110,14 @@
           categoryResults.unshift({ category: 'All Departments', value: categoryQuery.value });
         }
       }
+
+
       const navigations = result.navigations ? result.navigations
-        .map((nav) => Object.assign(nav, { displayName: saytConfig.navigationNames[nav.name] || nav.name }))
+        .map((nav) => Object.assign(nav, { 
+          displayName: saytConfig.navigationNames[nav.name] || nav.name,
+          values: nav.values.map(camelize) }))
         .filter(({ name }) => saytConfig.allowedNavigations.includes(name)) : [];
+
       this.update({ results: result, navigations, queries: result.searchTerms, categoryResults });
     };
 
