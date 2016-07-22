@@ -44,7 +44,7 @@
     };
     const saytConfig = Object.assign(defaultConfig, opts.config.sayt);
     this.categoryField = saytConfig.categoryField;
-    this.struct = Object.assign({}, opts.config.structure, { image: 'image_url' });
+    this.struct = Object.assign({}, opts.config.structure);
 
     sayt.configure({
       subdomain: opts.config.customerId,
