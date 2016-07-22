@@ -28,7 +28,3 @@ export function getParam(param):string | null {
 }
 
 export const unless = (obj:any, defaultObj:any) => obj == undefined ? defaultObj : obj;
-
-export function camelize(str) {
-  return str.toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
-}
