@@ -24,17 +24,23 @@ export function Paging() {
     };
 
     this.opts.flux.on(Events.PAGE_CHANGED, this.updatePages);
+    this.opts.flux.on(Events.RESULTS, this.updatePageDisplay);
+  };
+
+  this.updatePageDisplay = function() {
+    const pageNumbers = this.opts.flux.page.pageNumbers(this.limit);
+    const lastPage = this.opts.flux.page.finalPage + 1;
+    this.update({
+      pageNumbers,
+      lowOverflow: pageNumbers[0] !== 1,
+      highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage
+    });
   };
 
   this.updatePages = function({ pageIndex, finalPage }) {
-    const pageNumbers = this.opts.flux.page.pageNumbers(this.limit);
-    const lastPage = finalPage + 1;
     this.update({
-      pageNumbers,
       currentPage: pageIndex + 1,
-      lastPage,
-      lowOverflow: pageNumbers[0] !== 1,
-      highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
+      lastPage: finalPage + 1,
       backDisabled: pageIndex === 0,
       forwardDisabled: pageIndex === finalPage
     });
