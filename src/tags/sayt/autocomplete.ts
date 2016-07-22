@@ -23,14 +23,19 @@ export function reset() {
   selectedNode = searchInput;
 }
 
-function swap<T extends Element>(selected: T, next: T): T {
+function swap<T extends Element>(autocompleteList: Element, selected: T, next: T): T {
   if (next) {
-    selected.classList.remove(ACTIVE);
+    removeActive(autocompleteList);
     next.classList.add(ACTIVE);
     if (next.firstElementChild) queryUpdateNotifier(next.getAttribute(DATA_VALUE));
     return next;
   }
   return selected;
+}
+
+function removeActive(autocompleteList: Element) {
+  Array.from(autocompleteList.getElementsByClassName("gb-autocomplete__item"))
+    .forEach(element => element.classList.remove('active'));
 }
 
 function keyListener(autocompleteList: Element) {
@@ -41,7 +46,7 @@ function keyListener(autocompleteList: Element) {
         event.preventDefault();
         if (selectedNode === firstLink) {
           searchInput.value = originalValue;
-          selectedNode = swap(selectedNode, searchInput);
+          selectedNode = swap(autocompleteList, selectedNode, searchInput);
         } else {
           let nextNode = selectedNode.previousElementSibling;
           if (nextNode && nextNode.tagName) {
@@ -49,13 +54,13 @@ function keyListener(autocompleteList: Element) {
               nextNode = nextNode.previousElementSibling;
             }
           }
-          selectedNode = swap(selectedNode, nextNode);
+          selectedNode = swap(autocompleteList, selectedNode, nextNode);
         }
         break;
       case KEY_DOWN:
         if (selectedNode === searchInput) {
           originalValue = searchInput.value;
-          selectedNode = swap(selectedNode, firstLink);
+          selectedNode = swap(autocompleteList, selectedNode, firstLink);
         } else {
           let nextNode = selectedNode.nextElementSibling;
           if (nextNode && nextNode.tagName) {
@@ -63,16 +68,18 @@ function keyListener(autocompleteList: Element) {
               nextNode = nextNode.nextElementSibling;
             }
           }
-          selectedNode = swap(selectedNode, nextNode);
+          selectedNode = swap(autocompleteList, selectedNode, nextNode);
         }
         break;
       case KEY_ENTER:
         if (selectedNode !== searchInput) {
           selectedNode.firstElementChild.click();
+          removeActive(autocompleteList);
           reset();
         }
         break;
       default:
+        removeActive(autocompleteList);
         reset();
         break;
     }
