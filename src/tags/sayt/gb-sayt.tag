@@ -13,14 +13,14 @@
         </a>
       </li>
       <div if={ queries && navigations } class="gb-autocomplete__divider"></div>
-      <virtual each={ navigations }>
+      <div each={ navigations }>
         <h4 class="gb-navigation__title">{ displayName }</h4>
         <li class="gb-autocomplete__item" each={ value in values } data-value="{ displayName }: { value }" data-refinement={ value } data-field={ name }>
           <a class="gb-autocomplete__link" href="#" onclick={ searchRefinement }>
             <gb-raw content="{ enhanceQuery(value) }"></gb-raw>
           </a>
         </li>
-      </virtual>
+      </div>
     </ul>
     <ul if={ products } class="gb-sayt__products">
       <li each="{ products }">
