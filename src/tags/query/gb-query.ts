@@ -17,12 +17,13 @@ export class Query {
   init() {
     const saytEnabled = unless(this.opts.sayt, true);
     const autoSearch = unless(this.opts.autoSearch, true);
-    const queryFromUrl = getParam(this.queryParam);
     const inputValue = () => this.root.value;
 
     this.queryParam = this.opts.queryParam || 'q';
     this.searchUrl = `${this.opts.searchUrl || 'search'}?${this.queryParam}=`;
     this.staticSearch = unless(this.opts.staticSearch, false);
+
+    const queryFromUrl = getParam(this.queryParam);
 
     if (saytEnabled) mount(<Riot.Tag.Instance & any>this);
     if (autoSearch) {
