@@ -24,7 +24,6 @@ import './sort/gb-sort.tag';
 import './sort/gb-raw-sort.tag';
 import './template/gb-template.tag';
 import './tracker/gb-tracker.tag';
-import './gb-details.tag';
 import './gb-raw.tag';
 import './gb-raw-submit.tag';
 import './gb-import.tag';
