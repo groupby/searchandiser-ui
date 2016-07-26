@@ -12,9 +12,9 @@
   <body>
 
     <div class="details">
-      <h1>{ record.allMeta[struct.title] }</h1>
-      <h2>{ record.allMeta[struct.price] }</h2>
-      <img riot-src="{ record.allMeta[struct.image] }" alt="" />
+      <h1>{ getPath(record.allMeta, struct.title) }</h1>
+      <h2>{ getPath(record.allMeta, struct.price) }</h2>
+      <img riot-src="{ getPath(record.allMeta, struct.image) }" alt="" />
     </div>
 
     <script>

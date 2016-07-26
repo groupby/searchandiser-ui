@@ -84,11 +84,13 @@ displayed.
             <a href="#">
               // Using 'riot-src' ensures that there are no errors
               // loading invalid image urls
-            <img riot-src="{ allMeta['image'] }" alt="" />
+              // getPath fetches the property at the specified path, so
+              // you can use nested paths like 'deep.nested.image'
+            <img riot-src="{ getPath(allMeta,'image') }" alt="" />
             </a>
             <a href="#">
-              <p>{ allMeta['title'] }</p>
-              <p>{ allMeta['price'] }</p>
+              <p>{ getPath(allMeta,'title') }</p>
+              <p>{ getPath(allMeta,'price') }</p>
             </a>
           </div>
       -->
@@ -120,6 +122,8 @@ Use the searchandiser method to set up your configurations in a script tag at th
         // page size options
         // pageSizes: [10, 20, 50],
 
+        // The paths for structure elements can be any nested 
+        // paths within allMeta like 'deep.nested.wideImage[0]'
         structure: {
           title: 'title',
           image: 'wideImage',
