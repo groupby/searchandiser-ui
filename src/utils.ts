@@ -31,16 +31,16 @@ export const unless = (obj: any, defaultObj: any) => obj == undefined ? defaultO
 
 export const getPath = (obj: any, path: string) => {
   if (path.indexOf('.') == -1 && path.indexOf('[') == -1) {
-    return context[path];
+    return obj[path];
   }
 
   const crumbs = path.split(/\.|\[|]/g).filter(crumb => crumb.length > 0);
 
   while (crumbs.length > 0) {
-    context = context[crumbs.shift()];
+    obj = obj[crumbs.shift()];
 
-    if (context === undefined || (context !== undefined && crumbs.length === 0)) {
-      return context;
+    if (obj === undefined || (obj !== undefined && crumbs.length === 0)) {
+      return obj;
     }
   }
 };

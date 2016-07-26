@@ -12,6 +12,7 @@
   <script>
     this.struct  = this.parent.struct;
     this.getPath = this.parent.getPath;
+
     this.link    = (id) => this.struct.url || `details.html?id=${id}`;
     this.image   = (imageObj) => Array.isArray(imageObj) ? imageObj[0] : imageObj;
   </script>
