@@ -70,7 +70,10 @@
       }).then(() => opts.flux.rewrite(query))
     };
     this.searchRefinement = (event) => refine(event.target, '');
-    this.searchCategory = (event) => refine(event.target, this.originalQuery);
+    this.searchCategory = (event) => {
+      opts.flux.reset();
+      refine(event.target, this.originalQuery);
+    };
     this.enhanceQuery = (query) => saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
     this.enhanceCategoryQuery = (query) => {
       if (saytConfig.categoryField) {
