@@ -83,7 +83,7 @@
   "dependencies": {
     "debounce": "^1.0.0",
     "es6-promise": "^3.2.1",
-    "groupby-api": "^1.0.45",
+    "groupby-api": "^1.0.46",
     "riot": "^2.5.0",
     "sayt": "0.0.5"
   }
