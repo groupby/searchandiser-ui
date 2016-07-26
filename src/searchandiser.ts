@@ -1,4 +1,5 @@
 import { Query, BrowserBridge, Results, FluxCapacitor, Events, Sort } from 'groupby-api';
+const TrackerClient = require('gb-tracker-client');
 import { pluck, checkNested } from './utils';
 import riot = require('riot');
 
@@ -6,8 +7,9 @@ export function initSearchandiser() {
   return function configure(config: SearchandiserConfig & any = {}) {
     const finalConfig = Object.assign({ initialSearch: true }, config);
     const flux = initCapacitor(finalConfig);
+    const tracker = initTracker(finalConfig);
     Object.assign(flux, Events);
-    Object.assign(configure, new Searchandiser(flux, finalConfig));
+    Object.assign(configure, new Searchandiser(flux, tracker, finalConfig));
   }
 }
 
@@ -17,9 +19,13 @@ function initCapacitor(config: SearchandiserConfig) {
   return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize', 'sort', 'fields'));
 }
 
+function initTracker(config: SearchandiserConfig) {
+  return new TrackerClient(config.customerId, config.area);
+}
+
 export class Searchandiser {
 
-  constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) {
+  constructor(public flux: FluxCapacitor, public tracker: TrackerClient, public config: SearchandiserConfig) {
     if (config.initialSearch) this.search();
   }
 

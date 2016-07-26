@@ -57,6 +57,7 @@
     "gulp-util": "^3.0.6",
     "guppy-pre-commit": "^0.2.1",
     "http-server": "^0.9.0",
+    "json-loader": "^0.5.4",
     "karma": "^1.1.0",
     "karma-chai": "^0.1.0",
     "karma-mocha": "^1.1.1",
@@ -85,6 +86,7 @@
     "es6-promise": "^3.2.1",
     "groupby-api": "^1.0.45",
     "riot": "^2.5.0",
+    "gb-tracker-client": "^1.2.1",
     "sayt": "0.0.5"
   }
 }

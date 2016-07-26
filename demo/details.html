@@ -16,6 +16,7 @@
       <h2>{ record.allMeta[struct.price] }</h2>
       <img riot-src="{ record.allMeta[struct.image] }" alt="" />
     </div>
+    <div class="tracker"></div>
 
     <script>
       searchandiser({
@@ -28,6 +29,9 @@
         }
       });
       searchandiser.attach('details');
+      searchandiser.attach('tracker', '.tracker', {
+        event: 'viewProduct'
+      });
     </script>
   </body>
 
