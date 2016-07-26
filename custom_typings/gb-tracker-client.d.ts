@@ -3,6 +3,7 @@ declare interface TrackerClient {
   sendOrderEvent: (data: any) => void;
   sendSearchEvent: (data: any) => void;
   sendViewProductEvent: (data: any) => void;
+  setVisitor: (visitorId: any, sessionId: any) => void;
   new(customerId: any, area: any)
 }
 
