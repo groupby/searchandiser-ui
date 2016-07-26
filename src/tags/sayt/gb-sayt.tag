@@ -1,23 +1,23 @@
 <gb-sayt>
   <div class="gb-sayt { opts.style() }" name="saytNode" if={ queries }>
     <ul class="gb-sayt__autocomplete" name="autocompleteList">
-      <li class="gb-autocomplete__item" each={ query in categoryResults } data-value={ query.value } data-refinement={ query.category } data-field={ categoryField }>
+      <li class="gb-autocomplete__item category-query-suggestion" each={ query in categoryResults } data-value={ query.value } data-refinement={ query.category } data-field={ categoryField }>
         <a class="gb-autocomplete__link" href="#" onclick={ searchCategory }>
           <gb-raw content={ enhanceCategoryQuery(query) }></gb-raw>
         </a>
       </li>
       <div if={ queries && categoryResults.length } class="gb-autocomplete__divider"></div>
-      <li class="gb-autocomplete__item" each={ queries } data-value={ value }>
+      <li class="gb-autocomplete__item search-term-suggestion" each={ queries } data-value={ value }>
         <a class="gb-autocomplete__link" href="#" onclick={ search }>
-          <gb-raw content={ enhanceQuery(value) }></gb-raw>
+          <gb-raw content={ enhanceSearchTermQuery(value) }></gb-raw>
         </a>
       </li>
       <div if={ queries && navigations } class="gb-autocomplete__divider"></div>
       <virtual each={ navigations }>
         <h4 class="gb-navigation__title">{ displayName }</h4>
-        <li class="gb-autocomplete__item" each={ value in values } data-value="{ displayName }: { value }" data-refinement={ value } data-field={ name }>
+        <li class="gb-autocomplete__item navigation-suggestion" each={ value in values } data-value="{ displayName }: { value }" data-refinement={ value } data-field={ name }>
           <a class="gb-autocomplete__link" href="#" onclick={ searchRefinement }>
-            <gb-raw content="{ enhanceQuery(value) }"></gb-raw>
+            <gb-raw content="{ enhanceNavigationQuery(value) }"></gb-raw>
           </a>
         </li>
       </virtual>
@@ -32,6 +32,7 @@
   <script>
     import '../results/gb-product.tag';
     import '../gb-raw.tag';
+
     const sayt = require('sayt');
     const autocomplete = require('./autocomplete');
     const defaultConfig = {
@@ -69,16 +70,24 @@
         value: node.getAttribute('data-refinement')
       }).then(() => opts.flux.rewrite(query))
     };
+
     this.searchRefinement = (event) => refine(event.target, '');
     this.searchCategory = (event) => refine(event.target, this.originalQuery);
-    this.enhanceQuery = (query) => saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
-    this.enhanceCategoryQuery = (query) => {
+
+    this.enhanceSearchTermQuery = saytConfig.enhanceSearchTermQuery ||
+      ((query) => saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query);
+
+    this.enhanceNavigationQuery = saytConfig.enhanceNavigationQuery || 
+      ((query) => saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query);
+
+    this.enhanceCategoryQuery = saytConfig.enhanceCategoryQuery ||
+    ((query) => {
       if (saytConfig.categoryField) {
         return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
       } else {
         return query.value;
       }
-    };
+    });
 
     const searchProducts = (query) => {
       if (saytConfig.products) {
@@ -101,12 +110,17 @@
         if (this.categoryField && categoryQuery.additionalInfo[this.categoryField]) {
           categoryResults = categoryQuery.additionalInfo[this.categoryField]
             .map((value) => ({ category: value, value: categoryQuery.value })).slice(0, 3);
-          categoryResults.unshift({ category: 'All Departments', value: categoryQuery.value });
+          // categoryResults.unshift({ category: 'All Departments', value: categoryQuery.value });
         }
       }
+
+
       const navigations = result.navigations ? result.navigations
-        .map((nav) => Object.assign(nav, { displayName: saytConfig.navigationNames[nav.name] || nav.name }))
+        .map((nav) => Object.assign(nav, { 
+          displayName: saytConfig.navigationNames[nav.name] || nav.name,
+          values: nav.values }))
         .filter(({ name }) => saytConfig.allowedNavigations.includes(name)) : [];
+
       this.update({ results: result, navigations, queries: result.searchTerms, categoryResults });
     };
 
