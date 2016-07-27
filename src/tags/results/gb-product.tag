@@ -10,8 +10,10 @@
   </div>
 
   <script>
+    import { getPath } from '../../utils';
+
     this.struct  = this.parent.struct;
-    this.getPath = this.parent.getPath;
+    this.getPath = getPath;
 
     this.link    = (id) => this.struct.url || `details.html?id=${id}`;
     this.image   = (imageObj) => Array.isArray(imageObj) ? imageObj[0] : imageObj;
