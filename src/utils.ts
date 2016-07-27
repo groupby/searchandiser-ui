@@ -1,3 +1,5 @@
+import oget = require('oget');
+
 export function toRefinement(ref, nav) {
   return Object.assign({}, pluck(ref, 'type', 'value', 'low', 'high'), { navigationName: nav.name });
 }
@@ -29,18 +31,4 @@ export function getParam(param): string | null {
 
 export const unless = (obj: any, defaultObj: any) => obj == undefined ? defaultObj : obj;
 
-export const getPath = (obj: any, path: string) => {
-  if (path.indexOf('.') == -1 && path.indexOf('[') == -1) {
-    return obj[path];
-  }
-
-  const crumbs = path.split(/\.|\[|]/g).filter(crumb => crumb.length > 0);
-
-  while (crumbs.length > 0) {
-    obj = obj[crumbs.shift()];
-
-    if (obj === undefined || (obj !== undefined && crumbs.length === 0)) {
-      return obj;
-    }
-  }
-};
+export const getPath = (obj: any, path: string) => oget(obj, path);
