@@ -1,5 +1,5 @@
 <gb-sayt>
-  <div class="gb-sayt { opts.style() }" name="saytNode" if={ queries }>
+  <div class="gb-sayt { opts.style() }" name="saytNode" if={ queries || navigations }>
     <ul class="gb-sayt__autocomplete" name="autocompleteList">
       <li class="gb-autocomplete__item" each={ query in categoryResults } data-value={ query.value } data-refinement={ query.category } data-field={ categoryField }>
         <a class="gb-autocomplete__link" href="#" onclick={ searchCategory }>
@@ -122,7 +122,7 @@
       .catch((err) => console.error(err)));
     opts.flux.on('autocomplete:hide', () => {
       autocomplete.reset();
-      this.update({ queries: null });
+      this.update({ queries: null, navigations: null });
     });
   </script>
 
