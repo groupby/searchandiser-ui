@@ -31,16 +31,14 @@ export const unless = (obj:any, defaultObj:any) => obj == undefined ? defaultObj
 
 export const getPath = (obj:any, path:string) => oget(obj, path);
 
-export const updateLocation = (searchUrl:string, queryParam:string, query:string, refinements:Array<any>) => {
+export const updateLocation = (searchUrl:string, queryParamName:string, query:string, refinements:Array<any>) => {
   const queryObj = {};
 
   if (refinements.length > 0) {
     queryObj['refinements'] = JSON.stringify(refinements)
   }
 
-  queryObj[queryParam] = query;
-
-  console.log(window.location.pathname);
+  queryObj[queryParamName] = query;
 
   if (window.location.pathname === searchUrl) {
     // Better way to do this is with browser history rewrites
@@ -50,18 +48,22 @@ export const updateLocation = (searchUrl:string, queryParam:string, query:string
   }
 };
 
-export const parseQueryFromLocation = (queryParamName, queryConfig) => {
+export const parseQueryFromLocation = (queryParamName:string, queryConfig:any) => {
   const queryParams = queryString.parse(location.search);
   let queryFromUrl;
 
   if (queryParams[queryParamName]) {
     queryFromUrl = new ApiQuery(queryParams[queryParamName]).withConfiguration(queryConfig);
+  }
 
-    if (queryParams.refinements) {
-      const refinements = JSON.parse(queryParams.refinements);
-      if (refinements.length > 0) {
-        refinements.forEach((refinement) => queryFromUrl.withSelectedRefinements(refinement));
-      }
+  if (queryParams.refinements) {
+    if (!queryFromUrl) {
+      queryFromUrl = new ApiQuery(queryParams[queryParamName]).withConfiguration(queryConfig);
+    }
+
+    const refinements = JSON.parse(queryParams.refinements);
+    if (refinements.length > 0) {
+      refinements.forEach((refinement) => queryFromUrl.withSelectedRefinements(refinement));
     }
   }
 
