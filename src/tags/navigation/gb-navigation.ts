@@ -1,10 +1,10 @@
+import { FluxTag } from '../tag';
 import { unless } from '../../utils';
 import { Events, Results, Navigation as NavModel } from 'groupby-api';
 
-export class Navigation {
+export interface Navigation extends FluxTag { }
 
-  opts: any;
-  update: (any) => void;
+export class Navigation {
 
   badge: boolean;
   showSelected: boolean;
