@@ -34,6 +34,7 @@
     "src/tags/index.ts",
     "src/tags/navigation/gb-navigation.ts",
     "src/tags/navigation/gb-refinement.ts",
+    "src/tags/page-size/gb-page-size.ts",
     "src/tags/paging/gb-paging.ts",
     "src/tags/query/gb-query.ts",
     "src/tags/record-count/gb-record-count.ts",
