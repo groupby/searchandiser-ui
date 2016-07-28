@@ -1,4 +1,4 @@
-import '../gb-import.tag';
+import '../import/gb-import.tag';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { unless } from '../../utils';

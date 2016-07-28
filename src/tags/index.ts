@@ -4,6 +4,7 @@ import './details/gb-details.tag';
 import './did-you-mean/gb-did-you-mean.tag';
 import './filter/gb-filter.tag';
 import './filter/gb-raw-filter.tag';
+import './import/gb-import.tag';
 import './navigation/gb-available-navigation.tag';
 import './page-size/gb-page-size.tag';
 import './page-size/gb-raw-page-size.tag';
@@ -26,4 +27,3 @@ import './template/gb-template.tag';
 
 import './gb-raw.tag';
 import './gb-raw-submit.tag';
-import './gb-import.tag';
