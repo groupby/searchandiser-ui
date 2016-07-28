@@ -31,7 +31,7 @@ export const unless = (obj:any, defaultObj:any) => obj == undefined ? defaultObj
 
 export const getPath = (obj:any, path:string) => oget(obj, path);
 
-export const updateLocation = (searchUrl:string, queryParam:string, query:string, reNfinements:Array<any>) => {
+export const updateLocation = (searchUrl:string, queryParam:string, query:string, refinements:Array<any>) => {
   const queryObj = {};
 
   if (refinements.length > 0) {
