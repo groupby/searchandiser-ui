@@ -1,19 +1,20 @@
-import {Events, Query as ApiQuery} from 'groupby-api';
-import {unless, getParam, pluck, updateLocation, parseQueryFromLocation} from '../../utils';
-import {mount} from '../sayt/query-wrapper';
+import { FluxTag } from '../tag';
+import { Events } from 'groupby-api';
+import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
+import { mount } from '../sayt/query-wrapper';
 import queryString = require('query-string');
 
 const ENTER_KEY = 13;
 
+export interface Query extends FluxTag { }
+
 export class Query {
 
-  opts:any;
-  root:HTMLInputElement;
-  on:(string, Function) => void;
+  root: HTMLInputElement;
 
-  queryParam:string;
-  searchUrl:string;
-  staticSearch:string;
+  queryParam: string;
+  searchUrl: string;
+  staticSearch: string;
 
   init() {
     const saytEnabled = unless(this.opts.sayt, true);
@@ -44,23 +45,23 @@ export class Query {
       this.on('before-mount', () => this.listenForSubmit(inputValue));
     }
 
-    this.opts.flux.on(Events.REWRITE_QUERY, (query:string) => this.root.value = query);
+    this.opts.flux.on(Events.REWRITE_QUERY, (query: string) => this.root.value = query);
     if (queryFromUrl) {
       this.opts.flux.query = queryFromUrl;
       this.opts.flux.search(queryFromUrl.raw.query);
     }
   }
 
-  listenForInput(value:() => string) {
+  listenForInput(value: () => string) {
     this.root.addEventListener('input', () => this.opts.flux.reset(value()));
   }
 
-  listenForSubmit(value:() => string) {
+  listenForSubmit(value: () => string) {
     this.listenForEnter(() => this.opts.flux.reset(value()));
   }
 
-  listenForEnter(cb:() => void) {
-    this.root.addEventListener('keydown', (event:KeyboardEvent) => {
+  listenForEnter(cb: () => void) {
+    this.root.addEventListener('keydown', (event: KeyboardEvent) => {
       switch (event.keyCode) {
         case ENTER_KEY:
           return cb();

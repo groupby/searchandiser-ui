@@ -1,9 +1,9 @@
+import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 
-export class RecordCount {
+export interface RecordCount extends FluxTag { }
 
-  opts: any;
-  update: (any) => void;
+export class RecordCount {
 
   init() {
     this.opts.flux.on(Events.RESULTS, ({ pageInfo, totalRecordCount }) => this.update({

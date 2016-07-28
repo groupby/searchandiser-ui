@@ -38,6 +38,7 @@
     "src/tags/query/gb-query.ts",
     "src/tags/record-count/gb-record-count.ts",
     "src/tags/related-searches/gb-related-searches.ts",
+    "src/tags/results/gb-product.ts",
     "src/tags/results/gb-results.ts",
     "src/tags/sayt/autocomplete.ts",
     "src/tags/sayt/query-wrapper.ts",

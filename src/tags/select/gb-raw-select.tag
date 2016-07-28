@@ -23,11 +23,9 @@
   </div>
 
   <script>
-    import './gb-option-wrapper.tag';
     import { Select, optionLabel, optionValue } from './gb-select';
     this.mixin(new Select().__proto__);
-    this.optionLabel = optionLabel;
-    this.optionValue = optionValue;
+    this.mixin({ optionLabel, optionValue });
   </script>
 
   <style scoped>
