@@ -10,7 +10,10 @@
     const navField = parentOpts.field;
     const flux = parentOpts.clone();
     const isTargetNav = (nav) => nav.name === navField;
-    const convertRefinements = (navigations) => navigations.find(isTargetNav).refinements.map((ref) => ({ label: ref.value, value: ref }));
+    const convertRefinements = (navigations) => {
+      const found = navigations.find(isTargetNav)
+      return found ? found.refinements.map((ref) => ({ label: ref.value, value: ref })) : [];
+    };
     const updateValues = (res) => this.selectElement._tag.update({ options: convertRefinements(res.availableNavigation) });
 
     this.navigate = (value) => {

@@ -8,9 +8,8 @@
   </li>
 
   <script>
-    import { Refinement } from './gb-refinement';
-    this.mixin(new Refinement().__proto__);
-    this.send = () => this.parentOpts.flux.refine(this.toRefinement(this.ref, this.nav));
+    import { AvailableRefinement } from './gb-refinement';
+    this.mixin(new AvailableRefinement().__proto__);
   </script>
 
   <style scoped>
