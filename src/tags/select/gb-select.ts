@@ -1,8 +1,25 @@
+import { FluxTag } from '../tag';
 import { unless } from '../../utils';
 
-export function Select() {
+export interface Select extends FluxTag { }
 
-  this.init = function(): void {
+export class Select {
+
+  iconUrl: string;
+  label: string;
+  clearOption: { label: string };
+  options: any[];
+  hover: boolean;
+  native: boolean;
+  hasDefault: boolean;
+  callback: Function;
+  selectedOption: any;
+  selected: any;
+  focused: boolean;
+  selectButton: HTMLButtonElement;
+  nativeSelect: HTMLSelectElement;
+
+  init(): void {
     const opts = this.opts.passthrough || this.opts;
     this.iconUrl = require('url!./arrow-down.png');
     this.label = opts.label || 'Select';
@@ -18,20 +35,20 @@ export function Select() {
     }
   }
 
-  this.selectLabel = function(): string {
+  selectLabel(): string {
     return this.selectedOption || (this.selected ? this.clearOption : this.label);
-  };
+  }
 
-  this.prepFocus = function() {
+  prepFocus() {
     return this.focused = false;
-  };
+  }
 
-  this.unfocus = function() {
+  unfocus() {
     this.focused = this.hover || !this.focused;
     if (!this.focused) this.selectButton.blur();
-  };
+  }
 
-  this.selectOption = function(selectedOption: string, value: any): void {
+  selectOption(selectedOption: string, value: any): void {
     this.update({ selectedOption });
     if (this.callback) {
       try {
@@ -42,25 +59,25 @@ export function Select() {
     }
   }
 
-  this.selectNative = function(event: Event) {
+  selectNative(event: Event) {
     const option: HTMLOptionElement = <HTMLOptionElement>event.target;
     const selected = option.value;
     this.nativeSelect.options[0].disabled = !selected;
     this.update({ selected });
     this.selectOption(option.text, option.value);
-  };
+  }
 
-  this.selectCustom = function(event: MouseEvent) {
+  selectCustom(event: MouseEvent) {
     let node: Element & any = (<Element>event.target);
     while (!node['_tag'] || node.tagName !== 'GB-OPTION-WRAPPER') node = node.parentElement;
     const tag = node._tag;
     this.selectButton.blur();
     this.selectOption(tag.label, tag.value);
-  };
+  }
 
-  this.clearSelection = function() {
+  clearSelection() {
     return this.selectOption(undefined, '*');
-  };
+  }
 }
 
 export function optionValue(option: any) {
