@@ -1,14 +1,14 @@
+import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { getPath } from '../../utils'
 
+export interface Results extends FluxTag { }
+
 export class Results {
 
-  parent: any;
-  opts: any;
-  update: (any) => void;
-  getPath: (any, string) => any;
-
+  parent: Riot.Tag.Instance & { struct: any };
   struct: any;
+  getPath: typeof getPath;
 
   init() {
     this.struct = this.parent ? this.parent.struct : this.opts.config.structure;
@@ -19,5 +19,4 @@ export class Results {
   userStyle(key: string) {
     return this.opts.css ? this.opts.css[key] : '';
   }
-
 }

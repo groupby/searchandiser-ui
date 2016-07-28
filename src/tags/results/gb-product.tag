@@ -10,12 +10,7 @@
   </div>
 
   <script>
-    import { getPath } from '../../utils';
-
-    this.struct  = this.parent.struct;
-    this.getPath = getPath;
-
-    this.link    = (id) => this.struct.url || `details.html?id=${id}`;
-    this.image   = (imageObj) => Array.isArray(imageObj) ? imageObj[0] : imageObj;
+    import { Product } from './gb-product';
+    this.mixin(new Product().__proto__);
   </script>
 </gb-product>

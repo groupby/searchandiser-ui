@@ -1,3 +1,4 @@
+import './gb-option-wrapper.tag';
 import { FluxTag } from '../tag';
 import { unless } from '../../utils';
 
