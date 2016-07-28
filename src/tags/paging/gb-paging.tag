@@ -1,6 +1,6 @@
 <gb-paging>
   <div class="gb-paging">
-    <gb-raw-paging flux={ opts.flux } limit={ opts.limit } terminals={ opts.terminals } pages={ opts.pages } icons={ opts.icons }>
+    <gb-raw-paging flux={ opts.flux } limit={ opts.limit } terminals={ opts.terminals } pages={ opts.pages } icons={ opts.icons } numeric={ opts.numeric }>
       <gb-terminal-pager>
         <gb-pager>
           <gb-pages></gb-pages>
