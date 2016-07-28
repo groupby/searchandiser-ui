@@ -33,6 +33,7 @@
     "src/tags/details/gb-details.ts",
     "src/tags/did-you-mean/gb-did-you-mean.ts",
     "src/tags/filter/gb-filter.ts",
+    "src/tags/import/gb-import.ts",
     "src/tags/index.ts",
     "src/tags/navigation/gb-navigation.ts",
     "src/tags/navigation/gb-refinement.ts",
