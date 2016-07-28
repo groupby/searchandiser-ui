@@ -29,6 +29,7 @@
     "src/index.ts",
     "src/searchandiser.ts",
     "src/tags/breadcrumbs/gb-breadcrumbs.ts",
+    "src/tags/breadcrumbs/gb-refinement-crumb.ts",
     "src/tags/details/gb-details.ts",
     "src/tags/did-you-mean/gb-did-you-mean.ts",
     "src/tags/filter/gb-filter.ts",

@@ -1,9 +1,9 @@
+import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 
-export class DidYouMean {
+export interface DidYouMean extends FluxTag { }
 
-  opts: any;
-  update: (any) => void;
+export class DidYouMean {
 
   init() {
     this.opts.flux.on(Events.RESULTS, ({ didYouMean }) => this.update({ didYouMean }));
