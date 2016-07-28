@@ -1,10 +1,10 @@
+import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { unless } from '../../utils';
 
-export class Breadcrumbs {
+export interface Breadcrumbs extends FluxTag { }
 
-  opts: any;
-  update: (any) => void;
+export class Breadcrumbs {
 
   hideQuery: boolean;
   hideRefinements: boolean;

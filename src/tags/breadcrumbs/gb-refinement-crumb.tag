@@ -4,10 +4,8 @@
   </li>
 
   <script>
-    import { toRefinement, displayRefinement } from '../../utils';
-    this.toView = displayRefinement;
-    this.parentOpts = this.parent.parent.opts;
-    this.remove = () => this.parentOpts.flux.unrefine(toRefinement(this.ref, this.nav));
+    import { RefinementCrumb } from './gb-refinement-crumb';
+    this.mixin(new RefinementCrumb().__proto__);
   </script>
 
   <style>
