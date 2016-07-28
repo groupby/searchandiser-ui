@@ -12,6 +12,7 @@
   "filesGlob": [
     "src/**/*.ts",
     "test/**/*.ts",
+    "custom_typings/**/*.d.ts",
     "node_modules/groupby-api/**/*.d.ts",
     "!dist",
     "!node_modules"
@@ -52,6 +53,7 @@
     "test/raw-query.ts",
     "test/record-count.ts",
     "test/sort.ts",
+    "custom_typings/query-string.d.ts",
     "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
   ]
 }

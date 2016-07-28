@@ -19,7 +19,10 @@ function initCapacitor(config: SearchandiserConfig) {
 
 export class Searchandiser {
 
+  queryConfig:any;
+
   constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) {
+    this.queryConfig = pluck(config, 'collection', 'area', 'language', 'pageSize', 'sort', 'fields');
     if (config.initialSearch) this.search();
   }
 

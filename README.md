@@ -187,9 +187,9 @@ Use the searchandiser method to set up your configurations in a script tag at th
         // disable updating results as you type
         // autoSearch: false,
         //
-        // when 'autoSearch' is off, searches will result in
-        // a redirect to the following url.
-        // defaults to 'search'
+        // when 'autoSearch' is off and staticSearch is on, searches
+        // redirect to 'searchUrl' and append query parameters
+        // staticSearch: false,
         // searchUrl: '/my/search/path',
         //
         // the query parameter to hold the search field
@@ -197,7 +197,11 @@ Use the searchandiser method to set up your configurations in a script tag at th
         // defaults to 'q'
         // queryParam: 'queryString'
         //
-        // e.g. searching for 'shoes' with the above configuration
+        // e.g. searching for 'shoes' with:
+        // - autoSearch: false
+        // - staticSearch: true
+        // - searchUrl: '/my/search/path'
+        //
         // would redirect to the URL
         // 'example.com/my/search/path?queryString=shoes'
       });
@@ -211,6 +215,13 @@ Use the searchandiser method to set up your configurations in a script tag at th
       // an <input> element. The 'raw-query' component accepts
       // the same options as 'query'
       searchandiser.attach('raw-query', '.raw-query');
+      
+      // Attach to a pre-existing submit button
+      // The 'raw-submit' component accepts the same options as
+      // 'query' but ignores the 'sayt' property.
+      // The options should be the same as 'query' or 'raw-query' to ensure
+      // consistent behaviour.
+      searchadiser.attach('raw-submit', '.raw-submit');
 
       searchandiser.attach('paging', '.paging', {
         // show page selection links

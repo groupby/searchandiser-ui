@@ -2,8 +2,23 @@
   <yield/>
 
   <script>
-    const label = opts.label || 'Search';
+    import {unless, updateLocation} from '../utils';
+
+    const label        = opts.label || 'Search';
+    const staticSearch = unless(this.opts.staticSearch, false);
+    const queryParam   = this.opts.queryParam || 'q';
+    const searchUrl    = `${this.opts.searchUrl || 'search'}`;
+
     if (this.root.tagName === 'INPUT') this.root.value = label;
-    this.root.addEventListener('click', () => opts.flux.search(document.querySelector('[riot-tag="gb-raw-query"]').value));
+
+    this.root.addEventListener('click', () => {
+      const inputValue = document.querySelector('[riot-tag="gb-raw-query"]').value;
+
+      if (staticSearch && window.location.pathname !== searchUrl) {
+        updateLocation(searchUrl, queryParam, inputValue, []);
+      } else {
+        this.opts.flux.search(inputValue);
+      }
+    });
   </script>
 </gb-raw-submit>
