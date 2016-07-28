@@ -1,12 +1,13 @@
-const { toRefinement, displayRefinement } = require('../../utils');
+import { FluxTag } from '../tag';
+import { toRefinement, displayRefinement } from '../../utils';
+
+export interface Refinement extends FluxTag { }
 
 export class Refinement {
 
-  parent: any;
-
   parentOpts: any;
-  toView: Function;
-  toRefinement: Function;
+  toView: typeof displayRefinement;
+  toRefinement: typeof toRefinement;
 
   init() {
     this.parentOpts = this.parent.parent.opts;
