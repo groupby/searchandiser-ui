@@ -69,7 +69,7 @@
         return updateLocation(searchUrl, queryParam, node.getAttribute('data-value'), []);
       }
 
-      opts.flux.rewrite(node.getAttribute('data-value'));
+      opts.flux.reset(node.getAttribute('data-value'));
     };
     const refine = (node, query) => {
       while (node.tagName !== 'LI') node = node.parentNode;
