@@ -53,6 +53,7 @@
 
     sayt.configure({
       subdomain:     opts.config.customerId,
+      area:          saytConfig.area || opts.config.area,
       collection:    saytConfig.collection || opts.config.collection,
       autocomplete:  {numSearchTerms: saytConfig.queries},
       productSearch: {
@@ -106,6 +107,9 @@
     };
 
     const searchProducts = (query) => {
+
+      console.log('query ' + query);
+
       if (saytConfig.products) {
         sayt.productSearch(query)
           .then((res) => this.update({products: res.result.products}));
@@ -150,12 +154,16 @@
       .then(({result}) => {
         this.update({originalQuery});
         processResults(result);
-        if (this.queries) searchProducts(this.queries[0].value);
+        searchProducts(originalQuery);
+//        if (this.queries) searchProducts(this.queries[0].value);
       })
       .catch((err) => console.error(err)));
     opts.flux.on('autocomplete:hide', () => {
       autocomplete.reset();
-      this.update({ queries: null, navigations: null });
+      this.update({
+        queries:     null,
+        navigations: null
+      });
     });
   </script>
 

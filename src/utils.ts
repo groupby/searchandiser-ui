@@ -50,17 +50,13 @@ export const updateLocation = (searchUrl:string, queryParamName:string, query:st
 
 export const parseQueryFromLocation = (queryParamName:string, queryConfig:any) => {
   const queryParams = queryString.parse(location.search);
-  let queryFromUrl;
+  let queryFromUrl = new ApiQuery(queryParams[queryParamName] || '').withConfiguration(queryConfig);
 
-  if (queryParams[queryParamName]) {
-    queryFromUrl = new ApiQuery(queryParams[queryParamName]).withConfiguration(queryConfig);
-  }
+  // if (queryParams[queryParamName]) {
+  //   queryFromUrl = new ApiQuery(queryParams[queryParamName]).withConfiguration(queryConfig);
+  // }
 
   if (queryParams.refinements) {
-    if (!queryFromUrl) {
-      queryFromUrl = new ApiQuery(queryParams[queryParamName]).withConfiguration(queryConfig);
-    }
-
     const refinements = JSON.parse(queryParams.refinements);
     if (refinements.length > 0) {
       refinements.forEach((refinement) => queryFromUrl.withSelectedRefinements(refinement));

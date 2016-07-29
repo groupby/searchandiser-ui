@@ -29,7 +29,7 @@ export class Query {
     const setLocation = () => {
       // Better way to do this is with browser history rewrites
       if (window.location.pathname !== this.searchUrl) {
-        updateLocation(this.searchUrl, this.queryParam, this.root.value, this.opts.flux.query.request.refinements);
+        updateLocation(this.searchUrl, this.queryParam, this.root.value, this.opts.flux.query.raw.refinements);
       } else {
         this.opts.flux.reset(this.root.value);
       }
@@ -47,7 +47,7 @@ export class Query {
     this.opts.flux.on(Events.REWRITE_QUERY, (query:string) => this.root.value = query);
     if (queryFromUrl) {
       this.opts.flux.query = queryFromUrl;
-      this.opts.flux.search(queryFromUrl.request.query);
+      this.opts.flux.search(queryFromUrl.raw.query);
     }
   }
 
