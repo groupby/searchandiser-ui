@@ -69,7 +69,7 @@
         return updateLocation(searchUrl, queryParam, node.getAttribute('data-value'), []);
       }
 
-      opts.flux.rewrite(node.getAttribute('data-value'));
+      opts.flux.reset(node.getAttribute('data-value'));
     };
     const refine = (node, query) => {
       while (node.tagName !== 'LI') node = node.parentNode;
@@ -88,7 +88,7 @@
         navigationName: node.getAttribute('data-field'),
         type:           'Value',
         value:          node.getAttribute('data-refinement')
-      }).then(() => opts.flux.reset(query))
+      }).then(() => opts.flux.rewrite(query))
     };
 
     this.searchRefinement     = (event) => refine(event.target, '');
