@@ -222,7 +222,7 @@ Use the searchandiser method to set up your configurations in a script tag at th
         // hide 'first' and 'last' links
         // showTerminals: false
         //
-        // change terminal labels to first and last page number from 'First' and 'Last'
+        // use first and last page numbers as terminal labels; overrides first_label, last_label
         // numeric: false
       });
       searchandiser.attach('page-size', '.page-size');
