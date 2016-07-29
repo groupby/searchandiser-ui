@@ -88,7 +88,7 @@
         navigationName: node.getAttribute('data-field'),
         type:           'Value',
         value:          node.getAttribute('data-refinement')
-      }).then(() => opts.flux.rewrite(query))
+      }).then(() => opts.flux.reset(query))
     };
 
     this.searchRefinement     = (event) => refine(event.target, '');
