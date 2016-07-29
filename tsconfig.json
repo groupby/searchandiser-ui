@@ -53,6 +53,8 @@
     "test/raw-query.ts",
     "test/record-count.ts",
     "test/sort.ts",
+    "custom_typings/debounce.d.ts",
+    "custom_typings/oget.d.ts",
     "custom_typings/query-string.d.ts",
     "node_modules/groupby-api/dist/commonjs/groupby-api.d.ts"
   ]
