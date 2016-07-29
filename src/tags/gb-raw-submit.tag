@@ -17,7 +17,7 @@
       if (staticSearch && window.location.pathname !== searchUrl) {
         updateLocation(searchUrl, queryParam, inputValue, []);
       } else {
-        this.opts.flux.search(inputValue);
+        this.opts.flux.reset(inputValue);
       }
     });
   </script>
