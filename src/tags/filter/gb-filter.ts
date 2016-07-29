@@ -1,6 +1,7 @@
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { toRefinement } from '../../utils';
+import { SelectConfig } from '../select/gb-select';
 
 export interface Filter extends FluxTag { }
 
@@ -10,7 +11,7 @@ export class Filter {
   parentOpts: any;
   navField: string;
   selected: any;
-  passthrough: any;
+  passthrough: SelectConfig;
 
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
