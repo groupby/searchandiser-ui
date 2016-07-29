@@ -4,7 +4,7 @@ export interface PageSize extends FluxTag { }
 
 export class PageSize {
 
-  passthrough: any;
+  passthrough: PageSizePassthrough;
 
   init() {
     const parentOpts = this.opts.passthrough || this.opts;
@@ -15,4 +15,11 @@ export class PageSize {
       default: true
     });
   }
+}
+
+export interface PageSizePassthrough {
+  options: number[];
+  hover: boolean;
+  update: (number) => void;
+  default: boolean;
 }
