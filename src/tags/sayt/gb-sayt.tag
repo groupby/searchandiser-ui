@@ -108,10 +108,20 @@
       }
     };
 
-    const searchProducts = (query) => {
+    const searchProducts = (query, altQuery) => {
+      console.log(saytConfig.products);
       if (saytConfig.products) {
         sayt.productSearch(query)
-          .then((res) => this.update({products: res.result.products}));
+        .then((res) => {
+          if (res.result.products) {
+            this.update({products: res.result.products});
+          } else if (altQuery) {
+            sayt.productSearch(altQuery)
+            .then((res) => {
+              this.update({products: res.result.products})
+            });
+          }
+        });
       }
     };
     const notifier       = (query) => {
@@ -153,7 +163,7 @@
       .then(({result}) => {
         this.update({originalQuery});
         processResults(result);
-        if (this.queries) searchProducts(this.queries[0].value);
+        (this.queries[0]) ? searchProducts(originalQuery, this.queries[0].value) : searchProducts(originalQuery);
       })
       .catch((err) => console.error(err)));
     opts.flux.on('autocomplete:hide', () => {
