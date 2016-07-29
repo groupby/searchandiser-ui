@@ -1,10 +1,11 @@
 import { FluxTag } from '../tag';
+import { SelectConfig } from '../select/gb-select';
 
 export interface PageSize extends FluxTag { }
 
 export class PageSize {
 
-  passthrough: PageSizePassthrough;
+  passthrough: SelectConfig;
 
   init() {
     const parentOpts = this.opts.passthrough || this.opts;
@@ -15,11 +16,4 @@ export class PageSize {
       default: true
     });
   }
-}
-
-export interface PageSizePassthrough {
-  options: number[];
-  hover: boolean;
-  update: (number) => void;
-  default: boolean;
 }

@@ -1,5 +1,6 @@
 import { FluxTag } from '../tag';
 import { checkNested } from '../../utils';
+import { SelectConfig } from '../select/gb-select';
 
 export interface Sort extends FluxTag { }
 
@@ -7,7 +8,7 @@ export class Sort {
 
   parentOpts: any;
   options: any;
-  passthrough: any;
+  passthrough: SelectConfig;
 
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
