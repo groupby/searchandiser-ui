@@ -12,7 +12,7 @@
   "scripts": {
     "test": "gulp build && karma start",
     "ci": "gulp clean:typings && gulp typings:install && karma start --singleRun=false",
-    "start": "http-server demo"
+    "start": "http-server ../"
   },
   "repository": {
     "type": "git",
