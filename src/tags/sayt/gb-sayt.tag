@@ -91,7 +91,10 @@
       }).then(() => opts.flux.rewrite(query))
     };
 
-    this.searchRefinement     = (event) => refine(event.target, '');
+    this.searchRefinement     = (event) => {
+      opts.flux.reset();
+      refine(event.target, '');
+    };
     this.searchCategory       = (event) => {
       opts.flux.reset();
       refine(event.target, this.originalQuery);
