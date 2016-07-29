@@ -221,6 +221,9 @@ Use the searchandiser method to set up your configurations in a script tag at th
         //
         // hide 'first' and 'last' links
         // showTerminals: false
+        //
+        // change terminal labels to first and last page number from 'First' and 'Last'
+        // numeric: false
       });
       searchandiser.attach('page-size', '.page-size');
       searchandiser.attach('results', '.results');
