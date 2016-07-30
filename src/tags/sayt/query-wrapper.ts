@@ -1,24 +1,25 @@
+import { Query } from '../query/gb-query';
 import debounce = require('debounce');
 
-export function mount(tag: Riot.Tag.Instance) {
+export function mount(tag: Query) {
   tag.on('before-mount', initSayt(tag));
-  tag.on('mount', wrapElement(tag.root, tag.opts));
+  tag.on('mount', wrapElement(tag.root, tag.parentOpts));
 }
 
-function initSayt(tag: Riot.Tag.Instance & any): () => void {
+function initSayt(tag: Query): () => void {
   const root: HTMLInputElement = <HTMLInputElement>tag.root;
   return () => {
     root.autocomplete = 'off';
-    const minimumCharacters = tag.opts.config.sayt.minimumCharacters || 1;
-    const delay = tag.opts.config.sayt.delay || 0;
+    const minimumCharacters = tag.parentOpts.config.sayt.minimumCharacters || 1;
+    const delay = tag.parentOpts.config.sayt.delay || 0;
     const debouncedSearch = debounce(() => {
       if (root.value.length >= minimumCharacters) {
-        tag.opts.flux.emit('autocomplete', root.value);
+        tag.parentOpts.flux.emit('autocomplete', root.value);
       } else {
-        tag.opts.flux.emit('autocomplete:hide');
+        tag.parentOpts.flux.emit('autocomplete:hide');
       }
     }, delay);
-    document.addEventListener('click', () => tag.opts.flux.emit('autocomplete:hide'));
+    document.addEventListener('click', () => tag.parentOpts.flux.emit('autocomplete:hide'));
     root.addEventListener('input', debouncedSearch);
   };
 }
