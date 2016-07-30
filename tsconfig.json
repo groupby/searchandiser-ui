@@ -45,6 +45,7 @@
     "src/tags/results/gb-product.ts",
     "src/tags/results/gb-results.ts",
     "src/tags/sayt/autocomplete.ts",
+    "src/tags/sayt/gb-sayt.ts",
     "src/tags/sayt/query-wrapper.ts",
     "src/tags/select/gb-select.ts",
     "src/tags/sort/gb-sort.ts",
