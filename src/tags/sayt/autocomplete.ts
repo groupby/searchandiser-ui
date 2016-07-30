@@ -1,3 +1,5 @@
+import { findTag } from '../../utils';
+
 const KEY_UP = 38;
 const KEY_DOWN = 40;
 const KEY_ENTER = 13;
@@ -12,9 +14,8 @@ let selectedNode,
   searchInput: HTMLInputElement,
   queryUpdateNotifier: (string) => void;
 
-
 export function init(root: Node, autocompleteList: Element, notifier: (string) => void) {
-  selectedNode = searchInput = <HTMLInputElement>root.parentNode.firstChild;
+  selectedNode = searchInput = <HTMLInputElement>findTag('gb-raw-query');
   queryUpdateNotifier = notifier;
   searchInput.onkeydown = keyListener(autocompleteList);
 }
@@ -34,7 +35,7 @@ function swap<T extends Element>(autocompleteList: Element, selected: T, next: T
 }
 
 function removeActive(autocompleteList: Element) {
-  Array.from(autocompleteList.getElementsByClassName("gb-autocomplete__item"))
+  Array.from(autocompleteList.getElementsByClassName('gb-autocomplete__item'))
     .forEach(element => element.classList.remove('active'));
 }
 
