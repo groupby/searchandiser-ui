@@ -7,11 +7,11 @@ import queryString = require('query-string');
 
 const ENTER_KEY = 13;
 
-export interface Query extends FluxTag { }
+export interface Query extends FluxTag {
+  root: HTMLInputElement;
+}
 
 export class Query {
-
-  root: HTMLInputElement;
 
   parentOpts: any;
   queryParam: string;
@@ -26,32 +26,36 @@ export class Query {
     this.searchUrl = this.parentOpts.searchUrl || 'search';
     this.staticSearch = unless(this.parentOpts.staticSearch, false);
 
-    const inputValue = () => this.root.value;
-
     const queryFromUrl = parseQueryFromLocation(this.queryParam, this.parentOpts.queryConfig);
 
-    const setLocation = () => {
-      // Better way to do this is with browser history rewrites
-      if (window.location.pathname !== this.searchUrl) {
-        updateLocation(this.searchUrl, this.queryParam, this.root.value, this.parentOpts.flux.query.raw.refinements);
-      } else {
-        this.parentOpts.flux.reset(this.root.value);
-      }
-    };
+    if (saytEnabled) mount(this);
 
-    if (saytEnabled) mount(<Riot.Tag.Instance & any>this);
     if (autoSearch) {
-      this.on('before-mount', () => this.listenForInput(inputValue));
+      this.on('before-mount', () => this.listenForInput(this.inputValue));
     } else if (this.staticSearch) {
-      this.on('before-mount', () => this.listenForEnter(setLocation));
+      this.on('before-mount', () => this.listenForEnter(this.setLocation));
     } else {
-      this.on('before-mount', () => this.listenForSubmit(inputValue));
+      this.on('before-mount', () => this.listenForSubmit(this.inputValue));
     }
 
     this.parentOpts.flux.on(Events.REWRITE_QUERY, (query: string) => this.root.value = query);
+
     if (queryFromUrl) {
       this.parentOpts.flux.query = queryFromUrl;
       this.parentOpts.flux.search(queryFromUrl.raw.query);
+    }
+  }
+
+  private inputValue() {
+    return this.root.value;
+  }
+
+  private setLocation() {
+    // Better way to do this is with browser history rewrites
+    if (window.location.pathname !== this.searchUrl) {
+      updateLocation(this.searchUrl, this.queryParam, this.root.value, this.parentOpts.flux.query.raw.refinements);
+    } else {
+      this.parentOpts.flux.reset(this.root.value);
     }
   }
 
