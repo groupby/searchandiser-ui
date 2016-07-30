@@ -1,3 +1,4 @@
+import '../sayt/gb-sayt.tag';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
@@ -12,27 +13,29 @@ export class Query {
 
   root: HTMLInputElement;
 
+  parentOpts: any;
   queryParam: string;
   searchUrl: string;
   staticSearch: string;
 
   init() {
-    const saytEnabled = unless(this.opts.sayt, true);
-    const autoSearch = unless(this.opts.autoSearch, true);
-    this.queryParam = this.opts.queryParam || 'q';
-    this.searchUrl = this.opts.searchUrl || 'search';
-    this.staticSearch = unless(this.opts.staticSearch, false);
+    this.parentOpts = this.opts.passthrough || this.opts;
+    const saytEnabled = unless(this.parentOpts.sayt, true);
+    const autoSearch = unless(this.parentOpts.autoSearch, true);
+    this.queryParam = this.parentOpts.queryParam || 'q';
+    this.searchUrl = this.parentOpts.searchUrl || 'search';
+    this.staticSearch = unless(this.parentOpts.staticSearch, false);
 
     const inputValue = () => this.root.value;
 
-    const queryFromUrl = parseQueryFromLocation(this.queryParam, this.opts.queryConfig);
+    const queryFromUrl = parseQueryFromLocation(this.queryParam, this.parentOpts.queryConfig);
 
     const setLocation = () => {
       // Better way to do this is with browser history rewrites
       if (window.location.pathname !== this.searchUrl) {
-        updateLocation(this.searchUrl, this.queryParam, this.root.value, this.opts.flux.query.raw.refinements);
+        updateLocation(this.searchUrl, this.queryParam, this.root.value, this.parentOpts.flux.query.raw.refinements);
       } else {
-        this.opts.flux.reset(this.root.value);
+        this.parentOpts.flux.reset(this.root.value);
       }
     };
 
@@ -45,19 +48,19 @@ export class Query {
       this.on('before-mount', () => this.listenForSubmit(inputValue));
     }
 
-    this.opts.flux.on(Events.REWRITE_QUERY, (query: string) => this.root.value = query);
+    this.parentOpts.flux.on(Events.REWRITE_QUERY, (query: string) => this.root.value = query);
     if (queryFromUrl) {
-      this.opts.flux.query = queryFromUrl;
-      this.opts.flux.search(queryFromUrl.raw.query);
+      this.parentOpts.flux.query = queryFromUrl;
+      this.parentOpts.flux.search(queryFromUrl.raw.query);
     }
   }
 
   listenForInput(value: () => string) {
-    this.root.addEventListener('input', () => this.opts.flux.reset(value()));
+    this.root.addEventListener('input', () => this.parentOpts.flux.reset(value()));
   }
 
   listenForSubmit(value: () => string) {
-    this.listenForEnter(() => this.opts.flux.reset(value()));
+    this.listenForEnter(() => this.parentOpts.flux.reset(value()));
   }
 
   listenForEnter(cb: () => void) {
