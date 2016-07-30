@@ -1,27 +1,37 @@
 import { FluxTag } from '../tag';
-import { unless, updateLocation } from '../../utils';
+import { unless, updateLocation, findTag } from '../../utils';
 
 export interface Submit extends FluxTag {
   root: HTMLInputElement;
 }
 
 export class Submit {
+
+  searchBox: HTMLInputElement;
+  searchUrl: string;
+  queryParam: string;
+  staticSearch: boolean;
+
   init() {
     const label = this.opts.label || 'Search';
-    const staticSearch = unless(this.opts.staticSearch, false);
-    const queryParam = this.opts.queryParam || 'q';
-    const searchUrl = this.opts.searchUrl || 'search';
+    this.staticSearch = unless(this.opts.staticSearch, false);
+    this.queryParam = this.opts.queryParam || 'q';
+    this.searchUrl = this.opts.searchUrl || 'search';
 
     if (this.root.tagName === 'INPUT') this.root.value = label;
 
-    this.root.addEventListener('click', () => {
-      const inputValue = (<HTMLInputElement>document.querySelector('[riot-tag="gb-raw-query"]')).value;
+    this.on('mount', () => this.searchBox = <HTMLInputElement>findTag('gb-raw-query'));
 
-      if (staticSearch && window.location.pathname !== searchUrl) {
-        updateLocation(searchUrl, queryParam, inputValue, []);
-      } else {
-        this.opts.flux.reset(inputValue);
-      }
-    });
+    this.root.addEventListener('click', this.clickHandler);
+  }
+
+  clickHandler() {
+    const inputValue = this.searchBox.value;
+
+    if (this.staticSearch && window.location.pathname !== this.searchUrl) {
+      updateLocation(this.searchUrl, this.queryParam, inputValue, []);
+    } else {
+      this.opts.flux.reset(inputValue);
+    }
   }
 }

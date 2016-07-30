@@ -2,6 +2,10 @@ import oget = require('oget');
 import { Query } from 'groupby-api';
 import queryString = require('query-string');
 
+export function findTag(tagName: string): Element {
+  return document.querySelector(`[riot-tag="${tagName}"]`);
+}
+
 export function toRefinement(ref, nav) {
   return Object.assign({}, pluck(ref, 'type', 'value', 'low', 'high'), { navigationName: nav.name });
 }
