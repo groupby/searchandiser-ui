@@ -1,0 +1,157 @@
+import '../results/gb-product.tag';
+import '../gb-raw.tag';
+import { FluxTag } from '../tag';
+import { Events } from 'groupby-api';
+import { updateLocation } from '../../utils';
+const sayt = require('sayt');
+import autocomplete = require('./autocomplete');
+
+const DEFAULT_CONFIG = {
+  products: 4,
+  queries: 5,
+  autoSearch: true,
+  highlight: true,
+  navigationNames: {},
+  allowedNavigations: []
+};
+
+export interface Sayt extends FluxTag { }
+
+export class Sayt {
+
+  struct: any;
+  saytConfig: any;
+  autocompleteList: Element;
+  categoryField: string;
+  queryParam: string;
+  originalQuery: string;
+  searchUrl: string;
+  queries: any[];
+
+  init() {
+    this.saytConfig = Object.assign({}, DEFAULT_CONFIG, this.opts.config.sayt);
+    this.categoryField = this.saytConfig.categoryField;
+    this.struct = Object.assign({}, this.opts.config.structure);
+    this.searchUrl = this.opts.searchUrl || '/search';
+    this.queryParam = this.opts.queryParam || 'q';
+
+    sayt.configure({
+      subdomain: this.opts.config.customerId,
+      collection: this.saytConfig.collection || this.opts.config.collection,
+      autocomplete: { numSearchTerms: this.saytConfig.queries },
+      productSearch: {
+        area: this.saytConfig.area || this.opts.config.area,
+        numProducts: this.saytConfig.products
+      }
+    });
+
+    this.on('before-mount', () => autocomplete.init(this.root, this.autocompleteList, this.notifier));
+
+    this.opts.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
+      .then(({result}) => {
+        this.update({ originalQuery });
+        this.processResults(result);
+        if (this.queries) this.searchProducts(this.queries[0].value);
+      })
+      .catch((err) => console.error(err)));
+
+    this.opts.flux.on('autocomplete:hide', () => {
+      autocomplete.reset();
+      this.update({ queries: null, navigations: null });
+    });
+  }
+
+  searchProducts(query) {
+    if (this.saytConfig.products) {
+      sayt.productSearch(query)
+        .then((res) => this.update({ products: res.result.products }));
+    }
+  }
+
+  notifier(query) {
+    if (this.saytConfig.autoSearch) this.searchProducts(query);
+    this.opts.flux.emit(Events.REWRITE_QUERY, query);
+  }
+
+  processResults(result) {
+    let categoryResults = [];
+    if (result.searchTerms && result.searchTerms[0].value === this.originalQuery) {
+      const categoryQuery = result.searchTerms[0];
+      result.searchTerms.splice(0, 1);
+
+      if (this.categoryField && categoryQuery.additionalInfo[this.categoryField]) {
+        categoryResults = categoryQuery.additionalInfo[this.categoryField]
+          .map((value) => ({
+            category: value,
+            value: categoryQuery.value
+          })).slice(0, 3);
+        categoryResults.unshift({
+          category: 'All Departments',
+          value: categoryQuery.value
+        });
+      }
+    }
+    const navigations = result.navigations ? result.navigations
+      .map((nav) => Object.assign(nav, { displayName: this.saytConfig.navigationNames[nav.name] || nav.name }))
+      .filter(({name}) => this.saytConfig.allowedNavigations.includes(name)) : [];
+    this.update({
+      results: result,
+      navigations,
+      queries: result.searchTerms,
+      categoryResults
+    });
+  }
+
+  searchRefinement(event) {
+    this.opts.flux.reset();
+    this.refine(event.target, '');
+  }
+
+  searchCategory(event) {
+    this.opts.flux.reset();
+    this.refine(event.target, this.originalQuery);
+  }
+
+  enhanceQuery(query) {
+    return this.saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
+  }
+
+  enhanceCategoryQuery(query) {
+    if (this.saytConfig.categoryField) {
+      return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
+    } else {
+      return query.value;
+    }
+  }
+
+  refine(node, query) {
+    while (node.tagName !== 'LI') node = node.parentNode;
+
+    if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
+      return updateLocation(this.opts.searchUrl || '/search', this.opts.queryParam || 'q', query, [
+        {
+          navigationName: node.getAttribute('data-field'),
+          type: 'Value',
+          value: node.getAttribute('data-refinement')
+        }
+      ]);
+    }
+
+    this.opts.flux.refine({
+      navigationName: node.getAttribute('data-field'),
+      type: 'Value',
+      value: node.getAttribute('data-refinement')
+    }).then(() => this.opts.flux.rewrite(query))
+  }
+
+  search(event) {
+    let node = event.target;
+    while (node.tagName !== 'LI') node = node.parentNode;
+
+    if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
+      return updateLocation(this.searchUrl, this.queryParam, node.getAttribute('data-value'), []);
+    }
+
+    this.opts.flux.reset(node.getAttribute('data-value'));
+  }
+}
