@@ -3,17 +3,16 @@
   "version": false,
   "ambientDependencies": {},
   "dependencies": {
-    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958"
+    "riot": "registry:npm/riot#2.3.0+20160731040735"
   },
   "globalDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",
-    "mocha": "registry:dt/mocha#2.2.5+20160619032855",
-    "riot": "github:effervescentia/typed-riot/global#09745da532a7c35c682fafc0c077b1d140773a83",
+    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
     "sinon": "registry:dt/sinon#1.16.0+20160517064723"
   },
   "globalDependencies": {
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
     "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
-    "node": "registry:dt/node#6.0.0+20160621231320"
+    "node": "registry:dt/node#6.0.0+20160728152422"
   }
 }

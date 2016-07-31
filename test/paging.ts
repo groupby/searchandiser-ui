@@ -1,5 +1,6 @@
 /// <reference path="../typings/index.d.ts" />
 
+import riot = require('riot');
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
@@ -146,6 +147,6 @@ describe('gb-paging tag', () => {
   }
 });
 
-function mount(options: any = {}): Riot.Tag.Instance {
+function mount(options: any = {}) {
   return riot.mount(TAG, { flux: mockFlux(options) })[0];
 }

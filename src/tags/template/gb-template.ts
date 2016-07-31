@@ -1,11 +1,11 @@
-import '../gb-import.tag';
+import '../import/gb-import.tag';
+import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { unless } from '../../utils';
 
-export class Template {
+export interface Template extends FluxTag { }
 
-  opts: any;
-  update: (any) => void;
+export class Template {
 
   isActive: boolean = false;
   raw: boolean;

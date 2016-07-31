@@ -1,37 +1,39 @@
+import { Query } from '../query/gb-query';
 import debounce = require('debounce');
+import riot = require('riot');
 
-export function mount(tag: Riot.Tag.Instance) {
-  tag.on('before-mount', initSayt(tag));
-  tag.on('mount', wrapElement(tag.root, tag.opts));
-}
+export class QueryWrapper {
+  constructor(public tag: Query) { }
 
-function initSayt(tag: Riot.Tag.Instance & any): () => void {
-  const root: HTMLInputElement = <HTMLInputElement>tag.root;
-  return () => {
+  mount() {
+    this.tag.on('before-mount', () => this.initializeSayt());
+    this.tag.on('mount', () => this.wrapElement());
+  }
+
+  initializeSayt() {
+    const root = <HTMLInputElement>this.tag.root;
     root.autocomplete = 'off';
-    const minimumCharacters = tag.opts.config.sayt.minimumCharacters || 1;
-    const delay = tag.opts.config.sayt.delay || 0;
+    const minimumCharacters = this.tag.parentOpts.config.sayt.minimumCharacters || 1;
+    const delay = this.tag.parentOpts.config.sayt.delay || 0;
     const debouncedSearch = debounce(() => {
       if (root.value.length >= minimumCharacters) {
-        tag.opts.flux.emit('autocomplete', root.value);
+        this.tag.parentOpts.flux.emit('autocomplete', root.value);
       } else {
-        tag.opts.flux.emit('autocomplete:hide');
+        this.tag.parentOpts.flux.emit('autocomplete:hide');
       }
     }, delay);
-    document.addEventListener('click', () => tag.opts.flux.emit('autocomplete:hide'));
+    document.addEventListener('click', () => this.tag.parentOpts.flux.emit('autocomplete:hide'));
     root.addEventListener('input', debouncedSearch);
-  };
-}
+  }
 
-function wrapElement(root: Node, opts: any): () => void {
-  return () => {
+  wrapElement() {
     const queryWrapper = document.createElement('span');
     queryWrapper.classList.add('gb-query-wrapper');
     const saytNode = document.createElement('div');
     saytNode.classList.add('gb-sayt-target');
-    root.parentNode.insertBefore(queryWrapper, root);
-    queryWrapper.appendChild(root);
+    this.tag.root.parentNode.insertBefore(queryWrapper, this.tag.root);
+    queryWrapper.appendChild(this.tag.root);
     queryWrapper.appendChild(saytNode);
-    riot.mount(saytNode, 'gb-sayt', opts);
-  };
+    riot.mount(saytNode, 'gb-sayt', this.tag.parentOpts);
+  }
 }

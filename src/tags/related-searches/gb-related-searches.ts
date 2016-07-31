@@ -1,9 +1,9 @@
+import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 
-export class RelatedSearches {
+export interface RelatedSearches extends FluxTag { }
 
-  opts: any;
-  update: (any) => void;
+export class RelatedSearches {
 
   init() {
     this.opts.flux.on(Events.RESULTS, ({ relatedQueries }) => this.update({ relatedQueries }));
