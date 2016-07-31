@@ -3,7 +3,7 @@ import riot = require('riot');
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
-import { mount } from '../sayt/query-wrapper';
+import { QueryWrapper } from '../sayt/query-wrapper';
 import queryString = require('query-string');
 
 const ENTER_KEY = 13;
@@ -29,7 +29,7 @@ export class Query {
 
     const queryFromUrl = parseQueryFromLocation(this.queryParam, this.parentOpts.queryConfig);
 
-    if (saytEnabled) mount(this);
+    if (saytEnabled) new QueryWrapper(this).mount();
 
     if (autoSearch) {
       this.on('before-mount', () => this.listenForInput(this.inputValue));
