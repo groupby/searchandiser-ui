@@ -1,12 +1,14 @@
+import riot = require('riot');
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { getPath } from '../../utils'
 
-export interface Results extends FluxTag { }
+export interface Results extends FluxTag {
+  parent: riot.Tag.Instance & { struct: any };
+}
 
 export class Results {
 
-  parent: Riot.Tag.Instance & { struct: any };
   struct: any;
   getPath: typeof getPath;
 

@@ -1,5 +1,6 @@
 /// <reference path="../typings/index.d.ts" />
 
+import riot = require('riot');
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
@@ -80,6 +81,6 @@ describe('gb-page-size tag', () => {
   }
 });
 
-function mount(options: any = {}, additional: any = {}, native: boolean = true): Riot.Tag.Instance {
+function mount(options: any = {}, additional: any = {}, native: boolean = true) {
   return riot.mount(TAG, Object.assign({ flux: mockFlux(options), config: {}, native }, additional))[0];
 }

@@ -1,1 +1,3 @@
-export interface FluxTag extends Riot.Tag.Instance { }
+import riot = require('riot');
+
+export interface FluxTag extends riot.Tag.Instance { }

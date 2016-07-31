@@ -1,4 +1,5 @@
 import '../sayt/gb-sayt.tag';
+import riot = require('riot');
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
@@ -8,7 +9,7 @@ import queryString = require('query-string');
 const ENTER_KEY = 13;
 
 export interface Query extends FluxTag {
-  root: HTMLInputElement;
+  root: HTMLInputElement & riot.TagElement;
 }
 
 export class Query {

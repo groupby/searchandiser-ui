@@ -1,11 +1,13 @@
+import riot = require('riot');
 import { FluxTag } from '../tag';
 import { getPath } from '../../utils';
 
-export interface Product extends FluxTag { }
+export interface Product extends FluxTag {
+  parent: riot.Tag.Instance & { struct: any };
+}
 
 export class Product {
 
-  parent: Riot.Tag.Instance & { struct: any };
   struct: any;
   getPath: typeof getPath;
 

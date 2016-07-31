@@ -1,5 +1,6 @@
 /// <reference path="../typings/index.d.ts" />
 
+import riot = require('riot');
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
@@ -88,6 +89,6 @@ describe('gb-raw-query tag', () => {
   });
 });
 
-function mount(options: any = {}, overrides: { sayt?: boolean, autoSearch?: boolean, searchUrl?: string, queryParam?: string } = { sayt: false }): Riot.Tag.Instance {
+function mount(options: any = {}, overrides: { sayt?: boolean, autoSearch?: boolean, searchUrl?: string, queryParam?: string } = { sayt: false }) {
   return riot.mount('input', TAG, Object.assign({ flux: mockFlux(options) }, overrides))[0];
 }

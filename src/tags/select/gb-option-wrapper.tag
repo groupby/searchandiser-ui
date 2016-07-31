@@ -2,8 +2,7 @@
   <yield/>
 
   <script>
-    import { optionLabel, optionValue } from './gb-select';
-    this.label = optionLabel(opts.option);
-    this.value = optionValue(opts.option);
+    import { Option } from './gb-option';
+    this.mixin(new Option().__proto__);
   </script>
 </gb-option-wrapper>

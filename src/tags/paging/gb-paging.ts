@@ -1,3 +1,4 @@
+import riot = require('riot');
 import { FluxTag } from '../tag';
 import { unless } from '../../utils';
 import { Events } from 'groupby-api';
@@ -10,7 +11,7 @@ export interface Labeled {
 }
 
 export interface Paging extends FluxTag, Labeled {
-  parent: Riot.Tag.Instance & Labeled & { style: Function };
+  parent: riot.Tag.Instance & Labeled & { style: Function };
 }
 
 export class Paging {

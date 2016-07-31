@@ -1,5 +1,6 @@
 /// <reference path="../typings/index.d.ts" />
 
+import riot = require('riot');
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from './fixtures';
@@ -38,6 +39,6 @@ describe('gb-sort tag', () => {
   });
 });
 
-function mount(options: any = {}, native: boolean = false): Riot.Tag.Instance {
+function mount(options: any = {}, native: boolean = false) {
   return riot.mount(TAG, { flux: mockFlux(options), native })[0];
 }

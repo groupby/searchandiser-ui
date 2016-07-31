@@ -1,5 +1,7 @@
 import './gb-option-wrapper.tag';
+import riot = require('riot');
 import { FluxTag } from '../tag';
+import { Option } from './gb-option';
 import { unless } from '../../utils';
 
 export interface Select extends FluxTag { }
@@ -69,9 +71,9 @@ export class Select {
   }
 
   selectCustom(event: MouseEvent) {
-    let node: Element & any = (<Element>event.target);
-    while (!node['_tag'] || node.tagName !== 'GB-OPTION-WRAPPER') node = node.parentElement;
-    const tag = node._tag;
+    let node = <riot.TagElement>event.target;
+    while (!node._tag || node.tagName !== 'GB-OPTION-WRAPPER') node = <riot.TagElement>node.parentElement;
+    const tag = <Option>node._tag;
     this.selectButton.blur();
     this.selectOption(tag.label, tag.value);
   }

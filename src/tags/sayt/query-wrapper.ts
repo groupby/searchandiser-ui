@@ -1,5 +1,6 @@
 import { Query } from '../query/gb-query';
 import debounce = require('debounce');
+import riot = require('riot');
 
 export function mount(tag: Query) {
   tag.on('before-mount', initSayt(tag));

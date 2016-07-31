@@ -1,8 +1,9 @@
+import riot = require('riot');
 import { FluxTag } from '../tag';
 import { unless, updateLocation, findTag } from '../../utils';
 
 export interface Submit extends FluxTag {
-  root: HTMLInputElement;
+  root: HTMLInputElement & riot.TagElement;
 }
 
 export class Submit {

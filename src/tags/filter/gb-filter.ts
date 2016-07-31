@@ -1,3 +1,4 @@
+import riot = require('riot');
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { toRefinement } from '../../utils';
@@ -7,7 +8,7 @@ export interface Filter extends FluxTag { }
 
 export class Filter {
 
-  selectElement: { _tag: Filter };
+  selectElement: riot.TagElement;
   parentOpts: any;
   navField: string;
   selected: any;
