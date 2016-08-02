@@ -1,1 +1,3 @@
-export interface FluxTag extends Riot.Tag.Instance { }
+export interface FluxTag extends Riot.Tag.Instance {
+  root: HTMLElement;
+}

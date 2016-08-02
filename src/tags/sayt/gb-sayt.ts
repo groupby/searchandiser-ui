@@ -3,8 +3,8 @@ import '../gb-raw.tag';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { updateLocation } from '../../utils';
+import { Autocomplete } from './autocomplete';
 const sayt = require('sayt');
-import autocomplete = require('./autocomplete');
 
 const DEFAULT_CONFIG = {
   products: 4,
@@ -21,7 +21,8 @@ export class Sayt {
 
   struct: any;
   saytConfig: any;
-  autocompleteList: Element;
+  autocomplete: Autocomplete;
+  autocompleteList: HTMLUListElement;
   categoryField: string;
   queryParam: string;
   originalQuery: string;
@@ -45,7 +46,7 @@ export class Sayt {
       }
     });
 
-    this.on('before-mount', () => autocomplete.init(this.root, this.autocompleteList, this.notifier));
+    this.on('before-mount', () => this.autocomplete = new Autocomplete(this.root, this.autocompleteList, this.notifier));
 
     this.opts.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
       .then(({result}) => {
@@ -56,7 +57,7 @@ export class Sayt {
       .catch((err) => console.error(err)));
 
     this.opts.flux.on('autocomplete:hide', () => {
-      autocomplete.reset();
+      this.autocomplete.reset();
       this.update({ queries: null, navigations: null });
     });
   }
