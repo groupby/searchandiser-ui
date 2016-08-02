@@ -1,7 +1,7 @@
 <gb-breadcrumbs>
   <ul class="gb-breadcrumbs { opts.style() }">
-    <li if={ !hideQuery && originalQuery }>{ originalQuery }</li>
-    <li if={ !hideRefinements } each={ nav in selected }>
+    <li class="gb-breadcrumbs__query" if={ !hideQuery && originalQuery }>{ originalQuery }</li>
+    <li class="gb-breadcrumbs__refinements" if={ !hideRefinements } each={ nav in selected }>
       <ul class="gb-nav-crumb">
         <gb-refinement-crumb each={ ref in nav.refinements }></gb-refinement-crumb>
       </ul>
