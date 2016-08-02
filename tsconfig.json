@@ -40,6 +40,7 @@
     "src/tags/page-size/gb-page-size.ts",
     "src/tags/paging/gb-paging.ts",
     "src/tags/query/gb-query.ts",
+    "src/tags/raw/gb-raw.ts",
     "src/tags/record-count/gb-record-count.ts",
     "src/tags/related-searches/gb-related-searches.ts",
     "src/tags/reset/gb-reset.ts",

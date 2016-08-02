@@ -23,9 +23,8 @@
   </div>
 
   <script>
-    import { Select, optionLabel, optionValue } from './gb-select';
+    import { Select } from './gb-select';
     this.mixin(new Select().__proto__);
-    this.mixin({ optionLabel, optionValue });
   </script>
 
   <style scoped>

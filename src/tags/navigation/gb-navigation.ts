@@ -1,3 +1,5 @@
+import './gb-available-refinement.tag';
+import './gb-selected-refinement.tag';
 import { FluxTag } from '../tag';
 import { unless } from '../../utils';
 import { Events, Results, Navigation as NavModel } from 'groupby-api';

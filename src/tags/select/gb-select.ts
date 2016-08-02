@@ -20,6 +20,9 @@ export class Select {
   selectButton: HTMLButtonElement;
   nativeSelect: HTMLSelectElement;
 
+  optionLabel = optionLabel;
+  optionValue = optionValue;
+
   init(): void {
     const opts = this.opts.passthrough || this.opts;
     this.iconUrl = require('url!./arrow-down.png');

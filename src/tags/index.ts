@@ -16,6 +16,7 @@ import './paging/gb-pager.tag';
 import './paging/gb-pages.tag';
 import './query/gb-query.tag';
 import './query/gb-raw-query.tag';
+import './raw/gb-raw.tag';
 import './record-count/gb-record-count.tag';
 import './related-searches/gb-related-searches.tag';
 import './reset/gb-reset.tag';
@@ -29,5 +30,3 @@ import './sort/gb-raw-sort.tag';
 import './submit/gb-submit.tag';
 import './submit/gb-raw-submit.tag';
 import './template/gb-template.tag';
-
-import './gb-raw.tag';

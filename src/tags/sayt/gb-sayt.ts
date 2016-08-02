@@ -1,5 +1,5 @@
 import '../results/gb-product.tag';
-import '../gb-raw.tag';
+import '../raw/gb-raw.tag';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { updateLocation } from '../../utils';
