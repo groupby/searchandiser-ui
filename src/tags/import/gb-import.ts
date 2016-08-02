@@ -1,9 +1,7 @@
 import { FluxTag } from '../tag';
 import { unless } from '../../utils';
 
-export interface Import extends FluxTag {
-  root: HTMLElement;
-}
+export interface Import extends FluxTag { }
 
 export class Import {
   init() {
