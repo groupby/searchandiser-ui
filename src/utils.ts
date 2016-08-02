@@ -50,7 +50,7 @@ export const updateLocation = (searchUrl:string, queryParamName:string, query:st
 
 export const parseQueryFromLocation = (queryParamName:string, queryConfig:any) => {
   const queryParams = queryString.parse(location.search);
-  
+
   let queryFromUrl = new ApiQuery(queryParams[queryParamName] || '').withConfiguration(queryConfig);
 
   if (queryParams.refinements) {
