@@ -29,8 +29,8 @@
       <!-- lol -->
       <div class="gb-side-nav { opts.style() }">
         <div class="gb-nav" each="{ name, nav in processed }">
-          <span class="gb-nav__title">{ nav.displayName }</span>
-          <span class="gb-nav__list">
+          <h4 class="gb-nav__title">{ nav.displayName }</h4>
+          <ul class="gb-nav__list">
             <gb-raw-selected-refinement if="{ showSelected }" each="{ ref in nav.selected }">
               <li class="gb-ref { parentOpts.style() }">
                 <a class="gb-ref__link" href="#" onclick="{ remove }">&times;</a>
@@ -46,7 +46,7 @@
               </a>
             </li>
           </gb-raw-available-refinement>
-          </span>
+          </ul>
         </div>
       </div>
       <!-- lol -->
