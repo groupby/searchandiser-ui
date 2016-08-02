@@ -1,13 +1,13 @@
 import { FluxCapacitor, Events } from 'groupby-api';
 import { Details } from '../../src/tags/details/gb-details';
 import { expect } from 'chai';
-import qs = require('query-string');
 
 describe('gb-details logic', () => {
   let details: Details;
-  const flux = new FluxCapacitor('');
+  let flux: FluxCapacitor;
   beforeEach(() => {
     details = new Details();
+    flux = new FluxCapacitor('');
     details.opts = { flux, config: {} };
   });
 
@@ -28,24 +28,14 @@ describe('gb-details logic', () => {
   });
 
   it('should listen for events', () => {
-    Object.assign(details.opts, {
-      flux: {
-        on: (event: string) => expect(event).to.eq(Events.DETAILS)
-      }
-    });
+    flux.on = (event: string): any => expect(event).to.eq(Events.DETAILS);
     details.init();
   });
 
   it('should update selected on DETAILS', (done) => {
     const record = { a: 'b', c: 'd' };
     let callback;
-    Object.assign(details.opts, {
-      flux: {
-        on: (event: string, cb: Function) => {
-          if (event === Events.DETAILS) callback = cb;
-        }
-      }
-    });
+    flux.on = (event: string, cb: Function): any => callback = cb;
     details.update = (obj: any) => {
       expect(obj.record).to.eq(record);
       done();

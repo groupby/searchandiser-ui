@@ -8,8 +8,11 @@ const TAG = 'gb-breadcrumbs';
 
 describe('gb-breadcrumbs tag', () => {
   let html: Element;
-  const flux = new FluxCapacitor('');
-  beforeEach(() => document.body.appendChild(html = document.createElement(TAG)));
+  let flux: FluxCapacitor;
+  beforeEach(() => {
+    flux = new FluxCapacitor('');
+    document.body.appendChild(html = document.createElement(TAG));
+  });
   afterEach(() => document.body.removeChild(html));
 
   it('mounts tag', () => {
@@ -23,9 +26,9 @@ describe('gb-breadcrumbs tag', () => {
 
     it('renders from query changing', () => {
       const tag = mount();
-      expect(html.querySelector('.gb-breadcrumbs__query')).to.not.be.ok;
+      expect(queryCrumb()).to.not.be.ok;
       tag.updateQuery(originalQuery);
-      expect(html.querySelector('.gb-breadcrumbs__query').textContent).to.eq(originalQuery);
+      expect(queryCrumb().textContent).to.eq(originalQuery);
     });
   });
 
@@ -46,8 +49,8 @@ describe('gb-breadcrumbs tag', () => {
       const tag = mount();
       tag.updateRefinements(selected);
       expect(html.querySelectorAll('.gb-nav-crumb').length).to.eq(1);
-      expect(html.querySelectorAll('.gb-nav-crumb .gb-refinement-crumb').length).to.eq(3);
-      expect(html.querySelectorAll('.gb-nav-crumb .gb-refinement-crumb b')[1].textContent).to.eq('First: B');
+      expect(crumbs().length).to.eq(3);
+      expect(crumbs()[1].querySelector('b').textContent).to.eq('First: B');
     });
 
     it('renders from reset', () => {
@@ -57,16 +60,21 @@ describe('gb-breadcrumbs tag', () => {
       expect(html.querySelectorAll('.gb-nav-crumb').length).to.eq(0);
     });
 
-    it('unrefines on click', (done) => {
+    it('unrefines on click', () => {
       const tag = mount();
       tag.updateRefinements(selected);
-      flux.unrefine = (refinement): any => {
-        expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' });
-        done();
-      };
-      (<HTMLAnchorElement>html.querySelectorAll('.gb-nav-crumb .gb-refinement-crumb a')[1]).click();
+      flux.unrefine = (refinement): any => expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' });
+      (<HTMLAnchorElement>crumbs()[1].querySelector('a')).click();
     });
   });
+
+  function queryCrumb() {
+    return <HTMLLIElement>html.querySelector('.gb-breadcrumbs__query');
+  }
+
+  function crumbs() {
+    return <NodeListOf<HTMLLIElement>>html.querySelectorAll('.gb-nav-crumb .gb-refinement-crumb');
+  }
 
   function mount() {
     return <Breadcrumbs>riot.mount(TAG, { flux })[0];

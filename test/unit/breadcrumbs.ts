@@ -4,9 +4,10 @@ import { expect } from 'chai';
 
 describe('gb-breadcrumbs logic', () => {
   let breadcrumbs: Breadcrumbs;
-  const flux = new FluxCapacitor('');
+  let flux: FluxCapacitor;
   beforeEach(() => {
     breadcrumbs = new Breadcrumbs();
+    flux = new FluxCapacitor('');
     breadcrumbs.opts = { flux };
   });
 
@@ -24,27 +25,19 @@ describe('gb-breadcrumbs logic', () => {
   });
 
   it('should listen for events', () => {
-    breadcrumbs.opts = {
-      flux: {
-        on: (event: string) => expect(event).to.be.oneOf([
-          Events.REFINEMENTS_CHANGED,
-          Events.RESULTS,
-          Events.RESET
-        ])
-      }
-    };
+    flux.on = (event: string): any => expect(event).to.be.oneOf([
+      Events.REFINEMENTS_CHANGED,
+      Events.RESULTS,
+      Events.RESET
+    ]);
     breadcrumbs.init();
   });
 
   it('should update selected on REFINEMENTS_CHANGED', (done) => {
     const selected = ['a', 'b', 'c'];
     let callback;
-    breadcrumbs.opts = {
-      flux: {
-        on: (event: string, cb: Function) => {
-          if (event === Events.REFINEMENTS_CHANGED) callback = cb;
-        }
-      }
+    flux.on = (event: string, cb: Function): any => {
+      if (event === Events.REFINEMENTS_CHANGED) callback = cb;
     };
     breadcrumbs.update = (obj: any) => {
       expect(obj.selected).to.eql(selected);
@@ -56,12 +49,8 @@ describe('gb-breadcrumbs logic', () => {
 
   it('should empty selected on RESET', (done) => {
     let callback;
-    breadcrumbs.opts = {
-      flux: {
-        on: (event: string, cb: Function) => {
-          if (event === Events.RESET) callback = cb;
-        }
-      }
+    flux.on = (event: string, cb: Function): any => {
+      if (event === Events.RESET) callback = cb;
     };
     breadcrumbs.update = (obj: any) => {
       expect(obj.selected.length).to.eq(0);
@@ -74,12 +63,8 @@ describe('gb-breadcrumbs logic', () => {
   it('should update originalQuery on RESULTS', (done) => {
     const originalQuery = 'red sneakers';
     let callback;
-    breadcrumbs.opts = {
-      flux: {
-        on: (event: string, cb: Function) => {
-          if (event === Events.RESULTS) callback = cb;
-        }
-      }
+    flux.on = (event: string, cb: Function): any => {
+      if (event === Events.RESULTS) callback = cb;
     };
     breadcrumbs.update = (obj: any) => {
       expect(obj.originalQuery).to.eq(originalQuery);
