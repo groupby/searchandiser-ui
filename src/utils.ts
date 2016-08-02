@@ -3,10 +3,12 @@ import {Query as ApiQuery} from 'groupby-api';
 import queryString = require('query-string');
 
 export function toRefinement(ref, nav) {
+  console.log('to refinement ' + JSON.stringify(ref, null, 2) + ' '  + JSON.stringify(nav, null, 2));
   return Object.assign({}, pluck(ref, 'type', 'value', 'low', 'high'), {navigationName: nav.name});
 }
 
 export function displayRefinement(ref) {
+  console.log('display refinement ' + JSON.stringify(ref, null, 2));
   return ref.type === 'Value' ? ref.value : `${ref.low} - ${ref.high}`;
 }
 
@@ -50,7 +52,7 @@ export const updateLocation = (searchUrl:string, queryParamName:string, query:st
 
 export const parseQueryFromLocation = (queryParamName:string, queryConfig:any) => {
   const queryParams = queryString.parse(location.search);
-  
+
   let queryFromUrl = new ApiQuery(queryParams[queryParamName] || '').withConfiguration(queryConfig);
 
   if (queryParams.refinements) {

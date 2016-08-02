@@ -13,4 +13,4 @@ export class Refinement {
     this.toView = displayRefinement;
     this.toRefinement = toRefinement;
   }
-};
+}
