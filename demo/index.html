@@ -26,28 +26,28 @@
 </div>
 <div class="gb-main">
   <div class="available-navigation"></div>
-  <!--<ul class="nav__list">-->
-    <!--<div class="raw-navigation">-->
-      <!--<div each="{ name, nav in processed }">-->
-        <!--<h4 class="nav__title">{ nav.displayName }</h4>-->
-        <!--<div if="{ showSelected }" each="{ ref in nav.selected }">-->
-          <!--<li class="ref { opts.style() }">-->
-            <!--<a class="ref__link" href="#" onclick="{ remove(ref, nav) }">&times;</a>-->
-            <!--<span class="gb-ref__value">{ toView(ref) }</span>-->
-          <!--</li>-->
-        <!--</div>-->
-        <!--<div each="{ ref in nav.available }">-->
-          <!--<li class="ref { opts.style() }">-->
-            <!--<a class="ref__link" href="#" onclick="{ send(ref, nav) }">-->
-              <!--<span class="ref__title">{ toView(ref) }</span>-->
-              <!--<span class="filler"></span>-->
-              <!--<span class="ref__badge" if="{ badge }">{ ref.count }</span>-->
-            <!--</a>-->
-          <!--</li>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</ul>-->
+  <ul class="nav__list">
+    <div class="raw-navigation">
+      <div each="{ name, nav in processed }">
+        <h4 class="nav__title">{ nav.displayName }</h4>
+        <div if="{ showSelected }" each="{ ref in nav.selected }">
+          <li class="ref { opts.style() }">
+            <a class="ref__link" href="#" onclick="{ remove(ref, nav) }">&times;</a>
+            <span class="gb-ref__value">{ toView(ref) }</span>
+          </li>
+        </div>
+        <div each="{ ref in nav.available }">
+          <li class="ref { opts.style() }">
+            <a class="ref__link" href="#" onclick="{ send(ref, nav) }">
+              <span class="ref__title">{ toView(ref) }</span>
+              <span class="filler"></span>
+              <span class="ref__badge" if="{ badge }">{ ref.count }</span>
+            </a>
+          </li>
+        </div>
+      </div>
+    </div>
+  </ul>
   <div class="products">
     <div class="spotlight-template"></div>
     <div class="gb-bar">

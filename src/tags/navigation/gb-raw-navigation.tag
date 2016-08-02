@@ -1,9 +1,5 @@
 <gb-raw-navigation>
-  <div class="gb-side-nav { opts.style() }">
-    <div class="gb-nav">
-      <yield/>
-    </div>
-  </div>
+  <yield/>
 
   <script>
     import {RawNavigation} from './gb-raw-navigation';
