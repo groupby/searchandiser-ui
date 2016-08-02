@@ -20,8 +20,8 @@ export class Select {
   selectButton: HTMLButtonElement;
   nativeSelect: HTMLSelectElement;
 
-  optionLabel = optionLabel;
-  optionValue = optionValue;
+  optionLabel: typeof optionLabel;
+  optionValue: typeof optionValue;
 
   init(): void {
     const opts = this.opts.passthrough || this.opts;
@@ -33,6 +33,9 @@ export class Select {
     this.native = unless(opts.native, false);
     this.hasDefault = unless(opts.default, false);
     this.callback = opts.update;
+
+    this.optionLabel = optionLabel;
+    this.optionValue = optionValue;
 
     if (this.hasDefault) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
