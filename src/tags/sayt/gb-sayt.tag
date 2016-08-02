@@ -90,7 +90,6 @@
         && node.getAttribute('data-refinement') === ALL_DEPARTMENTS_CATEGORY_NAME) {
         opts.flux.rewrite(query);
       } else {
-        console.log(node);
         opts.flux.refine({
           navigationName: node.getAttribute('data-field'),
           type:           'Value',
