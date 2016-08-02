@@ -2,6 +2,11 @@
 <yield/>
 
   <script>
+/*
+Available options:  
+badge
+showSelected
+*/
   import { Navigation } from './gb-navigation';
   import { displayRefinement } from '../../utils'
   import './gb-raw-available-refinement.tag'
