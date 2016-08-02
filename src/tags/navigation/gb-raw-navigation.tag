@@ -11,12 +11,8 @@
 
     this.mixin(new RawNavigation().__proto__);
 
-    this.send   = (ref, nav) => {
-      return () => this.opts.flux.refine(this.toRefinement(ref, nav))
-    };
-    this.remove = (ref, nav) => {
-      return () => this.opts.flux.unrefine(this.toRefinement(ref,nav))
-    };
+    this.send   = (ref, nav) => () => this.opts.flux.refine(this.toRefinement(ref, nav));
+    this.remove = (ref, nav) => () => this.opts.flux.unrefine(this.toRefinement(ref,nav));
   </script>
 
   <style scoped>
