@@ -8,7 +8,7 @@ Add the latest `searchandiser-ui` javascript file to the `<head>` of your page.
 <html>
   <head>
     ...
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.32.js"></script>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.33.js"></script>
   </head>
 
   ...
@@ -24,7 +24,7 @@ We have added `defer` to ensure it's run after the DOM has loaded
 <html>
   <head>
     ...
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.32.js"></script>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.0.33.js"></script>
     <script src="js/searchandiser-instance.js" defer></script>
   </head>
 
