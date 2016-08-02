@@ -6,13 +6,17 @@
   </div>
 
   <script>
-    import { RawNavigation } from './gb-raw-navigation';
+    import {RawNavigation} from './gb-raw-navigation';
     console.log('loading raw nav');
 
     this.mixin(new RawNavigation().__proto__);
 
-    this.send = () => this.opts.flux.refine(this.toRefinement(this.ref, this.nav));
-    this.remove = () => this.opts.flux.unrefine(this.toRefinement(this.ref, this.nav));
+    this.send   = (ref, nav) => {
+      return () => this.opts.flux.refine(this.toRefinement(ref, nav))
+    };
+    this.remove = (ref, nav) => {
+      return () => this.opts.flux.unrefine(this.toRefinement(ref,nav))
+    };
   </script>
 
   <style scoped>
