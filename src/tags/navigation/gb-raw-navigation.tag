@@ -1,6 +1,6 @@
 <gb-raw-navigation>
   <div class="gb-side-nav { opts.style() }">
-    <div class="gb-nav" each={ name, nav in processed }>
+    <div class="gb-nav">
       <yield/>
     </div>
   </div>
