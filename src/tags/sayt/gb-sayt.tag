@@ -35,6 +35,8 @@
     import '../results/gb-product.tag';
     import '../gb-raw.tag';
     import {updateLocation} from '../../utils';
+    const ALL_DEPARTMENTS_CATEGORY_NAME = 'All Departments';
+
     const sayt          = require('sayt');
     const autocomplete  = require('./autocomplete');
     const defaultConfig = {
@@ -84,11 +86,17 @@
         ]);
       }
 
-      opts.flux.refine({
-        navigationName: node.getAttribute('data-field'),
-        type:           'Value',
-        value:          node.getAttribute('data-refinement')
-      }).then(() => opts.flux.rewrite(query))
+      if (node.getAttribute('data-field') === this.categoryField
+        && node.getAttribute('data-refinement') === ALL_DEPARTMENTS_CATEGORY_NAME) {
+        opts.flux.rewrite(query);
+      } else {
+        console.log(node);
+        opts.flux.refine({
+          navigationName: node.getAttribute('data-field'),
+          type:           'Value',
+          value:          node.getAttribute('data-refinement')
+        }).then(() => opts.flux.rewrite(query))
+      }
     };
 
     this.searchRefinement     = (event) => {
@@ -133,7 +141,7 @@
               value:    categoryQuery.value
             })).slice(0, 3);
           categoryResults.unshift({
-            category: 'All Departments',
+            category: ALL_DEPARTMENTS_CATEGORY_NAME,
             value:    categoryQuery.value
           });
         }
