@@ -1,5 +1,5 @@
 <gb-import>
-	<div>
+	<div class="gb-import">
 		{ responseText }
 	</div>
 

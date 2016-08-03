@@ -4,22 +4,27 @@ import { unless } from '../../utils';
 export interface Import extends FluxTag { }
 
 export class Import {
-  init() {
-    const isRaw = unless(this.opts.raw, false);
-    const loadFile = () => {
-      const req = new XMLHttpRequest();
-      req.onload = () => {
-        const { responseText } = req;
-        if (isRaw) {
-          this.root.innerHTML = responseText;
-        } else {
-          this.update({ responseText });
-        }
-      };
-      req.open('get', this.opts.url, true);
-      req.send();
-    };
 
-    this.on('mount', () => loadFile());
+  isRaw: boolean;
+  responseText: string;
+
+  init() {
+    this.isRaw = unless(this.opts.raw, false);
+
+    this.on('mount', this.loadFile);
+  }
+
+  loadFile() {
+    const req = new XMLHttpRequest();
+    req.onload = () => {
+      const { responseText } = req;
+      if (this.isRaw) {
+        this.root.innerHTML = responseText;
+      } else {
+        this.update({ responseText });
+      }
+    };
+    req.open('get', this.opts.url, true);
+    req.send();
   }
 }
