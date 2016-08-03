@@ -28,7 +28,7 @@
     </div>
     <div class="gb-main">
       <div class="available-navigation"></div>
-      <ul class="nav__list">
+      <!-- <ul class="nav__list">
         <div class="raw-navigation">
           <div each="{ name, nav in processed }">
             <h4 class="nav__title">{ nav.displayName }</h4>
@@ -49,7 +49,7 @@
             </div>
           </div>
         </div>
-      </ul>
+      </ul> -->
       <div class="products">
         <div class="spotlight-template"></div>
         <div class="gb-bar">
@@ -207,8 +207,8 @@
       });
       // searchandiser.attach('raw-sort');
       searchandiser.attach('record-count');
-      // searchandiser.attach('available-navigation');
-      searchandiser.attach('raw-navigation');
+      searchandiser.attach('available-navigation');
+      // searchandiser.attach('raw-navigation');
       searchandiser.attach('breadcrumbs', '.breadcrumbs', {
         // hideQuery: true,
         // hideRefinements: true
