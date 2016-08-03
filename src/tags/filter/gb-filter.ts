@@ -1,5 +1,6 @@
+import '../select/gb-raw-select.tag';
 import { FluxTag } from '../tag';
-import { Events } from 'groupby-api';
+import { FluxCapacitor, Events, QueryConfiguration, Results } from 'groupby-api';
 import { toRefinement } from '../../utils';
 import { SelectConfig } from '../select/gb-select';
 
@@ -7,6 +8,7 @@ export interface Filter extends FluxTag { }
 
 export class Filter {
 
+  fluxClone: FluxCapacitor;
   selectElement: { _tag: Filter };
   parentOpts: any;
   navField: string;
@@ -17,13 +19,7 @@ export class Filter {
     this.parentOpts = this.opts.passthrough || this.opts;
     this.navField = this.parentOpts.field;
 
-    const flux = this.parentOpts.clone();
-    const isTargetNav = (nav) => nav.name === this.navField;
-    const convertRefinements = (navigations) => {
-      const found = navigations.find(isTargetNav)
-      return found ? found.refinements.map((ref) => ({ label: ref.value, value: ref })) : [];
-    };
-    const updateValues = (res) => this.selectElement._tag.update({ options: convertRefinements(res.availableNavigation) });
+    this.fluxClone = this.parentOpts.clone();
 
     this.passthrough = Object.assign({}, this.parentOpts.__proto__, {
       hover: this.parentOpts.onHover,
@@ -32,14 +28,32 @@ export class Filter {
       clear: this.parentOpts.clear || 'Unfiltered'
     });
 
-    this.parentOpts.flux.on(Events.RESULTS, () => {
-      const searchRequest = this.parentOpts.flux.query.raw;
-      // TODO this is probably broken in terms of state propagation
-      flux.query.withConfiguration({ refinements: [] });
-      if (searchRequest.refinements) flux.query.withSelectedRefinements(...searchRequest.refinements.filter((ref) => ref.navigationName !== this.navField));
+    this.parentOpts.flux.on(Events.RESULTS, () => this.updateFluxClone());
+  }
 
-      flux.search(searchRequest.query).then(updateValues);
-    });
+  isTargetNav(navName: string) {
+    return navName === this.navField;
+  }
+
+  convertRefinements(navigations): any[] {
+    const found = navigations.find(({ name }) => this.isTargetNav(name));
+    return found ? found.refinements.map((ref) => ({ label: ref.value, value: ref })) : [];
+  }
+
+  updateValues(res: Results) {
+    return this.selectElement._tag.update({ options: this.convertRefinements(res.availableNavigation) });
+  }
+
+  updateFluxClone() {
+    const searchRequest = this.parentOpts.flux.query.raw;
+    // TODO this is probably broken in terms of state propagation
+    this.fluxClone.query.withConfiguration(<QueryConfiguration>{ refinements: [] });
+    if (searchRequest.refinements) {
+      const filteredRefinements = searchRequest.refinements.filter(({ navigationName }) => !this.isTargetNav(navigationName));
+      this.fluxClone.query.withSelectedRefinements(...filteredRefinements);
+    }
+
+    this.fluxClone.search(searchRequest.query).then(this.updateValues);
   }
 
   navigate(value) {

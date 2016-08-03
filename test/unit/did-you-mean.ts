@@ -13,25 +13,32 @@ describe('gb-did-you-mean logic', () => {
 
   it('should rewrite on send', () => {
     const query = 'red sneakers';
+
     flux.rewrite = (query: string): any => expect(query).to.eq(query);
+
     didYouMean.init();
+
     didYouMean.send(<Event & any>{ target: { text: query } });
   });
 
   it('should listen for events', () => {
     flux.on = (event: string): any => expect(event).to.eq(Events.RESULTS);
+
     didYouMean.init();
   });
 
   it('should update didYouMean on RESULTS', (done) => {
     const dym = ['a', 'b', 'c'];
     let callback;
+
     flux.on = (event: string, cb: Function): any => callback = cb;
+
     didYouMean.update = (obj: any) => {
       expect(obj.didYouMean).to.eq(dym);
       done();
     };
     didYouMean.init();
+
     callback({ didYouMean: dym });
   });
 });

@@ -9,12 +9,12 @@
       <img class="gb-select__arrow" src={ iconUrl } alt="" />
     </button>
     <ul class="gb-select__content">
-      <li if={ !hasDefault && selectedOption } onclick={ clearSelection }>
+      <li class="gb-select__option clear" if={ !hasDefault && selectedOption } onclick={ clearSelection }>
         <gb-option-wrapper option={ clearOption }>
           <yield/>
         </gb-option-wrapper>
       </li>
-      <li each={ option in options } onclick={ selectCustom }>
+      <li class="gb-select__option" each={ option in options } onclick={ selectCustom }>
         <gb-option-wrapper option={ option }>
           <yield/>
         </gb-option-wrapper>

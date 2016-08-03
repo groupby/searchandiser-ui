@@ -14,6 +14,7 @@ describe('gb-details tag', () => {
 
   it('mounts tag', () => {
     const tag = mount();
+
     expect(tag).to.be.ok;
     expect(html.querySelector(`div.${TAG}`)).to.be.ok;
   });

@@ -5,15 +5,20 @@ export interface PageSize extends FluxTag { }
 
 export class PageSize {
 
+  parentOpts: any;
   passthrough: SelectConfig;
 
   init() {
-    const parentOpts = this.opts.passthrough || this.opts;
-    this.passthrough = Object.assign({}, parentOpts.__proto__, {
-      options: parentOpts.config.pageSizes || [10, 25, 50, 100],
-      hover: parentOpts.onHover,
-      update: (value) => parentOpts.flux.resize(value, parentOpts.resetOffset ? 0 : undefined),
+    this.parentOpts = this.opts.passthrough || this.opts;
+    this.passthrough = Object.assign({}, this.parentOpts.__proto__, {
+      options: this.parentOpts.config.pageSizes || [10, 25, 50, 100],
+      hover: this.parentOpts.onHover,
+      update: this.resize,
       default: true
     });
+  }
+
+  resize(value) {
+    return this.parentOpts.flux.resize(value, this.parentOpts.resetOffset ? 0 : undefined);
   }
 }

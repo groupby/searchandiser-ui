@@ -13,7 +13,9 @@ describe('gb-refinement-crumb logic', () => {
   it('should have inherited values', () => {
     const parentOpts = { a: 'b', c: 'd' };
     setParentOpts(parentOpts);
+
     refinementCrumb.init();
+
     expect(refinementCrumb.parentOpts).to.eql(parentOpts);
     expect(refinementCrumb.toView).to.be.a('function');
   });
@@ -27,9 +29,11 @@ describe('gb-refinement-crumb logic', () => {
         }
       }
     });
+
     refinementCrumb.ref = { type: 'Value', value: 'test' };
     refinementCrumb.nav = { name: 'Brand' };
     refinementCrumb.init();
+
     refinementCrumb.remove();
   });
 

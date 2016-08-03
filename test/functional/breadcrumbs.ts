@@ -17,6 +17,7 @@ describe('gb-breadcrumbs tag', () => {
 
   it('mounts tag', () => {
     const tag = mount();
+
     expect(tag).to.be.ok;
     expect(html.querySelector(`ul.${TAG}`)).to.be.ok;
   });
@@ -26,6 +27,7 @@ describe('gb-breadcrumbs tag', () => {
 
     it('renders from query changing', () => {
       const tag = mount();
+
       expect(queryCrumb()).to.not.be.ok;
       tag.updateQuery(originalQuery);
       expect(queryCrumb().textContent).to.eq(originalQuery);
@@ -47,6 +49,7 @@ describe('gb-breadcrumbs tag', () => {
 
     it('renders from refinements changing', () => {
       const tag = mount();
+
       tag.updateRefinements(selected);
       expect(html.querySelectorAll('.gb-nav-crumb').length).to.eq(1);
       expect(crumbs().length).to.eq(3);
@@ -55,6 +58,7 @@ describe('gb-breadcrumbs tag', () => {
 
     it('renders from reset', () => {
       const tag = mount();
+
       tag.clearRefinements();
       expect(tag['selected'].length).to.eq(0);
       expect(html.querySelectorAll('.gb-nav-crumb').length).to.eq(0);
@@ -62,8 +66,10 @@ describe('gb-breadcrumbs tag', () => {
 
     it('unrefines on click', () => {
       const tag = mount();
-      tag.updateRefinements(selected);
+
       flux.unrefine = (refinement): any => expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' });
+
+      tag.updateRefinements(selected);
       (<HTMLAnchorElement>crumbs()[1].querySelector('a')).click();
     });
   });
