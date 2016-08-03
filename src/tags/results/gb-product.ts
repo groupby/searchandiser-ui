@@ -1,21 +1,28 @@
 import { FluxTag } from '../tag';
-import { getPath, unless } from '../../utils';
+import { getPath } from '../../utils';
 
-export interface Product extends FluxTag { }
+export interface Product extends FluxTag {
+  parent: Riot.Tag.Instance & { struct: any, allMeta: any };
+}
 
 export class Product {
 
-  parent: Riot.Tag.Instance & { struct: any };
   struct: any;
+  allMeta: any;
   getPath: typeof getPath;
 
   init() {
-    this.struct = this.parent.struct;
+    this.struct = this.opts.struct ? this.opts.struct : this.parent.struct;
+    this.allMeta = this.opts.all_meta ? this.opts.all_meta : this.parent.allMeta;
     this.getPath = getPath;
   }
 
-  link(allMeta: any) {
-    return unless(getPath(allMeta, this.struct.url), `details.html?id=${allMeta.id}`);
+  link() {
+    return this.get(this.struct.url) || `details.html?id=${this.allMeta.id}`;
+  }
+
+  get(path: string) {
+    return getPath(this.allMeta, path);
   }
 
   image(imageObj: string | string[]) {
