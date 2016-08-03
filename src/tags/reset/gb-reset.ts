@@ -8,8 +8,12 @@ export class Reset {
   searchBox: HTMLInputElement;
 
   init() {
-    this.on('mount', () => this.searchBox = <HTMLInputElement>findTag('gb-raw-query'));
+    this.on('mount', this.findSearchBox);
     this.root.addEventListener('click', this.clearQuery);
+  }
+
+  findSearchBox() {
+    this.searchBox = <HTMLInputElement>findTag('gb-raw-query')
   }
 
   clearQuery() {

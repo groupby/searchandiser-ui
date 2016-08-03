@@ -13,6 +13,7 @@ describe('gb-page-size logic', () => {
 
   it('should have default values', () => {
     pageSize.init();
+
     expect(pageSize.parentOpts).to.have.all.keys('flux', 'config');
     expect(pageSize.passthrough).to.be.ok;
     expect(pageSize.passthrough.hover).to.not.be.ok;

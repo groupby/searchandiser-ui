@@ -9,12 +9,17 @@ const TAG = 'gb-raw-query';
 
 describe('gb-raw-query tag', () => {
   let html: HTMLInputElement;
+  let sandbox: Sinon.SinonSandbox;
   beforeEach(() => {
+    sandbox = sinon.sandbox.create();
     document.body.appendChild(html = document.createElement('input'));
     html.type = 'text';
     html.value = 'original';
   });
-  afterEach(() => document.body.removeChild(html));
+  afterEach(() => {
+    sandbox.restore()
+    document.body.removeChild(html);
+  });
 
   it('mounts tag', () => {
     const tag = mount();
@@ -42,7 +47,7 @@ describe('gb-raw-query tag', () => {
   });
 
   it('should register for input', (done) => {
-    sinon.stub(html, 'addEventListener', (event, cb) => {
+    sandbox.stub(html, 'addEventListener', (event, cb) => {
       expect(event).to.eq('input');
       cb();
     });
@@ -55,13 +60,13 @@ describe('gb-raw-query tag', () => {
   });
 
   describe('redirect when autoSearch off', () => {
-    beforeEach(() => sinon.stub(html, 'addEventListener', (event, cb) => {
+    beforeEach(() => sandbox.stub(html, 'addEventListener', (event, cb) => {
       expect(event).to.eq('keydown');
       cb({ keyCode: 13 });
     }));
 
     it('should register for keydown', (done) => {
-      sinon.stub(window.location, 'replace', (url) => {
+      sandbox.stub(window.location, 'replace', (url) => {
         expect(url).to.eq('search?q=original');
         done();
       });
@@ -74,7 +79,7 @@ describe('gb-raw-query tag', () => {
     });
 
     it('should customise search URL', (done) => {
-      sinon.stub(window.location, 'replace', (url) => {
+      sandbox.stub(window.location, 'replace', (url) => {
         expect(url).to.eq('/productSearch?query=original');
         done();
       });
