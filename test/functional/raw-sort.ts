@@ -1,6 +1,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from '../fixtures';
+import { selectOptions, clearOption, label } from '../utils/raw-select';
 import { Sort } from '../../src/tags/sort/gb-sort';
 import '../../src/tags/sort/gb-raw-sort.tag';
 
@@ -25,6 +26,7 @@ describe('gb-raw-sort tag', () => {
     const tag = mount();
 
     expect(html.querySelector('.gb-select__content')).to.be.ok;
+    expect(label().textContent).to.eq('Name Descending');
     expect(selectOptions().length).to.eq(2);
   });
 
@@ -36,14 +38,6 @@ describe('gb-raw-sort tag', () => {
     selectOptions()[1].click();
     expect(clearOption()).to.not.be.ok;
   });
-
-  function clearOption() {
-    return <HTMLLIElement>html.querySelector('.gb-select__option.clear > gb-option-wrapper');
-  }
-
-  function selectOptions() {
-    return <NodeListOf<HTMLLIElement>>html.querySelectorAll('.gb-select__option:not(.clear) > gb-option-wrapper');
-  }
 
   function mount() {
     return <Sort>riot.mount(TAG, { flux })[0];

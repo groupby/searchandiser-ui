@@ -9,7 +9,8 @@ module.exports = function(config) {
       'test/**/*.ts'
     ],
     exclude: [
-      'test/fixtures.ts'
+      'test/fixtures.ts',
+      'test/utils/**'
     ],
     preprocessors: {
       'test/**/*.ts': ['webpack']

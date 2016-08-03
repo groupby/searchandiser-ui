@@ -1,6 +1,7 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from '../fixtures';
+import { selectOptions, clearOption, label } from '../utils/raw-select';
 import { Filter } from '../../src/tags/filter/gb-filter';
 import '../../src/tags/filter/gb-raw-filter.tag';
 
@@ -37,6 +38,7 @@ describe('gb-raw-filter tag', () => {
       tag.updateValues(<Results & any>{ availableNavigation: [navigation] });
 
       expect(html.querySelector('.gb-select__content')).to.be.ok;
+      expect(label().textContent).to.eq('Filter');
       expect(selectOptions().length).to.eq(1);
     });
 
@@ -66,14 +68,6 @@ describe('gb-raw-filter tag', () => {
       clearOption().click();
     });
   });
-
-  function clearOption() {
-    return <HTMLLIElement>html.querySelector('.gb-select__option.clear > gb-option-wrapper');
-  }
-
-  function selectOptions() {
-    return <NodeListOf<HTMLLIElement>>html.querySelectorAll('.gb-select__option:not(.clear) > gb-option-wrapper');
-  }
 
   function mount() {
     return <Filter>riot.mount(TAG, { flux, clone: () => flux })[0];

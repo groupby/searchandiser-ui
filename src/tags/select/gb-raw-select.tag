@@ -5,7 +5,7 @@
   </select>
   <div if={ !native } class="gb-select { hover ? 'hoverable' : 'clickable' }">
     <button type="button" class="gb-select__button" name="selectButton" onfocus={ prepFocus } onclick={ unFocus }>
-      <span>{ selectLabel() }</span>
+      <span class="gb-select__label">{ selectLabel() }</span>
       <img class="gb-select__arrow" src={ iconUrl } alt="" />
     </button>
     <ul class="gb-select__content">
