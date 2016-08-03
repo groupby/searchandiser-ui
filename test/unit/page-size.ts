@@ -23,23 +23,24 @@ describe('gb-page-size logic', () => {
 
   it('should allow override from opts', () => {
     const pageSizes = [12, 24, 48];
-    const label = 'Select Brand';
-    const clear = 'All Brands';
-    const field = 'Brand';
     const onHover = false;
 
-    Object.assign(pageSize.opts, { config: { pageSizes } });
+    Object.assign(pageSize.opts, { config: { pageSizes }, onHover });
     pageSize.init();
 
-    expect(pageSize.parentOpts).to.have.all.keys('flux', 'config');
+    expect(pageSize.parentOpts).to.have.all.keys('flux', 'config', 'onHover');
     expect(pageSize.passthrough).to.be.ok;
     expect(pageSize.passthrough.options).to.eq(pageSizes);
+    expect(pageSize.passthrough.hover).to.be.false;
   });
 
   it('should resize', () => {
     const newPageSize = 40;
 
-    flux.resize = (value): any => expect(value).to.eq(newPageSize);
+    flux.resize = (value, newOffset): any => {
+      expect(value).to.eq(newPageSize);
+      expect(newOffset).to.not.be.ok;
+    };
 
     pageSize.init();
 

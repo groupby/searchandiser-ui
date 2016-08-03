@@ -21,17 +21,17 @@ export class Sort {
 
     this.passthrough = Object.assign({}, this.parentOpts.__proto__, {
       options: this.options,
-      update: this.updateValues,
+      update: this.sort,
       hover: this.parentOpts.onHover,
       default: true
     });
   }
 
-  private sortValues() {
+  sortValues() {
     return this.options.map(option => option.value);
   }
 
-  updateValues(value) {
+  sort(value) {
     return this.parentOpts.flux.sort(value, this.sortValues())
   }
 }

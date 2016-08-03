@@ -1,12 +1,12 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from '../fixtures';
-import { PageSize } from '../../src/tags/page-size/gb-page-size';
-import '../../src/tags/page-size/gb-raw-page-size.tag';
+import { Sort } from '../../src/tags/sort/gb-sort';
+import '../../src/tags/sort/gb-raw-sort.tag';
 
-const TAG = 'gb-raw-page-size';
+const TAG = 'gb-raw-sort';
 
-describe('gb-raw-page-size tag', () => {
+describe('gb-raw-sort tag', () => {
   let html: Element;
   let flux: FluxCapacitor;
   beforeEach(() => {
@@ -17,21 +17,21 @@ describe('gb-raw-page-size tag', () => {
 
   it('mounts tag', () => {
     const tag = mount();
-
     expect(tag).to.be.ok;
     expect(html.querySelector('gb-raw-select')).to.be.ok;
   });
 
-  it('renders from pageSizes', () => {
+  it('renders from sorts', () => {
     const tag = mount();
 
     expect(html.querySelector('.gb-select__content')).to.be.ok;
-    expect(selectOptions().length).to.eq(4);
+    expect(selectOptions().length).to.eq(2);
   });
 
-  it('should resize on option selected', () => {
+  it('should sort on option selected', () => {
     const tag = mount();
-    flux.resize = (value): any => expect(value).to.eq(25);
+
+    flux.sort = (sort): any => expect(sort).to.eql({ field: 'title', order: 'Ascending' });
 
     selectOptions()[1].click();
     expect(clearOption()).to.not.be.ok;
@@ -46,6 +46,6 @@ describe('gb-raw-page-size tag', () => {
   }
 
   function mount() {
-    return <PageSize>riot.mount(TAG, { flux, config: {} })[0];
+    return <Sort>riot.mount(TAG, { flux })[0];
   }
 });
