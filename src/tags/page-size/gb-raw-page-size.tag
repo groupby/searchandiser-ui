@@ -4,6 +4,7 @@
   </gb-raw-select>
 
   <script>
+    import '../select/gb-raw-select.tag';
     import { PageSize } from './gb-page-size';
     this.mixin(new PageSize().__proto__);
   </script>

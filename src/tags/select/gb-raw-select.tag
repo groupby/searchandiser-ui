@@ -23,6 +23,7 @@
   </div>
 
   <script>
+    import './gb-option-wrapper.tag';
     import { Select } from './gb-select';
     this.mixin(new Select().__proto__);
   </script>

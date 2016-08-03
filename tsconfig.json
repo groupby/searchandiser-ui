@@ -35,6 +35,7 @@
     "src/tags/filter/gb-filter.ts",
     "src/tags/index.ts",
     "src/tags/navigation/gb-navigation.ts",
+    "src/tags/navigation/gb-raw-navigation.ts",
     "src/tags/navigation/gb-refinement.ts",
     "src/tags/page-size/gb-page-size.ts",
     "src/tags/paging/gb-paging.ts",

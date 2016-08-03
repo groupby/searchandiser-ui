@@ -9,6 +9,7 @@
   </ul>
 
   <script>
+    import './gb-refinement-crumb.tag';
     import { Breadcrumbs } from './gb-breadcrumbs';
     this.mixin(new Breadcrumbs().__proto__);
   </script>

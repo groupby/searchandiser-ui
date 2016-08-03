@@ -5,10 +5,10 @@ export interface RefinementCrumb extends FluxTag { }
 
 export class RefinementCrumb {
 
-  toView: typeof displayRefinement;
   parentOpts: any;
   ref: any;
   nav: any;
+  toView: typeof displayRefinement;
 
   init() {
     this.toView = displayRefinement;

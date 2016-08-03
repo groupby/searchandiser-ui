@@ -1,4 +1,3 @@
-import './gb-refinement-crumb.tag';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { unless } from '../../utils';

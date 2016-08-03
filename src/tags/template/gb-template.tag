@@ -5,6 +5,7 @@
   </div>
 
   <script>
+    import '../snippet/gb-snippet.tag';
     import { Template } from './gb-template';
     this.mixin(new Template().__proto__);
   </script>

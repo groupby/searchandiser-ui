@@ -2,11 +2,12 @@ import { FluxTag } from '../tag';
 import { Events, Record } from 'groupby-api';
 import { getPath } from '../../utils'
 
-export interface Results extends FluxTag { }
+export interface Results extends FluxTag {
+  parent: Riot.Tag.Instance & { struct: any };
+}
 
 export class Results {
 
-  parent: Riot.Tag.Instance & { struct: any };
   records: Record[];
   struct: any;
   getPath: typeof getPath;

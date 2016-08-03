@@ -4,6 +4,7 @@
   </gb-raw-select>
 
   <script>
+    import '../select/gb-raw-select.tag';
     import { Filter } from './gb-filter';
     this.mixin(new Filter().__proto__);
   </script>

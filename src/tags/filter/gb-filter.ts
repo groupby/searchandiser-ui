@@ -1,4 +1,3 @@
-import '../select/gb-raw-select.tag';
 import { FluxTag } from '../tag';
 import { FluxCapacitor, Events, QueryConfiguration, Results } from 'groupby-api';
 import { toRefinement } from '../../utils';
