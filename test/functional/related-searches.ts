@@ -1,12 +1,12 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from '../fixtures';
-import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
-import '../../src/tags/did-you-mean/gb-did-you-mean.tag';
+import { RelatedSearches } from '../../src/tags/related-searches/gb-related-searches';
+import '../../src/tags/related-searches/gb-related-searches.tag';
 
-const TAG = 'gb-did-you-mean';
+const TAG = 'gb-related-searches';
 
-describe('gb-did-you-mean tag', () => {
+describe('gb-related-searches tag', () => {
   let html: Element;
   let flux: FluxCapacitor;
   beforeEach(() => {
@@ -23,31 +23,31 @@ describe('gb-did-you-mean tag', () => {
   });
 
   describe('render behaviour', () => {
-    const didYouMeans = ['first', 'second', 'third'];
+    const relatedQueries = ['first', 'second', 'third'];
 
     it('renders from results', () => {
       const tag = mount();
 
-      tag.updateDidYouMean(didYouMeans);
-      expect(dymLinks().length).to.eq(3);
-      expect(dymLinks()[0].textContent).to.eq(didYouMeans[0]);
+      tag.updatedRelatedQueries(relatedQueries);
+      expect(relatedLinks().length).to.eq(3);
+      expect(relatedLinks()[0].textContent).to.eq(relatedQueries[0]);
     });
 
     it('rewrites on option selected', () => {
       const tag = mount();
 
-      flux.rewrite = (query): any => expect(query).to.eq(didYouMeans[1]);
+      flux.rewrite = (query): any => expect(query).to.eq(relatedQueries[1]);
 
-      tag.updateDidYouMean(didYouMeans);
-      tag.on('updated', () => dymLinks()[1].click());
+      tag.updatedRelatedQueries(relatedQueries);
+      tag.on('updated', () => relatedLinks()[1].click());
     });
   });
 
-  function dymLinks(): NodeListOf<HTMLAnchorElement> {
+  function relatedLinks(): NodeListOf<HTMLAnchorElement> {
     return <NodeListOf<HTMLAnchorElement>>html.querySelectorAll('li > a');
   }
 
   function mount() {
-    return <DidYouMean>riot.mount(TAG, { flux })[0];
+    return <RelatedSearches>riot.mount(TAG, { flux })[0];
   }
 });

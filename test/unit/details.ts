@@ -36,16 +36,13 @@ describe('gb-details logic', () => {
     details.init();
   });
 
-  it('should update selected on DETAILS', (done) => {
+  it('should update selected on DETAILS', () => {
     const record = { a: 'b', c: 'd' };
     let callback;
 
     flux.on = (event: string, cb: Function): any => callback = cb;
 
-    details.update = (obj: any) => {
-      expect(obj.record).to.eq(record);
-      done();
-    };
+    details.update = (obj: any) => expect(obj.record).to.eq(record);;
     details.init();
 
     callback(record);

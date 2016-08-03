@@ -8,7 +8,6 @@ const TAG = 'gb-snippet';
 
 describe('gb-snippet tag', () => {
   let html: Element;
-  const flux = new FluxCapacitor('');
   beforeEach(() => document.body.appendChild(html = document.createElement(TAG)));
   afterEach(() => document.body.removeChild(html));
 
@@ -20,6 +19,6 @@ describe('gb-snippet tag', () => {
   });
 
   function mount() {
-    return <Snippet>riot.mount(TAG, { flux, config: {} })[0];
+    return <Snippet>riot.mount(TAG, {})[0];
   }
 });

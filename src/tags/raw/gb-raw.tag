@@ -2,8 +2,7 @@
   <span></span>
 
   <script>
-    this.updateContent = () => this.root.innerHTML = opts.content;
-    this.on('update', () => this.updateContent());
-    this.updateContent();
+    import { Raw } from './gb-raw';
+    this.mixin(new Raw().__proto__);
   </script>
 </gb-raw>

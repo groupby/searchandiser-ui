@@ -4,13 +4,7 @@ import { expect } from 'chai';
 
 describe('gb-snippet logic', () => {
   let importTag: Snippet;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    importTag = new Snippet();
-    flux = new FluxCapacitor('');
-    importTag.opts = { flux };
-    importTag.on = () => null;
-  });
+  beforeEach(() => importTag = Object.assign(new Snippet(), { opts: {}, on: () => null }));
 
   it('should have default values', () => {
     importTag.init();

@@ -5,8 +5,14 @@ export interface RelatedSearches extends FluxTag { }
 
 export class RelatedSearches {
 
+  relatedQueries: string[];
+
   init() {
-    this.opts.flux.on(Events.RESULTS, ({ relatedQueries }) => this.update({ relatedQueries }));
+    this.opts.flux.on(Events.RESULTS, ({ relatedQueries }) => this.updatedRelatedQueries(relatedQueries));
+  }
+
+  updatedRelatedQueries(relatedQueries: string[]) {
+    this.update({ relatedQueries });
   }
 
   send(event: Event) {

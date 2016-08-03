@@ -4,8 +4,8 @@ export interface Raw extends FluxTag { }
 
 export class Raw {
   init() {
-    this.on('update', () => this.updateContent());
-    this.updateContent();
+    this.on('update', this.updateContent);
+    this.on('mount', this.updateContent);
   }
 
   updateContent() {

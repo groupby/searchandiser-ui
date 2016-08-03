@@ -27,16 +27,13 @@ describe('gb-did-you-mean logic', () => {
     didYouMean.init();
   });
 
-  it('should update didYouMean on RESULTS', (done) => {
+  it('should update didYouMean on RESULTS', () => {
     const dym = ['a', 'b', 'c'];
     let callback;
 
     flux.on = (event: string, cb: Function): any => callback = cb;
 
-    didYouMean.update = (obj: any) => {
-      expect(obj.didYouMean).to.eq(dym);
-      done();
-    };
+    didYouMean.update = (obj: any) => expect(obj.didYouMean).to.eq(dym);
     didYouMean.init();
 
     callback({ didYouMean: dym });
