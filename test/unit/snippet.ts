@@ -1,12 +1,12 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { Import } from '../../src/tags/import/gb-import';
+import { Snippet } from '../../src/tags/snippet/gb-snippet';
 import { expect } from 'chai';
 
-describe('gb-import logic', () => {
-  let importTag: Import;
+describe('gb-snippet logic', () => {
+  let importTag: Snippet;
   let flux: FluxCapacitor;
   beforeEach(() => {
-    importTag = new Import();
+    importTag = new Snippet();
     flux = new FluxCapacitor('');
     importTag.opts = { flux };
     importTag.on = () => null;

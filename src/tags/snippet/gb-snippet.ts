@@ -1,9 +1,9 @@
 import { FluxTag } from '../tag';
 import { unless } from '../../utils';
 
-export interface Import extends FluxTag { }
+export interface Snippet extends FluxTag { }
 
-export class Import {
+export class Snippet {
 
   isRaw: boolean;
   responseText: string;

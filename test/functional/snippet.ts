@@ -1,12 +1,12 @@
 import { FluxCapacitor } from 'groupby-api';
 import { expect } from 'chai';
 import { mockFlux } from '../fixtures';
-import { Import } from '../../src/tags/import/gb-import';
-import '../../src/tags/import/gb-import.tag';
+import { Snippet } from '../../src/tags/snippet/gb-snippet';
+import '../../src/tags/snippet/gb-snippet.tag';
 
-const TAG = 'gb-import';
+const TAG = 'gb-snippet';
 
-describe('gb-import tag', () => {
+describe('gb-snippet tag', () => {
   let html: Element;
   const flux = new FluxCapacitor('');
   beforeEach(() => document.body.appendChild(html = document.createElement(TAG)));
@@ -20,6 +20,6 @@ describe('gb-import tag', () => {
   });
 
   function mount() {
-    return <Import>riot.mount(TAG, { flux, config: {} })[0];
+    return <Snippet>riot.mount(TAG, { flux, config: {} })[0];
   }
 });
