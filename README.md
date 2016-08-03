@@ -221,7 +221,7 @@ Use the searchandiser method to set up your configurations in a script tag at th
       // 'query' but ignores the 'sayt' property.
       // The options should be the same as 'query' or 'raw-query' to ensure
       // consistent behaviour.
-      searchadiser.attach('raw-submit', '.raw-submit');
+      searchandiser.attach('raw-submit', '.raw-submit');
 
       searchandiser.attach('paging', '.paging', {
         // show page selection links
