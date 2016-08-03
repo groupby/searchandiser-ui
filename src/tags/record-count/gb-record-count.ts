@@ -1,15 +1,23 @@
-import { Events } from 'groupby-api';
+import { FluxTag } from '../tag';
+import { Events, PageInfo } from 'groupby-api';
+
+export interface RecordCount extends FluxTag { }
 
 export class RecordCount {
 
-  opts: any;
-  update: (any) => void;
+  first: number;
+  last: number;
+  total: number;
 
   init() {
-    this.opts.flux.on(Events.RESULTS, ({ pageInfo, totalRecordCount }) => this.update({
+    this.opts.flux.on(Events.RESULTS, (res) => this.updatePageInfo(res));
+  }
+
+  updatePageInfo({ pageInfo, totalRecordCount }) {
+    this.update({
       first: pageInfo.recordStart,
       last: pageInfo.recordEnd,
       total: totalRecordCount
-    }));
+    });
   }
 }

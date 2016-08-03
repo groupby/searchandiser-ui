@@ -4,6 +4,7 @@
   </gb-raw-sort>
 
   <script>
+    import './gb-raw-sort.tag';
     import '../select/gb-option.tag';
   </script>
 </gb-sort>

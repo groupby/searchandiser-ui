@@ -1,227 +1,224 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Searchandiser UI Demo</title>
-  <meta name="description" content="Searchandiser UI Demo">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="assets/style.css" charset="utf-8">
-  <script src="dist/searchandiser-ui-0.0.34.js"></script>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Searchandiser UI Demo</title>
+    <meta name="description" content="Searchandiser UI Demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/style.css" charset="utf-8">
+    <script src="dist/searchandiser-ui-0.0.34.js"></script>
+  </head>
 
-<body>
+  <body>
 
-<div class="query"></div>
-<!-- <input type="text" class="raw-query"> -->
-<button type="button" class="raw-submit">Search</button>
-<!-- <input type="button" class="raw-submit"> -->
-<div class="gb-bar">
-  <span class="breadcrumb-label">Results for:</span>
-  <div class="breadcrumbs"></div>
-</div>
-<div class="gb-bar">
-  <div class="did-you-mean"></div>
-  <div class="related-searches"></div>
-</div>
-<div class="gb-main">
-  <div class="available-navigation"></div>
-  <ul class="nav__list">
-    <div class="raw-navigation">
-      <div each="{ name, nav in processed }">
-        <h4 class="nav__title">{ nav.displayName }</h4>
-        <div if="{ showSelected }" each="{ ref in nav.selected }">
-          <li class="ref { opts.style() }">
-            <a class="ref__link" href="#" onclick="{ remove(ref, nav) }">&times;</a>
-            <span class="gb-ref__value">{ toView(ref) }</span>
-          </li>
-        </div>
-        <div each="{ ref in nav.available }">
-          <li class="ref { opts.style() }">
-            <a class="ref__link" href="#" onclick="{ send(ref, nav) }">
-              <span class="ref__title">{ toView(ref) }</span>
-              <span class="filler"></span>
-              <span class="ref__badge" if="{ badge }">{ ref.count }</span>
-            </a>
-          </li>
-        </div>
-      </div>
-    </div>
-  </ul>
-  <div class="products">
-    <div class="spotlight-template"></div>
+    <div class="query"></div>
+    <!-- <input type="text" class="raw-query"> -->
+    <!-- <button type="button" class="raw-submit">Search</button> -->
+    <!-- <input type="button" class="raw-submit"> -->
     <div class="gb-bar">
-      <div class="record-count">
-        <h2>{ first } - { last } of { total } Products</h2>
-      </div>
-      <div class="filter"></div>
-      <!-- <div class="raw-filter">
-       <a><marquee> { label }</marquee></a>
-      </div> -->
-      <div class="sort"></div>
-      <!-- <div class="raw-sort">
-        <a>{ label }</a>
-      </div> -->
-      <div class="page-size"></div>
-      <!-- <div class="raw-page-size">
-        <a>{ label }</a>
-      </div> -->
+      <span class="breadcrumb-label">Results for:</span>
+      <div class="breadcrumbs"></div>
     </div>
     <div class="gb-bar">
-      <div class="paging"></div>
-      <!-- <div class="raw-paging">
-        <gb-terminal-pager>
-          <gb-pager>
-            <gb-pages></gb-pages>
-          </gb-pager>
-        </gb-terminal-pager>
-      </div> -->
+      <div class="did-you-mean"></div>
+      <div class="related-searches"></div>
     </div>
-    <div class="results"></div>
-    <!-- <div class="raw-results">
-      <a href="#">
-        <img riot-src="{ allMeta[struct.image] }" alt="" />
-      </a>
-      <a href="#">
-        <p>{ allMeta[struct.title] }</p>
-        <p>{ allMeta[struct.price] }</p>
-      </a>
-    </div> -->
-  </div>
-</div>
+    <div class="gb-main">
+      <div class="available-navigation"></div>
+      <!-- <ul class="nav__list">
+        <div class="raw-navigation">
+          <div each="{ name, nav in processed }">
+            <h4 class="nav__title">{ nav.displayName }</h4>
+            <div if="{ showSelected }" each="{ ref in nav.selected }">
+              <li class="ref { opts.style() }">
+                <a class="ref__link" href="#" onclick="{ remove(ref, nav) }">&times;</a>
+                <span class="gb-ref__value">{ toView(ref) }</span>
+              </li>
+            </div>
+            <div each="{ ref in nav.available }">
+              <li class="ref { opts.style() }">
+                <a class="ref__link" href="#" onclick="{ send(ref, nav) }">
+                  <span class="ref__title">{ toView(ref) }</span>
+                  <span class="filler"></span>
+                  <span class="ref__badge" if="{ badge }">{ ref.count }</span>
+                </a>
+              </li>
+            </div>
+          </div>
+        </div>
+      </ul> -->
+      <div class="products">
+        <div class="spotlight-template"></div>
+        <div class="gb-bar">
+          <div class="record-count">
+            <h2>{ first } - { last } of { total } Products</h2>
+          </div>
+          <div class="filter"></div>
+          <!-- <div class="raw-filter">
+            <a><marquee> { label }</marquee></a>
+          </div> -->
+          <div class="sort"></div>
+          <!-- <div class="raw-sort">
+            <a>{ label }</a>
+          </div> -->
+          <div class="page-size"></div>
+          <!-- <div class="raw-page-size">
+            <a>{ label }</a>
+          </div> -->
+        </div>
+        <div class="gb-bar">
+          <div class="paging"></div>
+          <!-- <div class="raw-paging">
+            <gb-terminal-pager>
+              <gb-pager>
+                <gb-pages></gb-pages>
+              </gb-pager>
+            </gb-terminal-pager>
+          </div> -->
+        </div>
+        <div class="results"></div>
+        <!-- <div class="raw-results">
+          <a href="#">
+            <img riot-src="{ allMeta[struct.image] }" alt="" />
+          </a>
+          <a href="#">
+            <p>{ allMeta[struct.title] }</p>
+            <p>{ allMeta[struct.price] }</p>
+          </a>
+        </div> -->
+      </div>
+    </div>
 
-<script>
-  searchandiser({
-    customerId: 'crateandbarreldemo',
-    area:       'Production',
-    collection: 'default',
+    <script>
+      searchandiser({
+        customerId: 'crateandbarreldemo',
+        area: 'Production',
+        collection: 'default',
 
-    pageSizes: [
-      12,
-      24,
-      50
-    ],
-    fields:    ['*'],
+        pageSizes: [
+          12,
+          24,
+          50
+        ],
+        fields: ['*'],
 
-    structure: {
-      title: 'title',
-      image: 'wideImage',
-      price: 'price'
-    },
+        structure: {
+          title: 'title',
+          image: 'wideImage',
+          price: 'price'
+        },
 
-    sayt: {
-      area:       'Production',
-      collection: 'default',
+        sayt: {
+          area: 'Production',
+          collection: 'default',
 
-      products:           13,
-      queries:            9, // autoSearch: false,
-      // highlight: false,
-      categoryField:      'QtopRatedType',
-      navigationNames:    {
-        brand: 'Brand'
-      },
-      allowedNavigations: ['brand'], // minimumCharacters: 3,
-      // delay: 300
-    },
-
-    tags: {
-      sort: {
-        options: [
-          {
-            label: 'Relevance',
-            value: {
-              field: '_relevance'
-            }
+          products: 13,
+          queries: 9,
+          // autoSearch: false,
+          // highlight: false,
+          categoryField: 'QtopRatedType',
+          navigationNames: {
+            brand: 'Brand'
           },
-          {
-            label: 'Price Low to High',
-            value: {
-              field: 'price',
-              order: 'Ascending'
-            }
-          },
-          {
-            label: 'Price High to Low',
-            value: {
-              field: 'price',
-              order: 'Descending'
-            }
-          },
-          {
-            label: 'A-Z',
-            value: {
-              field: 'title',
-              order: 'Ascending'
-            }
-          },
-          {
-            label: 'Z-A',
-            value: {
-              field: 'title',
-              order: 'Descending'
-            }
+          allowedNavigations: ['brand'],
+          // minimumCharacters: 3,
+          // delay: 300
+        },
+
+        tags: {
+          sort: {
+            options: [{
+              label: 'Relevance',
+              value: {
+                field: '_relevance'
+              }
+            }, {
+              label: 'Price Low to High',
+              value: {
+                field: 'price',
+                order: 'Ascending'
+              }
+            }, {
+              label: 'Price High to Low',
+              value: {
+                field: 'price',
+                order: 'Descending'
+              }
+            }, {
+              label: 'A-Z',
+              value: {
+                field: 'title',
+                order: 'Ascending'
+              }
+            }, {
+              label: 'Z-A',
+              value: {
+                field: 'title',
+                order: 'Descending'
+              }
+            }]
           }
-        ]
-      }
-    },
+        },
 
-    stylish: true
-  });
-  // searchandiser.attach('select', '.select', {
-  //   native: true,
-  //   options: [{
-  //     label: 'First',
-  //     value: {
-  //       field: 'x',
-  //       order: 'y'
-  //     }
-  //   }]
-  // });
-  searchandiser.attach('query', '.query', {
-    // sayt: false,
-    autoSearch: false, // searchUrl: '/search',
-    // queryParam: 'query'
-  });
-  searchandiser.attach('raw-submit');
-  // searchandiser.attach('raw-query');
-  searchandiser.attach('paging', '.paging', {
-    pages: true
-  });
-  // searchandiser.attach('raw-paging');
-  searchandiser.attach('page-size', '.page-size', {
-    onHover: false, // native: true,
-    // resetOffset: true
-  });
-  // searchandiser.attach('raw-page-size');
-  searchandiser.attach('results');
-  // searchandiser.attach('raw-results');
-  searchandiser.attach('filter', '.filter', {
-    // native: true,
-    onHover:  false,
-    field:    'QtopRatedType',
-    matchAll: 'All Categories'
-  });
-  // searchandiser.attach('raw-filter');
-  searchandiser.attach('sort', '.sort', {
-    // native: true,
-    onHover: false
-  });
-  // searchandiser.attach('raw-sort');
-  searchandiser.attach('record-count');
-  //      searchandiser.attach('available-navigation');
-  searchandiser.attach('raw-navigation');
-  searchandiser.attach('breadcrumbs', '.breadcrumbs', {
-    // hideQuery: true,
-    // hideRefinements: true
-  });
-  searchandiser.attach('did-you-mean');
-  searchandiser.attach('related-searches');
-  searchandiser.template('Product Spotlight', '.spotlight-template', {
-    url: 'templates/spotlight.html',
-    raw: true
-  });
-</script>
+        stylish: true
+      });
+      // searchandiser.attach('select', '.select', {
+      //   native: true,
+      //   options: [{
+      //     label: 'First',
+      //     value: {
+      //       field: 'x',
+      //       order: 'y'
+      //     }
+      //   }]
+      // });
+      searchandiser.attach('query', '.query', {
+        // sayt: false,
+        autoSearch: false,
+        // searchUrl: '/search',
+        // queryParam: 'query'
+      });
+      searchandiser.attach('raw-submit');
+      // searchandiser.attach('raw-query');
+      searchandiser.attach('paging', '.paging', {
+        pages: true
+      });
+      // searchandiser.attach('raw-paging');
+      searchandiser.attach('page-size', '.page-size', {
+        onHover: false, // native: true,
+        // resetOffset: true
+      });
+      // searchandiser.attach('raw-page-size');
+      searchandiser.attach('results');
+      // searchandiser.attach('raw-results');
+      searchandiser.attach('filter', '.filter', {
+        // native: true,
+        onHover: false,
+        field: 'QtopRatedType',
+        matchAll: 'All Categories'
+      });
+      // searchandiser.attach('raw-filter');
+      searchandiser.attach('sort', '.sort', {
+        // native: true,
+        onHover: false
+      });
+      // searchandiser.attach('raw-sort');
+      searchandiser.attach('record-count');
+      searchandiser.attach('available-navigation');
+      // searchandiser.attach('raw-navigation');
+      searchandiser.attach('breadcrumbs', '.breadcrumbs', {
+        // hideQuery: true,
+        // hideRefinements: true
+      });
+      searchandiser.attach('did-you-mean');
+      searchandiser.attach('related-searches');
+      searchandiser.template('Product Spotlight', '.spotlight-template', {
+        url: 'templates/spotlight.html',
+        raw: true
+      });
+    </script>
 
-</body>
+  </body>
 
 </html>

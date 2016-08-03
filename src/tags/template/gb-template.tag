@@ -1,10 +1,11 @@
 <gb-template>
   <div class="gb-template { opts.style() }" if={ isActive }>
     <yield/>
-    <gb-import if={ url } url={ url } raw={ raw }></gb-import>
+    <gb-snippet if={ url } url={ url } raw={ raw }></gb-snippet>
   </div>
 
   <script>
+    import '../snippet/gb-snippet.tag';
     import { Template } from './gb-template';
     this.mixin(new Template().__proto__);
   </script>

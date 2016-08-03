@@ -10,14 +10,14 @@
   </div>
 
   <script>
+    import './gb-raw-paging.tag';
+    import './gb-terminal-pager.tag';
+    import './gb-pager.tag';
+    import './gb-pages.tag';
     this.style = opts.style;
     this.prev_label = opts.prev_label;
     this.next_label = opts.next_label;
     this.first_label = opts.first_label;
     this.last_label = opts.last_label;
-    require('./gb-raw-paging.tag');
-    require('./gb-pager.tag');
-    require('./gb-terminal-pager.tag');
-    require('./gb-pages.tag');
   </script>
 </gb-paging>

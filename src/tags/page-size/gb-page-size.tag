@@ -4,6 +4,7 @@
   </gb-raw-page-size>
 
   <script>
+    import './gb-raw-page-size.tag';
     import '../select/gb-option.tag';
   </script>
 </gb-page-size>

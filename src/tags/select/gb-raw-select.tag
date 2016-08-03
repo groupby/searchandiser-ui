@@ -5,16 +5,16 @@
   </select>
   <div if={ !native } class="gb-select { hover ? 'hoverable' : 'clickable' }">
     <button type="button" class="gb-select__button" name="selectButton" onfocus={ prepFocus } onclick={ unFocus }>
-      <span>{ selectLabel() }</span>
+      <span class="gb-select__label">{ selectLabel() }</span>
       <img class="gb-select__arrow" src={ iconUrl } alt="" />
     </button>
     <ul class="gb-select__content">
-      <li if={ !hasDefault && selectedOption } onclick={ clearSelection }>
+      <li class="gb-select__option clear" if={ !hasDefault && selectedOption } onclick={ clearSelection }>
         <gb-option-wrapper option={ clearOption }>
           <yield/>
         </gb-option-wrapper>
       </li>
-      <li each={ option in options } onclick={ selectCustom }>
+      <li class="gb-select__option" each={ option in options } onclick={ selectCustom }>
         <gb-option-wrapper option={ option }>
           <yield/>
         </gb-option-wrapper>
@@ -24,10 +24,8 @@
 
   <script>
     import './gb-option-wrapper.tag';
-    import { Select, optionLabel, optionValue } from './gb-select';
-    this.mixin(new Select());
-    this.optionLabel = optionLabel;
-    this.optionValue = optionValue;
+    import { Select } from './gb-select';
+    this.mixin(new Select().__proto__);
   </script>
 
   <style scoped>

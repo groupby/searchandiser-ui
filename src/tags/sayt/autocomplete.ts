@@ -1,3 +1,5 @@
+import { findTag } from '../../utils';
+
 const KEY_UP = 38;
 const KEY_DOWN = 40;
 const KEY_ENTER = 13;
@@ -7,81 +9,79 @@ const DATA_VALUE = 'data-value';
 const ACTIVE = 'active';
 const ITEM_TAG = 'LI';
 
-let selectedNode,
-  originalValue: string,
-  searchInput: HTMLInputElement,
-  queryUpdateNotifier: (string) => void;
+export class Autocomplete {
 
+  selected: HTMLElement;
+  searchInput: HTMLInputElement;
+  originalValue: string;
 
-export function init(root: Node, autocompleteList: Element, notifier: (string) => void) {
-  selectedNode = searchInput = <HTMLInputElement>root.parentNode.firstChild;
-  queryUpdateNotifier = notifier;
-  searchInput.onkeydown = keyListener(autocompleteList);
-}
-
-export function reset() {
-  selectedNode = searchInput;
-}
-
-function swap<T extends Element>(autocompleteList: Element, selected: T, next: T): T {
-  if (next) {
-    removeActive(autocompleteList);
-    next.classList.add(ACTIVE);
-    if (next.firstElementChild) queryUpdateNotifier(next.getAttribute(DATA_VALUE));
-    return next;
+  constructor(root: HTMLElement, public autocompleteList: HTMLUListElement, public notifier: (query: string) => void) {
+    this.selected = this.searchInput = <HTMLInputElement>findTag('gb-raw-query');
+    this.searchInput.addEventListener('keydown', (event) => this.keyListener(event));
   }
-  return selected;
-}
 
-function removeActive(autocompleteList: Element) {
-  Array.from(autocompleteList.getElementsByClassName("gb-autocomplete__item"))
-    .forEach(element => element.classList.remove('active'));
-}
+  reset() {
+    this.selected = this.searchInput;
+  }
 
-function keyListener(autocompleteList: Element) {
-  return (event: KeyboardEvent) => {
-    const firstLink = autocompleteList.firstElementChild;
+  keyListener(event: KeyboardEvent) {
+    const firstLink = this.autocompleteList.firstElementChild;
     switch (event.keyCode) {
       case KEY_UP:
         event.preventDefault();
-        if (selectedNode === firstLink) {
-          searchInput.value = originalValue;
-          selectedNode = swap(autocompleteList, selectedNode, searchInput);
+        if (this.selected === firstLink) {
+          this.searchInput.value = this.originalValue;
+          this.selected = this.swap(this.searchInput);
         } else {
-          let nextNode = selectedNode.previousElementSibling;
+          let nextNode = this.selected.previousElementSibling;
           if (nextNode && nextNode.tagName) {
             while (nextNode.tagName !== ITEM_TAG) {
               nextNode = nextNode.previousElementSibling;
             }
           }
-          selectedNode = swap(autocompleteList, selectedNode, nextNode);
+          this.selected = this.swap(<HTMLElement>nextNode);
         }
         break;
       case KEY_DOWN:
-        if (selectedNode === searchInput) {
-          originalValue = searchInput.value;
-          selectedNode = swap(autocompleteList, selectedNode, firstLink);
+        if (this.selected === this.searchInput) {
+          this.originalValue = this.searchInput.value;
+          this.selected = this.swap(<HTMLElement>firstLink);
         } else {
-          let nextNode = selectedNode.nextElementSibling;
+          let nextNode = this.selected.nextElementSibling;
           if (nextNode && nextNode.tagName) {
             while (nextNode.tagName !== ITEM_TAG) {
               nextNode = nextNode.nextElementSibling;
             }
           }
-          selectedNode = swap(autocompleteList, selectedNode, nextNode);
+          this.selected = this.swap(<HTMLElement>nextNode);
         }
         break;
       case KEY_ENTER:
-        if (selectedNode !== searchInput) {
-          selectedNode.firstElementChild.click();
-          removeActive(autocompleteList);
-          reset();
+        if (this.selected !== this.searchInput) {
+          (<HTMLElement>this.selected.firstElementChild).click();
+          this.removeActive();
+          this.reset();
         }
         break;
       default:
-        removeActive(autocompleteList);
-        reset();
+        this.removeActive();
+        this.reset();
         break;
     }
-  };
+  }
+
+  swap(next: HTMLElement) {
+    if (next) {
+      this.removeActive();
+      next.classList.add(ACTIVE);
+      if (next.firstElementChild) this.notifier(next.getAttribute(DATA_VALUE));
+      return next;
+    }
+    return this.selected;
+  }
+
+  removeActive() {
+    Array.from(this.autocompleteList.getElementsByClassName('gb-autocomplete__item'))
+      .forEach(element => element.classList.remove('active'));
+  }
 }
