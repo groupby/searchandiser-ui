@@ -66,6 +66,6 @@ export function unless(obj: any, defaultObj: any) {
   return obj === undefined ? defaultObj : obj;
 }
 
-export function getPath(obj: any, path: string) {
+export function getPath(obj: any, path: string = '') {
   return oget(obj, path);
 }

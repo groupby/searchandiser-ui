@@ -1,5 +1,5 @@
 import { FluxTag } from '../tag';
-import { getPath } from '../../utils';
+import { getPath, unless } from '../../utils';
 
 export interface Product extends FluxTag { }
 
@@ -14,8 +14,8 @@ export class Product {
     this.getPath = getPath;
   }
 
-  link(id) {
-    return this.struct.url || `details.html?id=${id}`;
+  link(allMeta: any) {
+    return unless(getPath(allMeta, this.struct.url), `details.html?id=${allMeta.id}`);
   }
 
   image(imageObj: string | string[]) {
