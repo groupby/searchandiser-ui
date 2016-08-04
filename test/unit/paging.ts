@@ -152,5 +152,29 @@ describe('gb-paging logic', () => {
       paging.pager.next();
       paging.pager.last();
     });
+
+    it('should not allow page backward', () => {
+      const pager = {
+        prev: () => expect.fail(),
+        first: () => expect.fail()
+      };
+      Object.defineProperty(flux, 'page', { get: () => pager });
+
+      paging.init();
+      paging.backDisabled = true;
+
+      paging.pager.prev();
+      paging.pager.first();
+    });
+
+    it('should jump to the given page', () => {
+      const page = 7;
+      const pager = { jump: (page) => expect(page).to.eq(page) };
+      Object.defineProperty(flux, 'page', { get: () => pager });
+
+      paging.init();
+
+      paging.pager.jump(page);
+    });
   });
 });
