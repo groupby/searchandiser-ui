@@ -30,7 +30,7 @@ export class Sayt {
   init() {
     this.saytConfig = Object.assign({}, DEFAULT_CONFIG, this.opts.config.sayt);
     this.categoryField = this.saytConfig.categoryField;
-    this.struct = Object.assign({}, this.opts.config.structure);
+    this.struct = Object.assign({}, this.opts.config.structure, this.saytConfig.structure);
     this.searchUrl = this.opts.searchUrl || '/search';
     this.queryParam = this.opts.queryParam || 'q';
 
