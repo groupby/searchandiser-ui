@@ -1,5 +1,5 @@
 <gb-available-navigation>
-  <div class="gb-side-nav { opts.style() }">
+  <div class="gb-side-nav { _style }">
     <div class="gb-nav" each={ name, nav in processed }>
       <h4 class="gb-nav__title">{ nav.displayName }</h4>
       <ul class="gb-nav__list">

@@ -1,5 +1,5 @@
 <gb-sayt>
-  <div class="gb-sayt { opts.style() }" name="saytNode" if={ queries || navigations }>
+  <div class="gb-sayt { _style }" name="saytNode" if={ queries || navigations }>
     <ul class="gb-sayt__autocomplete" name="autocompleteList">
       <li class="gb-autocomplete__item" each={ query in categoryResults } data-value={ query.value } data-refinement={
           query.category } data-field={ categoryField }>

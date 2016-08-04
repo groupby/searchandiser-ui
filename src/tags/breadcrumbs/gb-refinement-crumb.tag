@@ -1,5 +1,5 @@
 <gb-refinement-crumb>
-  <li class="gb-refinement-crumb { parentOpts.style() }">
+  <li class="gb-refinement-crumb { _style }">
     <a onclick={ remove }>&times;</a> <b>{ nav.displayName }: { toView(ref) }</b>
   </li>
 

@@ -1,5 +1,5 @@
 <gb-related-searches>
-  <ul class="gb-related-searches { opts.style() }">
+  <ul class="gb-related-searches { _style }">
     <li class="gb-related-search" each={ related in relatedQueries }>
       <a class="gb-related-search__link" onclick={ send }>{ related }</a>
     </li>

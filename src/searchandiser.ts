@@ -1,4 +1,5 @@
 import { Query, BrowserBridge, Results, FluxCapacitor, Events, Sort } from 'groupby-api';
+import { RootTag } from './tags/tag';
 import { pluck, checkNested } from './utils';
 import riot = require('riot');
 
@@ -7,6 +8,7 @@ export function initSearchandiser() {
     const finalConfig = Object.assign({ initialSearch: true }, config);
     const flux = initCapacitor(finalConfig);
     Object.assign(flux, Events);
+    riot.mixin(RootTag(flux, finalConfig));
     Object.assign(configure, new Searchandiser(flux, finalConfig));
   }
 }
@@ -19,7 +21,7 @@ function initCapacitor(config: SearchandiserConfig) {
 
 export class Searchandiser {
 
-  queryConfig:any;
+  queryConfig: any;
 
   constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) {
     this.queryConfig = pluck(config, 'collection', 'area', 'language', 'pageSize', 'sort', 'fields');

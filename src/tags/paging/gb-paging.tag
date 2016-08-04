@@ -14,7 +14,6 @@
     import './gb-terminal-pager.tag';
     import './gb-pager.tag';
     import './gb-pages.tag';
-    this.style = opts.style;
     this.prev_label = opts.prev_label;
     this.next_label = opts.next_label;
     this.first_label = opts.first_label;

@@ -31,7 +31,6 @@ describe('gb-paging logic', () => {
     expect(paging.pager).to.be.ok;
     expect(paging.pager).to.have.all.keys('first', 'last', 'next', 'last', 'jump');
 
-    expect(paging.style).to.not.be.ok;
     expect(paging.prev_label).to.not.be.ok;
     expect(paging.next_label).to.not.be.ok;
     expect(paging.first_label).to.not.be.ok;
@@ -45,7 +44,6 @@ describe('gb-paging logic', () => {
       numeric: true,
       terminals: false,
       icons: false,
-      style: () => null,
       prev_label: 'back',
       next_label: 'forward',
       first_label: 'beginning',
@@ -59,7 +57,6 @@ describe('gb-paging logic', () => {
     expect(paging.numeric).to.be.true;
     expect(paging.terminals).to.be.false;
     expect(paging.icons).to.be.false;
-    expect(paging.style).to.eq(overrides.style);
     expect(paging.prev_label).to.eq(overrides.prev_label);
     expect(paging.next_label).to.eq(overrides.next_label);
     expect(paging.first_label).to.eq(overrides.first_label);
@@ -68,7 +65,6 @@ describe('gb-paging logic', () => {
 
   it('should fall back to parent', () => {
     const overrides = {
-      style: () => null,
       prev_label: 'back',
       next_label: 'forward',
       first_label: 'beginning',
@@ -77,7 +73,6 @@ describe('gb-paging logic', () => {
     Object.assign(paging.parent, overrides);
     paging.init();
 
-    expect(paging.style).to.eq(overrides.style);
     expect(paging.prev_label).to.eq(overrides.prev_label);
     expect(paging.next_label).to.eq(overrides.next_label);
     expect(paging.first_label).to.eq(overrides.first_label);

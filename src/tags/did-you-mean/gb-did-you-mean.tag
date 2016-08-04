@@ -1,5 +1,5 @@
 <gb-did-you-mean>
-  <ul class="gb-did-you-mean { opts.style() }">
+  <ul class="gb-did-you-mean { _style }">
     <li class="gb-did-you-mean__option" each={ dym in didYouMean }>
       <a onclick={ send }>{ dym }</a>
     </li>

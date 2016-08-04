@@ -1,5 +1,5 @@
 <gb-raw-paging>
-  <div class="gb-raw-paging { style() }">
+  <div class="gb-raw-paging { _style }">
     <yield/>
   </div>
 

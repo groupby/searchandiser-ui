@@ -1,12 +1,11 @@
 <gb-pager>
-  <div class="gb-pager { style() }">
+  <div class="gb-pager { _style }">
     <a class="gb-pager__link prev { disabled: backDisabled }" onclick={ pager.prev }><span if={ icons } class="gb-paging__icon">&lt;</span> { prev_label }</a>
     <yield/>
     <a class="gb-pager__link next { disabled: forwardDisabled }" onclick={ pager.next }>{ next_label } <span if={ icons } class="gb-paging__icon">&gt;</span></a>
   </div>
 
   <script>
-    this.style = this.parent.style;
     this.terminals = this.parent.terminals;
     this.numeric = this.parent.numeric;
     this.icons = this.parent.icons;

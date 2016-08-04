@@ -1,5 +1,5 @@
 <gb-category-dropdown>
-  <div class="gb-dropdown { parentOpts.style() }">
+  <div class="gb-dropdown { _style }">
     <button type="button" class="gb-dropdown__button">{ name }</button>
     <div class="gb-dropdown__content">
       <gb-category-section if={ items }></gb-category-section>

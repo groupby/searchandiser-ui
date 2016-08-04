@@ -1,5 +1,5 @@
 <gb-raw-results>
-  <ul class="gb-results { this.parent.opts.style() } { userStyle('results') }">
+  <ul class="gb-results { _style } { userStyle('results') }">
     <li class="gb-results__item { userStyle('resultsItem') }" each={ records }>
       <div class="gb-product { userStyle('product') }">
         <yield/>

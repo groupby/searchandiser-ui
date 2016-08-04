@@ -1,8 +1,8 @@
 <gb-query>
-  <div class="gb-query { opts.style() }">
+  <div class="gb-query { _style }">
     <input riot-tag="gb-raw-query" passthrough={ opts } class="gb-query__box" type="text" placeholder="Search..." autofocus>
-    <gb-submit flux={ opts.flux } stylish={ opts.style }></gb-submit>
-    <gb-reset flux={ opts.flux } stylish={ opts.style }></gb-reset>
+    <gb-submit flux={ opts.flux }></gb-submit>
+    <gb-reset flux={ opts.flux }></gb-reset>
   </div>
 
   <script>

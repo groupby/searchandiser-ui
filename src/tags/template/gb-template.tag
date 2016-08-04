@@ -1,5 +1,5 @@
 <gb-template>
-  <div class="gb-template { opts.style() }" if={ isActive }>
+  <div class="gb-template { _style }" if={ isActive }>
     <yield/>
     <gb-snippet if={ url } url={ url } raw={ raw }></gb-snippet>
   </div>

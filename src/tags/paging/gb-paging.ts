@@ -10,7 +10,7 @@ export interface Labeled {
 }
 
 export interface Paging extends FluxTag, Labeled {
-  parent: Riot.Tag.Instance & Labeled & { style: Function };
+  parent: Riot.Tag.Instance & Labeled;
 }
 
 export class Paging {
@@ -22,7 +22,6 @@ export class Paging {
   icons: boolean;
   forwardDisabled: boolean;
   backDisabled: boolean;
-  style: Function;
 
   pageNumbers: number[];
   currentPage: number;
@@ -40,7 +39,6 @@ export class Paging {
 
   init() {
     this.limit = unless(this.opts.limit, 5);
-    this.style = unless(this.opts.style, this.parent.style);
     this.pages = unless(this.opts.pages, false);
     this.numeric = unless(this.opts.numeric, false);
     this.terminals = unless(this.opts.terminals, true);

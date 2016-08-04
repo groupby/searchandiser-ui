@@ -1,5 +1,5 @@
 <gb-pages>
-  <ul class="gb-pages { style() }" if={ pages }>
+  <ul class="gb-pages { _style }" if={ pages }>
     <span class="gb-pages__ellipsis" if={ lowOverflow }>&hellip;</span>
     <li each={ pageNumber in pageNumbers }>
       <a class="gb-pages__page { selected: currentPage === pageNumber }" onclick={ jumpTo }>{ pageNumber }</a>
@@ -8,7 +8,6 @@
   </ul>
 
   <script>
-    this.style = this.parent.style;
     this.pages = this.parent.pages;
     this.jumpTo = ({ target }) => this.parent.pager.jump(Number(target.text) - 1);
   </script>
