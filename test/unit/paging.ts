@@ -137,4 +137,20 @@ describe('gb-paging logic', () => {
     expect(paging.pageInfo([1], 2).lowOverflow).to.be.false;
     expect(paging.pageInfo([4, 5, 6], 6).highOverflow).to.be.false;
   });
+
+  describe('page transition behaviour', () => {
+    it('should not allow page forward', () => {
+      const pager = {
+        next: () => expect.fail(),
+        last: () => expect.fail()
+      };
+      Object.defineProperty(flux, 'page', { get: () => pager });
+
+      paging.init();
+      paging.forwardDisabled = true;
+
+      paging.pager.next();
+      paging.pager.last();
+    });
+  });
 });
