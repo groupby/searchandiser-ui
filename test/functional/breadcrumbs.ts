@@ -1,19 +1,21 @@
 import { FluxCapacitor } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import '../../src/tags/breadcrumbs/gb-breadcrumbs.tag';
 
 const TAG = 'gb-breadcrumbs';
 
-describe('gb-breadcrumbs tag', () => {
-  let html: Element;
-  let flux: FluxCapacitor;
+describe(`${TAG} tag`, () => {
+  let html: Element,
+    flux: FluxCapacitor;
+
   beforeEach(() => {
-    flux = new FluxCapacitor('');
+    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
   });
-  afterEach(() => document.body.removeChild(html));
+  afterEach(() => {
+    document.body.removeChild(html);
+  });
 
   it('mounts tag', () => {
     const tag = mount();
@@ -83,6 +85,6 @@ describe('gb-breadcrumbs tag', () => {
   }
 
   function mount() {
-    return <Breadcrumbs>riot.mount(TAG, { flux })[0];
+    return <Breadcrumbs>riot.mount(TAG)[0];
   }
 });

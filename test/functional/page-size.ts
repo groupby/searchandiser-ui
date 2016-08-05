@@ -1,17 +1,16 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { selectOptions } from '../utils/select';
 import { PageSize } from '../../src/tags/page-size/gb-page-size';
 import '../../src/tags/page-size/gb-page-size.tag';
 
 const TAG = 'gb-page-size';
 
-describe('gb-page-size tag', () => {
+describe(`${TAG} tag`, () => {
   let html: Element;
-  let flux: FluxCapacitor;
+
   beforeEach(() => {
-    flux = new FluxCapacitor('');
+    riot.mixin('test', { flux: new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -31,6 +30,6 @@ describe('gb-page-size tag', () => {
   });
 
   function mount() {
-    return <PageSize>riot.mount(TAG, { flux, config: {} })[0];
+    return <PageSize>riot.mount(TAG, { config: {} })[0];
   }
 });

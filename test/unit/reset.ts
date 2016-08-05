@@ -3,15 +3,15 @@ import { Reset } from '../../src/tags/reset/gb-reset';
 import { expect } from 'chai';
 
 describe('gb-reset logic', () => {
-  let reset: Reset;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    reset = new Reset();
-    flux = new FluxCapacitor('');
-    reset.opts = { flux };
-    reset.root = <HTMLElement & any>{ addEventListener: () => null };
-    reset.on = () => null;
-  });
+  let reset: Reset,
+    flux: FluxCapacitor;
+
+  beforeEach(() => reset = Object.assign(new Reset(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: {},
+    root: { addEventListener: () => null },
+    on: () => null
+  }));
 
   it('should listen for mount event', () => {
     reset.on = (event, cb) => {

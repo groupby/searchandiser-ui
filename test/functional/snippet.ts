@@ -1,13 +1,13 @@
 import { FluxCapacitor } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { Snippet } from '../../src/tags/snippet/gb-snippet';
 import '../../src/tags/snippet/gb-snippet.tag';
 
 const TAG = 'gb-snippet';
 
-describe('gb-snippet tag', () => {
+describe(`${TAG} tag`, () => {
   let html: Element;
+
   beforeEach(() => document.body.appendChild(html = document.createElement(TAG)));
   afterEach(() => document.body.removeChild(html));
 
@@ -19,6 +19,6 @@ describe('gb-snippet tag', () => {
   });
 
   function mount() {
-    return <Snippet>riot.mount(TAG, {})[0];
+    return <Snippet>riot.mount(TAG)[0];
   }
 });

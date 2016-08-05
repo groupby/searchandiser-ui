@@ -1,3 +1,4 @@
+import { NavigationInfo } from 'groupby-api';
 import { FluxTag } from '../tag';
 import { toRefinement, displayRefinement } from '../../utils';
 
@@ -20,12 +21,12 @@ export class Refinement {
 
 export class AvailableRefinement extends Refinement {
   send() {
-    return this.parentOpts.flux.refine(this.toRefinement(this.ref, this.nav));
+    return this.flux.refine(this.toRefinement(this.ref, this.nav));
   }
 }
 
 export class SelectedRefinement extends Refinement {
   remove() {
-    return this.parentOpts.flux.unrefine(this.toRefinement(this.ref, this.nav));
+    return this.flux.unrefine(this.toRefinement(this.ref, this.nav));
   }
 }

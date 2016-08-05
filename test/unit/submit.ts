@@ -4,16 +4,18 @@ import { expect } from 'chai';
 import utils = require('../../src/utils');
 
 describe('gb-submit logic', () => {
-  let sandbox: Sinon.SinonSandbox;
-  let submit: Submit;
-  let flux: FluxCapacitor;
+  let sandbox: Sinon.SinonSandbox,
+    submit: Submit,
+    flux: FluxCapacitor;
+
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    submit = new Submit();
-    flux = new FluxCapacitor('');
-    submit.opts = { flux };
-    submit.root = <HTMLElement & any>{ addEventListener: () => null };
-    submit.on = () => null;
+    submit = Object.assign(new Submit(), {
+      flux: flux = new FluxCapacitor(''),
+      opts: {},
+      root: <HTMLElement & any>{ addEventListener: () => null },
+      on: () => null
+    });
   });
   afterEach(() => sandbox.restore());
 

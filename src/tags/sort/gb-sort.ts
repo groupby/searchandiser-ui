@@ -1,3 +1,4 @@
+import { Results } from 'groupby-api';
 import { FluxTag } from '../tag';
 import { checkNested } from '../../utils';
 import { SelectConfig } from '../select/gb-select';
@@ -32,6 +33,6 @@ export class Sort {
   }
 
   sort(value) {
-    return this.parentOpts.flux.sort(value, this.sortValues())
+    return this.flux.sort(value, this.sortValues())
   }
 }

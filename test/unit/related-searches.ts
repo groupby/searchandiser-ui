@@ -3,13 +3,13 @@ import { RelatedSearches } from '../../src/tags/related-searches/gb-related-sear
 import { expect } from 'chai';
 
 describe('gb-related-searches logic', () => {
-  let relatedSearches: RelatedSearches;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    relatedSearches = new RelatedSearches();
-    flux = new FluxCapacitor('');
-    relatedSearches.opts = { flux };
-  });
+  let relatedSearches: RelatedSearches,
+    flux: FluxCapacitor;
+
+  beforeEach(() => relatedSearches = Object.assign(new RelatedSearches(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: {}
+  }));
 
   it('should rewrite on send', () => {
     const query = 'red sneakers';

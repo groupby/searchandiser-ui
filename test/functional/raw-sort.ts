@@ -1,23 +1,24 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { selectOptions, clearOption, label } from '../utils/raw-select';
 import { Sort } from '../../src/tags/sort/gb-sort';
 import '../../src/tags/sort/gb-raw-sort.tag';
 
 const TAG = 'gb-raw-sort';
 
-describe('gb-raw-sort tag', () => {
-  let html: Element;
-  let flux: FluxCapacitor;
+describe(`${TAG} tag`, () => {
+  let html: Element,
+    flux: FluxCapacitor;
+
   beforeEach(() => {
-    flux = new FluxCapacitor('');
+    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
 
   it('mounts tag', () => {
     const tag = mount();
+
     expect(tag).to.be.ok;
     expect(html.querySelector('gb-raw-select')).to.be.ok;
   });
@@ -40,6 +41,6 @@ describe('gb-raw-sort tag', () => {
   });
 
   function mount() {
-    return <Sort>riot.mount(TAG, { flux })[0];
+    return <Sort>riot.mount(TAG)[0];
   }
 });

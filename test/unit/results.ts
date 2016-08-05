@@ -4,13 +4,13 @@ import { expect } from 'chai';
 
 describe('gb-results logic', () => {
   const structure = { title: 'title', price: 'price', image: 'image' };
-  let results: Results;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    results = new Results();
-    flux = new FluxCapacitor('');
-    results.opts = { flux, config: { structure } };
-  });
+  let results: Results,
+    flux: FluxCapacitor;
+
+  beforeEach(() => results = Object.assign(new Results(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: { config: { structure } }
+  }));
 
   it('should have default values', () => {
     results.init();

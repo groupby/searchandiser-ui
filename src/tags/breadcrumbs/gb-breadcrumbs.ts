@@ -15,9 +15,9 @@ export class Breadcrumbs {
     this.hideQuery = unless(this.opts.hideQuery, false);
     this.hideRefinements = unless(this.opts.hideRefinements, false);
 
-    this.opts.flux.on(Events.REFINEMENTS_CHANGED, ({ selected }) => this.updateRefinements(selected));
-    this.opts.flux.on(Events.RESULTS, ({ originalQuery }) => this.updateQuery(originalQuery));
-    this.opts.flux.on(Events.RESET, () => this.clearRefinements());
+    this.flux.on(Events.REFINEMENTS_CHANGED, ({ selected }) => this.updateRefinements(selected));
+    this.flux.on(Events.RESULTS, ({ originalQuery }) => this.updateQuery(originalQuery));
+    this.flux.on(Events.RESET, () => this.clearRefinements());
   }
 
   clearRefinements() {

@@ -50,20 +50,20 @@ export class Paging {
     this.last_label = unless(this.opts.last_label, this.parent.last_label);
 
     this.pager = {
-      first: () => !this.backDisabled && this.opts.flux.page.reset(),
-      prev: () => !this.backDisabled && this.opts.flux.page.prev(),
-      next: () => !this.forwardDisabled && this.opts.flux.page.next(),
-      last: () => !this.forwardDisabled && this.opts.flux.page.last(),
-      jump: (page) => this.opts.flux.page.jump(page)
+      first: () => !this.backDisabled && this.flux.page.reset(),
+      prev: () => !this.backDisabled && this.flux.page.prev(),
+      next: () => !this.forwardDisabled && this.flux.page.next(),
+      last: () => !this.forwardDisabled && this.flux.page.last(),
+      jump: (page) => this.flux.page.jump(page)
     };
 
-    this.opts.flux.on(Events.PAGE_CHANGED, this.updatePages);
-    this.opts.flux.on(Events.RESULTS, this.updatePageInfo);
+    this.flux.on(Events.PAGE_CHANGED, this.updatePages);
+    this.flux.on(Events.RESULTS, this.updatePageInfo);
   }
 
   updatePageInfo() {
-    const pageNumbers = this.opts.flux.page.pageNumbers(this.limit);
-    const lastPage = this.opts.flux.page.finalPage + 1;
+    const pageNumbers = this.flux.page.pageNumbers(this.limit);
+    const lastPage = this.flux.page.finalPage + 1;
     this.update(this.pageInfo(pageNumbers, lastPage));
   }
 

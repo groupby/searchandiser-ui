@@ -46,7 +46,7 @@ export class Sayt {
 
     this.on('before-mount', () => this.autocomplete = new Autocomplete(this.root, this.autocompleteList, this.notifier));
 
-    this.opts.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
+    this.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
       .then(({result}) => {
         this.update({ originalQuery });
         this.processResults(result);
@@ -54,7 +54,7 @@ export class Sayt {
       })
       .catch((err) => console.error(err)));
 
-    this.opts.flux.on('autocomplete:hide', () => {
+    this.flux.on('autocomplete:hide', () => {
       this.autocomplete.reset();
       this.update({ queries: null, navigations: null });
     });
@@ -69,7 +69,7 @@ export class Sayt {
 
   notifier(query) {
     if (this.saytConfig.autoSearch) this.searchProducts(query);
-    this.opts.flux.emit(Events.REWRITE_QUERY, query);
+    this.flux.emit(Events.REWRITE_QUERY, query);
   }
 
   processResults(result) {
@@ -102,12 +102,12 @@ export class Sayt {
   }
 
   searchRefinement(event) {
-    this.opts.flux.reset();
+    this.flux.reset();
     this.refine(event.target, '');
   }
 
   searchCategory(event) {
-    this.opts.flux.reset();
+    this.flux.reset();
     this.refine(event.target, this.originalQuery);
   }
 
@@ -136,11 +136,11 @@ export class Sayt {
       ]);
     }
 
-    this.opts.flux.refine({
+    this.flux.refine({
       navigationName: node.getAttribute('data-field'),
       type: 'Value',
       value: node.getAttribute('data-refinement')
-    }).then(() => this.opts.flux.rewrite(query))
+    }).then(() => this.flux.rewrite(query))
   }
 
   search(event) {
@@ -151,6 +151,6 @@ export class Sayt {
       return updateLocation(this.searchUrl, this.queryParam, node.getAttribute('data-value'), []);
     }
 
-    this.opts.flux.reset(node.getAttribute('data-value'));
+    this.flux.reset(node.getAttribute('data-value'));
   }
 }

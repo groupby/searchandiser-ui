@@ -36,7 +36,7 @@ export class Submit {
     if (this.staticSearch && window.location.pathname !== this.searchUrl) {
       updateLocation(this.searchUrl, this.queryParam, inputValue, []);
     } else {
-      this.opts.flux.reset(inputValue);
+      this.flux.reset(inputValue);
     }
   }
 }

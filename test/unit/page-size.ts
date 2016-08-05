@@ -3,18 +3,18 @@ import { PageSize } from '../../src/tags/page-size/gb-page-size';
 import { expect } from 'chai';
 
 describe('gb-page-size logic', () => {
-  let pageSize: PageSize;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    pageSize = new PageSize();
-    flux = new FluxCapacitor('');
-    pageSize.opts = { flux, config: {} };
-  });
+  let pageSize: PageSize,
+    flux: FluxCapacitor;
+
+  beforeEach(() => pageSize = Object.assign(new PageSize(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: { config: {} }
+  }));
 
   it('should have default values', () => {
     pageSize.init();
 
-    expect(pageSize.parentOpts).to.have.all.keys('flux', 'config');
+    expect(pageSize.parentOpts).to.have.all.keys('config');
     expect(pageSize.passthrough).to.be.ok;
     expect(pageSize.passthrough.hover).to.not.be.ok;
     expect(pageSize.passthrough.update).to.eq(pageSize.resize);
@@ -23,13 +23,13 @@ describe('gb-page-size logic', () => {
   });
 
   it('should allow override from opts', () => {
-    const pageSizes = [12, 24, 48];
-    const onHover = false;
+    const pageSizes = [12, 24, 48],
+      onHover = false;
 
     Object.assign(pageSize.opts, { config: { pageSizes }, onHover });
     pageSize.init();
 
-    expect(pageSize.parentOpts).to.have.all.keys('flux', 'config', 'onHover');
+    expect(pageSize.parentOpts).to.have.all.keys('config', 'onHover');
     expect(pageSize.passthrough).to.be.ok;
     expect(pageSize.passthrough.options).to.eq(pageSizes);
     expect(pageSize.passthrough.hover).to.be.false;

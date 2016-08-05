@@ -17,12 +17,12 @@ export class QueryWrapper {
     const delay = this.tag.parentOpts.config.sayt.delay || 0;
     const debouncedSearch = debounce(() => {
       if (root.value.length >= minimumCharacters) {
-        this.tag.parentOpts.flux.emit('autocomplete', root.value);
+        this.tag.flux.emit('autocomplete', root.value);
       } else {
-        this.tag.parentOpts.flux.emit('autocomplete:hide');
+        this.tag.flux.emit('autocomplete:hide');
       }
     }, delay);
-    document.addEventListener('click', () => this.tag.parentOpts.flux.emit('autocomplete:hide'));
+    document.addEventListener('click', () => this.tag.flux.emit('autocomplete:hide'));
     root.addEventListener('input', debouncedSearch);
   }
 

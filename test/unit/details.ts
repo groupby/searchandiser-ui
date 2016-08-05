@@ -3,13 +3,13 @@ import { Details } from '../../src/tags/details/gb-details';
 import { expect } from 'chai';
 
 describe('gb-details logic', () => {
-  let details: Details;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    details = new Details();
-    flux = new FluxCapacitor('');
-    details.opts = { flux, config: {} };
-  });
+  let details: Details,
+    flux: FluxCapacitor;
+
+  beforeEach(() => details = Object.assign(new Details(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: { config: {} }
+  }));
 
   it('should have default values', () => {
     details.init();
@@ -38,8 +38,8 @@ describe('gb-details logic', () => {
 
   it('should update selected on DETAILS', () => {
     const record = { a: 'b', c: 'd' };
-    let callback;
 
+    let callback;
     flux.on = (event: string, cb: Function): any => callback = cb;
 
     details.update = (obj: any) => expect(obj.record).to.eq(record);;

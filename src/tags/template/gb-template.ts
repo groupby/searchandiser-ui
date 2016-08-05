@@ -13,6 +13,6 @@ export class Template {
   init() {
     this.url = this.opts.url;
     this.raw = unless(this.opts.raw, false);
-    this.opts.flux.on(Events.RESULTS, ({ template }) => this.update({ isActive: template.name === this.opts.templateName }));
+    this.flux.on(Events.RESULTS, ({ template }) => this.update({ isActive: template.name === this.opts.templateName }));
   }
 }

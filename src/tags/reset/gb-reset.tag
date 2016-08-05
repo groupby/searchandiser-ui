@@ -1,5 +1,5 @@
 <gb-reset>
-  <gb-raw-reset flux={ opts.flux } class={ _style }>
+  <gb-raw-reset class={ _style }>
     <a class="gb-reset">&times;</a>
   </gb-raw-reset>
 

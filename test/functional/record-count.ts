@@ -1,15 +1,15 @@
 import { FluxCapacitor } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { RecordCount } from '../../src/tags/record-count/gb-record-count';
 import '../../src/tags/record-count/gb-record-count.tag';
 
 const TAG = 'gb-record-count';
 
-describe('gb-record-count tag', () => {
+describe(`${TAG} tag`, () => {
   let html: Element;
-  const flux = new FluxCapacitor('');
+
   beforeEach(() => {
+    riot.mixin('test', { flux: new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
     const template = document.createElement('div');
     template.innerHTML = '{ first } - { last } of { total } Products';
@@ -38,6 +38,6 @@ describe('gb-record-count tag', () => {
   });
 
   function mount() {
-    return <RecordCount>riot.mount(TAG, { flux, config: {} })[0];
+    return <RecordCount>riot.mount(TAG, { config: {} })[0];
   }
 });

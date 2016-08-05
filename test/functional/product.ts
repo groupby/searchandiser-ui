@@ -1,18 +1,17 @@
 import { FluxCapacitor, Events } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { Product } from '../../src/tags/results/gb-product';
 import '../../src/tags/results/gb-product.tag';
 
 const TAG = 'gb-product';
 
 describe(`${TAG} tag`, () => {
-  const struct = { title: 'title', price: 'price', image: 'image' };
-  const all_meta = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
+  const struct = { title: 'title', price: 'price', image: 'image' },
+    all_meta = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
   let html: Element;
-  let flux: FluxCapacitor;
+
   beforeEach(() => {
-    flux = new FluxCapacitor('');
+    riot.mixin('test', { flux: new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -35,6 +34,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function mount() {
-    return <Product>riot.mount(TAG, { flux, struct, all_meta })[0];
+    return <Product>riot.mount(TAG, { struct, all_meta })[0];
   }
 });

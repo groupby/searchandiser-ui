@@ -8,7 +8,7 @@ export class RelatedSearches {
   relatedQueries: string[];
 
   init() {
-    this.opts.flux.on(Events.RESULTS, ({ relatedQueries }) => this.updatedRelatedQueries(relatedQueries));
+    this.flux.on(Events.RESULTS, ({ relatedQueries }) => this.updatedRelatedQueries(relatedQueries));
   }
 
   updatedRelatedQueries(relatedQueries: string[]) {
@@ -16,6 +16,6 @@ export class RelatedSearches {
   }
 
   send(event: Event) {
-    return this.opts.flux.rewrite((<HTMLAnchorElement>event.target).text);
+    return this.flux.rewrite((<HTMLAnchorElement>event.target).text);
   }
 }

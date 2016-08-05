@@ -1,17 +1,17 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { selectOptions, clearOption, label } from '../utils/raw-select';
 import { Filter } from '../../src/tags/filter/gb-filter';
 import '../../src/tags/filter/gb-raw-filter.tag';
 
 const TAG = 'gb-raw-filter';
 
-describe('gb-raw-filter tag', () => {
-  let html: Element;
-  let flux: FluxCapacitor;
+describe(`${TAG} tag`, () => {
+  let html: Element,
+    flux: FluxCapacitor;
+
   beforeEach(() => {
-    flux = new FluxCapacitor('');
+    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -70,6 +70,6 @@ describe('gb-raw-filter tag', () => {
   });
 
   function mount() {
-    return <Filter>riot.mount(TAG, { flux, clone: () => flux })[0];
+    return <Filter>riot.mount(TAG, { clone: () => flux })[0];
   }
 });

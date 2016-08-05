@@ -1,17 +1,17 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { selectOptions, clearOption } from '../utils/select';
 import { Filter } from '../../src/tags/filter/gb-filter';
 import '../../src/tags/filter/gb-filter.tag';
 
 const TAG = 'gb-filter';
 
-describe('gb-filter tag', () => {
-  let html: Element;
-  let flux: FluxCapacitor;
+describe(`${TAG} tag`, () => {
+  let html: Element,
+    flux: FluxCapacitor;
+
   beforeEach(() => {
-    flux = new FluxCapacitor('');
+    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -34,6 +34,7 @@ describe('gb-filter tag', () => {
 
     it('renders from navigation', () => {
       const tag = mount();
+
       rawTag().isTargetNav = () => true;
       rawTag().updateValues(<Results & any>{ availableNavigation: [navigation] });
 
@@ -43,6 +44,7 @@ describe('gb-filter tag', () => {
 
     it('renders clear option', () => {
       const tag = mount();
+
       rawTag().isTargetNav = () => true;
       rawTag().updateValues(<Results & any>{ availableNavigation: [navigation] });
 
@@ -58,6 +60,6 @@ describe('gb-filter tag', () => {
   }
 
   function mount() {
-    return <Filter>riot.mount(TAG, { flux, clone: () => flux })[0];
+    return <Filter>riot.mount(TAG, { clone: () => flux })[0];
   }
 });

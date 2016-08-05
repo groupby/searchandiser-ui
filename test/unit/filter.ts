@@ -3,19 +3,19 @@ import { Filter } from '../../src/tags/filter/gb-filter';
 import { expect } from 'chai';
 
 describe('gb-filter logic', () => {
-  let filter: Filter;
-  let flux: FluxCapacitor,
+  let filter: Filter,
+    flux: FluxCapacitor,
     fluxClone: FluxCapacitor;
-  beforeEach(() => {
-    filter = new Filter();
-    flux = new FluxCapacitor('');
-    fluxClone = new FluxCapacitor('');
-    filter.opts = { flux, clone: () => fluxClone };
-  });
+
+  beforeEach(() => filter = Object.assign(new Filter(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: { clone: () => fluxClone = new FluxCapacitor('') }
+  }));
 
   it('should have default values', () => {
     filter.init();
-    expect(filter.parentOpts).to.have.all.keys('flux', 'clone');
+
+    expect(filter.parentOpts).to.have.all.keys('clone');
     expect(filter.navField).to.not.be.ok;
     expect(filter.passthrough).to.be.ok;
     expect(filter.passthrough.hover).to.not.be.ok;
@@ -25,15 +25,15 @@ describe('gb-filter logic', () => {
   });
 
   it('should allow override from opts', () => {
-    const label = 'Select Brand';
-    const clear = 'All Brands';
-    const field = 'Brand';
-    const onHover = false;
+    const label = 'Select Brand',
+      clear = 'All Brands',
+      field = 'Brand',
+      onHover = false;
 
     Object.assign(filter.opts, { label, clear, field, onHover });
     filter.init();
 
-    expect(filter.parentOpts).to.have.all.keys('flux', 'clone', 'label', 'clear', 'field', 'onHover');
+    expect(filter.parentOpts).to.have.all.keys('clone', 'label', 'clear', 'field', 'onHover');
     expect(filter.navField).to.eq(field);
     expect(filter.passthrough).to.be.ok;
     expect(filter.passthrough.hover).to.eq(onHover);
@@ -73,8 +73,8 @@ describe('gb-filter logic', () => {
   });
 
   it('should update fluxClone state with refinements', () => {
-    const parentQuery = 'red sneakers';
-    const refinements: any = { a: 'b', c: 'd' };
+    const parentQuery = 'red sneakers',
+      refinements: any = { a: 'b', c: 'd' };
 
     fluxClone.search = (query: string): any => {
       expect(query).to.eq(parentQuery);
@@ -137,8 +137,8 @@ describe('gb-filter logic', () => {
   });
 
   it('should call refine on navigation selected', (done) => {
-    const selection = { type: 'Value', value: 'DeWalt' };
-    const navigationName = 'brand';
+    const selection = { type: 'Value', value: 'DeWalt' },
+      navigationName = 'brand';
 
     flux.refine = (selected): any => {
       expect(selected).to.eql(Object.assign(selection, { navigationName }));

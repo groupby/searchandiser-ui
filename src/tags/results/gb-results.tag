@@ -1,5 +1,5 @@
 <gb-results>
-  <gb-raw-results flux={ opts.flux }>
+  <gb-raw-results>
     <gb-product></gb-product>
   </gb-raw-results>
 

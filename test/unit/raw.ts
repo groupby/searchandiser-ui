@@ -5,7 +5,11 @@ import { expect } from 'chai';
 describe('gb-raw logic', () => {
   const content = '<div>red sneakers</div>';
   let raw: Raw;
-  beforeEach(() => raw = Object.assign(new Raw(), { opts: { content }, on: () => null }));
+
+  beforeEach(() => raw = Object.assign(new Raw(), {
+    opts: { content },
+    on: () => null
+  }));
 
   it('should listen for update event', () => {
     raw.on = (event: string, cb) => {

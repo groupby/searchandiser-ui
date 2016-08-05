@@ -3,17 +3,16 @@ import { Sort } from '../../src/tags/sort/gb-sort';
 import { expect } from 'chai';
 
 describe('gb-sort logic', () => {
-  let sort: Sort;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    sort = new Sort();
-    flux = new FluxCapacitor('');
-    sort.opts = { flux };
-  });
+  let sort: Sort,
+    flux: FluxCapacitor;
+
+  beforeEach(() => sort = Object.assign(new Sort(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: {}
+  }));
 
   it('should have default values', () => {
     sort.init();
-    expect(sort.parentOpts).to.have.all.keys('flux');
     expect(sort.passthrough).to.be.ok;
     expect(sort.passthrough.hover).to.not.be.ok;
     expect(sort.passthrough.update).to.eq(sort.sort);
@@ -33,7 +32,7 @@ describe('gb-sort logic', () => {
       Object.assign(sort.opts, { options, onHover });
       sort.init();
 
-      expect(sort.parentOpts).to.have.all.keys('flux', 'options', 'onHover');
+      expect(sort.parentOpts).to.have.all.keys('options', 'onHover');
       expect(sort.passthrough).to.be.ok;
       expect(sort.passthrough.options).to.eq(options);
       expect(sort.passthrough.hover).to.be.false;

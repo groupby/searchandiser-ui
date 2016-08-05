@@ -1,13 +1,13 @@
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { Raw } from '../../src/tags/raw/gb-raw';
 import '../../src/tags/raw/gb-raw.tag';
 
 const TAG = 'gb-raw';
 
-describe('gb-snippet tag', () => {
+describe(`${TAG} tag`, () => {
   let html: Element;
   const content = '<div>red sneakers</div>';
+
   beforeEach(() => document.body.appendChild(html = document.createElement(TAG)));
   afterEach(() => document.body.removeChild(html));
 

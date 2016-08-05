@@ -16,6 +16,6 @@ export class RefinementCrumb {
   }
 
   remove() {
-    this.parentOpts.flux.unrefine(toRefinement(this.ref, this.nav));
+    this.flux.unrefine(toRefinement(this.ref, this.nav));
   }
 }

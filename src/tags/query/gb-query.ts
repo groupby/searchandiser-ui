@@ -38,12 +38,16 @@ export class Query {
       this.on('before-mount', () => this.listenForSubmit(this.inputValue));
     }
 
-    this.parentOpts.flux.on(Events.REWRITE_QUERY, (query: string) => this.root.value = query);
+    this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
 
     if (queryFromUrl) {
-      this.parentOpts.flux.query = queryFromUrl;
-      this.parentOpts.flux.search(queryFromUrl.raw.query);
+      this.flux.query = queryFromUrl;
+      this.flux.search(queryFromUrl.raw.query);
     }
+  }
+
+  rewriteQuery(query: string) {
+    this.root.value = query;
   }
 
   private inputValue() {
@@ -53,18 +57,18 @@ export class Query {
   private setLocation() {
     // Better way to do this is with browser history rewrites
     if (window.location.pathname !== this.searchUrl) {
-      updateLocation(this.searchUrl, this.queryParam, this.root.value, this.parentOpts.flux.query.raw.refinements);
+      updateLocation(this.searchUrl, this.queryParam, this.root.value, this.flux.query.raw.refinements);
     } else {
-      this.parentOpts.flux.reset(this.root.value);
+      this.flux.reset(this.root.value);
     }
   }
 
   listenForInput(value: () => string) {
-    this.root.addEventListener('input', () => this.parentOpts.flux.reset(value()));
+    this.root.addEventListener('input', () => this.flux.reset(value()));
   }
 
   listenForSubmit(value: () => string) {
-    this.listenForEnter(() => this.parentOpts.flux.reset(value()));
+    this.listenForEnter(() => this.flux.reset(value()));
   }
 
   listenForEnter(cb: () => void) {

@@ -3,13 +3,12 @@ import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
 import { expect } from 'chai';
 
 describe('gb-did-you-mean logic', () => {
-  let didYouMean: DidYouMean;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    didYouMean = new DidYouMean();
-    flux = new FluxCapacitor('');
-    didYouMean.opts = { flux };
-  });
+  let didYouMean: DidYouMean,
+    flux: FluxCapacitor;
+
+  beforeEach(() => didYouMean = Object.assign(new DidYouMean(), {
+    flux: flux = new FluxCapacitor('')
+  }));
 
   it('should rewrite on send', () => {
     const query = 'red sneakers';
@@ -29,8 +28,8 @@ describe('gb-did-you-mean logic', () => {
 
   it('should update didYouMean on RESULTS', () => {
     const dym = ['a', 'b', 'c'];
-    let callback;
 
+    let callback;
     flux.on = (event: string, cb: Function): any => callback = cb;
 
     didYouMean.update = (obj: any) => expect(obj.didYouMean).to.eq(dym);

@@ -3,13 +3,13 @@ import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import { expect } from 'chai';
 
 describe('gb-breadcrumbs logic', () => {
-  let breadcrumbs: Breadcrumbs;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    breadcrumbs = new Breadcrumbs();
-    flux = new FluxCapacitor('');
-    breadcrumbs.opts = { flux };
-  });
+  let breadcrumbs: Breadcrumbs,
+    flux: FluxCapacitor;
+
+  beforeEach(() => breadcrumbs = Object.assign(new Breadcrumbs(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: {}
+  }));
 
   it('should have default values', () => {
     breadcrumbs.init();
@@ -38,8 +38,8 @@ describe('gb-breadcrumbs logic', () => {
 
   it('should update selected on REFINEMENTS_CHANGED', (done) => {
     const selected = ['a', 'b', 'c'];
-    let callback;
 
+    let callback;
     flux.on = (event: string, cb: Function): any => {
       if (event === Events.REFINEMENTS_CHANGED) callback = cb;
     };
@@ -55,7 +55,6 @@ describe('gb-breadcrumbs logic', () => {
 
   it('should empty selected on RESET', (done) => {
     let callback;
-
     flux.on = (event: string, cb: Function): any => {
       if (event === Events.RESET) callback = cb;
     };
@@ -71,8 +70,8 @@ describe('gb-breadcrumbs logic', () => {
 
   it('should update originalQuery on RESULTS', (done) => {
     const originalQuery = 'red sneakers';
-    let callback;
 
+    let callback;
     flux.on = (event: string, cb: Function): any => {
       if (event === Events.RESULTS) callback = cb;
     };

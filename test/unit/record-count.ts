@@ -3,13 +3,13 @@ import { RecordCount } from '../../src/tags/record-count/gb-record-count';
 import { expect } from 'chai';
 
 describe('gb-record-count logic', () => {
-  let recordCount: RecordCount;
-  let flux: FluxCapacitor;
-  beforeEach(() => {
-    recordCount = new RecordCount();
-    flux = new FluxCapacitor('');
-    recordCount.opts = { flux };
-  });
+  let recordCount: RecordCount,
+    flux: FluxCapacitor;
+
+  beforeEach(() => recordCount = Object.assign(new RecordCount(), {
+    flux: flux = new FluxCapacitor(''),
+    opts: {}
+  }));
 
   it('should listen for events', () => {
     flux.on = (event: string): any => expect(event).to.eq(Events.RESULTS);

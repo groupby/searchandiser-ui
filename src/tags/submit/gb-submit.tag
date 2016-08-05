@@ -1,5 +1,5 @@
 <gb-submit>
-  <gb-raw-submit flux={ opts.flux } class={ _style }>
+  <gb-raw-submit class={ _style }>
     <a class="gb-submit">&#128269;</a>
   </gb-raw-submit>
 

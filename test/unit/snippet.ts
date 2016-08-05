@@ -4,7 +4,11 @@ import { expect } from 'chai';
 
 describe('gb-snippet logic', () => {
   let importTag: Snippet;
-  beforeEach(() => importTag = Object.assign(new Snippet(), { opts: {}, on: () => null }));
+
+  beforeEach(() => importTag = Object.assign(new Snippet(), {
+    opts: {},
+    on: () => null
+  }));
 
   it('should have default values', () => {
     importTag.init();

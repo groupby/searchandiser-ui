@@ -17,8 +17,8 @@ export class Details {
     this.query = getParam(this.idParam);
     this.getPath = getPath;
     this.struct = this.opts.config.structure;
-    this.opts.flux.on(Events.DETAILS, (record) => this.updateRecord(record));
-    if (this.query) this.opts.flux.details(this.query);
+    this.flux.on(Events.DETAILS, (record) => this.updateRecord(record));
+    if (this.query) this.flux.details(this.query);
   }
 
   updateRecord(record) {

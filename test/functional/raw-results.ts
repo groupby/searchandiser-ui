@@ -1,6 +1,5 @@
 import { FluxCapacitor, Events } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { Results } from '../../src/tags/results/gb-results';
 import '../../src/tags/results/gb-raw-results.tag';
 
@@ -8,9 +7,9 @@ const TAG = 'gb-raw-results';
 
 describe(`${TAG} tag`, () => {
   let html: Element;
-  let flux: FluxCapacitor;
+
   beforeEach(() => {
-    flux = new FluxCapacitor('');
+    riot.mixin('test', { flux: new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -30,6 +29,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function mount() {
-    return <Results>riot.mount(TAG, { flux, config: {} })[0];
+    return <Results>riot.mount(TAG, { config: {} })[0];
   }
 });

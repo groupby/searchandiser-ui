@@ -1,16 +1,16 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
-import { mockFlux } from '../fixtures';
 import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
 import '../../src/tags/did-you-mean/gb-did-you-mean.tag';
 
 const TAG = 'gb-did-you-mean';
 
-describe('gb-did-you-mean tag', () => {
-  let html: Element;
-  let flux: FluxCapacitor;
+describe(`${TAG} tag`, () => {
+  let html: Element,
+    flux: FluxCapacitor;
+
   beforeEach(() => {
-    flux = new FluxCapacitor('');
+    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -48,6 +48,6 @@ describe('gb-did-you-mean tag', () => {
   }
 
   function mount() {
-    return <DidYouMean>riot.mount(TAG, { flux })[0];
+    return <DidYouMean>riot.mount(TAG)[0];
   }
 });

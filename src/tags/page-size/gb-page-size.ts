@@ -19,6 +19,6 @@ export class PageSize {
   }
 
   resize(value) {
-    return this.parentOpts.flux.resize(value, this.parentOpts.resetOffset ? 0 : undefined);
+    return this.flux.resize(value, this.parentOpts.resetOffset ? 0 : undefined);
   }
 }

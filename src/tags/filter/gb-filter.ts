@@ -27,7 +27,7 @@ export class Filter {
       clear: this.parentOpts.clear || 'Unfiltered'
     });
 
-    this.parentOpts.flux.on(Events.RESULTS, () => this.updateFluxClone());
+    this.flux.on(Events.RESULTS, () => this.updateFluxClone());
   }
 
   isTargetNav(navName: string) {
@@ -44,11 +44,11 @@ export class Filter {
   }
 
   updateFluxClone() {
-    const searchRequest = this.parentOpts.flux.query.raw;
+    const searchRequest = this.flux.query.raw;
     // TODO this is probably broken in terms of state propagation
     this.fluxClone.query.withConfiguration(<QueryConfiguration>{ refinements: [] });
     if (searchRequest.refinements) {
-      const filteredRefinements = searchRequest.refinements.filter(({ navigationName }) => !this.isTargetNav(navigationName));
+      const filteredRefinements: any[] = searchRequest.refinements.filter(({ navigationName }) => !this.isTargetNav(navigationName));
       this.fluxClone.query.withSelectedRefinements(...filteredRefinements);
     }
 
@@ -56,11 +56,11 @@ export class Filter {
   }
 
   navigate(value) {
-    if (this.selected) this.parentOpts.flux.unrefine(this.selected, { skipSearch: true });
+    if (this.selected) this.flux.unrefine(this.selected, { skipSearch: true });
     if (value === '*') {
-      this.parentOpts.flux.reset();
+      this.flux.reset();
     } else {
-      this.parentOpts.flux.refine(this.selected = toRefinement(value, { name: this.navField }));
+      this.flux.refine(this.selected = toRefinement(value, { name: this.navField }));
     }
   }
 }

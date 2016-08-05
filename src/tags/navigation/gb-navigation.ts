@@ -12,7 +12,7 @@ export class Navigation {
   init() {
     this.badge = unless(this.opts.badge, true);
     this.showSelected = unless(this.opts.showSelected, true);
-    this.opts.flux.on(Events.RESULTS, (res: Results) => this.update({ processed: this.processNavigations(res) }));
+    this.flux.on(Events.RESULTS, (res: Results) => this.update({ processed: this.processNavigations(res) }));
   }
 
   processNavigations(res: Results) {
