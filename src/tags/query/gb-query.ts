@@ -4,6 +4,7 @@ import { Events } from 'groupby-api';
 import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
 import { QueryWrapper } from '../sayt/query-wrapper';
 import queryString = require('query-string');
+import riot = require('riot');
 
 const ENTER_KEY = 13;
 

@@ -27,13 +27,10 @@ export class QueryWrapper {
   }
 
   wrapElement() {
-    const queryWrapper = document.createElement('span');
-    queryWrapper.classList.add('gb-query-wrapper');
     const saytNode = document.createElement('div');
     saytNode.classList.add('gb-sayt-target');
-    this.tag.root.parentNode.insertBefore(queryWrapper, this.tag.root);
-    queryWrapper.appendChild(this.tag.root);
-    queryWrapper.appendChild(saytNode);
+    (<Element>this.tag.root.parentNode).classList.add('gb-query-wrapper');
+    this.tag.root.parentNode.appendChild(saytNode);
     riot.mount(saytNode, 'gb-sayt', this.tag.parentOpts);
   }
 }

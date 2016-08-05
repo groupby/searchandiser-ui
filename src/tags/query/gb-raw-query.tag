@@ -10,6 +10,8 @@
       display: inline-block;
     }
     .gb-sayt-target {
+      top: 31px;
+      left: 0;
       z-index: 10;
       position: absolute;
       min-width: 175px;

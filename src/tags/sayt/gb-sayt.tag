@@ -82,8 +82,13 @@
       min-width: 300px;
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-around;
       align-items: center;
+      width: calc(86px * 4);
+      align-content: flex-start;
+    }
+
+    .gb-stylish .gb-sayt__products > * {
+      margin: 3px;
     }
 
     .gb-stylish .gb-sayt__products .gb-product__image {
