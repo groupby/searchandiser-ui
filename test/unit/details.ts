@@ -8,7 +8,8 @@ describe('gb-details logic', () => {
 
   beforeEach(() => details = Object.assign(new Details(), {
     flux: flux = new FluxCapacitor(''),
-    opts: { config: {} }
+    config: {},
+    opts: {}
   }));
 
   it('should have default values', () => {
@@ -23,7 +24,8 @@ describe('gb-details logic', () => {
   it('should allow override from opts', () => {
     const structure = { a: 'b', c: 'd' };
 
-    Object.assign(details.opts, { config: { structure }, idParam: 'productId' });
+    details.config.structure = structure;
+    details.opts.idParam = 'productId';
     details.init();
 
     expect(details.struct).to.eq(structure);

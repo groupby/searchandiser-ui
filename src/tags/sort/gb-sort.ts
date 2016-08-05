@@ -13,7 +13,7 @@ export class Sort {
 
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
-    this.options = checkNested(this.parentOpts.config, 'tags', 'sort', 'options') ? this.parentOpts.config.tags.sort.options
+    this.options = checkNested(this.config, 'tags', 'sort', 'options') ? this.config.tags.sort.options
       : this.parentOpts.options
       || [
         { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },

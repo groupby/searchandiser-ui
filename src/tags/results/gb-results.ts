@@ -13,7 +13,7 @@ export class Results {
   getPath: typeof getPath;
 
   init() {
-    this.struct = this.parent ? this.parent.struct : this.opts.config.structure;
+    this.struct = this.parent ? this.parent.struct : this.config.structure;
     this.getPath = getPath;
     this.flux.on(Events.RESULTS, ({ records }) => this.updateRecords(records));
   }

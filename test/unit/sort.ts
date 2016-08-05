@@ -39,7 +39,7 @@ describe('gb-sort logic', () => {
     });
 
     it('should allow override from tags config', () => {
-      Object.assign(sort.opts, { config: { tags: { sort: { options } } } });
+      sort.config = { tags: { sort: { options } } };
       sort.init();
 
       expect(sort.passthrough.options).to.eq(options);

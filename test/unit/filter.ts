@@ -9,13 +9,13 @@ describe('gb-filter logic', () => {
 
   beforeEach(() => filter = Object.assign(new Filter(), {
     flux: flux = new FluxCapacitor(''),
-    opts: { clone: () => fluxClone = new FluxCapacitor('') }
+    _clone: () => fluxClone = new FluxCapacitor(''),
+    opts: {}
   }));
 
   it('should have default values', () => {
     filter.init();
 
-    expect(filter.parentOpts).to.have.all.keys('clone');
     expect(filter.navField).to.not.be.ok;
     expect(filter.passthrough).to.be.ok;
     expect(filter.passthrough.hover).to.not.be.ok;
@@ -33,7 +33,7 @@ describe('gb-filter logic', () => {
     Object.assign(filter.opts, { label, clear, field, onHover });
     filter.init();
 
-    expect(filter.parentOpts).to.have.all.keys('clone', 'label', 'clear', 'field', 'onHover');
+    expect(filter.parentOpts).to.have.all.keys('label', 'clear', 'field', 'onHover');
     expect(filter.navField).to.eq(field);
     expect(filter.passthrough).to.be.ok;
     expect(filter.passthrough.hover).to.eq(onHover);

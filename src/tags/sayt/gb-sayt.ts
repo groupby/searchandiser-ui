@@ -28,18 +28,18 @@ export class Sayt {
   queries: any[];
 
   init() {
-    this.saytConfig = Object.assign({}, DEFAULT_CONFIG, this.opts.config.sayt);
+    this.saytConfig = Object.assign({}, DEFAULT_CONFIG, this.config.sayt);
     this.categoryField = this.saytConfig.categoryField;
-    this.struct = Object.assign({}, this.opts.config.structure, this.saytConfig.structure);
+    this.struct = Object.assign({}, this.config.structure, this.saytConfig.structure);
     this.searchUrl = this.opts.searchUrl || '/search';
     this.queryParam = this.opts.queryParam || 'q';
 
     sayt.configure({
-      subdomain: this.opts.config.customerId,
-      collection: this.saytConfig.collection || this.opts.config.collection,
+      subdomain: this.config.customerId,
+      collection: this.saytConfig.collection || this.config.collection,
       autocomplete: { numSearchTerms: this.saytConfig.queries },
       productSearch: {
-        area: this.saytConfig.area || this.opts.config.area,
+        area: this.saytConfig.area || this.config.area,
         numProducts: this.saytConfig.products
       }
     });

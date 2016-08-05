@@ -11,7 +11,10 @@ describe(`${TAG} tag`, () => {
     flux: FluxCapacitor;
 
   beforeEach(() => {
-    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
+    riot.mixin('test', {
+      flux: flux = new FluxCapacitor(''),
+      _clone: () => flux
+    });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -70,6 +73,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function mount() {
-    return <Filter>riot.mount(TAG, { clone: () => flux })[0];
+    return <Filter>riot.mount(TAG)[0];
   }
 });

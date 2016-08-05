@@ -13,7 +13,7 @@ export function initSearchandiser() {
   }
 }
 
-function initCapacitor(config: SearchandiserConfig) {
+export function initCapacitor(config: SearchandiserConfig) {
   if (config.pageSizes) config.pageSize = config.pageSizes[0];
   if (checkNested(config, 'tags', 'sort', 'options')) config.sort = config.tags.sort.options.map(val => val.value);
   return new FluxCapacitor(config.customerId, pluck(config, 'collection', 'area', 'language', 'pageSize', 'sort', 'fields'));
@@ -39,10 +39,6 @@ export class Searchandiser {
 
   search = (query?: string) => this.flux.search(query)
     .then(res => this.flux.emit(Events.PAGE_CHANGED, { pageIndex: 0, finalPage: this.flux.page.finalPage }));
-
-  style = () => this.config.stylish ? 'gb-stylish' : '';
-
-  clone = () => initCapacitor(Object.assign({}, this.config, { initialSearch: false }));
 }
 
 export type Component = 'query' |

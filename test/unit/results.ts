@@ -9,7 +9,8 @@ describe('gb-results logic', () => {
 
   beforeEach(() => results = Object.assign(new Results(), {
     flux: flux = new FluxCapacitor(''),
-    opts: { config: { structure } }
+    config: { structure },
+    opts: {}
   }));
 
   it('should have default values', () => {

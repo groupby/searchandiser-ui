@@ -11,7 +11,7 @@ export class PageSize {
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
     this.passthrough = Object.assign({}, this.parentOpts.__proto__, {
-      options: this.parentOpts.config.pageSizes || [10, 25, 50, 100],
+      options: this.config.pageSizes || [10, 25, 50, 100],
       hover: this.parentOpts.onHover,
       update: this.resize,
       default: true

@@ -8,13 +8,13 @@ describe('gb-page-size logic', () => {
 
   beforeEach(() => pageSize = Object.assign(new PageSize(), {
     flux: flux = new FluxCapacitor(''),
-    opts: { config: {} }
+    config: {},
+    opts: {}
   }));
 
   it('should have default values', () => {
     pageSize.init();
 
-    expect(pageSize.parentOpts).to.have.all.keys('config');
     expect(pageSize.passthrough).to.be.ok;
     expect(pageSize.passthrough.hover).to.not.be.ok;
     expect(pageSize.passthrough.update).to.eq(pageSize.resize);
@@ -26,10 +26,11 @@ describe('gb-page-size logic', () => {
     const pageSizes = [12, 24, 48],
       onHover = false;
 
-    Object.assign(pageSize.opts, { config: { pageSizes }, onHover });
+    pageSize.config.pageSizes = pageSizes;
+    pageSize.opts.onHover = onHover;
     pageSize.init();
 
-    expect(pageSize.parentOpts).to.have.all.keys('config', 'onHover');
+    expect(pageSize.parentOpts).to.have.all.keys('onHover');
     expect(pageSize.passthrough).to.be.ok;
     expect(pageSize.passthrough.options).to.eq(pageSizes);
     expect(pageSize.passthrough.hover).to.be.false;

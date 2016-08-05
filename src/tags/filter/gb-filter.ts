@@ -18,7 +18,7 @@ export class Filter {
     this.parentOpts = this.opts.passthrough || this.opts;
     this.navField = this.parentOpts.field;
 
-    this.fluxClone = this.parentOpts.clone();
+    this.fluxClone = this._clone();
 
     this.passthrough = Object.assign({}, this.parentOpts.__proto__, {
       hover: this.parentOpts.onHover,
