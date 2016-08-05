@@ -2,6 +2,7 @@ import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { updateLocation } from '../../utils';
 import { Autocomplete } from './autocomplete';
+import { findTag } from '../../utils';
 const sayt = require('sayt');
 
 const DEFAULT_CONFIG = {
@@ -44,7 +45,7 @@ export class Sayt {
       }
     });
 
-    this.on('before-mount', () => this.autocomplete = new Autocomplete(this.root, this.autocompleteList, this.notifier));
+    this.on('before-mount', () => this.autocomplete = new Autocomplete(this));
 
     this.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
       .then(({result}) => {
@@ -67,9 +68,13 @@ export class Sayt {
     }
   }
 
+  rewriteQuery(query: string) {
+    this.flux.emit(Events.REWRITE_QUERY, query);
+  }
+
   notifier(query) {
     if (this.saytConfig.autoSearch) this.searchProducts(query);
-    this.flux.emit(Events.REWRITE_QUERY, query);
+    this.rewriteQuery(query);
   }
 
   processResults(result) {
@@ -151,6 +156,8 @@ export class Sayt {
       return updateLocation(this.searchUrl, this.queryParam, node.getAttribute('data-value'), []);
     }
 
-    this.flux.reset(node.getAttribute('data-value'));
+    const query = node.getAttribute('data-value')
+    this.rewriteQuery(query)
+    this.flux.reset(query);
   }
 }
