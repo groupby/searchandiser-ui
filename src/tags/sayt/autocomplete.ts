@@ -1,3 +1,4 @@
+import { Sayt } from './gb-sayt';
 import { findTag } from '../../utils';
 
 const KEY_UP = 38;
@@ -15,7 +16,7 @@ export class Autocomplete {
   searchInput: HTMLInputElement;
   originalValue: string;
 
-  constructor(root: HTMLElement, public autocompleteList: HTMLUListElement, public notifier: (query: string) => void) {
+  constructor(public tag: Sayt) {
     this.selected = this.searchInput = <HTMLInputElement>findTag('gb-raw-query');
     this.searchInput.addEventListener('keydown', (event) => this.keyListener(event));
   }
@@ -25,7 +26,7 @@ export class Autocomplete {
   }
 
   keyListener(event: KeyboardEvent) {
-    const firstLink = this.autocompleteList.firstElementChild;
+    const firstLink = this.tag.autocompleteList.firstElementChild;
     switch (event.keyCode) {
       case KEY_UP:
         event.preventDefault();
@@ -74,14 +75,14 @@ export class Autocomplete {
     if (next) {
       this.removeActive();
       next.classList.add(ACTIVE);
-      if (next.firstElementChild) this.notifier(next.getAttribute(DATA_VALUE));
+      if (next.firstElementChild) this.tag.notifier(next.getAttribute(DATA_VALUE));
       return next;
     }
     return this.selected;
   }
 
   removeActive() {
-    Array.from(this.autocompleteList.getElementsByClassName('gb-autocomplete__item'))
+    Array.from(this.tag.autocompleteList.getElementsByClassName('gb-autocomplete__item'))
       .forEach(element => element.classList.remove('active'));
   }
 }
