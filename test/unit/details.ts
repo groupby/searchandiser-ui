@@ -17,18 +17,13 @@ describe('gb-details logic', () => {
 
     expect(details.idParam).to.eq('id');
     expect(details.query).to.not.be.ok;
-    expect(details.struct).to.not.be.ok;
     expect(details.getPath).to.be.a('function');
   });
 
   it('should allow override from opts', () => {
-    const structure = { a: 'b', c: 'd' };
-
-    details.config.structure = structure;
     details.opts.idParam = 'productId';
     details.init();
 
-    expect(details.struct).to.eq(structure);
     expect(details.idParam).to.eq('productId');
   });
 

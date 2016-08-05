@@ -22,19 +22,16 @@ describe('gb-product logic', () => {
   it('should inherit values from parent', () => {
     product.init();
 
-    expect(product.struct).to.eq(struct);
     expect(product.allMeta).to.eq(allMeta);
     expect(product.getPath).to.be.a('function');
   });
 
   it('should allow override from opts', () => {
-    const struct = { a: 'b', c: 'd' },
-      all_meta = { b: 'e', d: 'f' };
+    const all_meta = { b: 'e', d: 'f' };
 
-    product.opts = <any>{ struct, all_meta };
+    product.opts = <any>{ all_meta };
     product.init();
 
-    expect(product.struct).to.eq(struct);
     expect(product.allMeta).to.eq(all_meta);
   });
 

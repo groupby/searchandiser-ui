@@ -6,12 +6,15 @@ import '../../src/tags/results/gb-product.tag';
 const TAG = 'gb-product';
 
 describe(`${TAG} tag`, () => {
-  const struct = { title: 'title', price: 'price', image: 'image' },
+  const structure = { title: 'title', price: 'price', image: 'image' },
     all_meta = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
   let html: Element;
 
   beforeEach(() => {
-    riot.mixin('test', { flux: new FluxCapacitor('') });
+    riot.mixin('test', {
+      flux: new FluxCapacitor(''),
+      config: { structure }
+    });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -34,6 +37,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function mount() {
-    return <Product>riot.mount(TAG, { struct, all_meta })[0];
+    return <Product>riot.mount(TAG, { all_meta })[0];
   }
 });

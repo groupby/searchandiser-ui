@@ -16,16 +16,7 @@ describe('gb-results logic', () => {
   it('should have default values', () => {
     results.init();
 
-    expect(results.struct).to.eq(structure);
     expect(results.getPath).to.be.a('function');
-  });
-
-  it('should allow override from parent', () => {
-    const struct = { a: 'b', c: 'd' };
-    results.parent = <any>{ struct };
-    results.init();
-
-    expect(results.struct).to.eq(struct);
   });
 
   it('should listen for events', () => {

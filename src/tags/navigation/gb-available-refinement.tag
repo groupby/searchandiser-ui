@@ -9,7 +9,6 @@
 
   <script>
     import { AvailableRefinement } from './gb-refinement';
-    console.log(this);
     this.mixin(new AvailableRefinement().__proto__);
   </script>
 

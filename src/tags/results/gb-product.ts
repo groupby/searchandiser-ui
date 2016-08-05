@@ -2,7 +2,7 @@ import { FluxTag } from '../tag';
 import { getPath } from '../../utils';
 
 export interface Product extends FluxTag {
-  parent: Riot.Tag.Instance & { struct: any, allMeta: any };
+  parent: FluxTag & { struct: any, allMeta: any };
 }
 
 export class Product {
@@ -12,7 +12,7 @@ export class Product {
   getPath: typeof getPath;
 
   init() {
-    this.struct = this.opts.struct ? this.opts.struct : this.parent.struct;
+    this.struct = this.parent ? this.parent.struct : this.config.structure;
     this.allMeta = this.opts.all_meta ? this.opts.all_meta : this.parent.allMeta;
     this.getPath = getPath;
   }

@@ -29,7 +29,7 @@ export class Searchandiser {
   }
 
   attach = (tagName: Component, cssSelector: string = `.${tagName}`, options: any = {}, handler?: (tag) => void) => {
-    const tag = riot.mount(cssSelector, `gb-${tagName}`, Object.assign(options, this));
+    const tag = riot.mount(cssSelector, `gb-${tagName}`, options);
     if (handler && tag.length) handler(tag[0]);
   };
 

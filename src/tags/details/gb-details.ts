@@ -8,7 +8,6 @@ export class Details {
 
   idParam: string;
   query: string;
-  struct: any;
   record: any;
   getPath: typeof getPath;
 
@@ -16,7 +15,6 @@ export class Details {
     this.idParam = this.opts.idParam || 'id';
     this.query = getParam(this.idParam);
     this.getPath = getPath;
-    this.struct = this.config.structure;
     this.flux.on(Events.DETAILS, (record) => this.updateRecord(record));
     if (this.query) this.flux.details(this.query);
   }

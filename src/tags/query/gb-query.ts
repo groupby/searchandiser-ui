@@ -40,7 +40,7 @@ export class Query {
 
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
 
-    if (queryFromUrl) {
+    if (!this.config.initialSearch && queryFromUrl) {
       this.flux.query = queryFromUrl;
       this.flux.search(queryFromUrl.raw.query);
     }
