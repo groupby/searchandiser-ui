@@ -27,7 +27,7 @@ export class Query {
     this.searchUrl = this.parentOpts.searchUrl || 'search';
     this.staticSearch = unless(this.parentOpts.staticSearch, false);
 
-    const queryFromUrl = parseQueryFromLocation(this.queryParam, this.parentOpts.queryConfig);
+    const queryFromUrl = parseQueryFromLocation(this.queryParam, this.config);
 
     if (saytEnabled) new QueryWrapper(this).mount();
 

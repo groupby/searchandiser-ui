@@ -1,21 +1,19 @@
 import oget = require('oget');
 import { Query } from 'groupby-api';
+import { CONFIGURATION_MASK } from './searchandiser';
 import queryString = require('query-string');
+import filterObject = require('filter-object');
 
 export function findTag(tagName: string): Element {
   return document.querySelector(`[riot-tag="${tagName}"]`);
 }
 
 export function toRefinement(ref, nav) {
-  return Object.assign({}, pluck(ref, 'type', 'value', 'low', 'high'), { navigationName: nav.name });
+  return Object.assign({}, filterObject(ref, '{type,value,low,high}'), { navigationName: nav.name });
 }
 
 export function displayRefinement(ref) {
   return ref.type === 'Value' ? ref.value : `${ref.low} - ${ref.high}`;
-}
-
-export function pluck(obj: any, ...keys: string[]): any {
-  return keys.reduce((res, key) => obj[key] ? Object.assign(res, { [key]: obj[key] }) : res, {});
 }
 
 export function checkNested(obj: any, ...keys: string[]): boolean {
@@ -50,7 +48,8 @@ export function updateLocation(searchUrl: string, queryParamName: string, query:
 
 export function parseQueryFromLocation(queryParamName: string, queryConfig: any) {
   const queryParams = queryString.parse(location.search);
-  const queryFromUrl = new Query(queryParams[queryParamName] || '').withConfiguration(queryConfig);
+  const queryFromUrl = new Query(queryParams[queryParamName] || '')
+    .withConfiguration(queryConfig, CONFIGURATION_MASK);
 
   if (queryParams.refinements) {
     const refinements = JSON.parse(queryParams.refinements);
