@@ -1,5 +1,5 @@
 import { FluxTag } from '../tag';
-import { getPath } from '../../utils';
+import { getPath, unless } from '../../utils';
 
 export interface Product extends FluxTag {
   parent: FluxTag & { struct: any, allMeta: any };
@@ -10,11 +10,18 @@ export class Product {
   struct: any;
   allMeta: any;
   getPath: typeof getPath;
+  transform: (obj: any) => any;
 
   init() {
     this.struct = this.parent ? this.parent.struct : this.config.structure;
-    this.allMeta = this.opts.all_meta ? this.opts.all_meta : this.parent.allMeta;
+    this.allMeta = this.parent ? this.parent.allMeta : this.opts.all_meta;
+    this.transform = unless(this.struct._transform, (val) => val);
     this.getPath = getPath;
+    this.on('update', this.transformRecord);
+  }
+
+  transformRecord() {
+    this.allMeta = this.transform(this.allMeta);
   }
 
   link() {
