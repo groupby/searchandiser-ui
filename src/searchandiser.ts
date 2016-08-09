@@ -61,6 +61,9 @@ export interface SearchandiserConfig {
     sort?: {
       options?: any[]
     };
+    collections?: {
+      options?: string[]
+    };
   };
   stylish?: boolean;
   initialSearch?: boolean;

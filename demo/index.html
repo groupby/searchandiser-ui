@@ -17,7 +17,11 @@
     <!-- <button type="button" class="raw-submit">Search</button> -->
     <!-- <input type="button" class="raw-submit"> -->
     <div class="gb-bar">
-      <span class="breadcrumb-label">Results for:</span>
+      <span class="collections-label">Collections:</span>
+      <div class="collections"></div>
+    </div>
+    <div class="gb-bar">
+      <span class="breadcrumbs-label">Results for:</span>
       <div class="breadcrumbs"></div>
     </div>
     <div class="gb-bar">
@@ -131,6 +135,19 @@
         },
 
         tags: {
+          collections: {
+            options: [{
+              label: 'Products',
+              value: 'default'
+            }, {
+              label: 'Sales',
+              value: 'productsonsale'
+            }, {
+              label: 'Bigger Sales',
+              value: 'productsonsale10'
+            }]
+          },
+
           sort: {
             options: [{
               label: 'Relevance',
@@ -177,6 +194,7 @@
       //     }
       //   }]
       // });
+      searchandiser.attach('collections');
       searchandiser.attach('query', '.query', {
         // sayt: false,
         autoSearch: false,
