@@ -1,5 +1,6 @@
 import { FluxTag } from '../tag';
 import { getPath, unless } from '../../utils';
+import filterObject = require('filter-object');
 
 export interface Product extends FluxTag {
   parent: FluxTag & { struct: any, allMeta: any };
@@ -34,5 +35,15 @@ export class Product {
 
   image(imageObj: string | string[]) {
     return Array.isArray(imageObj) ? imageObj[0] : imageObj;
+  }
+
+  variant(index: number) {
+    const desiredFields = '{image,price,title}';
+    if (this.struct.variants) {
+      return filterObject(this.get(this.struct.variants)[index], desiredFields);
+    }
+    else {
+      return filterObject(this.allMeta, desiredFields);
+    }
   }
 }
