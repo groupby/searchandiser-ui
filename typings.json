@@ -3,7 +3,8 @@
   "version": false,
   "ambientDependencies": {},
   "dependencies": {
-    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958"
+    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958",
+    "filter-object": "registry:npm/filter-object#2.1.0+20160809052819"
   },
   "globalDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",

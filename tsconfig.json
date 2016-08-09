@@ -101,7 +101,6 @@
     "test/utils/raw-select.ts",
     "test/utils/select.ts",
     "custom_typings/debounce.d.ts",
-    "custom_typings/filter-object.d.ts",
     "custom_typings/oget.d.ts",
     "custom_typings/query-string.d.ts",
     "custom_typings/riot.d.ts",
