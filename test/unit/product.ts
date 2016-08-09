@@ -289,7 +289,7 @@ describe('gb-product logic', () => {
             price: '$3',
             image: 'image.bmp',
 
-            varieties: [{
+            variants: [{
               title: 'Green Shoes',
               price: '$1',
               image: 'image.tiff',
@@ -325,6 +325,77 @@ describe('gb-product logic', () => {
         image: 'image.bmp'
       });
       expect(p.variant(1)).to.be.null;
+    });
+
+    it('should vary only the specified fields over the variants', () => {
+      const p = Object.assign(new Product(), {
+        opts: {},
+        parent: {
+          struct: {
+            title: 'title',
+            price: 'price',
+            image: 'image',
+            url: 'url',
+            variants: 'varieties',
+          },
+          variantStruct: {
+            title: 'titre' // Title is named differently in the variants
+          },
+          allMeta: {
+            title: 'Orange Chili',
+            price: '$3',
+            image: 'image.bmp',
+
+            varieties: [{
+              titre: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            },
+            {
+              titre: 'Purple Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            },
+            {
+              titre: 'Green Moccasins',
+              price: '$2',
+              image: 'image.svg',
+              url: 'about:mozilla'
+            },
+            {
+              titre: 'Yellow Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            }]
+          }
+        }
+      });
+
+      p.init();
+
+      expect(p.variant(0)).to.be.eql({
+        title: 'Green Shoes',
+        price: '$3',
+        image: 'image.bmp'
+      });
+      expect(p.variant(0)).to.be.eql({
+        title: 'Purple Shoes',
+        price: '$3',
+        image: 'image.bmp'
+      });
+      expect(p.variant(0)).to.be.eql({
+        title: 'Green Moccasins',
+        price: '$3',
+        image: 'image.bmp'
+      });
+      expect(p.variant(0)).to.be.eql({
+        title: 'Yellow Shoes',
+        price: '$3',
+        image: 'image.bmp'
+      });
     });
   });
 });
