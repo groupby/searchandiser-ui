@@ -1,6 +1,6 @@
 import '../sayt/gb-sayt.tag';
 import { FluxTag } from '../tag';
-import { Events } from 'groupby-api';
+import { Events, Query as QueryModel } from 'groupby-api';
 import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
 import { QueryWrapper } from '../sayt/query-wrapper';
 import queryString = require('query-string');
@@ -18,20 +18,23 @@ export class Query {
   queryParam: string;
   searchUrl: string;
   staticSearch: string;
+  saytEnabled: boolean;
+  autoSearch: boolean;
+  queryFromUrl: QueryModel;
 
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
-    const saytEnabled = unless(this.parentOpts.sayt, true);
-    const autoSearch = unless(this.parentOpts.autoSearch, true);
     this.queryParam = this.parentOpts.queryParam || 'q';
     this.searchUrl = this.parentOpts.searchUrl || 'search';
+    this.saytEnabled = unless(this.parentOpts.sayt, true);
+    this.autoSearch = unless(this.parentOpts.autoSearch, true);
     this.staticSearch = unless(this.parentOpts.staticSearch, false);
 
-    const queryFromUrl = parseQueryFromLocation(this.queryParam, this.config);
+    this.queryFromUrl = parseQueryFromLocation(this.queryParam, this.config);
 
-    if (saytEnabled) new QueryWrapper(this).mount();
+    if (this.saytEnabled) new QueryWrapper(this).mount();
 
-    if (autoSearch) {
+    if (this.autoSearch) {
       this.on('before-mount', () => this.listenForInput(this.inputValue));
     } else if (this.staticSearch) {
       this.on('before-mount', () => this.listenForEnter(this.setLocation));
@@ -41,9 +44,9 @@ export class Query {
 
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
 
-    if (!this.config.initialSearch && queryFromUrl) {
-      this.flux.query = queryFromUrl;
-      this.flux.search(queryFromUrl.raw.query);
+    if (!this.config.initialSearch && this.queryFromUrl) {
+      this.flux.query = this.queryFromUrl;
+      this.flux.search(this.queryFromUrl.raw.query);
     }
   }
 
@@ -58,9 +61,9 @@ export class Query {
   private setLocation() {
     // Better way to do this is with browser history rewrites
     if (window.location.pathname !== this.searchUrl) {
-      updateLocation(this.searchUrl, this.queryParam, this.root.value, this.flux.query.raw.refinements);
+      updateLocation(this.searchUrl, this.queryParam, this.inputValue(), this.flux.query.raw.refinements);
     } else {
-      this.flux.reset(this.root.value);
+      this.flux.reset(this.inputValue());
     }
   }
 
