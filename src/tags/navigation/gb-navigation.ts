@@ -12,17 +12,21 @@ export class Navigation {
   init() {
     this.badge = unless(this.opts.badge, true);
     this.showSelected = unless(this.opts.showSelected, true);
-    this.flux.on(Events.RESULTS, (res: Results) => this.update({ processed: this.processNavigations(res) }));
+    this.flux.on(Events.RESULTS, this.updateNavigations);
   }
 
-  processNavigations(res: Results) {
-    return res.selectedNavigation
+  updateNavigations(res: Results) {
+    this.update({ processed: this.processNavigations(res) });
+  }
+
+  processNavigations({ selectedNavigation, availableNavigation }: Results) {
+    return selectedNavigation
       .map((nav: NavModel) => Object.assign(nav, { selected: true }))
-      .concat(res.availableNavigation)
+      .concat(availableNavigation)
       .reduce(this.combineNavigations, {});
   }
 
-  combineNavigations(processed: any, nav: SelectionNavigation) {
+  private combineNavigations(processed: any, nav: SelectionNavigation) {
     return Object.assign(processed, { [nav.name]: Object.assign(processed[nav.name] ? processed[nav.name] : nav, { [nav.selected ? 'selected' : 'available']: nav.refinements }) });
   }
 }
