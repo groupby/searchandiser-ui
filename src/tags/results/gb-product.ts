@@ -39,11 +39,29 @@ export class Product {
 
   variant(index: number) {
     const desiredFields = '{image,price,title}';
-    if (this.struct.variants) {
-      return filterObject(this.get(this.struct.variants)[index], desiredFields);
+    const isVariantsConfigured = this.struct.variants !== undefined;
+    if (isVariantsConfigured) {
+      const variantsArray: any[] = this.get(this.struct.variants);
+      if (variantsArray) {
+        const variant = variantsArray[index];
+        if (variant) {
+          return filterObject(variantsArray[index], desiredFields);
+        }
+        else {
+          return null;
+        }
+      }
+      else {
+        return null;
+      }
     }
     else {
-      return filterObject(this.allMeta, desiredFields);
+      if (index === 0) {
+        return filterObject(this.allMeta, desiredFields);
+      }
+      else {
+        return null;
+      }
     }
   }
 }

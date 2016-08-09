@@ -223,5 +223,108 @@ describe('gb-product logic', () => {
         image: 'image.tiff'
       });
     });
+
+    it('should return null if variants is not configured properly', () => {
+      const p = Object.assign(new Product(), {
+        opts: {},
+        parent: {
+          struct: {
+            title: 'title',
+            price: 'price',
+            image: 'image',
+            url: 'url',
+            variants: 'varieties' // The typo
+          },
+          allMeta: {
+            title: 'Orange Chili',
+            price: '$3',
+            image: 'image.bmp',
+
+            variants: [{
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            },
+            {
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            },
+            {
+              title: 'Green Moccasins',
+              price: '$2',
+              image: 'image.svg',
+              url: 'about:mozilla'
+            },
+            {
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            }]
+          }
+        }
+      });
+
+      p.init();
+
+      expect(p.variant(0)).to.be.null;
+      expect(p.variant(1)).to.be.null;
+    });
+
+    it('should ignore variants if variants is not configured', () => {
+      const p = Object.assign(new Product(), {
+        opts: {},
+        parent: {
+          struct: {
+            title: 'title',
+            price: 'price',
+            image: 'image',
+            url: 'url',
+          },
+          allMeta: {
+            title: 'Orange Chili',
+            price: '$3',
+            image: 'image.bmp',
+
+            varieties: [{
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            },
+            {
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            },
+            {
+              title: 'Green Moccasins',
+              price: '$2',
+              image: 'image.svg',
+              url: 'about:mozilla'
+            },
+            {
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            }]
+          }
+        }
+      });
+
+      p.init();
+
+      expect(p.variant(0)).to.be.eql({
+        title: 'Orange Chili',
+        price: '$3',
+        image: 'image.bmp'
+      });
+      expect(p.variant(1)).to.be.null;
+    });
   });
 });
