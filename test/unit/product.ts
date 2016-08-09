@@ -86,4 +86,140 @@ describe('gb-product logic', () => {
     expect(tag.image(images[1])).to.eq(images[1]);
     expect(tag.image(images)).to.eq(images[0]);
   });
+
+  describe('variant logic', () => {
+    it('should return the sole implicit variant', () => {
+      product.init();
+
+      expect(product.variant(0)).to.eql({
+        title: 'Red Sneakers',
+        price: '$12.45',
+        image: 'image.png'
+      });
+    });
+
+    it('should return the sole implicit variant', () => {
+      const p = Object.assign(new Product(), {
+        opts: {},
+        parent: {
+          struct: {
+            title: 'title',
+            price: 'price',
+            image: 'image',
+            url: 'url'
+          },
+          allMeta: {
+            title: 'Green Shoes',
+            price: '$1',
+            image: 'image.tiff',
+            url: 'about:blank'
+          }
+        }
+      });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'Green Shoes',
+        price: '$1',
+        image: 'image.tiff'
+      });
+    });
+
+
+    it('should return the sole explicit variant', () => {
+      const p = Object.assign(new Product(), {
+        opts: {},
+        parent: {
+          struct: {
+            title: 'title',
+            price: 'price',
+            image: 'image',
+            url: 'url',
+            variants: 'variants'
+          },
+          allMeta: {
+            variants: [{
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            }]
+          }
+        }
+      });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'Green Shoes',
+        price: '$1',
+        image: 'image.tiff'
+      });
+    });
+
+    it('should return a particular explicit variant', () => {
+      const p = Object.assign(new Product(), {
+        opts: {},
+        parent: {
+          struct: {
+            title: 'title',
+            price: 'price',
+            image: 'image',
+            url: 'url',
+            variants: 'variants'
+          },
+          allMeta: {
+            variants: [{
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            },
+            {
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            },
+            {
+              title: 'Green Moccasins',
+              price: '$2',
+              image: 'image.svg',
+              url: 'about:mozilla'
+            },
+            {
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            }]
+          }
+        }
+      });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'Green Shoes',
+        price: '$1',
+        image: 'image.tiff'
+      });
+      expect(p.variant(1)).to.eql({
+        title: 'Green Shoes',
+        price: '$1',
+        image: 'image.tiff'
+      });
+      expect(p.variant(2)).to.eql({
+        title: 'Green Moccasins',
+        price: '$2',
+        image: 'image.svg'
+      });
+      expect(p.variant(3)).to.eql({
+        title: 'Green Shoes',
+        price: '$1',
+        image: 'image.tiff'
+      });
+    });
+  });
 });
