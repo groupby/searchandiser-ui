@@ -6,7 +6,7 @@
   <script>
     this._scopeTo('gb-product');
     const _scope = this._scope;
-    this.imageLink = () => _scope.image(_scope.get(_scope.struct.image));
+    this.imageLink = () => _scope.image(_scope.currentVariant().image);
   </script>
 
   <style scoped>

@@ -11,7 +11,7 @@ describe(`${TAG} tag`, () => {
   let html: HTMLElement;
 
   beforeEach(() => {
-    mixinFlux();
+    mixinFlux({ config: { structure } });
     html = createTag(TAG);
   });
   afterEach(() => removeTag(html));

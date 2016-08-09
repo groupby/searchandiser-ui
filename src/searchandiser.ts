@@ -69,6 +69,8 @@ export interface ProductStructure {
   title?: string;
   image?: string;
   description?: string;
+  url?: string;
+  variants?: string;
   _transform?: (original: any) => any;
 }
 
@@ -103,4 +105,5 @@ export interface SearchandiserConfig {
   stylish?: boolean;
   initialSearch?: boolean;
   structure?: ProductStructure;
+  variantStructure?: ProductStructure;
 }
