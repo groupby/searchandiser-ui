@@ -9,10 +9,8 @@
       </li>
       <div if={ queries && categoryResults.length } class="gb-autocomplete__divider"></div>
       <li class="gb-autocomplete__item" each={ queries } data-value={ value }>
-        <gb-autocomplete-link>
-          <!-- { saytConfig.highlight ? value.replace(originalQuery, '<b>$&</b>') : value } -->
-          
-            <gb-raw content={ value.replace(parent.originalQuery, '<b>$&</b>') }></gb-raw>
+        <gb-autocomplete-link send={ search }>
+            <gb-raw content={ _scope.saytConfig.highlight ? value.replace(_scope.originalQuery, '<b>$&</b>') : value }></gb-raw>
         </gb-autocomplete-link>
       </li>
       <div if={ queries && navigations } class="gb-autocomplete__divider"></div>

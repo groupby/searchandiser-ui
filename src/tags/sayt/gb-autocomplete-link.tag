@@ -1,9 +1,9 @@
 <gb-autocomplete-link>
-  <a class="gb-autocomplete__link" href="#" onclick={ parent.search }>
+  <a class="gb-autocomplete__link" onclick={ opts.send }>
     <yield/>
   </a>
 
   <script>
-    console.log(this);
+    this._scope = this._parents['gb-sayt'];
   </script>
 </gb-autocomplete-link>

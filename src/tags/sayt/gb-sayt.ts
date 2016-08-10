@@ -26,10 +26,8 @@ export class Sayt {
   originalQuery: string;
   searchUrl: string;
   queries: any[];
-  tagName: string;
 
   init() {
-    this.tagName = 'gb-sayt';
     this.saytConfig = Object.assign({}, DEFAULT_CONFIG, getPath(this.config, 'tags.sayt'));
     this.categoryField = this.saytConfig.categoryField;
     this.struct = Object.assign({}, this.config.structure, this.saytConfig.structure);
