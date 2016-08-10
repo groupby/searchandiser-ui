@@ -1,5 +1,5 @@
 <gb-list>
-  <ul class={ _style }>
+  <ul class="{ _style } { inline: 'inline' in opts }">
     <li each={ item, i in opts.items } class={ active: isActive(i) }>
       <yield/>
     </li>
@@ -12,8 +12,10 @@
       padding: 0;
     }
     gb-list > ul.gb-stylish > li {
-      display: inline-block;
       margin: 0 10px;
+    }
+    gb-list > ul.gb-stylish.inline > li {
+      display: inline-block;
     }
     gb-list > ul.gb-stylish a {
       color: #888;

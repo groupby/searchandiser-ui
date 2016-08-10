@@ -95,6 +95,16 @@ export class Query {
     this.searchBox.addEventListener('keydown', (event: KeyboardEvent) => {
       switch (event.keyCode) {
         case ENTER_KEY:
+          if (this.tags['gb-sayt']) {
+            const autocomplete = this.tags['gb-sayt'].autocomplete;
+            const selected = autocomplete.selected
+            if (this.searchBox !== selected) {
+              (<HTMLElement>selected.firstElementChild).click();
+              autocomplete.removeActive();
+              autocomplete.reset();
+              return;
+            }
+          }
           this.flux.emit('autocomplete:hide');
           return cb();
       }
