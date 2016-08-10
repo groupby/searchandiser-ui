@@ -1,6 +1,6 @@
 <gb-collections>
   <yield>
-    <gb-list class="gb-collections { _style }" items={ collections } if={ !dropdown }>
+    <gb-list class="gb-collections { _style }" items={ collections } if={ !dropdown } inline>
       <gb-collection-item></gb-collection-item>
     </gb-list>
     <gb-select if={ dropdown }>

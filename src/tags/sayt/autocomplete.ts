@@ -1,5 +1,6 @@
 import { Sayt } from './gb-sayt';
 import { findSearchBox } from '../../utils';
+import { FluxTag } from '../tag';
 
 const KEY_UP = 38;
 const KEY_DOWN = 40;
@@ -14,75 +15,70 @@ export class Autocomplete {
 
   selected: HTMLElement;
   searchInput: HTMLInputElement;
-  originalValue: string;
+  preautocompleteValue: string;
 
   constructor(public tag: Sayt) {
     this.selected = this.searchInput = findSearchBox();
-    this.searchInput.addEventListener('keydown', (event) => this.keyListener(event));
   }
 
-  reset() {
-    this.selected = this.searchInput;
+  selectFirstLink() {
+    this.selected = this.swap(<HTMLElement>this.tag.root.querySelector('gb-sayt-autocomplete gb-sayt-link'));
   }
 
-  keyListener(event: KeyboardEvent) {
-    const firstLink = this.tag.autocompleteList.firstElementChild;
-    switch (event.keyCode) {
-      case KEY_UP:
-        event.preventDefault();
-        if (this.selected === firstLink) {
-          this.searchInput.value = this.originalValue;
-          this.selected = this.swap(this.searchInput);
-        } else {
-          let nextNode = this.selected.previousElementSibling;
-          if (nextNode && nextNode.tagName) {
-            while (nextNode.tagName !== ITEM_TAG) {
-              nextNode = nextNode.previousElementSibling;
-            }
-          }
-          this.selected = this.swap(<HTMLElement>nextNode);
-        }
-        break;
-      case KEY_DOWN:
-        if (this.selected === this.searchInput) {
-          this.originalValue = this.searchInput.value;
-          this.selected = this.swap(<HTMLElement>firstLink);
-        } else {
-          let nextNode = this.selected.nextElementSibling;
-          if (nextNode && nextNode.tagName) {
-            while (nextNode.tagName !== ITEM_TAG) {
-              nextNode = nextNode.nextElementSibling;
-            }
-          }
-          this.selected = this.swap(<HTMLElement>nextNode);
-        }
-        break;
-      case KEY_ENTER:
-        if (this.selected !== this.searchInput) {
-          (<HTMLElement>this.selected.firstElementChild).click();
-          this.removeActive();
-          this.reset();
-        }
-        break;
-      default:
-        this.removeActive();
-        this.reset();
-        break;
-    }
+  getOneAbove(): HTMLElement {
+    const links = this.links();
+    const i = links.indexOf(this.selected);
+    return <HTMLElement>links[i - 1];
   }
+
+  getOneBelow(): HTMLElement {
+    const links = this.links();
+    const i = links.indexOf(this.selected);
+    return <HTMLElement>links[i + 1];
+  }
+
+  selectOneAbove() {
+    let link = this.getOneAbove();
+    if (link) this.selected = this.swap(link);
+  }
+
+  selectOneBelow() {
+    let link = this.getOneBelow();
+    if (link) this.selected = this.swap(link);
+  }
+
+  links() {
+    return Array.from((<FluxTag>this.tag).root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'));
+  }
+
+  isSelectedInAutocomplete() {
+    const links = Array.from((<FluxTag>this.tag).root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'));
+    return links.indexOf(this.selected) !== -1;
+  }
+
 
   swap(next: HTMLElement) {
     if (next) {
-      this.removeActive();
+      this.removeActiveClass();
       next.classList.add(ACTIVE);
-      if (next.firstElementChild) this.tag.notifier(next.getAttribute(DATA_VALUE));
+      if (next.dataset['value']) this.tag.notifier(next.dataset['value']);
       return next;
     }
     return this.selected;
   }
 
-  removeActive() {
-    Array.from(this.tag.autocompleteList.getElementsByClassName('gb-autocomplete__item'))
+
+  resetSelected() {
+    this.selected = this.searchInput;
+  }
+
+  removeActiveClass() {
+    Array.from(this.tag.root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'))
       .forEach(element => element.classList.remove('active'));
+  }
+
+  reset() {
+    this.removeActiveClass();
+    this.resetSelected();
   }
 }

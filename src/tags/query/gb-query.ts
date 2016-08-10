@@ -1,12 +1,14 @@
 import '../sayt/gb-sayt.tag';
 import { FluxTag } from '../tag';
 import { Events, Query as QueryModel } from 'groupby-api';
-import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
+import { unless, updateLocation, parseQueryFromLocation, findTag } from '../../utils';
 import { Sayt } from '../sayt/gb-sayt';
 import queryString = require('query-string');
 import riot = require('riot');
 
-const ENTER_KEY = 13;
+const KEY_UP = 38;
+const KEY_DOWN = 40;
+const KEY_ENTER = 13;
 
 export interface Query extends FluxTag {
   root: HTMLInputElement;
@@ -22,6 +24,7 @@ export class Query {
   autoSearch: boolean;
   queryFromUrl: QueryModel;
   searchBox: HTMLInputElement;
+  enterKeyHandlers: Function[];
 
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
@@ -33,8 +36,11 @@ export class Query {
 
     this.queryFromUrl = parseQueryFromLocation(this.queryParam, this.config);
 
+    this.enterKeyHandlers = [];
+
     this.on('mount', () => {
       this.searchBox = this.findSearchBox();
+      this.searchBox.addEventListener('keydown', this.keydownListener);
       if (this.saytEnabled) Sayt.listenForInput(this)
     });
 
@@ -84,20 +90,58 @@ export class Query {
   }
 
   listenForSubmit() {
-    this.onPressEnter(() => this.flux.reset(this.inputValue()));
+    this.enterKeyHandlers.push(() => this.flux.reset(this.inputValue()));
   }
 
   listenForStaticSearch() {
-    this.onPressEnter(this.setLocation);
+    this.enterKeyHandlers.push(this.setLocation);
   }
 
-  onPressEnter(cb: () => void) {
-    this.searchBox.addEventListener('keydown', (event: KeyboardEvent) => {
+  keydownListener(event: KeyboardEvent) {
+    let autocomplete = null;
+    if (findTag('gb-sayt')) {
+      autocomplete = (<Sayt>findTag('gb-sayt')['_tag']).autocomplete;
+    }
+
+    if (autocomplete && autocomplete.isSelectedInAutocomplete()) {
       switch (event.keyCode) {
-        case ENTER_KEY:
-          this.flux.emit('autocomplete:hide');
-          return cb();
+        case KEY_UP:
+          // Prevent cursor from moving to front of text box
+          event.preventDefault();
+
+          if (autocomplete.getOneAbove()) {
+            autocomplete.selectOneAbove();
+          } else {
+            this.rewriteQuery(autocomplete.preautocompleteValue);
+            autocomplete.reset();
+          }
+          break;
+        case KEY_DOWN:
+          autocomplete.selectOneBelow();
+          break;
+        case KEY_ENTER:
+          autocomplete.selected.querySelector('a').click();
+          autocomplete.reset();
+          break;
       }
-    });
+    } else {
+      switch (event.keyCode) {
+        case KEY_UP:
+          if (autocomplete) {
+            this.flux.emit('autocomplete:hide');
+          }
+          break;
+        case KEY_DOWN:
+          if (autocomplete) {
+            autocomplete.preautocompleteValue = this.searchBox.value;
+            autocomplete.selectFirstLink();
+            // this.flux.emit('autocomplete');
+          }
+          break;
+        case KEY_ENTER:
+          this.enterKeyHandlers.forEach((f) => f());
+          break;
+      }
+    }
   }
 }
