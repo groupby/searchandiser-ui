@@ -16,23 +16,48 @@ describe('gb-product logic', () => {
 
   beforeEach(() => product = Object.assign(new Product(), {
     opts: {},
-    parent: { struct, allMeta }
+    parent: { struct, allMeta },
+    on: () => null
   }));
 
   it('should inherit values from parent', () => {
     product.init();
 
+    expect(product.struct).to.eq(struct);
     expect(product.allMeta).to.eq(allMeta);
+    expect(product.transform).to.be.a('function');
     expect(product.getPath).to.be.a('function');
   });
 
-  it('should allow override from opts', () => {
+  it('should allow default from config and opts', () => {
+    const transform = () => null;
+    const struct = { b: 'e', d: 'f', _transform: transform };
     const all_meta = { b: 'e', d: 'f' };
 
+    product.parent = null;
+    product.config = <any>{ structure: struct };
     product.opts = <any>{ all_meta };
     product.init();
 
+    expect(product.struct).to.eq(struct);
+    expect(product.transform).to.eq(transform);
     expect(product.allMeta).to.eq(all_meta);
+  });
+
+  it('should listen for update', () => {
+    product.on = (event: string, cb: Function) => {
+      expect(event).to.eq('update');
+      expect(cb).to.eq(product.transformRecord);
+    };
+    product.init();
+  });
+
+  it('should perform transformation', () => {
+    product.allMeta = { a: 'b', c: 'd' };
+    product.transform = (obj) => Object.assign(obj, { e: 'f' });
+
+    product.transformRecord();
+    expect(product.allMeta.e).to.eq('f');
   });
 
   it('should return product url', () => {

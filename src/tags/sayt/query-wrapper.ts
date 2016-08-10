@@ -13,8 +13,8 @@ export class QueryWrapper {
   initializeSayt() {
     const root = <HTMLInputElement>this.tag.root;
     root.autocomplete = 'off';
-    const minimumCharacters = this.tag.config.sayt.minimumCharacters || 1;
-    const delay = this.tag.config.sayt.delay || 0;
+    const minimumCharacters = this.tag.config.tags.sayt.minimumCharacters || 1;
+    const delay = this.tag.config.tags.sayt.delay || 0;
     const debouncedSearch = debounce(() => {
       if (root.value.length >= minimumCharacters) {
         this.tag.flux.emit('autocomplete', root.value);

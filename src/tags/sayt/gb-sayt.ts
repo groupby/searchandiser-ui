@@ -1,8 +1,7 @@
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
-import { updateLocation } from '../../utils';
 import { Autocomplete } from './autocomplete';
-import { findTag } from '../../utils';
+import { findTag, getPath, updateLocation } from '../../utils';
 const sayt = require('sayt');
 
 const DEFAULT_CONFIG = {
@@ -29,7 +28,7 @@ export class Sayt {
   queries: any[];
 
   init() {
-    this.saytConfig = Object.assign({}, DEFAULT_CONFIG, this.config.sayt);
+    this.saytConfig = Object.assign({}, DEFAULT_CONFIG, getPath(this.config, 'tags.sayt'));
     this.categoryField = this.saytConfig.categoryField;
     this.struct = Object.assign({}, this.config.structure, this.saytConfig.structure);
     this.searchUrl = this.opts.searchUrl || '/search';

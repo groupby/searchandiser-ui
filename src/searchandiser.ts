@@ -49,8 +49,15 @@ export type Component = 'query' |
   'results' |
   'template';
 
+export interface ProductStructure {
+  title?: string;
+  image?: string;
+  description?: string;
+  _transform?: (original: any) => any;
+}
+
 export interface SearchandiserConfig {
-  customerId: string,
+  customerId: string;
   area?: string;
   collection?: string;
   language?: string;
@@ -59,7 +66,19 @@ export interface SearchandiserConfig {
   sort?: Sort[];
   tags: {
     sort?: {
-      options?: any[]
+      options?: any[];
+    };
+    sayt?: {
+      structure?: ProductStructure;
+      products?: number;
+      queries?: number;
+      autoSearch?: boolean;
+      highlight?: boolean;
+      categoryField?: string;
+      navigationNames?: any;
+      allowedNavigations?: string[];
+      minimumCharacters?: number;
+      delay?: number;
     };
     collections?: {
       options?: string[]
@@ -67,12 +86,5 @@ export interface SearchandiserConfig {
   };
   stylish?: boolean;
   initialSearch?: boolean;
-
-  structure?: {
-    title?: string;
-    imagePrefix?: string;
-    image?: string;
-    imageSuffix?: string;
-    description?: string;
-  };
+  structure?: ProductStructure;
 }
