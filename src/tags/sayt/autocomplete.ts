@@ -26,35 +26,30 @@ export class Autocomplete {
   }
 
   keyListener(event: KeyboardEvent) {
-    const firstLink = this.tag.autocompleteList.firstElementChild;
+    const links = Array.from(this.tag.root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'));
+    const i = links.indexOf(this.selected);
     switch (event.keyCode) {
-      case KEY_UP:
-        event.preventDefault();
-        if (this.selected === firstLink) {
-          this.searchInput.value = this.originalValue;
-          this.selected = this.swap(this.searchInput);
-        } else {
-          let nextNode = this.selected.previousElementSibling;
-          if (nextNode && nextNode.tagName) {
-            while (nextNode.tagName !== ITEM_TAG) {
-              nextNode = nextNode.previousElementSibling;
-            }
-          }
-          this.selected = this.swap(<HTMLElement>nextNode);
-        }
-        break;
       case KEY_DOWN:
         if (this.selected === this.searchInput) {
           this.originalValue = this.searchInput.value;
-          this.selected = this.swap(<HTMLElement>firstLink);
+          this.selected = this.swap(<HTMLElement>links[0]);
         } else {
-          let nextNode = this.selected.nextElementSibling;
-          if (nextNode && nextNode.tagName) {
-            while (nextNode.tagName !== ITEM_TAG) {
-              nextNode = nextNode.nextElementSibling;
-            }
+          const nodeBelow = links[i + 1];
+          if (nodeBelow) {
+            this.selected = this.swap(<HTMLElement>nodeBelow);
           }
-          this.selected = this.swap(<HTMLElement>nextNode);
+        }
+        break;
+      case KEY_UP:
+        event.preventDefault();
+        if (this.selected === links[0]) {
+          this.searchInput.value = this.originalValue;
+          this.selected = this.swap(this.searchInput);
+        } else {
+          const nodeAbove = links[i - 1];
+          if (nodeAbove) {
+            this.selected = this.swap(<HTMLElement>nodeAbove);
+          }
         }
         break;
       case KEY_ENTER:
@@ -75,14 +70,14 @@ export class Autocomplete {
     if (next) {
       this.removeActive();
       next.classList.add(ACTIVE);
-      if (next.firstElementChild) this.tag.notifier(next.getAttribute(DATA_VALUE));
+      if (next.getAttribute(DATA_VALUE)) this.tag.notifier(next.getAttribute(DATA_VALUE));
       return next;
     }
     return this.selected;
   }
 
   removeActive() {
-    Array.from(this.tag.autocompleteList.getElementsByClassName('gb-autocomplete__item'))
+    Array.from(this.tag.root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'))
       .forEach(element => element.classList.remove('active'));
   }
 }

@@ -83,6 +83,7 @@
     "clone": "^1.0.2",
     "debounce": "^1.0.0",
     "es6-promise": "^3.2.1",
+    "escape-string-regexp": "^1.0.5",
     "filter-object": "^2.1.0",
     "groupby-api": "^1.0.56",
     "oget": "^1.0.6",

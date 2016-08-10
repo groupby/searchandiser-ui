@@ -4,6 +4,7 @@ import { Autocomplete } from './autocomplete';
 import { Query } from '../query/gb-query';
 import { findTag, getPath, updateLocation } from '../../utils';
 import debounce = require('debounce');
+import escapeStringRegexp = require('escape-string-regexp');
 const sayt = require('sayt');
 
 const DEFAULT_CONFIG = {
@@ -120,8 +121,8 @@ export class Sayt {
     this.refine(event.target, this.originalQuery);
   }
 
-  enhanceQuery(query) {
-    return this.saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
+  highlightCurrentQuery(value: string, regexReplacement: string) {
+    return this.saytConfig.highlight ? value.replace(new RegExp(escapeStringRegexp(this.originalQuery), 'i'), regexReplacement) : value;
   }
 
   enhanceCategoryQuery(query) {
@@ -133,34 +134,34 @@ export class Sayt {
   }
 
   refine(node, query) {
-    while (node.tagName !== 'LI') node = node.parentNode;
+    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
 
     if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
       return updateLocation(this.opts.searchUrl || '/search', this.opts.queryParam || 'q', query, [
         {
-          navigationName: node.getAttribute('data-field'),
+          navigationName: node.dataset['field'],
           type: 'Value',
-          value: node.getAttribute('data-refinement')
+          value: node.dataset['refinement']
         }
       ]);
     }
 
     this.flux.refine({
-      navigationName: node.getAttribute('data-field'),
+      navigationName: node.dataset['field'],
       type: 'Value',
-      value: node.getAttribute('data-refinement')
+      value: node.dataset['refinement']
     }).then(() => this.flux.rewrite(query))
   }
 
   search(event) {
     let node = event.target;
-    while (node.tagName !== 'LI') node = node.parentNode;
+    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
 
     if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.searchUrl, this.queryParam, node.getAttribute('data-value'), []);
+      return updateLocation(this.searchUrl, this.queryParam, node.dataset['value'], []);
     }
 
-    const query = node.getAttribute('data-value')
+    const query = node.dataset['value']
     this.rewriteQuery(query)
     this.flux.reset(query);
   }
