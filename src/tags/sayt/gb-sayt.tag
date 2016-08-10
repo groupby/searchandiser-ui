@@ -9,9 +9,11 @@
       </li>
       <div if={ queries && categoryResults.length } class="gb-autocomplete__divider"></div>
       <li class="gb-autocomplete__item" each={ queries } data-value={ value }>
-        <a class="gb-autocomplete__link" href="#" onclick={ search }>
-          <gb-raw content={ enhanceQuery(value) }></gb-raw>
-        </a>
+        <gb-autocomplete-link>
+          <!-- { saytConfig.highlight ? value.replace(originalQuery, '<b>$&</b>') : value } -->
+          
+            <gb-raw content={ value.replace(parent.originalQuery, '<b>$&</b>') }></gb-raw>
+        </gb-autocomplete-link>
       </li>
       <div if={ queries && navigations } class="gb-autocomplete__divider"></div>
       <div each={ navigations }>
@@ -34,6 +36,7 @@
   <script>
     import '../raw/gb-raw.tag';
     import '../results/gb-product.tag';
+    import './gb-autocomplete-link.tag';
     import { Sayt } from './gb-sayt';
     this.mixin(new Sayt().__proto__);
   </script>

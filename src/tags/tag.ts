@@ -14,6 +14,13 @@ export interface FluxTag extends Riot.Tag.Instance {
 
 export function RootTag(flux: FluxCapacitor, config: any) {
   return {
+    init() {
+      if (this.tagName) console.log(this);
+      this._parents = this.parent ? Object.assign({}, this.parent._parents) : {};
+      if (this.tagName) {
+        this._parents[this.tagName] = this;
+      }
+    },
     flux, config,
     _style: config.stylish ? 'gb-stylish' : '',
     init() {
