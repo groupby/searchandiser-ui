@@ -1,7 +1,6 @@
 <gb-list>
   <ul class={ _style }>
     <li each={ item in opts.items } class={ active: opts.activation(item) }>
-      <yield from="content"/>
       <yield/>
     </li>
   </ul>
