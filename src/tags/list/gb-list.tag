@@ -5,13 +5,11 @@
     </li>
   </ul>
 
-  <script>
-    this._scope = this._parents ? this._parents[opts.scope] : {};
-  </script>
-
   <style>
     gb-list > ul.gb-stylish {
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
     gb-list > ul.gb-stylish > li {
       display: inline-block;

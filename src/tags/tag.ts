@@ -7,6 +7,7 @@ export interface FluxTag extends Riot.Tag.Instance {
   config: any;
   _style: string;
   _parents: any;
+  _scope: FluxTag;
 
   _clone: () => FluxCapacitor;
 }
@@ -17,6 +18,7 @@ export function RootTag(flux: FluxCapacitor, config: any) {
     _style: config.stylish ? 'gb-stylish' : '',
     init() {
       setParents(this);
+      setScope(this);
     },
     _clone: () => initCapacitor(Object.assign({}, config, { initialSearch: false })),
     findParent: (tag: Riot.Tag.Instance, name: string) => {
@@ -35,4 +37,8 @@ export function setParents(tag: FluxTag) {
 
   tag._parents = tag.parent ? Object.assign({}, tag.parent['_parents']) : {};
   if (tagName) tag._parents[tagName] = tag;
+}
+
+export function setScope(tag: FluxTag) {
+  if (tag.opts.scope in tag._parents) tag._scope = tag._parents[tag.opts.scope];
 }

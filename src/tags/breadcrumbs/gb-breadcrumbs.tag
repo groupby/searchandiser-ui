@@ -1,11 +1,13 @@
 <gb-breadcrumbs>
   <yield>
-    <div class="gb-query-crumb" if={ !hideQuery && originalQuery }>{ originalQuery }</div>
-    <gb-list class="gb-breadcrumbs { _style }" items={ selected } when={ !hideRefinements } scope="gb-breadcrumbs">
-      <gb-list class="gb-navigation-crumb" items={ item.refinements } scope="gb-breadcrumbs">
-        <gb-refinement-crumb navigation={ parent.item }></gb-refinement-crumb>
+    <div class="gb-breadcrumbs { _style }">
+      <div class="gb-query-crumb" if={ !hideQuery && originalQuery }>{ originalQuery }</div>
+      <gb-list items={ selected } when={ !hideRefinements }>
+        <gb-list class="gb-navigation-crumb" items={ item.refinements }>
+          <gb-refinement-crumb nav={ parent.item } ref={ item } scope="gb-breadcrumbs"></gb-refinement-crumb>
+        </gb-list>
       </gb-list>
-    </gb-list>
+    </div>
   </yield>
 
   <script>
@@ -18,10 +20,8 @@
   <style scoped>
     .gb-stylish.gb-breadcrumbs {
       display: flex;
-      margin: 0;
-      padding: 0;
-      list-style: none;
       justify-content: flex-start;
+      align-items: baseline;
     }
   </style>
 </gb-breadcrumbs>

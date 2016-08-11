@@ -1,14 +1,12 @@
 <gb-collections>
   <yield>
-    <gb-list class="gb-collections { _style }" items={ collections } scope="gb-collections">
-      <a class="gb-collection" onclick={ _scope.switchCollection } data-collection={ item }>
-        <span class="gb-collection__name">{ _scope.labels[item] || item }</span>
-        <span if={ _scope.fetchCounts } class="gb-collection__count">{ _scope.counts[item] }</span>
-      </a>
+    <gb-list class="gb-collections { _style }" items={ collections }>
+      <gb-collection-item item={ item } scope="gb-collections"></gb-collection-item>
     </gb-list>
   </yield>
 
   <script>
+    import './gb-collection-item.tag';
     import '../list/gb-list.tag';
     import { Collections } from './gb-collections';
     this.mixin(new Collections().__proto__);

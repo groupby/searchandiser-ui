@@ -1,8 +1,9 @@
 <gb-refinement-crumb>
-  <a onclick={ _scope.remove }>&times;</a> <b>{ opts.navigation.displayName }: { toView(item) }</b>
+  <a onclick={ remove }>&times;</a> <b>{ nav.displayName }: { _scope.toView(ref) }</b>
 
   <script>
-    import { RefinementCrumb } from './gb-refinement-crumb';
-    this.mixin(new RefinementCrumb().__proto__);
+    this.remove = () => this._scope.remove(opts.ref, opts.nav);
+    this.nav = opts.nav;
+    this.ref = opts.ref;
   </script>
 </gb-refinement-crumb>
