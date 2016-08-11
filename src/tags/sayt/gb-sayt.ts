@@ -115,8 +115,8 @@ export class Sayt {
     this.refine(event.target, this.originalQuery);
   }
 
-  enhanceQuery(query) {
-    return this.saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
+  highlightCurrentQuery(value: string, regexReplacement: string) {
+    return this.saytConfig.highlight ? value.replace(new RegExp(this.originalQuery, 'i'), regexReplacement) : value;
   }
 
   enhanceCategoryQuery(query) {

@@ -10,7 +10,7 @@
       <div if={ queries && categoryResults.length } class="gb-autocomplete__divider"></div>
       <li class="gb-autocomplete__item" each={ queries } data-value={ value }>
         <gb-autocomplete-link send={ search }>
-            <gb-raw content={ _scope.saytConfig.highlight ? value.replace(_scope.originalQuery, '<b>$&</b>') : value }></gb-raw>
+            <gb-raw content={ _scope.highlightCurrentQuery(value, '<b>$&</b>') }></gb-raw>
         </gb-autocomplete-link>
       </li>
       <div if={ queries && navigations } class="gb-autocomplete__divider"></div>
@@ -18,9 +18,9 @@
         <h4 class="gb-navigation__title">{ displayName }</h4>
         <li class="gb-autocomplete__item" each={ value in values } data-value="{ displayName }: { value }"
             data-refinement={ value } data-field={ name }>
-          <a class="gb-autocomplete__link" href="#" onclick={ searchRefinement }>
-            <gb-raw content="{ enhanceQuery(value) }"></gb-raw>
-          </a>
+          <gb-autocomplete-link send={ searchRefinement }>
+            <gb-raw content="{ _scope.highlightCurrentQuery(value, '<b>$&</b>') }"></gb-raw>
+          </gb-autocomplete-link>
         </li>
       </div>
     </ul>
