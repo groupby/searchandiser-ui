@@ -128,34 +128,34 @@ export class Sayt {
   }
 
   refine(node, query) {
-    while (node.tagName !== 'LI') node = node.parentNode;
+    while (node.tagName !== 'GB-AUTOCOMPLETE-LINK') node = node.parentNode;
 
     if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
       return updateLocation(this.opts.searchUrl || '/search', this.opts.queryParam || 'q', query, [
         {
-          navigationName: node.getAttribute('data-field'),
+          navigationName: node.dataset['field'],
           type: 'Value',
-          value: node.getAttribute('data-refinement')
+          value: node.dataset['refinement']
         }
       ]);
     }
 
     this.flux.refine({
-      navigationName: node.getAttribute('data-field'),
+      navigationName: node.dataset['field'],
       type: 'Value',
-      value: node.getAttribute('data-refinement')
+      value: node.dataset['refinement']
     }).then(() => this.flux.rewrite(query))
   }
 
   search(event) {
     let node = event.target;
-    while (node.tagName !== 'LI') node = node.parentNode;
+    while (node.tagName !== 'GB-AUTOCOMPLETE-LINK') node = node.parentNode;
 
     if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.searchUrl, this.queryParam, node.getAttribute('data-value'), []);
+      return updateLocation(this.searchUrl, this.queryParam, node.dataset['value'], []);
     }
 
-    const query = node.getAttribute('data-value')
+    const query = node.dataset['value']
     this.rewriteQuery(query)
     this.flux.reset(query);
   }
