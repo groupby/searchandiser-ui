@@ -1,4 +1,5 @@
 import { FluxCapacitor, Events } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Paging } from '../../src/tags/paging/gb-paging';
 import { expect } from 'chai';
 
@@ -13,31 +14,29 @@ describe('gb-paging logic', () => {
         value: '6532'
       }
     };
-  let paging: Paging,
+  let tag: Paging,
     flux: FluxCapacitor;
 
-  beforeEach(() => paging = Object.assign(new Paging(), {
-    flux: flux = new FluxCapacitor(''),
-    opts: {},
+  beforeEach(() => ({ tag, flux } = fluxTag(new Paging(), {
     parent: { struct, allMeta }
-  }));
+  })));
 
   it('should inherit values from parent', () => {
-    paging.init();
+    tag.init();
 
-    expect(paging.limit).to.eq(5);
-    expect(paging.pages).to.be.false;
-    expect(paging.numeric).to.be.false;
-    expect(paging.terminals).to.be.true;
-    expect(paging.icons).to.be.true;
+    expect(tag.limit).to.eq(5);
+    expect(tag.pages).to.be.false;
+    expect(tag.numeric).to.be.false;
+    expect(tag.terminals).to.be.true;
+    expect(tag.icons).to.be.true;
 
-    expect(paging.pager).to.be.ok;
-    expect(paging.pager).to.have.all.keys('first', 'last', 'next', 'last', 'jump');
+    expect(tag.pager).to.be.ok;
+    expect(tag.pager).to.have.all.keys('first', 'last', 'next', 'last', 'jump');
 
-    expect(paging.prev_label).to.not.be.ok;
-    expect(paging.next_label).to.not.be.ok;
-    expect(paging.first_label).to.not.be.ok;
-    expect(paging.last_label).to.not.be.ok;
+    expect(tag.prev_label).to.not.be.ok;
+    expect(tag.next_label).to.not.be.ok;
+    expect(tag.first_label).to.not.be.ok;
+    expect(tag.last_label).to.not.be.ok;
   });
 
   it('should allow override from opts', () => {
@@ -52,18 +51,18 @@ describe('gb-paging logic', () => {
       first_label: 'beginning',
       last_label: 'end'
     };
-    Object.assign(paging.opts, overrides);
-    paging.init();
+    Object.assign(tag.opts, overrides);
+    tag.init();
 
-    expect(paging.limit).to.eq(overrides.limit);
-    expect(paging.pages).to.be.true;
-    expect(paging.numeric).to.be.true;
-    expect(paging.terminals).to.be.false;
-    expect(paging.icons).to.be.false;
-    expect(paging.prev_label).to.eq(overrides.prev_label);
-    expect(paging.next_label).to.eq(overrides.next_label);
-    expect(paging.first_label).to.eq(overrides.first_label);
-    expect(paging.last_label).to.eq(overrides.last_label);
+    expect(tag.limit).to.eq(overrides.limit);
+    expect(tag.pages).to.be.true;
+    expect(tag.numeric).to.be.true;
+    expect(tag.terminals).to.be.false;
+    expect(tag.icons).to.be.false;
+    expect(tag.prev_label).to.eq(overrides.prev_label);
+    expect(tag.next_label).to.eq(overrides.next_label);
+    expect(tag.first_label).to.eq(overrides.first_label);
+    expect(tag.last_label).to.eq(overrides.last_label);
   });
 
   it('should fall back to parent', () => {
@@ -73,19 +72,19 @@ describe('gb-paging logic', () => {
       first_label: 'beginning',
       last_label: 'end'
     };
-    Object.assign(paging.parent, overrides);
-    paging.init();
+    Object.assign(tag.parent, overrides);
+    tag.init();
 
-    expect(paging.prev_label).to.eq(overrides.prev_label);
-    expect(paging.next_label).to.eq(overrides.next_label);
-    expect(paging.first_label).to.eq(overrides.first_label);
-    expect(paging.last_label).to.eq(overrides.last_label);
+    expect(tag.prev_label).to.eq(overrides.prev_label);
+    expect(tag.next_label).to.eq(overrides.next_label);
+    expect(tag.first_label).to.eq(overrides.first_label);
+    expect(tag.last_label).to.eq(overrides.last_label);
   });
 
   it('should listen for events', () => {
     flux.on = (event: string): any => expect(event).to.be.oneOf([Events.RESULTS, Events.PAGE_CHANGED]);
 
-    paging.init();
+    tag.init();
   });
 
   it('should update page position', (done) => {
@@ -100,40 +99,40 @@ describe('gb-paging logic', () => {
 
     Object.defineProperty(flux, 'page', { get: () => pager });
 
-    paging.pageInfo = (pages, last): any => {
+    tag.pageInfo = (pages, last): any => {
       expect(pages).to.eq(pageNumbers);
       expect(last).to.eq(17);
       done();
     };
-    paging.init();
+    tag.init();
 
-    paging.updatePageInfo();
+    tag.updatePageInfo();
   });
 
   it('should update page info', () => {
-    paging.update = (obj: any) => {
+    tag.update = (obj: any) => {
       expect(obj.currentPage).to.eq(14);
       expect(obj.lastPage).to.eq(44);
       expect(obj.backDisabled).to.be.false;
       expect(obj.forwardDisabled).to.be.false;
     };
-    paging.init();
+    tag.init();
 
-    paging.updatePages({ pageIndex: 13, finalPage: 43 });
+    tag.updatePages({ pageIndex: 13, finalPage: 43 });
   });
 
   it('should generate page info', () => {
     const pageNumbers = [4, 5, 6, 7, 8];
 
-    paging.init();
+    tag.init();
 
-    const pageInfo = paging.pageInfo(pageNumbers, 14);
+    const pageInfo = tag.pageInfo(pageNumbers, 14);
     expect(pageInfo.pageNumbers).to.eq(pageNumbers);
     expect(pageInfo.lowOverflow).to.be.true;
     expect(pageInfo.highOverflow).to.be.true;
 
-    expect(paging.pageInfo([1], 2).lowOverflow).to.be.false;
-    expect(paging.pageInfo([4, 5, 6], 6).highOverflow).to.be.false;
+    expect(tag.pageInfo([1], 2).lowOverflow).to.be.false;
+    expect(tag.pageInfo([4, 5, 6], 6).highOverflow).to.be.false;
   });
 
   describe('page transition behaviour', () => {
@@ -144,11 +143,11 @@ describe('gb-paging logic', () => {
       };
       Object.defineProperty(flux, 'page', { get: () => pager });
 
-      paging.init();
-      paging.forwardDisabled = true;
+      tag.init();
+      tag.forwardDisabled = true;
 
-      paging.pager.next();
-      paging.pager.last();
+      tag.pager.next();
+      tag.pager.last();
     });
 
     it('should not allow page backward', () => {
@@ -158,11 +157,11 @@ describe('gb-paging logic', () => {
       };
       Object.defineProperty(flux, 'page', { get: () => pager });
 
-      paging.init();
-      paging.backDisabled = true;
+      tag.init();
+      tag.backDisabled = true;
 
-      paging.pager.prev();
-      paging.pager.first();
+      tag.pager.prev();
+      tag.pager.first();
     });
 
     it('should jump to the given page', () => {
@@ -170,9 +169,9 @@ describe('gb-paging logic', () => {
         pager = { jump: (page) => expect(page).to.eq(page) };
       Object.defineProperty(flux, 'page', { get: () => pager });
 
-      paging.init();
+      tag.init();
 
-      paging.pager.jump(page);
+      tag.pager.jump(page);
     });
   });
 });

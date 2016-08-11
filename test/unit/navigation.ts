@@ -1,40 +1,36 @@
 import { FluxCapacitor, Events, Navigation as NavigationModel } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Navigation } from '../../src/tags/navigation/gb-navigation';
 import { expect } from 'chai';
 
 describe('gb-navigation logic', () => {
-  let navigation: Navigation;
+  let tag: Navigation;
   let flux: FluxCapacitor;
 
-  beforeEach(() => navigation = Object.assign(new Navigation(), {
-    flux: flux = new FluxCapacitor(''),
-    opts: {},
-    config: {},
-    on: () => null
-  }));
+  beforeEach(() => ({ tag, flux } = fluxTag(new Navigation())));
 
   it('should have default values', () => {
-    navigation.init();
+    tag.init();
 
-    expect(navigation.badge).to.be.true;
-    expect(navigation.showSelected).to.be.true;
+    expect(tag.badge).to.be.true;
+    expect(tag.showSelected).to.be.true;
   });
 
   it('should allow override from opts', () => {
-    navigation.opts = { badge: false, showSelected: false };
-    navigation.init();
+    tag.opts = { badge: false, showSelected: false };
+    tag.init();
 
-    expect(navigation.badge).to.be.false;
-    expect(navigation.showSelected).to.be.false;
+    expect(tag.badge).to.be.false;
+    expect(tag.showSelected).to.be.false;
   });
 
   it('should listen for flux events', () => {
     flux.on = (event: string, cb: Function): any => {
       expect(event).to.eq(Events.RESULTS);
-      expect(cb).to.eq(navigation.updateNavigations);
+      expect(cb).to.eq(tag.updateNavigations);
     };
 
-    navigation.init();
+    tag.init();
   });
 
   it('should process navigations', () => {
@@ -42,7 +38,7 @@ describe('gb-navigation logic', () => {
     const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }] }];
     const results = <any>{ availableNavigation, selectedNavigation };
 
-    const processed = navigation.processNavigations(results);
+    const processed = tag.processNavigations(results);
     expect(processed).to.eql({
       a: Object.assign({}, availableNavigation[0], { available: availableNavigation[0].refinements }),
       c: Object.assign({}, selectedNavigation[0], { selected: selectedNavigation[0].refinements })

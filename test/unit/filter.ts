@@ -1,27 +1,28 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Filter } from '../../src/tags/filter/gb-filter';
 import { expect } from 'chai';
 
 describe('gb-filter logic', () => {
-  let filter: Filter,
+  let tag: Filter,
     flux: FluxCapacitor,
     fluxClone: FluxCapacitor;
 
-  beforeEach(() => filter = Object.assign(new Filter(), {
+  beforeEach(() => tag = Object.assign(new Filter(), {
     flux: flux = new FluxCapacitor(''),
     _clone: () => fluxClone = new FluxCapacitor(''),
     opts: {}
   }));
 
   it('should have default values', () => {
-    filter.init();
+    tag.init();
 
-    expect(filter.navField).to.not.be.ok;
-    expect(filter.passthrough).to.be.ok;
-    expect(filter.passthrough.hover).to.not.be.ok;
-    expect(filter.passthrough.update).to.eq(filter.navigate);
-    expect(filter.passthrough.label).to.eq('Filter');
-    expect(filter.passthrough.clear).to.eq('Unfiltered');
+    expect(tag.navField).to.not.be.ok;
+    expect(tag.passthrough).to.be.ok;
+    expect(tag.passthrough.hover).to.not.be.ok;
+    expect(tag.passthrough.update).to.eq(tag.navigate);
+    expect(tag.passthrough.label).to.eq('Filter');
+    expect(tag.passthrough.clear).to.eq('Unfiltered');
   });
 
   it('should allow override from opts', () => {
@@ -30,29 +31,29 @@ describe('gb-filter logic', () => {
       field = 'Brand',
       onHover = false;
 
-    Object.assign(filter.opts, { label, clear, field, onHover });
-    filter.init();
+    Object.assign(tag.opts, { label, clear, field, onHover });
+    tag.init();
 
-    expect(filter.parentOpts).to.have.all.keys('label', 'clear', 'field', 'onHover');
-    expect(filter.navField).to.eq(field);
-    expect(filter.passthrough).to.be.ok;
-    expect(filter.passthrough.hover).to.eq(onHover);
-    expect(filter.passthrough.label).to.eq(label);
-    expect(filter.passthrough.clear).to.eq(clear);
+    expect(tag.parentOpts).to.have.all.keys('label', 'clear', 'field', 'onHover');
+    expect(tag.navField).to.eq(field);
+    expect(tag.passthrough).to.be.ok;
+    expect(tag.passthrough.hover).to.eq(onHover);
+    expect(tag.passthrough.label).to.eq(label);
+    expect(tag.passthrough.clear).to.eq(clear);
   });
 
   it('should listen for events', () => {
     flux.on = (event: string): any => expect(event).to.eq(Events.RESULTS);
 
-    filter.init();
+    tag.init();
   });
 
   it('should call updateFluxClone on RESULTS', (done) => {
     let callback;
     flux.on = (event: string, cb: Function): any => callback = cb;
 
-    filter.updateFluxClone = () => done();
-    filter.init();
+    tag.updateFluxClone = () => done();
+    tag.init();
 
     callback();
   });
@@ -62,13 +63,13 @@ describe('gb-filter logic', () => {
 
     fluxClone.search = (query: string): any => {
       expect(query).to.eq(parentQuery);
-      return { then: (cb: Function) => expect(cb).to.eq(filter.updateValues) };
+      return { then: (cb: Function) => expect(cb).to.eq(tag.updateValues) };
     };
 
-    filter.init();
+    tag.init();
 
     flux.query.withQuery(parentQuery);
-    filter.updateFluxClone();
+    tag.updateFluxClone();
     expect(fluxClone.query.raw.refinements.length).to.eq(0);
   });
 
@@ -78,62 +79,62 @@ describe('gb-filter logic', () => {
 
     fluxClone.search = (query: string): any => {
       expect(query).to.eq(parentQuery);
-      return { then: (cb: Function) => expect(cb).to.eq(filter.updateValues) };
+      return { then: (cb: Function) => expect(cb).to.eq(tag.updateValues) };
     };
 
-    filter.init();
-    filter.isTargetNav = () => false;
+    tag.init();
+    tag.isTargetNav = () => false;
 
     flux.query.withQuery(parentQuery).withSelectedRefinements(refinements);
-    filter.updateFluxClone();
+    tag.updateFluxClone();
     expect(fluxClone.query.raw.refinements).to.eql([refinements]);
   });
 
   it('should find the configured navigation', () => {
     const targetField = 'brand';
 
-    filter.init();
-    filter.navField = targetField;
+    tag.init();
+    tag.navField = targetField;
 
-    expect(filter.isTargetNav(targetField)).to.be.true;
+    expect(tag.isTargetNav(targetField)).to.be.true;
   });
 
   it('should convert refinements if found', () => {
     const refinement = { value: 'a', other: 'b' };
 
-    filter.init();
-    filter.isTargetNav = () => true;
+    tag.init();
+    tag.isTargetNav = () => true;
 
-    const converted = filter.convertRefinements([{ refinements: [refinement] }]);
+    const converted = tag.convertRefinements([{ refinements: [refinement] }]);
     expect(converted).to.eql([{ label: refinement.value, value: refinement }])
   });
 
   it('should return an empty list if not found', () => {
-    filter.init();
-    filter.isTargetNav = () => false;
+    tag.init();
+    tag.isTargetNav = () => false;
 
-    const converted = filter.convertRefinements([{ refinements: [{ a: 'b' }] }]);
+    const converted = tag.convertRefinements([{ refinements: [{ a: 'b' }] }]);
     expect(converted.length).to.eq(0)
   });
 
   it('should update the select tag with options', () => {
     const refinements = [{ a: 'b', c: 'd' }];
 
-    filter.init();
-    filter.selectElement = {
+    tag.init();
+    tag.selectElement = {
       _tag: <Filter & any>{ update: ({ options }) => expect(options).to.eq(refinements) }
     };
-    filter.convertRefinements = () => refinements;
+    tag.convertRefinements = () => refinements;
 
-    filter.updateValues(<Results>{});
+    tag.updateValues(<Results>{});
   });
 
   it('should call reset on clear navigation', (done) => {
     flux.reset = () => done();
 
-    filter.init();
+    tag.init();
 
-    filter.navigate('*');
+    tag.navigate('*');
   });
 
   it('should call refine on navigation selected', (done) => {
@@ -145,10 +146,10 @@ describe('gb-filter logic', () => {
       done();
     };
 
-    filter.init();
-    filter.navField = navigationName;
+    tag.init();
+    tag.navField = navigationName;
 
-    filter.navigate(selection);
+    tag.navigate(selection);
   });
 
   it('should call unrefine to clear current selection', (done) => {
@@ -160,9 +161,9 @@ describe('gb-filter logic', () => {
       done();
     };
 
-    filter.init();
-    filter.selected = selection;
+    tag.init();
+    tag.selected = selection;
 
-    filter.navigate('*');
+    tag.navigate('*');
   });
 });

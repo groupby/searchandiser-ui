@@ -1,4 +1,5 @@
 import { Product } from '../../src/tags/results/gb-product';
+import { fluxTag } from '../utils/tags';
 import { expect } from 'chai';
 
 describe('gb-product logic', () => {
@@ -12,21 +13,19 @@ describe('gb-product logic', () => {
         value: '6532'
       }
     };
-  let product: Product;
+  let tag: Product;
 
-  beforeEach(() => product = Object.assign(new Product(), {
-    opts: {},
-    parent: { struct, allMeta },
-    on: () => null
-  }));
+  beforeEach(() => ({ tag } = fluxTag(new Product(), {
+    parent: { struct, allMeta }
+  })));
 
   it('should inherit values from parent', () => {
-    product.init();
+    tag.init();
 
-    expect(product.struct).to.eq(struct);
-    expect(product.allMeta).to.eq(allMeta);
-    expect(product.transform).to.be.a('function');
-    expect(product.getPath).to.be.a('function');
+    expect(tag.struct).to.eq(struct);
+    expect(tag.allMeta).to.eq(allMeta);
+    expect(tag.transform).to.be.a('function');
+    expect(tag.getPath).to.be.a('function');
   });
 
   it('should allow default from config and opts', () => {
@@ -34,59 +33,59 @@ describe('gb-product logic', () => {
     const struct = { b: 'e', d: 'f', _transform: transform };
     const all_meta = { b: 'e', d: 'f' };
 
-    product.parent = null;
-    product.config = <any>{ structure: struct };
-    product.opts = <any>{ all_meta };
-    product.init();
+    tag.parent = null;
+    tag.config = <any>{ structure: struct };
+    tag.opts = <any>{ all_meta };
+    tag.init();
 
-    expect(product.struct).to.eq(struct);
-    expect(product.transform).to.eq(transform);
-    expect(product.allMeta).to.eq(all_meta);
+    expect(tag.struct).to.eq(struct);
+    expect(tag.transform).to.eq(transform);
+    expect(tag.allMeta).to.eq(all_meta);
   });
 
   it('should listen for update', () => {
-    product.on = (event: string, cb: Function) => {
+    tag.on = (event: string, cb: Function) => {
       expect(event).to.eq('update');
-      expect(cb).to.eq(product.transformRecord);
+      expect(cb).to.eq(tag.transformRecord);
     };
-    product.init();
+    tag.init();
   });
 
   it('should perform transformation', () => {
-    product.allMeta = { a: 'b', c: 'd' };
-    product.transform = (obj) => Object.assign(obj, { e: 'f' });
+    tag.allMeta = { a: 'b', c: 'd' };
+    tag.transform = (obj) => Object.assign(obj, { e: 'f' });
 
-    product.transformRecord();
-    expect(product.allMeta.e).to.eq('f');
+    tag.transformRecord();
+    expect(tag.allMeta.e).to.eq('f');
   });
 
   it('should return product url', () => {
-    product.init();
-    expect(product.link()).to.eq(`details.html?id=${allMeta.id}`)
+    tag.init();
+    expect(tag.link()).to.eq(`details.html?id=${allMeta.id}`)
   });
 
   it('should return url from data', () => {
     const url = 'some/url/for/product';
 
-    product.parent.allMeta.url = url;
-    product.init();
+    tag.parent.allMeta.url = url;
+    tag.init();
 
-    expect(product.link()).to.eq(url);
+    expect(tag.link()).to.eq(url);
   });
 
   it('should access fields from allMeta', () => {
-    product.init();
+    tag.init();
 
-    expect(product.get('title')).to.eq(allMeta.title);
-    expect(product.get('nested.value')).to.eq(allMeta.nested.value);
+    expect(tag.get('title')).to.eq(allMeta.title);
+    expect(tag.get('nested.value')).to.eq(allMeta.nested.value);
   });
 
   it('should return image value', () => {
     const images = ['image1.png', 'image2.png'];
 
-    product.init();
+    tag.init();
 
-    expect(product.image(images[1])).to.eq(images[1]);
-    expect(product.image(images)).to.eq(images[0]);
+    expect(tag.image(images[1])).to.eq(images[1]);
+    expect(tag.image(images)).to.eq(images[0]);
   });
 });

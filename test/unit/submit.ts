@@ -1,69 +1,67 @@
 import { FluxCapacitor, Events } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Submit } from '../../src/tags/submit/gb-submit';
 import { expect } from 'chai';
 import utils = require('../../src/utils');
 
 describe('gb-submit logic', () => {
   let sandbox: Sinon.SinonSandbox,
-    submit: Submit,
+    tag: Submit,
     flux: FluxCapacitor;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    submit = Object.assign(new Submit(), {
-      flux: flux = new FluxCapacitor(''),
-      opts: {},
-      root: <HTMLElement & any>{ addEventListener: () => null },
-      on: () => null
-    });
+    ({ tag, flux } = fluxTag(new Submit(), {
+      root: <HTMLElement & any>{ addEventListener: () => null }
+    }));
   });
   afterEach(() => sandbox.restore());
 
   it('should have default values', () => {
-    submit.init();
+    tag.init();
 
-    expect(submit.label).to.eq('Search');
-    expect(submit.queryParam).to.eq('q');
-    expect(submit.searchUrl).to.eq('search');
-    expect(submit.staticSearch).to.be.false;
+    expect(tag.label).to.eq('Search');
+    expect(tag.queryParam).to.eq('q');
+    expect(tag.searchUrl).to.eq('search');
+    expect(tag.staticSearch).to.be.false;
   });
 
   it('should allow override from opts', () => {
     const label = 'Submit query';
     const queryParam = 'query';
     const searchUrl = 'search.html';
-    submit.opts = { label, queryParam, searchUrl, staticSearch: true };
-    submit.init();
+    tag.opts = { label, queryParam, searchUrl, staticSearch: true };
+    tag.init();
 
-    expect(submit.label).to.eq(label);
-    expect(submit.queryParam).to.eq(queryParam);
-    expect(submit.searchUrl).to.eq(searchUrl);
-    expect(submit.staticSearch).to.be.true;
+    expect(tag.label).to.eq(label);
+    expect(tag.queryParam).to.eq(queryParam);
+    expect(tag.searchUrl).to.eq(searchUrl);
+    expect(tag.staticSearch).to.be.true;
   });
 
   it('should set label for input tag', () => {
-    Object.assign(submit.root, { tagName: 'INPUT' });
-    submit.init();
+    Object.assign(tag.root, { tagName: 'INPUT' });
+    tag.init();
 
-    expect(submit.root.value).to.eq('Search');
+    expect(tag.root.value).to.eq('Search');
   });
 
   it('should listen for mount event', () => {
-    submit.on = (event, cb) => {
+    tag.on = (event, cb) => {
       expect(event).to.eq('mount');
-      expect(cb).to.eq(submit.findSearchBox);
+      expect(cb).to.eq(tag.findSearchBox);
     };
-    submit.init();
+    tag.init();
   });
 
   it('should register click listener', () => {
-    submit.root = <HTMLElement & any>{
+    tag.root = <HTMLElement & any>{
       addEventListener: (event, cb): any => {
         expect(event).to.eq('click');
-        expect(cb).to.eq(submit.submitQuery);
+        expect(cb).to.eq(tag.submitQuery);
       }
     };
-    submit.init();
+    tag.init();
   });
 
   it('should find search box', () => {
@@ -71,10 +69,10 @@ describe('gb-submit logic', () => {
     document.body.appendChild(queryTag);
     queryTag.setAttribute('riot-tag', 'gb-raw-query');
 
-    submit.init();
-    submit.findSearchBox();
+    tag.init();
+    tag.findSearchBox();
 
-    expect(submit.searchBox).to.eq(queryTag);
+    expect(tag.searchBox).to.eq(queryTag);
 
     document.body.removeChild(queryTag);
   });
@@ -83,11 +81,11 @@ describe('gb-submit logic', () => {
     const query = 'something';
     flux.reset = (value): any => expect(value).to.eq(query);
 
-    submit.searchBox = <HTMLInputElement>{ value: query };
-    submit.init();
+    tag.searchBox = <HTMLInputElement>{ value: query };
+    tag.init();
 
-    submit.submitQuery();
-    expect(submit.searchBox.value).to.eq(query);
+    tag.submitQuery();
+    expect(tag.searchBox.value).to.eq(query);
   });
 
   it('should submit static query', (done) => {
@@ -100,10 +98,10 @@ describe('gb-submit logic', () => {
       done();
     });
 
-    submit.searchBox = <HTMLInputElement>{ value: query };
-    submit.init();
-    submit.staticSearch = true;
+    tag.searchBox = <HTMLInputElement>{ value: query };
+    tag.init();
+    tag.staticSearch = true;
 
-    submit.submitQuery();
+    tag.submitQuery();
   });
 });

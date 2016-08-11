@@ -1,28 +1,27 @@
 import { FluxCapacitor, Events } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Results } from '../../src/tags/results/gb-results';
 import { expect } from 'chai';
 
 describe('gb-results logic', () => {
   const structure = { title: 'title', price: 'price', image: 'image' };
-  let results: Results,
+  let tag: Results,
     flux: FluxCapacitor;
 
-  beforeEach(() => results = Object.assign(new Results(), {
-    flux: flux = new FluxCapacitor(''),
-    config: { structure },
-    opts: {}
-  }));
+  beforeEach(() => ({ tag, flux } = fluxTag(new Results(), {
+    config: { structure }
+  })));
 
   it('should have default values', () => {
-    results.init();
+    tag.init();
 
-    expect(results.getPath).to.be.a('function');
+    expect(tag.getPath).to.be.a('function');
   });
 
   it('should listen for events', () => {
     flux.on = (event: string): any => expect(event).to.eq(Events.RESULTS);
 
-    results.init();
+    tag.init();
   });
 
   it('should update selected on RESULTS', () => {
@@ -31,19 +30,19 @@ describe('gb-results logic', () => {
 
     flux.on = (event: string, cb: Function): any => callback = cb;
 
-    results.update = (obj: any) => expect(obj.records).to.eq(records);;
-    results.init();
+    tag.update = (obj: any) => expect(obj.records).to.eq(records);;
+    tag.init();
 
     callback({ records });
   });
 
   it('should return the correct user style', () => {
     const name = 'record-label';
-    results.opts.css = { label: name };
-    expect(results.userStyle('label')).to.eq(name);
+    tag.opts.css = { label: name };
+    expect(tag.userStyle('label')).to.eq(name);
   });
 
   it('should return no user style', () => {
-    expect(results.userStyle('label')).to.eq('');
+    expect(tag.userStyle('label')).to.eq('');
   });
 });

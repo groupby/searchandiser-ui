@@ -1,23 +1,21 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Sort } from '../../src/tags/sort/gb-sort';
 import { expect } from 'chai';
 
 describe('gb-sort logic', () => {
-  let sort: Sort,
+  let tag: Sort,
     flux: FluxCapacitor;
 
-  beforeEach(() => sort = Object.assign(new Sort(), {
-    flux: flux = new FluxCapacitor(''),
-    opts: {}
-  }));
+  beforeEach(() => ({ tag, flux } = fluxTag(new Sort())));
 
   it('should have default values', () => {
-    sort.init();
-    expect(sort.passthrough).to.be.ok;
-    expect(sort.passthrough.hover).to.not.be.ok;
-    expect(sort.passthrough.update).to.eq(sort.sort);
-    expect(sort.passthrough.options).to.eql(sort.options);
-    expect(sort.passthrough.default).to.be.true;
+    tag.init();
+    expect(tag.passthrough).to.be.ok;
+    expect(tag.passthrough.hover).to.not.be.ok;
+    expect(tag.passthrough.update).to.eq(tag.sort);
+    expect(tag.passthrough.options).to.eql(tag.options);
+    expect(tag.passthrough.default).to.be.true;
   });
 
   describe('override behaviour', () => {
@@ -29,27 +27,27 @@ describe('gb-sort logic', () => {
     it('should allow override from opts', () => {
       const onHover = false;
 
-      Object.assign(sort.opts, { options, onHover });
-      sort.init();
+      Object.assign(tag.opts, { options, onHover });
+      tag.init();
 
-      expect(sort.parentOpts).to.have.all.keys('options', 'onHover');
-      expect(sort.passthrough).to.be.ok;
-      expect(sort.passthrough.options).to.eq(options);
-      expect(sort.passthrough.hover).to.be.false;
+      expect(tag.parentOpts).to.have.all.keys('options', 'onHover');
+      expect(tag.passthrough).to.be.ok;
+      expect(tag.passthrough.options).to.eq(options);
+      expect(tag.passthrough.hover).to.be.false;
     });
 
     it('should allow override from tags config', () => {
-      sort.config = { tags: { sort: { options } } };
-      sort.init();
+      tag.config = { tags: { sort: { options } } };
+      tag.init();
 
-      expect(sort.passthrough.options).to.eq(options);
+      expect(tag.passthrough.options).to.eq(options);
     });
   });
 
   it('should return option values', () => {
-    sort.init();
+    tag.init();
 
-    const values = sort.sortValues();
+    const values = tag.sortValues();
     expect(values).to.eql([
       { field: 'title', order: 'Descending' },
       { field: 'title', order: 'Ascending' }
@@ -65,9 +63,9 @@ describe('gb-sort logic', () => {
       expect(oldSorts).to.eq(pastSorts);
     };
 
-    sort.sortValues = () => pastSorts;
-    sort.init();
+    tag.sortValues = () => pastSorts;
+    tag.init();
 
-    sort.sort(nextSort);
+    tag.sort(nextSort);
   });
 });

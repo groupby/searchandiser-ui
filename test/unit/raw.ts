@@ -1,30 +1,28 @@
 import { FluxCapacitor, Events } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Raw } from '../../src/tags/raw/gb-raw';
 import { expect } from 'chai';
 
 describe('gb-raw logic', () => {
   const content = '<div>red sneakers</div>';
-  let raw: Raw;
+  let tag: Raw;
 
-  beforeEach(() => raw = Object.assign(new Raw(), {
-    opts: { content },
-    on: () => null
-  }));
+  beforeEach(() => ({ tag } = fluxTag(new Raw(), { opts: { content } })));
 
   it('should listen for update event', () => {
-    raw.on = (event: string, cb) => {
+    tag.on = (event: string, cb) => {
       expect(event).to.be.oneOf(['update', 'mount']);
-      expect(cb).to.eq(raw.updateContent);
+      expect(cb).to.eq(tag.updateContent);
     };
-    raw.init();
+    tag.init();
   });
 
   it('should update innerHTML', () => {
-    raw.root = <HTMLElement>{ innerHTML: '' };
-    raw.init();
+    tag.root = <HTMLElement>{ innerHTML: '' };
+    tag.init();
 
-    raw.updateContent();
+    tag.updateContent();
 
-    expect(raw.root.innerHTML).to.eq(content);
+    expect(tag.root.innerHTML).to.eq(content);
   });
 });

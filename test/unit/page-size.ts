@@ -1,39 +1,36 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { PageSize } from '../../src/tags/page-size/gb-page-size';
 import { expect } from 'chai';
 
 describe('gb-page-size logic', () => {
-  let pageSize: PageSize,
+  let tag: PageSize,
     flux: FluxCapacitor;
 
-  beforeEach(() => pageSize = Object.assign(new PageSize(), {
-    flux: flux = new FluxCapacitor(''),
-    config: {},
-    opts: {}
-  }));
+  beforeEach(() => ({ tag, flux } = fluxTag(new PageSize())));
 
   it('should have default values', () => {
-    pageSize.init();
+    tag.init();
 
-    expect(pageSize.passthrough).to.be.ok;
-    expect(pageSize.passthrough.hover).to.not.be.ok;
-    expect(pageSize.passthrough.update).to.eq(pageSize.resize);
-    expect(pageSize.passthrough.options).to.eql([10, 25, 50, 100]);
-    expect(pageSize.passthrough.default).to.be.true;
+    expect(tag.passthrough).to.be.ok;
+    expect(tag.passthrough.hover).to.not.be.ok;
+    expect(tag.passthrough.update).to.eq(tag.resize);
+    expect(tag.passthrough.options).to.eql([10, 25, 50, 100]);
+    expect(tag.passthrough.default).to.be.true;
   });
 
   it('should allow override from opts', () => {
     const pageSizes = [12, 24, 48],
       onHover = false;
 
-    pageSize.config.pageSizes = pageSizes;
-    pageSize.opts.onHover = onHover;
-    pageSize.init();
+    tag.config.pageSizes = pageSizes;
+    tag.opts.onHover = onHover;
+    tag.init();
 
-    expect(pageSize.parentOpts).to.have.all.keys('onHover');
-    expect(pageSize.passthrough).to.be.ok;
-    expect(pageSize.passthrough.options).to.eq(pageSizes);
-    expect(pageSize.passthrough.hover).to.be.false;
+    expect(tag.parentOpts).to.have.all.keys('onHover');
+    expect(tag.passthrough).to.be.ok;
+    expect(tag.passthrough.options).to.eq(pageSizes);
+    expect(tag.passthrough.hover).to.be.false;
   });
 
   it('should resize', () => {
@@ -44,17 +41,17 @@ describe('gb-page-size logic', () => {
       expect(newOffset).to.not.be.ok;
     };
 
-    pageSize.init();
+    tag.init();
 
-    pageSize.resize(newPageSize);
+    tag.resize(newPageSize);
   });
 
   it('should resize and reset offset', () => {
     flux.resize = (value, newOffset): any => expect(newOffset).to.eq(0);
 
-    Object.assign(pageSize.opts, { resetOffset: true });
-    pageSize.init();
+    Object.assign(tag.opts, { resetOffset: true });
+    tag.init();
 
-    pageSize.resize(20);
+    tag.resize(20);
   });
 });

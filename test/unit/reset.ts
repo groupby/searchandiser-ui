@@ -1,34 +1,32 @@
 import { FluxCapacitor, Events } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Reset } from '../../src/tags/reset/gb-reset';
 import { expect } from 'chai';
 
 describe('gb-reset logic', () => {
-  let reset: Reset,
+  let tag: Reset,
     flux: FluxCapacitor;
 
-  beforeEach(() => reset = Object.assign(new Reset(), {
-    flux: flux = new FluxCapacitor(''),
-    opts: {},
-    root: { addEventListener: () => null },
-    on: () => null
-  }));
+  beforeEach(() => ({ tag, flux } = fluxTag(new Reset(), {
+    root: { addEventListener: () => null }
+  })));
 
   it('should listen for mount event', () => {
-    reset.on = (event, cb) => {
+    tag.on = (event, cb) => {
       expect(event).to.eq('mount');
-      expect(cb).to.eq(reset.findSearchBox);
+      expect(cb).to.eq(tag.findSearchBox);
     };
-    reset.init();
+    tag.init();
   });
 
   it('should register click listener', () => {
-    reset.root = <HTMLElement>{
+    tag.root = <HTMLElement>{
       addEventListener: (event, cb): any => {
         expect(event).to.eq('click');
-        expect(cb).to.eq(reset.clearQuery);
+        expect(cb).to.eq(tag.clearQuery);
       }
     };
-    reset.init();
+    tag.init();
   });
 
   it('should find search box', () => {
@@ -36,10 +34,10 @@ describe('gb-reset logic', () => {
     document.body.appendChild(queryTag);
     queryTag.setAttribute('riot-tag', 'gb-raw-query');
 
-    reset.init();
-    reset.findSearchBox();
+    tag.init();
+    tag.findSearchBox();
 
-    expect(reset.searchBox).to.eq(queryTag);
+    expect(tag.searchBox).to.eq(queryTag);
 
     document.body.removeChild(queryTag);
   });
@@ -47,10 +45,10 @@ describe('gb-reset logic', () => {
   it('should clear query', () => {
     flux.reset = (value): any => expect(value).to.eq('');
 
-    reset.searchBox = <HTMLInputElement & any>{ value: 'something' };
-    reset.init();
+    tag.searchBox = <HTMLInputElement & any>{ value: 'something' };
+    tag.init();
 
-    reset.clearQuery();
-    expect(reset.searchBox.value).to.eq('');
+    tag.clearQuery();
+    expect(tag.searchBox.value).to.eq('');
   });
 });

@@ -1,41 +1,39 @@
 import { FluxCapacitor, Events, Request } from 'groupby-api';
+import { fluxTag } from '../utils/tags';
 import { Collections } from '../../src/tags/collections/gb-collections';
 import { expect } from 'chai';
 
 describe('gb-collections logic', () => {
-  let collections: Collections,
+  let tag: Collections,
     flux: FluxCapacitor;
 
-  beforeEach(() => collections = Object.assign(new Collections(), {
-    flux: flux = new FluxCapacitor(''),
-    opts: {}
-  }));
+  beforeEach(() => ({ tag, flux } = fluxTag(new Collections())));
 
   it('should have default values', () => {
-    collections.init();
+    tag.init();
 
-    expect(collections.fetchCounts).to.be.true;
-    expect(collections.collections).to.eql([]);
-    expect(collections.labels).to.eql({});
-    expect(collections.counts).to.not.be.ok;
+    expect(tag.fetchCounts).to.be.true;
+    expect(tag.collections).to.eql([]);
+    expect(tag.labels).to.eql({});
+    expect(tag.counts).to.not.be.ok;
   });
 
   it('should allow override from global tag config', () => {
     const options = ['a', 'b', 'c'];
-    collections.config = { tags: { collections: { counts: false, options } } }
-    collections.init();
+    tag.config = { tags: { collections: { counts: false, options } } }
+    tag.init();
 
-    expect(collections.fetchCounts).to.be.false;
-    expect(collections.collections).to.eq(options);
+    expect(tag.fetchCounts).to.be.false;
+    expect(tag.collections).to.eq(options);
   });
 
   it('should allow override from opts', () => {
     const options = ['a', 'b', 'c'];
-    collections.opts = { counts: false, options };
-    collections.init();
+    tag.opts = { counts: false, options };
+    tag.init();
 
-    expect(collections.fetchCounts).to.be.false;
-    expect(collections.collections).to.eq(options);
+    expect(tag.fetchCounts).to.be.false;
+    expect(tag.collections).to.eq(options);
   });
 
   it('should accept collections with labels', () => {
@@ -43,12 +41,12 @@ describe('gb-collections logic', () => {
       { value: 'a', label: 'A' },
       { value: 'b', label: 'B' },
       { value: 'c', label: 'C' }];
-    collections.opts = { counts: false, options };
-    collections.init();
+    tag.opts = { counts: false, options };
+    tag.init();
 
-    expect(collections.fetchCounts).to.be.false;
-    expect(collections.collections).to.eql(options.map((collection) => collection.value));
-    expect(collections.labels).to.eql({
+    expect(tag.fetchCounts).to.be.false;
+    expect(tag.collections).to.eql(options.map((collection) => collection.value));
+    expect(tag.labels).to.eql({
       a: 'A',
       b: 'B',
       c: 'C'
@@ -56,17 +54,17 @@ describe('gb-collections logic', () => {
   });
 
   it('should update itself on mount', (done) => {
-    collections.updateCollectionCounts = () => done();
-    collections.init();
+    tag.updateCollectionCounts = () => done();
+    tag.init();
   });
 
   it('should listen for request_changed event', () => {
     flux.on = (event: string, cb: Function): any => {
       expect(event).to.eq(Events.REQUEST_CHANGED);
-      expect(cb).to.eq(collections.updateCollectionCounts);
+      expect(cb).to.eq(tag.updateCollectionCounts);
     };
 
-    collections.init();
+    tag.init();
   });
 
   it('should update collection counts', (done) => {
@@ -78,23 +76,23 @@ describe('gb-collections logic', () => {
 
     flux.bridge.search = (request: Request): any => Promise.resolve({ totalRecordCount: counts[request.collection] });
 
-    collections.update = (obj: any) => {
+    tag.update = (obj: any) => {
       expect(obj.counts).to.eql(counts);
       done();
     };
-    collections.init();
-    collections.collections = ['a', 'b', 'c'];
+    tag.init();
+    tag.collections = ['a', 'b', 'c'];
 
-    collections.updateCollectionCounts();
+    tag.updateCollectionCounts();
   });
 
   it('should not update collection counts if fetchCounts is false', () => {
     flux.bridge.search = (): any => expect.fail();
 
-    collections.init();
-    collections.collections = ['a', 'b', 'c'];
-    collections.fetchCounts = false;
+    tag.init();
+    tag.collections = ['a', 'b', 'c'];
+    tag.fetchCounts = false;
 
-    collections.updateCollectionCounts();
+    tag.updateCollectionCounts();
   });
 });
