@@ -19,7 +19,7 @@ describe(`${TAG} tag`, () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector(`ul.${TAG}`)).to.be.ok;
+    expect(html.querySelector(`gb-list.${TAG}`)).to.be.ok;
   });
 
   describe('render behaviour', () => {

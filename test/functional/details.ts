@@ -22,6 +22,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function mount() {
-    return <Details>riot.mount(TAG, { config: {} })[0];
+    return <Details>riot.mount(TAG)[0];
   }
 });

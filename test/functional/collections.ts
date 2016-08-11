@@ -1,5 +1,6 @@
 import { FluxCapacitor } from 'groupby-api';
 import { expect } from 'chai';
+import { setParents } from '../../src/tags/tag';
 import { Collections } from '../../src/tags/collections/gb-collections';
 import '../../src/tags/collections/gb-collections.tag';
 
@@ -21,7 +22,7 @@ describe(`${TAG} tag`, () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector(`ul.${TAG}`)).to.be.ok;
+    expect(html.querySelector(`gb-list.${TAG}`)).to.be.ok;
   });
 
   it('renders without collections', () => {
@@ -52,7 +53,7 @@ describe(`${TAG} tag`, () => {
 
   it('renders without collection counts', () => {
     const tag = mount();
-    tag.badge = false;
+    tag.fetchCounts = false;
     tag.collections = ['first', 'second', 'third'];
 
     tag.update();

@@ -1,25 +1,13 @@
 <gb-did-you-mean>
-  <ul class="gb-did-you-mean { _style }">
-    <li class="gb-did-you-mean__option" each={ dym in didYouMean }>
-      <a onclick={ send }>{ dym }</a>
-    </li>
-  </ul>
+  <yield>
+    <gb-list class="gb-did-you-mean { _style }" items={ didYouMean } scope="gb-did-you-mean">
+      <a onclick={ _scope.send }>{ item }</a>
+    </gb-list>
+  </yield>
 
   <script>
+    import '../list/gb-list.tag';
     import { DidYouMean } from './gb-did-you-mean';
     this.mixin(new DidYouMean().__proto__);
   </script>
-
-  <style scoped>
-    .gb-stylish.gb-did-you-mean {
-      display: flex;
-      list-style: none;
-    }
-    .gb-stylish.gb-did-you-mean a {
-      cursor: pointer;
-    }
-    .gb-stylish .gb-did-you-mean__option {
-      flex: 1;
-    }
-  </style>
 </gb-did-you-mean>

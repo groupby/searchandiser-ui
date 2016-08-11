@@ -14,7 +14,7 @@ describe('gb-collections logic', () => {
   it('should have default values', () => {
     collections.init();
 
-    expect(collections.badge).to.be.true;
+    expect(collections.fetchCounts).to.be.true;
     expect(collections.collections).to.eql([]);
     expect(collections.labels).to.eql({});
     expect(collections.counts).to.not.be.ok;
@@ -22,19 +22,19 @@ describe('gb-collections logic', () => {
 
   it('should allow override from global tag config', () => {
     const options = ['a', 'b', 'c'];
-    collections.config = { tags: { collections: { badge: false, options } } }
+    collections.config = { tags: { collections: { counts: false, options } } }
     collections.init();
 
-    expect(collections.badge).to.be.false;
+    expect(collections.fetchCounts).to.be.false;
     expect(collections.collections).to.eq(options);
   });
 
   it('should allow override from opts', () => {
     const options = ['a', 'b', 'c'];
-    collections.opts = { badge: false, options };
+    collections.opts = { counts: false, options };
     collections.init();
 
-    expect(collections.badge).to.be.false;
+    expect(collections.fetchCounts).to.be.false;
     expect(collections.collections).to.eq(options);
   });
 
@@ -43,10 +43,10 @@ describe('gb-collections logic', () => {
       { value: 'a', label: 'A' },
       { value: 'b', label: 'B' },
       { value: 'c', label: 'C' }];
-    collections.opts = { badge: false, options };
+    collections.opts = { counts: false, options };
     collections.init();
 
-    expect(collections.badge).to.be.false;
+    expect(collections.fetchCounts).to.be.false;
     expect(collections.collections).to.eql(options.map((collection) => collection.value));
     expect(collections.labels).to.eql({
       a: 'A',
@@ -84,6 +84,16 @@ describe('gb-collections logic', () => {
     };
     collections.init();
     collections.collections = ['a', 'b', 'c'];
+
+    collections.updateCollectionCounts();
+  });
+
+  it('should not update collection counts if fetchCounts is false', () => {
+    flux.bridge.search = (): any => expect.fail();
+
+    collections.init();
+    collections.collections = ['a', 'b', 'c'];
+    collections.fetchCounts = false;
 
     collections.updateCollectionCounts();
   });

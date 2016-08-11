@@ -45,6 +45,6 @@ describe(`${TAG} tag`, () => {
   }
 
   function mount() {
-    return <Results>riot.mount(TAG, { config: { structure } })[0];
+    return <Results>riot.mount(TAG)[0];
   }
 });

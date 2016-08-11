@@ -38,6 +38,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function mount() {
-    return <RecordCount>riot.mount(TAG, { config: {} })[0];
+    return <RecordCount>riot.mount(TAG)[0];
   }
 });

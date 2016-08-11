@@ -41,6 +41,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function mount() {
-    return <PageSize>riot.mount(TAG, { config: {} })[0];
+    return <PageSize>riot.mount(TAG)[0];
   }
 });

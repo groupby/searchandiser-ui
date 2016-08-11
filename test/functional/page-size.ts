@@ -10,7 +10,7 @@ describe(`${TAG} tag`, () => {
   let html: Element;
 
   beforeEach(() => {
-    riot.mixin('test', { flux: new FluxCapacitor('') });
+    riot.mixin('test', { flux: new FluxCapacitor(''), config: {} });
     document.body.appendChild(html = document.createElement(TAG));
   });
   afterEach(() => document.body.removeChild(html));
@@ -30,6 +30,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function mount() {
-    return <PageSize>riot.mount(TAG, { config: {} })[0];
+    return <PageSize>riot.mount(TAG)[0];
   }
 });

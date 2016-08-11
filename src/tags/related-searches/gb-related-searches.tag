@@ -1,18 +1,13 @@
 <gb-related-searches>
-  <ul class="gb-related-searches { _style }">
-    <li class="gb-related-search" each={ related in relatedQueries }>
-      <a class="gb-related-search__link" onclick={ send }>{ related }</a>
-    </li>
-  </ul>
+  <yield>
+    <gb-list class="gb-related-searches { _style }" items={ relatedQueries } scope="gb-related-searches">
+      <a onclick={ _scope.send }>{ item }</a>
+    </gb-list>
+  </yield>
 
   <script>
+    import '../list/gb-list.tag';
     import { RelatedSearches } from './gb-related-searches';
     this.mixin(new RelatedSearches().__proto__);
   </script>
-
-  <style scoped>
-    .gb-stylish.gb-related-searches a {
-      cursor: pointer;
-    }
-  </style>
 </gb-related-searches>
