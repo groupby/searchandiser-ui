@@ -101,23 +101,27 @@ describe('gb-product logic', () => {
     });
 
     it('should return the sole implicit variant', () => {
-      const p = Object.assign(new Product(), {
-        opts: {},
-        parent: {
-          struct: {
-            title: 'title',
-            price: 'price',
-            image: 'image',
-            url: 'url'
-          },
-          allMeta: {
-            title: 'Green Shoes',
-            price: '$1',
-            image: 'image.tiff',
-            url: 'about:blank'
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'title',
+              price: 'price',
+              image: 'image',
+              url: 'url'
+            },
+            allMeta: {
+              title: 'Green Shoes',
+              price: '$1',
+              image: 'image.tiff',
+              url: 'about:blank'
+            }
           }
-        }
-      });
+        },
+        {
+          on: (_) => null
+        });
 
       p.init();
 
@@ -130,26 +134,30 @@ describe('gb-product logic', () => {
 
 
     it('should return the sole explicit variant', () => {
-      const p = Object.assign(new Product(), {
-        opts: {},
-        parent: {
-          struct: {
-            title: 'title',
-            price: 'price',
-            image: 'image',
-            url: 'url',
-            variants: 'variants'
-          },
-          allMeta: {
-            variants: [{
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            }]
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'title',
+              price: 'price',
+              image: 'image',
+              url: 'url',
+              variants: 'variants'
+            },
+            allMeta: {
+              variants: [{
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              }]
+            }
           }
-        }
-      });
+        },
+        {
+          on: (_) => null
+        });
 
       p.init();
 
@@ -161,44 +169,48 @@ describe('gb-product logic', () => {
     });
 
     it('should return a particular explicit variant', () => {
-      const p = Object.assign(new Product(), {
-        opts: {},
-        parent: {
-          struct: {
-            title: 'title',
-            price: 'price',
-            image: 'image',
-            url: 'url',
-            variants: 'variants'
-          },
-          allMeta: {
-            variants: [{
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'title',
+              price: 'price',
+              image: 'image',
+              url: 'url',
+              variants: 'variants'
             },
-            {
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            },
-            {
-              title: 'Green Moccasins',
-              price: '$2',
-              image: 'image.svg',
-              url: 'about:mozilla'
-            },
-            {
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            }]
+            allMeta: {
+              variants: [{
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              },
+              {
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              },
+              {
+                title: 'Green Moccasins',
+                price: '$2',
+                image: 'image.svg',
+                url: 'about:mozilla'
+              },
+              {
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              }]
+            }
           }
-        }
-      });
+        },
+        {
+          on: (_) => null
+        });
 
       p.init();
 
@@ -225,48 +237,52 @@ describe('gb-product logic', () => {
     });
 
     it('should return null if variants is not configured properly', () => {
-      const p = Object.assign(new Product(), {
-        opts: {},
-        parent: {
-          struct: {
-            title: 'title',
-            price: 'price',
-            image: 'image',
-            url: 'url',
-            variants: 'varieties' // The typo
-          },
-          allMeta: {
-            title: 'Orange Chili',
-            price: '$3',
-            image: 'image.bmp',
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'title',
+              price: 'price',
+              image: 'image',
+              url: 'url',
+              variants: 'varieties' // The typo
+            },
+            allMeta: {
+              title: 'Orange Chili',
+              price: '$3',
+              image: 'image.bmp',
 
-            variants: [{
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            },
-            {
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            },
-            {
-              title: 'Green Moccasins',
-              price: '$2',
-              image: 'image.svg',
-              url: 'about:mozilla'
-            },
-            {
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            }]
+              variants: [{
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              },
+              {
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              },
+              {
+                title: 'Green Moccasins',
+                price: '$2',
+                image: 'image.svg',
+                url: 'about:mozilla'
+              },
+              {
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              }]
+            }
           }
-        }
-      });
+        },
+        {
+          on: (_) => null
+        });
 
       p.init();
 
@@ -275,47 +291,51 @@ describe('gb-product logic', () => {
     });
 
     it('should ignore variants if variants is not configured', () => {
-      const p = Object.assign(new Product(), {
-        opts: {},
-        parent: {
-          struct: {
-            title: 'title',
-            price: 'price',
-            image: 'image',
-            url: 'url',
-          },
-          allMeta: {
-            title: 'Orange Chili',
-            price: '$3',
-            image: 'image.bmp',
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'title',
+              price: 'price',
+              image: 'image',
+              url: 'url',
+            },
+            allMeta: {
+              title: 'Orange Chili',
+              price: '$3',
+              image: 'image.bmp',
 
-            variants: [{
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            },
-            {
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            },
-            {
-              title: 'Green Moccasins',
-              price: '$2',
-              image: 'image.svg',
-              url: 'about:mozilla'
-            },
-            {
-              title: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            }]
+              variants: [{
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              },
+              {
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              },
+              {
+                title: 'Green Moccasins',
+                price: '$2',
+                image: 'image.svg',
+                url: 'about:mozilla'
+              },
+              {
+                title: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              }]
+            }
           }
-        }
-      });
+        },
+        {
+          on: (_) => null
+        });
 
       p.init();
 
@@ -328,51 +348,55 @@ describe('gb-product logic', () => {
     });
 
     it('should vary only the specified fields over the variants', () => {
-      const p = Object.assign(new Product(), {
-        opts: {},
-        parent: {
-          struct: {
-            title: 'title',
-            price: 'price',
-            image: 'image',
-            url: 'url',
-            variants: 'varieties',
-          },
-          variantStruct: {
-            title: 'titre' // Title is named differently in the variants
-          },
-          allMeta: {
-            title: 'Orange Chili',
-            price: '$3',
-            image: 'image.bmp',
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'title',
+              price: 'price',
+              image: 'image',
+              url: 'url',
+              variants: 'varieties',
+            },
+            variantStruct: {
+              title: 'titre' // Title is named differently in the variants
+            },
+            allMeta: {
+              title: 'Orange Chili',
+              price: '$3',
+              image: 'image.bmp',
 
-            varieties: [{
-              titre: 'Green Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            },
-            {
-              titre: 'Purple Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            },
-            {
-              titre: 'Green Moccasins',
-              price: '$2',
-              image: 'image.svg',
-              url: 'about:mozilla'
-            },
-            {
-              titre: 'Yellow Shoes',
-              price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
-            }]
+              varieties: [{
+                titre: 'Green Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              },
+              {
+                titre: 'Purple Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              },
+              {
+                titre: 'Green Moccasins',
+                price: '$2',
+                image: 'image.svg',
+                url: 'about:mozilla'
+              },
+              {
+                titre: 'Yellow Shoes',
+                price: '$1',
+                image: 'image.tiff',
+                url: 'about:blank'
+              }]
+            }
           }
-        }
-      });
+        },
+        {
+          on: (_) => null
+        });
 
       p.init();
 
