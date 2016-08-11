@@ -360,7 +360,7 @@ describe('gb-product logic', () => {
               variants: 'varieties',
             },
             variantStruct: {
-              title: 'titre' // Title is named differently in the variants
+              title: 'title'
             },
             allMeta: {
               title: 'Orange Chili',
@@ -368,25 +368,25 @@ describe('gb-product logic', () => {
               image: 'image.bmp',
 
               varieties: [{
-                titre: 'Green Shoes',
+                title: 'Green Shoes',
                 price: '$1',
                 image: 'image.tiff',
                 url: 'about:blank'
               },
               {
-                titre: 'Purple Shoes',
+                title: 'Purple Shoes',
                 price: '$1',
                 image: 'image.tiff',
                 url: 'about:blank'
               },
               {
-                titre: 'Green Moccasins',
+                title: 'Green Moccasins',
                 price: '$2',
                 image: 'image.svg',
                 url: 'about:mozilla'
               },
               {
-                titre: 'Yellow Shoes',
+                title: 'Yellow Shoes',
                 price: '$1',
                 image: 'image.tiff',
                 url: 'about:blank'
@@ -400,26 +400,29 @@ describe('gb-product logic', () => {
 
       p.init();
 
+try{
       expect(p.variant(0)).to.be.eql({
         title: 'Green Shoes',
         price: '$3',
         image: 'image.bmp'
       });
-      expect(p.variant(0)).to.be.eql({
+      expect(p.variant(1)).to.be.eql({
         title: 'Purple Shoes',
         price: '$3',
         image: 'image.bmp'
       });
-      expect(p.variant(0)).to.be.eql({
+      expect(p.variant(2)).to.be.eql({
         title: 'Green Moccasins',
         price: '$3',
         image: 'image.bmp'
       });
-      expect(p.variant(0)).to.be.eql({
+      expect(p.variant(3)).to.be.eql({
         title: 'Yellow Shoes',
         price: '$3',
         image: 'image.bmp'
       });
+
+    }catch (e) {console.log(p.variant(0));throw e;}
     });
   });
 });

@@ -1,20 +1,23 @@
 import { FluxTag } from '../tag';
 import { getPath, unless } from '../../utils';
 import filterObject = require('filter-object');
+import { ProductStructure } from '../../searchandiser';
 
 export interface Product extends FluxTag {
-  parent: FluxTag & { struct: any, allMeta: any };
+  parent: FluxTag & { struct: ProductStructure, variantStruct: ProductStructure, allMeta: any };
 }
 
 export class Product {
 
-  struct: any;
+  struct: ProductStructure;
+  variantStruct: ProductStructure;
   allMeta: any;
   getPath: typeof getPath;
   transform: (obj: any) => any;
 
   init() {
     this.struct = this.parent ? this.parent.struct : this.config.structure;
+    this.variantStruct = this.parent ? this.parent.variantStruct : this.config.structure;
     this.allMeta = this.parent ? this.parent.allMeta : this.opts.all_meta;
     this.transform = unless(this.struct._transform, (val) => val);
     this.getPath = getPath;
@@ -38,14 +41,17 @@ export class Product {
   }
 
   variant(index: number) {
-    const desiredFields = '{image,price,title}';
+    const baseFields = ['image', 'price', 'title'];
+    const varyingFields = this.variantStruct ? Object.keys(this.variantStruct) : baseFields;
     const isVariantsConfigured = this.struct.variants !== undefined;
     if (isVariantsConfigured) {
       const variantsArray: any[] = this.get(this.struct.variants);
       if (variantsArray) {
         const variant = variantsArray[index];
         if (variant) {
-          return filterObject(variantsArray[index], desiredFields);
+          return Object.assign({},
+            filterObject(this.allMeta, baseFields),
+            filterObject(variantsArray[index], varyingFields));
         }
         else {
           return null;
@@ -57,7 +63,7 @@ export class Product {
     }
     else {
       if (index === 0) {
-        return filterObject(this.allMeta, desiredFields);
+        return filterObject(this.allMeta, baseFields);
       }
       else {
         return null;
