@@ -65,22 +65,6 @@ describe('gb-paging logic', () => {
     expect(tag.last_label).to.eq(overrides.last_label);
   });
 
-  it('should fall back to parent', () => {
-    const overrides = {
-      prev_label: 'back',
-      next_label: 'forward',
-      first_label: 'beginning',
-      last_label: 'end'
-    };
-    Object.assign(tag.parent, overrides);
-    tag.init();
-
-    expect(tag.prev_label).to.eq(overrides.prev_label);
-    expect(tag.next_label).to.eq(overrides.next_label);
-    expect(tag.first_label).to.eq(overrides.first_label);
-    expect(tag.last_label).to.eq(overrides.last_label);
-  });
-
   it('should listen for events', () => {
     flux.on = (event: string): any => expect(event).to.be.oneOf([Events.RESULTS, Events.PAGE_CHANGED]);
 

@@ -10,7 +10,6 @@ import './navigation/gb-raw-navigation.tag';
 import './page-size/gb-page-size.tag';
 import './page-size/gb-raw-page-size.tag';
 import './paging/gb-paging.tag';
-import './paging/gb-raw-paging.tag';
 import './paging/gb-terminal-pager.tag';
 import './paging/gb-pager.tag';
 import './paging/gb-pages.tag';

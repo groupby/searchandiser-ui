@@ -1,20 +1,19 @@
 <gb-terminal-pager>
   <div class="gb-terminal-pager { _style }">
-    <a class="gb-terminal__link first { disabled: backDisabled }" if={ terminals } onclick={ pager.first }><span if={ icons } class="gb-paging__icon">&larr;</span> { numeric ? 1 : first_label }</a>
+    <a class="gb-terminal__link first { disabled: _scope.backDisabled }" if={ _scope.terminals } onclick={ _scope.pager.first }>
+      <span if={ _scope.icons } class="gb-paging__icon">&larr;</span>
+      { _scope.numeric ? 1 : first_label }
+    </a>
     <yield/>
-    <a class="gb-terminal__link last { disabled: forwardDisabled }" if={ terminals } onclick={ pager.last }>{ numeric ? lastPage : last_label } <span if={ icons } class="gb-paging__icon">&rarr;</span></a>
+    <a class="gb-terminal__link last { disabled: _scope.forwardDisabled }" if={ _scope.terminals } onclick={ _scope.pager.last }>
+      { _scope.numeric ? _scope.lastPage : last_label }
+      <span if={ _scope.icons } class="gb-paging__icon">&rarr;</span>
+    </a>
   </div>
 
   <script>
-    this.terminals = this.parent.terminals;
-    this.numeric = this.parent.numeric;
-    this.icons = this.parent.icons;
-    this.prev_label = this.parent.prev_label;
-    this.next_label = this.parent.next_label;
-    this.first_label = this.parent.first_label || 'First';
-    this.last_label = this.parent.last_label || 'Last';
-    this.pages = this.parent.pages;
-    this.pager = this.parent.pager;
+    this.last_label = this._scope.last_label || 'Last';
+    this.first_label = this._scope.first_label || 'First';
   </script>
 
   <style scoped>

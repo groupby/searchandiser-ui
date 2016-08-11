@@ -9,9 +9,7 @@ export interface Labeled {
   last_label: string;
 }
 
-export interface Paging extends FluxTag, Labeled {
-  parent: Riot.Tag.Instance & Labeled;
-}
+export interface Paging extends FluxTag, Labeled { }
 
 export class Paging {
 
@@ -44,10 +42,10 @@ export class Paging {
     this.terminals = unless(this.opts.terminals, true);
     this.icons = unless(this.opts.icons, true);
 
-    this.prev_label = unless(this.opts.prev_label, this.parent.prev_label);
-    this.next_label = unless(this.opts.next_label, this.parent.next_label);
-    this.first_label = unless(this.opts.first_label, this.parent.first_label);
-    this.last_label = unless(this.opts.last_label, this.parent.last_label);
+    this.prev_label = this.opts.prev_label;
+    this.next_label = this.opts.next_label;
+    this.first_label = this.opts.first_label;
+    this.last_label = this.opts.last_label;
 
     this.pager = {
       first: () => !this.backDisabled && this.flux.page.reset(),

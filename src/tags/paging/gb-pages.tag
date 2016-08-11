@@ -1,15 +1,14 @@
 <gb-pages>
-  <ul class="gb-pages { _style }" if={ pages }>
-    <span class="gb-pages__ellipsis" if={ lowOverflow }>&hellip;</span>
-    <li each={ pageNumber in pageNumbers }>
-      <a class="gb-pages__page { selected: currentPage === pageNumber }" onclick={ jumpTo }>{ pageNumber }</a>
+  <ul class="gb-pages { _style }" if={ _scope.pages }>
+    <span class="gb-pages__ellipsis" if={ _scope.lowOverflow }>&hellip;</span>
+    <li each={ pageNumber in _scope.pageNumbers }>
+      <a class="gb-pages__page { selected: _scope.currentPage === pageNumber }" onclick={ jumpTo }>{ pageNumber }</a>
     </li>
-    <span class="gb-pages__ellipsis" if={ highOverflow }>&hellip;</span>
+    <span class="gb-pages__ellipsis" if={ _scope.highOverflow }>&hellip;</span>
   </ul>
 
   <script>
-    this.pages = this.parent.pages;
-    this.jumpTo = ({ target }) => this.parent.pager.jump(Number(target.text) - 1);
+    this.jumpTo = ({ target }) => this._scope.pager.jump(Number(target.text) - 1);
   </script>
 
   <style scoped>
