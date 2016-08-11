@@ -20,7 +20,6 @@ import './raw/gb-raw.tag';
 import './record-count/gb-record-count.tag';
 import './related-searches/gb-related-searches.tag';
 import './reset/gb-reset.tag';
-import './reset/gb-raw-reset.tag';
 import './results/gb-results.tag';
 import './results/gb-raw-results.tag';
 import './select/gb-select.tag';

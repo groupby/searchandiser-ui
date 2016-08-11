@@ -1,10 +1,11 @@
 <gb-reset>
-  <gb-raw-reset class={ _style }>
+  <yield>
     <a class="gb-reset">&times;</a>
-  </gb-raw-reset>
+  </yield>
 
   <script>
-    import './gb-raw-reset.tag';
+    import { Reset } from './gb-reset';
+    this.mixin(new Reset().__proto__);
   </script>
 
   <style scoped>

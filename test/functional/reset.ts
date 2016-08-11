@@ -7,10 +7,11 @@ import '../../src/tags/reset/gb-reset.tag';
 const TAG = 'gb-reset';
 
 describe(`${TAG} tag`, () => {
-  let html: HTMLElement;
+  let html: HTMLElement,
+    flux: FluxCapacitor;
 
   beforeEach(() => {
-    mixinFlux();
+    flux = mixinFlux();
     html = createTag(TAG);
   });
   afterEach(() => removeTag(html));
@@ -21,6 +22,15 @@ describe(`${TAG} tag`, () => {
     expect(tag).to.be.ok;
     expect(html.querySelector('.gb-reset')).to.be.ok;
     expect(html.querySelector('.gb-reset').textContent).to.eq('×');
+  });
+
+  it('should clear query', (done) => {
+    const tag = mount();
+    tag.searchBox = <HTMLInputElement & any>{ value: 'old' };
+
+    flux.reset = () => done();
+
+    tag.root.click();
   });
 
   function mount() {
