@@ -1,5 +1,7 @@
 <gb-record-count>
-  <yield/>
+  <yield>
+    <h2>{ first } - { last } of { total } Products</h2>
+  </yield>
 
   <script>
     import { RecordCount } from './gb-record-count';

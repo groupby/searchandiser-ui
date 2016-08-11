@@ -1,6 +1,6 @@
 <gb-reset>
   <yield>
-    <a class="gb-reset">&times;</a>
+    <a class="gb-reset { _style }">&times;</a>
   </yield>
 
   <script>
@@ -9,11 +9,11 @@
   </script>
 
   <style scoped>
-    .gb-stylish .gb-reset {
+    .gb-stylish.gb-reset {
       color: #888;
       padding: 4px;
     }
-    .gb-stylish .gb-reset:hover {
+    .gb-stylish.gb-reset:hover {
       color: black;
       cursor: pointer;
     }

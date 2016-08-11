@@ -28,5 +28,4 @@ import './snippet/gb-snippet.tag';
 import './sort/gb-sort.tag';
 import './sort/gb-raw-sort.tag';
 import './submit/gb-submit.tag';
-import './submit/gb-raw-submit.tag';
 import './template/gb-template.tag';

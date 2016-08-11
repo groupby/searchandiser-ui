@@ -7,10 +7,11 @@ import '../../src/tags/submit/gb-submit.tag';
 const TAG = 'gb-submit';
 
 describe(`${TAG} tag`, () => {
-  let html: HTMLElement;
+  let html: HTMLElement,
+    flux: FluxCapacitor;
 
   beforeEach(() => {
-    mixinFlux();
+    flux = mixinFlux();
     html = createTag(TAG);
   });
   afterEach(() => removeTag(html));
@@ -21,6 +22,15 @@ describe(`${TAG} tag`, () => {
     expect(tag).to.be.ok;
     expect(html.querySelector('.gb-submit')).to.be.ok;
     expect(html.querySelector('.gb-submit').textContent).to.eq('🔍');
+  });
+
+  it('should reset query', () => {
+    const tag = mount();
+    tag.searchBox = <HTMLInputElement & any>{ value: 'old' };
+
+    flux.reset = (value): any => expect(value).to.eq('old');
+
+    tag.root.click();
   });
 
   function mount() {
