@@ -14,19 +14,6 @@ export interface FluxTag extends Riot.Tag.Instance {
 
 export function RootTag(flux: FluxCapacitor, config: any) {
   return {
-    init() {
-      let tagName;
-      const htmlTagName = this.root.tagName.toLowerCase();
-      if (htmlTagName.startsWith('gb-')) {
-        tagName = htmlTagName;
-      } else {
-        tagName = this.root.dataset.is;
-      }
-      this._parents = this.parent ? Object.assign({}, this.parent._parents) : {};
-      if (tagName) {
-        this._parents[tagName] = this;
-      }
-    },
     flux, config,
     _style: config.stylish ? 'gb-stylish' : '',
     init() {
