@@ -1,5 +1,6 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
+import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { selectOptions, clearOption, label } from '../utils/raw-select';
 import { Query } from '../../src/tags/query/gb-query';
 import '../../src/tags/query/gb-raw-query.tag';
@@ -13,14 +14,14 @@ describe(`${TAG} tag`, () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
-    document.body.appendChild(html = document.createElement('input'));
+    flux = mixinFlux();
+    html = <HTMLInputElement>createTag('input');
     html.type = 'text';
     html.value = 'original';
   });
   afterEach(() => {
     sandbox.restore();
-    document.body.removeChild(html);
+    removeTag(html);
   });
 
   it('mounts tag', () => {

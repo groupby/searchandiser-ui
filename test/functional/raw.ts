@@ -1,15 +1,16 @@
 import { expect } from 'chai';
+import { createTag, removeTag } from '../utils/tags';
 import { Raw } from '../../src/tags/raw/gb-raw';
 import '../../src/tags/raw/gb-raw.tag';
 
 const TAG = 'gb-raw';
 
 describe(`${TAG} tag`, () => {
-  let html: Element;
+  let html: HTMLElement;
   const content = '<div>red sneakers</div>';
 
-  beforeEach(() => document.body.appendChild(html = document.createElement(TAG)));
-  afterEach(() => document.body.removeChild(html));
+  beforeEach(() => html = createTag(TAG));
+  afterEach(() => removeTag(html));
 
   it('mounts tag', () => {
     const tag = mount();

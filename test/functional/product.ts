@@ -1,5 +1,6 @@
 import { FluxCapacitor, Events } from 'groupby-api';
 import { expect } from 'chai';
+import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { Product } from '../../src/tags/results/gb-product';
 import '../../src/tags/results/gb-product.tag';
 
@@ -8,16 +9,13 @@ const TAG = 'gb-product';
 describe(`${TAG} tag`, () => {
   const structure = { title: 'title', price: 'price', image: 'image' },
     all_meta = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
-  let html: Element;
+  let html: HTMLElement;
 
   beforeEach(() => {
-    riot.mixin('test', {
-      flux: new FluxCapacitor(''),
-      config: { structure }
-    });
-    document.body.appendChild(html = document.createElement(TAG));
+    mixinFlux({ config: { structure } });
+    html = createTag(TAG);
   });
-  afterEach(() => document.body.removeChild(html));
+  afterEach(() => removeTag(html));
 
   it('mounts tag', () => {
     const tag = mount();

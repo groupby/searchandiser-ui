@@ -1,21 +1,20 @@
 import { FluxCapacitor } from 'groupby-api';
 import { expect } from 'chai';
+import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import '../../src/tags/breadcrumbs/gb-breadcrumbs.tag';
 
 const TAG = 'gb-breadcrumbs';
 
 describe(`${TAG} tag`, () => {
-  let html: Element,
+  let html: HTMLElement,
     flux: FluxCapacitor;
 
   beforeEach(() => {
-    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
-    document.body.appendChild(html = document.createElement(TAG));
+    flux = mixinFlux();
+    html = createTag(TAG);
   });
-  afterEach(() => {
-    document.body.removeChild(html);
-  });
+  afterEach(() => removeTag(html));
 
   it('mounts tag', () => {
     const tag = mount();

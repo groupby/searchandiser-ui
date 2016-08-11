@@ -1,5 +1,6 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
+import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { selectOptions } from '../utils/select';
 import { Sort } from '../../src/tags/sort/gb-sort';
 import '../../src/tags/sort/gb-sort.tag';
@@ -7,13 +8,13 @@ import '../../src/tags/sort/gb-sort.tag';
 const TAG = 'gb-sort';
 
 describe(`${TAG} tag`, () => {
-  let html: Element;
+  let html: HTMLElement;
 
   beforeEach(() => {
-    riot.mixin('test', { flux: new FluxCapacitor('') });
-    document.body.appendChild(html = document.createElement(TAG));
+    mixinFlux();
+    html = createTag(TAG);
   });
-  afterEach(() => document.body.removeChild(html));
+  afterEach(() => removeTag(html));
 
   it('mounts tag', () => {
     const tag = mount();

@@ -1,19 +1,20 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
+import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
 import '../../src/tags/did-you-mean/gb-did-you-mean.tag';
 
 const TAG = 'gb-did-you-mean';
 
 describe(`${TAG} tag`, () => {
-  let html: Element,
+  let html: HTMLElement,
     flux: FluxCapacitor;
 
   beforeEach(() => {
-    riot.mixin('test', { flux: flux = new FluxCapacitor('') });
-    document.body.appendChild(html = document.createElement(TAG));
+    flux = mixinFlux();
+    html = createTag(TAG);
   });
-  afterEach(() => document.body.removeChild(html));
+  afterEach(() => removeTag(html));
 
   it('mounts tag', () => {
     const tag = mount();
