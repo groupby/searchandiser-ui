@@ -4,24 +4,23 @@
       <li class="gb-autocomplete__item" each={ query in categoryResults } data-value={ query.value } data-refinement={
           query.category } data-field={ categoryField }>
         <a class="gb-autocomplete__link" href="#" onclick={ searchCategory }>
-          <gb-raw content={ enhanceCategoryQuery(query) }></gb-raw>
+          <b>{ query.value }</b> in <span class="gb-category-query">{ query.category }</span>
         </a>
       </li>
       <div if={ queries && categoryResults.length } class="gb-autocomplete__divider"></div>
-      <li class="gb-autocomplete__item" each={ queries } data-value={ value }>
-        <gb-autocomplete-link send={ search }>
-            <gb-raw content={ _scope.highlightCurrentQuery(value, '<b>$&</b>') }></gb-raw>
+      <gb-list class="gb-autocomplete-items" items={ queries } scope="gb-sayt">
+        <gb-autocomplete-link send={ _scope.search }>
+            <gb-raw content={ _scope.highlightCurrentQuery(item.value, '<b>$&</b>') }></gb-raw>
         </gb-autocomplete-link>
-      </li>
+      </gb-list>
       <div if={ queries && navigations } class="gb-autocomplete__divider"></div>
       <div each={ navigations }>
         <h4 class="gb-navigation__title">{ displayName }</h4>
-        <li class="gb-autocomplete__item" each={ value in values } data-value="{ displayName }: { value }"
-            data-refinement={ value } data-field={ name }>
-          <gb-autocomplete-link send={ searchRefinement }>
-            <gb-raw content="{ _scope.highlightCurrentQuery(value, '<b>$&</b>') }"></gb-raw>
+        <gb-list class="gb-autocomplete-items" items={ values } scope="gb-sayt">
+          <gb-autocomplete-link send={ _scope.searchRefinement }>
+            <gb-raw content={ _scope.highlightCurrentQuery(item, '<b>$&</b>') }></gb-raw>
           </gb-autocomplete-link>
-        </li>
+        </gb-list>
       </div>
     </ul>
     <ul if={ products } class="gb-sayt__products">

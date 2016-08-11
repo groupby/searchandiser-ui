@@ -1,6 +1,6 @@
 <gb-collections>
   <yield>
-    <gb-list class="gb-collections { _style }" items={ collections }>
+    <gb-list class="gb-collections { _style }" items={ collections } inline>
       <gb-collection-item item={ item }></gb-collection-item>
     </gb-list>
   </yield>

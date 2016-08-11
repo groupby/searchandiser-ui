@@ -1,6 +1,6 @@
 <gb-related-searches>
   <yield>
-    <gb-list class="gb-related-searches { _style }" items={ relatedQueries }>
+    <gb-list class="gb-related-searches { _style }" items={ relatedQueries } inline>
       <a onclick={ _scope.send }>{ item }</a>
     </gb-list>
   </yield>
