@@ -1,6 +1,6 @@
 <gb-did-you-mean>
   <yield>
-    <gb-list class="gb-did-you-mean { _style }" items={ didYouMean } scope="gb-did-you-mean">
+    <gb-list class="gb-did-you-mean { _style }" items={ didYouMean }>
       <a onclick={ _scope.send }>{ item }</a>
     </gb-list>
   </yield>

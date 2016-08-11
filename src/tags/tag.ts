@@ -40,5 +40,10 @@ export function setParents(tag: FluxTag) {
 }
 
 export function setScope(tag: FluxTag) {
-  if (tag.opts.scope in tag._parents) tag._scope = tag._parents[tag.opts.scope];
+  if (tag.opts.scope in tag._parents) {
+    tag._scope = tag._parents[tag.opts.scope];
+  } else {
+    let parent: any = tag;
+    while (parent.parent) tag._scope = parent = parent.parent;
+  }
 }

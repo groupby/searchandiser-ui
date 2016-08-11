@@ -1,8 +1,8 @@
 <gb-paging>
   <yield>
-    <gb-terminal-pager scope="gb-paging">
-      <gb-pager scope="gb-paging">
-        <gb-pages scope="gb-paging"></gb-pages>
+    <gb-terminal-pager>
+      <gb-pager>
+        <gb-pages></gb-pages>
       </gb-pager>
     </gb-terminal-pager>
   </yield>
