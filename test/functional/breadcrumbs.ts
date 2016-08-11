@@ -20,7 +20,7 @@ describe(`${TAG} tag`, () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector(`ul.${TAG}`)).to.be.ok;
+    expect(html.querySelector(`gb-list.${TAG}`)).to.be.ok;
   });
 
   describe('with query', () => {
@@ -52,7 +52,7 @@ describe(`${TAG} tag`, () => {
       const tag = mount();
 
       tag.updateRefinements(selected);
-      expect(html.querySelectorAll('.gb-nav-crumb').length).to.eq(1);
+      expect(html.querySelectorAll('.gb-navigation-crumb').length).to.eq(1);
       expect(crumbs().length).to.eq(3);
       expect(crumbs()[1].querySelector('b').textContent).to.eq('First: B');
     });
@@ -76,11 +76,11 @@ describe(`${TAG} tag`, () => {
   });
 
   function queryCrumb() {
-    return <HTMLLIElement>html.querySelector('.gb-breadcrumbs__query');
+    return <HTMLLIElement>html.querySelector('.gb-query-crumb');
   }
 
   function crumbs() {
-    return <NodeListOf<HTMLLIElement>>html.querySelectorAll('.gb-nav-crumb .gb-refinement-crumb');
+    return <NodeListOf<HTMLLIElement>>html.querySelectorAll('.gb-navigation-crumb gb-refinement-crumb');
   }
 
   function mount() {

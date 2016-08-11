@@ -1,20 +1,8 @@
 <gb-refinement-crumb>
-  <li class="gb-refinement-crumb { _style }">
-    <a onclick={ remove }>&times;</a> <b>{ nav.displayName }: { toView(ref) }</b>
-  </li>
+  <a onclick={ _scope.remove }>&times;</a> <b>{ opts.navigation.displayName }: { toView(item) }</b>
 
   <script>
     import { RefinementCrumb } from './gb-refinement-crumb';
     this.mixin(new RefinementCrumb().__proto__);
   </script>
-
-  <style>
-    .gb-stylish.gb-refinement-crumb {
-      display: flex;
-    }
-
-    .gb-stylish.gb-refinement-crumb a {
-      cursor: pointer;
-    }
-  </style>
 </gb-refinement-crumb>
