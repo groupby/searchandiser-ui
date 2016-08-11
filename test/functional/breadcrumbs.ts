@@ -68,10 +68,10 @@ describe(`${TAG} tag`, () => {
     it('unrefines on click', () => {
       const tag = mount();
 
-      // flux.unrefine = (refinement): any => expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' });
-      //
-      // tag.updateRefinements(selected);
-      // (<HTMLAnchorElement>crumbs()[1].querySelector('a')).click();
+      flux.unrefine = (refinement): any => expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' });
+
+      tag.updateRefinements(selected);
+      (<HTMLAnchorElement>crumbs()[1].querySelector('a')).click();
     });
   });
 
