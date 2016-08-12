@@ -11,6 +11,8 @@ export class Product {
 
   struct: ProductStructure;
   variantStruct: ProductStructure;
+  variants: any[];
+  variantIndex: number;
   allMeta: any;
   getPath: typeof getPath;
   transform: (obj: any) => any;
@@ -26,6 +28,7 @@ export class Product {
 
   transformRecord() {
     this.allMeta = this.transform(this.allMeta);
+    // set variants
   }
 
   link() {
@@ -38,6 +41,10 @@ export class Product {
 
   image(imageObj: string | string[]) {
     return Array.isArray(imageObj) ? imageObj[0] : imageObj;
+  }
+
+  switchVariant(event: MouseEvent) {
+    this.update({ variantIndex: (<HTMLElement>event.target).dataset['index'] });
   }
 
   variant(index: number) {
