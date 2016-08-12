@@ -67,7 +67,7 @@ describe('gb-product logic', () => {
   it('should return url from data', () => {
     const url = 'some/url/for/product';
 
-    tag.parent.allMeta.url = url;
+    tag.parent.allMeta = { url };
     tag.init();
 
     expect(tag.link()).to.eq(url);
@@ -91,9 +91,9 @@ describe('gb-product logic', () => {
 
   describe('variant logic', () => {
     it('should return the sole implicit variant', () => {
-      product.init();
+      tag.init();
 
-      expect(product.variant(0)).to.eql({
+      expect(tag.variant(0)).to.eql({
         title: 'Red Sneakers',
         price: '$12.45',
         image: 'image.png'
@@ -108,14 +108,12 @@ describe('gb-product logic', () => {
             struct: {
               title: 'title',
               price: 'price',
-              image: 'image',
-              url: 'url'
+              image: 'image'
             },
             allMeta: {
               title: 'Green Shoes',
               price: '$1',
-              image: 'image.tiff',
-              url: 'about:blank'
+              image: 'image.tiff'
             }
           }
         },
@@ -139,11 +137,11 @@ describe('gb-product logic', () => {
           opts: {},
           parent: {
             struct: {
+              variants: 'variants',
               title: 'title',
               price: 'price',
               image: 'image',
-              url: 'url',
-              variants: 'variants'
+              url: 'url'
             },
             allMeta: {
               variants: [{
@@ -160,11 +158,11 @@ describe('gb-product logic', () => {
         });
 
       p.init();
-
       expect(p.variant(0)).to.eql({
         title: 'Green Shoes',
         price: '$1',
-        image: 'image.tiff'
+        image: 'image.tiff',
+        url: 'about:blank'
       });
     });
 
@@ -217,22 +215,26 @@ describe('gb-product logic', () => {
       expect(p.variant(0)).to.eql({
         title: 'Green Shoes',
         price: '$1',
-        image: 'image.tiff'
+        image: 'image.tiff',
+        url: 'about:blank'
       });
       expect(p.variant(1)).to.eql({
         title: 'Green Shoes',
         price: '$1',
-        image: 'image.tiff'
+        image: 'image.tiff',
+        url: 'about:blank'
       });
       expect(p.variant(2)).to.eql({
         title: 'Green Moccasins',
         price: '$2',
-        image: 'image.svg'
+        image: 'image.svg',
+        url: 'about:mozilla'
       });
       expect(p.variant(3)).to.eql({
         title: 'Green Shoes',
         price: '$1',
-        image: 'image.tiff'
+        image: 'image.tiff',
+        url: 'about:blank'
       });
     });
 
@@ -400,7 +402,6 @@ describe('gb-product logic', () => {
 
       p.init();
 
-try{
       expect(p.variant(0)).to.be.eql({
         title: 'Green Shoes',
         price: '$3',
@@ -421,8 +422,251 @@ try{
         price: '$3',
         image: 'image.bmp'
       });
+    });
 
-    }catch (e) {console.log(p.variant(0));throw e;}
+    it('should support alternately named fields in struct and remap them to match the keynames in Searchandiser.ProductStructure', () => {
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'titre',
+              price: 'prix',
+              image: 'image',
+              url: 'url'
+            },
+            allMeta: {
+              titre: 'Chicken Dance',
+              prix: '$30',
+              image: 'image.apng',
+              url: 'about:blank',
+            }
+          }
+        },
+        {
+          on: (_) => null
+        });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'Chicken Dance',
+        price: '$30',
+        image: 'image.apng',
+        url: 'about:blank',
+      });
+    });
+
+    it('should support alternately named fields in variants', () => {
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'titre',
+              price: 'prix',
+              image: 'image',
+              url: 'url',
+              variants: 'genres'
+            },
+            allMeta: {
+              genres: [{
+                titre: 'Chicken Dance',
+                prix: '$30',
+                image: 'image.apng',
+                url: 'about:blank'
+              }, {
+                titre: 'Safari Trip',
+                prix: '$30',
+                image: 'image.ico',
+                url: 'about:chrome'
+              }]
+            }
+          }
+        },
+        {
+          on: (_) => null
+        });
+
+      p.init();
+      expect(p.variant(0)).to.eql({
+        title: 'Chicken Dance',
+        price: '$30',
+        image: 'image.apng',
+        url: 'about:blank',
+      });
+      expect(p.variant(1)).to.eql({
+        title: 'Safari Trip',
+        price: '$30',
+        image: 'image.ico',
+        url: 'about:chrome'
+      });
+    });
+
+    it('should support alternately named fields in variants with variant remapping', () => {
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'titre',
+              price: 'prix',
+              image: 'image',
+              url: 'url',
+              variants: 'genres'
+            },
+            variantStruct: {
+              title: 'soustitre',
+              image: 'sousimage'
+            },
+            allMeta: {
+              titre: 'Ingenue',
+              prix: '$50',
+              image: 'image.dvi',
+              url: 'about:mozilla',
+
+              genres: [{
+                soustitre: 'Chicken Dance',
+                prix: '$39',
+                sousimage: 'image.apng',
+                url: 'about:blank'
+              }, {
+                soustitre: 'Safari Trip',
+                prix: '$30',
+                sousimage: 'image.ico',
+                url: 'about:chrome'
+              }]
+            }
+          }
+        },
+        {
+          on: (_) => null
+        });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'Chicken Dance',
+        price: '$50',
+        image: 'image.apng',
+        url: 'about:mozilla',
+      });
+      expect(p.variant(1)).to.eql({
+        title: 'Safari Trip',
+        price: '$50',
+        image: 'image.ico',
+        url: 'about:mozilla'
+      });
+    });
+
+    it('should support nested fields and sole implicit variant', () => {
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'titre.second',
+              price: 'prix',
+              image: 'image',
+              url: 'url'
+            },
+            allMeta: {
+              titre: {
+                premier: 'Oiseau Rebel',
+                second: 'La Boheme'
+              },
+              prix: '$50',
+              image: 'image.dvi',
+              url: 'about:mozilla',
+            }
+          }
+        },
+        {
+          on: (_) => null
+        });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'La Boheme',
+        price: '$50',
+        image: 'image.dvi',
+        url: 'about:mozilla',
+      });
+    });
+
+    it('should support variants having a nested location', () => {
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'title',
+              price: 'price',
+              image: 'image',
+              url: 'url',
+              variants: 'variants[me][0][0]'
+            },
+            allMeta: {
+              variants: {
+                me: [[[{
+                  title: 'Green Shoes',
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  title: 'Green Shoes',
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  title: 'Green Moccasins',
+                  price: '$2',
+                  image: 'image.svg',
+                  url: 'about:mozilla'
+                },
+                {
+                  title: 'Green Shoes',
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                }]]]
+              }
+            }
+          }
+        },
+        {
+          on: (_) => null
+        });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'Green Shoes',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
+      expect(p.variant(1)).to.eql({
+        title: 'Green Shoes',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
+      expect(p.variant(2)).to.eql({
+        title: 'Green Moccasins',
+        price: '$2',
+        image: 'image.svg',
+        url: 'about:mozilla'
+      });
+      expect(p.variant(3)).to.eql({
+        title: 'Green Shoes',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
     });
   });
 });

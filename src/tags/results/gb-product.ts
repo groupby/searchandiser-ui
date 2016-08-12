@@ -41,7 +41,24 @@ export class Product {
   }
 
   variant(index: number) {
-    const baseFields = ['image', 'price', 'title'];
+    /*
+    Example:
+    ({x: 3, y: 4, h: 8}, {z: 'x', i: 'h'}) -> {z: 3, i: 8}
+
+    N.B. It removes keys that do not appear in the mapping
+    */
+    const remapWithValuesAsKeys = (x: any, mapping: any) => {
+      return Object.keys(mapping).reduce((acc, key) => {
+        const value = getPath(x, mapping[key]);
+        if (value) {
+          return Object.assign(acc, { [key]: value });
+        } else {
+          return acc;
+        }
+      }, {});
+    };
+
+    const baseFields = this.struct ? Object.keys(this.struct) : [];
     const varyingFields = this.variantStruct ? Object.keys(this.variantStruct) : baseFields;
     const isVariantsConfigured = this.struct.variants !== undefined;
     if (isVariantsConfigured) {
@@ -49,9 +66,8 @@ export class Product {
       if (variantsArray) {
         const variant = variantsArray[index];
         if (variant) {
-          return Object.assign({},
-            filterObject(this.allMeta, baseFields),
-            filterObject(variantsArray[index], varyingFields));
+          return filterObject(Object.assign(remapWithValuesAsKeys(this.allMeta, this.struct), remapWithValuesAsKeys(variant, this.variantStruct || this.struct)),
+            ['*', '!variants']);
         }
         else {
           return null;
@@ -63,7 +79,7 @@ export class Product {
     }
     else {
       if (index === 0) {
-        return filterObject(this.allMeta, baseFields);
+        return filterObject(remapWithValuesAsKeys(this.allMeta, this.struct), ['*', '!variants']);
       }
       else {
         return null;
