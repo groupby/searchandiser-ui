@@ -75,7 +75,7 @@ describe(`${TAG} tag`, () => {
   }
 
   function counts() {
-    return <NodeListOf<HTMLSpanElement>>html.querySelectorAll('.gb-collection__count');
+    return <NodeListOf<HTMLSpanElement>>html.querySelectorAll('gb-badge');
   }
 
   function mount(options: any[] = []) {

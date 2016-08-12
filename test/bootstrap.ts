@@ -11,5 +11,8 @@ riot.mixin({
     setParents(this);
     setScope(this)
     this.mixin('test');
+  },
+  _scopeTo(scope: string) {
+    this._scope = this._parents[scope];
   }
 });

@@ -13,7 +13,6 @@ export class Filter {
 
   init() {
     this.navField = this.opts.field;
-    this.hover = this.opts.onHover;
     this.label = this.opts.label || 'Filter';
     this.clear = this.opts.clear || 'Unfiltered';
     this.fluxClone = this._clone();
@@ -31,7 +30,7 @@ export class Filter {
   }
 
   updateValues(res: Results) {
-    return this.update({ options: this.convertRefinements(res.availableNavigation) });
+    return this.tags['gb-select'].updateOptions(this.convertRefinements(res.availableNavigation));
   }
 
   updateFluxClone() {
