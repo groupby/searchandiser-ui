@@ -1,10 +1,12 @@
 <gb-filter>
-  <gb-raw-filter passthrough={ opts }>
-    <gb-option></gb-option>
-  </gb-raw-filter>
+  <yield>
+    <gb-select>
+    </gb-select>
+  </yield>
 
   <script>
-    import './gb-raw-filter.tag';
-    import '../select/gb-option.tag';
+    import '../select/gb-select.tag';
+    import { Filter } from './gb-filter';
+    this.mixin(new Filter().__proto__);
   </script>
 </gb-filter>

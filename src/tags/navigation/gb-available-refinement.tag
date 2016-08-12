@@ -3,11 +3,12 @@
     <a class="gb-ref__link" href="#" onclick={ send }>
       <span class="gb-ref__title">{ toView(ref) }</span>
       <span class="gb-filler"></span>
-      <span class="gb-ref__badge" if={ badge }>{ ref.count }</span>
+      <gb-badge if={ badge }>{ ref.count }</gb-badge>
     </a>
   </li>
 
   <script>
+    import '../badge/gb-badge.tag';
     import { AvailableRefinement } from './gb-refinement';
     this.mixin(new AvailableRefinement().__proto__);
   </script>
@@ -33,22 +34,6 @@
 
     .gb-stylish .gb-ref__link:hover {
       background-color: #ddd;
-    }
-
-    .gb-stylish .gb-ref__badge {
-      display: inline-block;
-      min-width: 10px;
-      max-height: 20px;
-      padding: 4px 7px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: bold;
-      line-height: 1;
-      color: #fff;
-      background-color: #ccc;
-      text-align: center;
-      white-space: nowrap;
-      vertical-align: middle;
     }
   </style>
 </gb-available-refinement>

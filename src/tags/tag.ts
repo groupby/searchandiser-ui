@@ -3,13 +3,16 @@ import { initCapacitor } from '../searchandiser';
 
 export interface FluxTag extends Riot.Tag.Instance {
   root: HTMLElement;
+  parent: Riot.Tag.Instance & FluxTag & any;
   flux: FluxCapacitor;
   config: any;
   _style: string;
   _parents: any;
-  _scope: FluxTag;
+  _scope: FluxTag & any;
+  _top: FluxTag & any;
 
   _clone: () => FluxCapacitor;
+  _scopeTo: (scope: string) => void;
 }
 
 export function RootTag(flux: FluxCapacitor, config: any) {
@@ -19,6 +22,9 @@ export function RootTag(flux: FluxCapacitor, config: any) {
     init() {
       setParents(this);
       setScope(this);
+    },
+    _scopeTo(scope: string) {
+      this._scope = this._parents[scope];
     },
     _clone: () => initCapacitor(Object.assign({}, config, { initialSearch: false })),
     findParent: (tag: Riot.Tag.Instance, name: string) => {
@@ -42,8 +48,11 @@ export function setParents(tag: FluxTag) {
 export function setScope(tag: FluxTag) {
   if (tag.opts.scope in tag._parents) {
     tag._scope = tag._parents[tag.opts.scope];
+  } else if (tag.parent && tag.parent._scope) {
+    tag._scope = tag.parent._scope;
   } else {
     let parent: any = tag;
     while (parent.parent) tag._scope = parent = parent.parent;
   }
+  tag._top = tag._scope;
 }

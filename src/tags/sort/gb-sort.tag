@@ -1,10 +1,12 @@
 <gb-sort>
-  <gb-raw-sort passthrough={ opts }>
-    <gb-option></gb-option>
-  </gb-raw-sort>
+  <yield>
+    <gb-select>
+    </gb-select>
+  </yield>
 
   <script>
-    import './gb-raw-sort.tag';
-    import '../select/gb-option.tag';
+    import '../select/gb-select.tag';
+    import { Sort } from './gb-sort';
+    this.mixin(new Sort().__proto__);
   </script>
 </gb-sort>

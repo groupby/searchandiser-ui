@@ -1,7 +1,7 @@
 <gb-collections>
   <yield>
     <gb-list class="gb-collections { _style }" items={ collections }>
-      <gb-collection-item item={ item }></gb-collection-item>
+      <gb-collection-item></gb-collection-item>
     </gb-list>
   </yield>
 

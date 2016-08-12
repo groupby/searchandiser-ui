@@ -1,38 +1,27 @@
 import { Results } from 'groupby-api';
 import { FluxTag } from '../tag';
-import { checkNested } from '../../utils';
-import { SelectConfig } from '../select/gb-select';
+import { SelectTag } from '../select/gb-select';
+import { checkNested, unless, getPath } from '../../utils';
 
-export interface Sort extends FluxTag { }
+export interface Sort extends SelectTag { }
 
 export class Sort {
 
-  parentOpts: any;
-  options: any;
-  passthrough: SelectConfig;
-
   init() {
-    this.parentOpts = this.opts.passthrough || this.opts;
-    this.options = checkNested(this.config, 'tags', 'sort', 'options') ? this.config.tags.sort.options
-      : this.parentOpts.options
+    this.default = true;
+    this.hover = this.opts.onHover;
+    this.options = unless(getPath(this.config, 'tags.sort.options'), this.opts.options)
       || [
         { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
         { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
       ];
-
-    this.passthrough = Object.assign({}, this.parentOpts.__proto__, {
-      options: this.options,
-      update: this.sort,
-      hover: this.parentOpts.onHover,
-      default: true
-    });
   }
 
   sortValues() {
     return this.options.map(option => option.value);
   }
 
-  sort(value) {
+  onselect(value) {
     return this.flux.sort(value, this.sortValues())
   }
 }

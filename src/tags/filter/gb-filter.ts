@@ -1,31 +1,22 @@
 import { FluxTag } from '../tag';
 import { FluxCapacitor, Events, QueryConfiguration, Results } from 'groupby-api';
 import { toRefinement } from '../../utils';
-import { SelectConfig } from '../select/gb-select';
+import { SelectTag } from '../select/gb-select';
 
-export interface Filter extends FluxTag { }
+export interface Filter extends SelectTag { }
 
 export class Filter {
 
   fluxClone: FluxCapacitor;
-  selectElement: { _tag: Filter };
-  parentOpts: any;
   navField: string;
   selected: any;
-  passthrough: SelectConfig;
 
   init() {
-    this.parentOpts = this.opts.passthrough || this.opts;
-    this.navField = this.parentOpts.field;
-
+    this.navField = this.opts.field;
+    this.hover = this.opts.onHover;
+    this.label = this.opts.label || 'Filter';
+    this.clear = this.opts.clear || 'Unfiltered';
     this.fluxClone = this._clone();
-
-    this.passthrough = Object.assign({}, this.parentOpts.__proto__, {
-      hover: this.parentOpts.onHover,
-      update: this.navigate,
-      label: this.parentOpts.label || 'Filter',
-      clear: this.parentOpts.clear || 'Unfiltered'
-    });
 
     this.flux.on(Events.RESULTS, () => this.updateFluxClone());
   }
@@ -40,7 +31,7 @@ export class Filter {
   }
 
   updateValues(res: Results) {
-    return this.selectElement._tag.update({ options: this.convertRefinements(res.availableNavigation) });
+    return this.update({ options: this.convertRefinements(res.availableNavigation) });
   }
 
   updateFluxClone() {
@@ -55,7 +46,7 @@ export class Filter {
     this.fluxClone.search(searchRequest.query).then(this.updateValues);
   }
 
-  navigate(value) {
+  onselect(value) {
     if (this.selected) this.flux.unrefine(this.selected, { skipSearch: true });
     if (value === '*') {
       this.flux.reset();
