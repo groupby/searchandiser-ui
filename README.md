@@ -43,6 +43,7 @@ displayed.
     <!-- Optionally inject into an input element directly
     <input type="text" class="raw-query">
     -->
+    <div class="collections"></div>
     <div>
       <!-- Selected navigations that represent the
            filters selected by the user -->
@@ -130,38 +131,84 @@ Use the searchandiser method to set up your configurations in a script tag at th
           price: 'price'
         },
 
-        sayt: {
-          products: 4,
-          queries: 5,
+        tags: {
 
-          // disable auto-search behaviour
-          // autoSearch: false,
-          //
-          // disable highlighting in autocomplete
-          // highlight: false,
-          //
-          // the field in your data which represents product categories
-          // categoryField: 'productCategory',
-          //
-          // rename navigations on the fly
-          // navigationNames: {
-          //   brand: 'Brand'
-          // },
-          //
-          // filter the navigations returned
-          // allowedNavigations: [ 'brand' ],
-          //
-          // select minimum characters at which to start autocomplete
-          // minimumCharacters: 3,
-          //
-          // select delay to start autocomplete
-          // delay: 300
+          sayt: {
+            products: 4,
+            queries: 5,
+
+            // disable auto-search behaviour
+            // autoSearch: false,
+            //
+            // disable highlighting in autocomplete
+            // highlight: false,
+            //
+            // SAYT specific product structure
+            // structure: { ... },
+            //
+            // the field in your data which represents product categories
+            // categoryField: 'productCategory',
+            //
+            // rename navigations on the fly
+            // navigationNames: {
+            //   brand: 'Brand'
+            // },
+            //
+            // filter the navigations returned
+            // allowedNavigations: [ 'brand' ],
+            //
+            // select minimum characters at which to start autocomplete
+            // minimumCharacters: 3,
+            //
+            // select delay to start autocomplete
+            // delay: 300
+          },
+
+          collections: {
+            options: [{
+              // how the collection will be displayed
+              label: 'Products',
+              // the collection in Searchandiser
+              value: 'default'
+            }, {
+              label: 'Sales',
+              value: 'productsonsale'
+            }]
+          },
+
+          sort: {
+            options: [{
+              label: 'Relevance',
+              value: {
+                // default relevance sort
+                field: '_relevance'
+              }
+            }, {
+              label: 'Price Low to High',
+              value: {
+                // field to sort upon
+                field: 'price',
+                // order of sort
+                order: 'Ascending'
+              }
+            }],
+
+            // The label that will be displayed when
+            // no sort is selected
+            // default: 'Sort',
+            //
+            // The label that will be displayed as
+            // an option to clear the sort
+            // clear: 'Unsorted'
+          }
+
         },
 
         // enable some default styling
         // stylish: true,
         //
         // disable a default empty search at page load
+        // if set to false, query & raw-query tags will inspect the current URL to do a search
         // initialSearch: false
       });
 
@@ -223,6 +270,8 @@ Use the searchandiser method to set up your configurations in a script tag at th
       // consistent behaviour.
       searchandiser.attach('raw-submit', '.raw-submit');
 
+      searchandiser.attach('collections');
+
       searchandiser.attach('paging', '.paging', {
         // show page selection links
         // showPages: true,
@@ -263,28 +312,7 @@ Use the searchandiser method to set up your configurations in a script tag at th
         // matchAll: 'All Categories'
       });
       searchandiser.attach('sort', '.sort', {
-        // An array of sorting options
-        // options: [{
-        //   label: 'Price Low to High',
-        //   value: {
-        //     field: 'price',
-        //     order: 'Ascending'
-        //   }
-        // }, {
-        //   label: 'Price High to Low',
-        //   value: {
-        //     field: 'price',
-        //     order: 'Descending'
-        //   }
-        // }],
-        //
-        // The label that will be displayed when
-        // no sort is selected
-        // default: 'Sort',
-        //
-        // The label that will be displayed as
-        // an option to clear the sort
-        // clear: 'Unsorted'
+        // overrides the values in main tag config
       });
       searchandiser.attach('breadcrumbs', '.breadcrumbs', {
         // hide the current query from the breadcrumbs
@@ -294,7 +322,7 @@ Use the searchandiser method to set up your configurations in a script tag at th
         // hideRefinements: true
       });
       searchandiser.attach('did-you-mean', '.didYouMean');
-      searchandiser.attach('related-queries', '.relatedQueries');
+      searchandiser.attach('related-searches', '.relatedQueries');
 
       // To register templates use the name of the template
       // and a css selector
