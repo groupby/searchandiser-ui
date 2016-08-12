@@ -58,8 +58,6 @@ export class Product {
       }, {});
     };
 
-    const baseFields = this.struct ? Object.keys(this.struct) : [];
-    const varyingFields = this.variantStruct ? Object.keys(this.variantStruct) : baseFields;
     const isVariantsConfigured = this.struct.variants !== undefined;
     if (isVariantsConfigured) {
       const variantsArray: any[] = this.get(this.struct.variants);
