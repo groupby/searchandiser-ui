@@ -7,11 +7,9 @@
       <p class="gb-product__title">{ get(struct.title) }</p>
       <p class="gb-product__price">{ get(struct.price) }</p>
     </a>
-    <!--
-    <a each={ variant,i in [0,1,2,3] } onclick={ switchVariant } data-index={ i }>
-      { console.log(this); }
+    <a each={ variant,i in variants } onclick={ switchVariant } data-index={ i }>
+      { JSON.stringify(variant) }
     </a>
-  -->
   </div>
 
   <script>

@@ -28,7 +28,14 @@ export class Product {
 
   transformRecord() {
     this.allMeta = this.transform(this.allMeta);
-    // set variants
+
+    this.variants = [];
+    let i = 0;
+    let variant;
+    while (variant = this.variant(i)) {
+      this.variants.push(variant);
+      ++i;
+    }
   }
 
   link() {
@@ -55,17 +62,21 @@ export class Product {
     N.B. It removes keys that do not appear in the mapping
     */
     const remapWithValuesAsKeys = (x: any, mapping: any) => {
-      return Object.keys(mapping).reduce((acc, key) => {
-        const value = getPath(x, mapping[key]);
-        if (value) {
-          return Object.assign(acc, { [key]: value });
-        } else {
-          return acc;
-        }
-      }, {});
+      if (mapping) {
+        return Object.keys(mapping).reduce((acc, key) => {
+          const value = getPath(x, mapping[key]);
+          if (value) {
+            return Object.assign(acc, { [key]: value });
+          } else {
+            return acc;
+          }
+        }, {});
+      } else {
+        return x;
+      }
     };
 
-    const isVariantsConfigured = this.struct.variants !== undefined;
+    const isVariantsConfigured = (this.struct && this.struct.variants) !== undefined;
     if (isVariantsConfigured) {
       const variantsArray: any[] = this.get(this.struct.variants);
       if (variantsArray) {
