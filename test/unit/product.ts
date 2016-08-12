@@ -668,5 +668,281 @@ describe('gb-product logic', () => {
         url: 'about:blank'
       });
     });
+
+    it('should support nested structure fields', () => {
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'title.second',
+              price: 'price',
+              image: 'image',
+              url: 'url',
+              variants: 'variants[me][0][0]'
+            },
+            allMeta: {
+              variants: {
+                me: [[[{
+                  title: {
+                    first: 'Green Shoes',
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  title: {
+                    first: 'Green Shoes',
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  title: {
+                    first: 'Green Moccasins',
+                    second: 'Verdant Socks'
+                  },
+                  price: '$2',
+                  image: 'image.svg',
+                  url: 'about:mozilla'
+                },
+                {
+                  title: {
+                    first: 'Green Shoes',
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                }]]]
+              }
+            }
+          }
+        },
+        {
+          on: (_) => null
+        });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'Verdant Clogs',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
+      expect(p.variant(1)).to.eql({
+        title: 'Verdant Clogs',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
+      expect(p.variant(2)).to.eql({
+        title: 'Verdant Socks',
+        price: '$2',
+        image: 'image.svg',
+        url: 'about:mozilla'
+      });
+      expect(p.variant(3)).to.eql({
+        title: 'Verdant Clogs',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
+    });
+
+    it('should support varying over nested variantStructure fields', () => {
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'a[2].b',
+              price: 'price',
+              image: 'image',
+              url: 'url',
+              variants: 'variants[me][0][0]'
+            },
+            variantStruct: {
+              title: 'title.second'
+            },
+            allMeta: {
+              a: [
+                'delete',
+                'me',
+                { b: 'Green Peppers' },
+                'please'
+              ],
+              variants: {
+                me: [[[{
+                  title: {
+                    first: 'Green Shoes',
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  title: {
+                    first: 'Green Shoes',
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  title: {
+                    first: 'Green Moccasins',
+                    second: 'Verdant Socks'
+                  },
+                  price: '$2',
+                  image: 'image.svg',
+                  url: 'about:mozilla'
+                },
+                {
+                  title: {
+                    first: 'Green Shoes',
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                }]]]
+              }
+            }
+          }
+        },
+        {
+          on: (_) => null
+        });
+
+      p.init();
+
+      expect(p.variant(0)).to.eql({
+        title: 'Verdant Clogs'
+      });
+      expect(p.variant(1)).to.eql({
+        title: 'Verdant Clogs'
+      });
+      expect(p.variant(2)).to.eql({
+        title: 'Verdant Socks'
+      });
+      expect(p.variant(3)).to.eql({
+        title: 'Verdant Clogs'
+      });
+    });
+
+    it('should restore original field when a variant happens to lack it', () => {
+      const p = Object.assign(new Product(),
+        {
+          opts: {},
+          parent: {
+            struct: {
+              title: 'a[2].b',
+              price: 'prix',
+              image: 'image',
+              url: 'url',
+              variants: 'variants[me][0][0]'
+            },
+            variantStruct: {
+              title: 'title.second',
+              price: 'price',
+              image: 'image',
+              url: 'url'
+            },
+            allMeta: {
+              a: [
+                'delete',
+                'me',
+                { b: 'Green Peppers' },
+                'please'
+              ],
+              prix: '$999',
+              image: 'image.gs',
+              url: 'about:preferences',
+              variants: {
+                me: [[[{
+                  title: {
+                    first: 'Green Shoes'
+                  },
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  title: {
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  image: 'image.tiff',
+                  url: 'about:blank'
+                },
+                {
+                  title: {
+                    first: 'Green Shoes',
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  url: 'about:blank'
+                },
+                {
+                  title: {
+                    first: 'Green Shoes',
+                    second: 'Verdant Clogs'
+                  },
+                  price: '$1',
+                  image: 'image.tiff'
+                }]]]
+              }
+            }
+          }
+        },
+        {
+          on: (_) => null
+        });
+
+      p.init();
+
+      expect(p.variant(0)).eql({
+        title: 'Green Peppers',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
+      expect(p.variant(1)).eql({
+        title: 'Green Peppers',
+        price: '$999',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
+      expect(p.variant(2)).eql({
+        title: 'Verdant Clogs',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:blank'
+      });
+      expect(p.variant(3)).eql({
+        title: 'Verdant Clogs',
+        price: '$1',
+        image: 'image.gs',
+        url: 'about:blank'
+      });
+      expect(p.variant(4)).eql({
+        title: 'Verdant Clogs',
+        price: '$1',
+        image: 'image.tiff',
+        url: 'about:preferences'
+      });
+    });
   });
 });
