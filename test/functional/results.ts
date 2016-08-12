@@ -20,23 +20,22 @@ describe(`${TAG} tag`, () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector('gb-raw-results')).to.be.ok;
+    expect(html.querySelector('gb-list')).to.be.ok;
   });
 
   it('renders from records', () => {
-    const tag = mount(),
-      rawTag = tag.tags['gb-raw-results'];
+    const tag = mount();
 
-    rawTag.updateRecords([{}, {}, {}]);
+    tag.updateRecords([{}, {}, {}]);
     expect(products().length).to.eq(3);
+    expect(html.querySelectorAll('gb-list li').length).to.eq(3);
   });
 
   it('renders product info', () => {
     const title = 'Red Sneakers',
-      tag = mount(),
-      rawTag = tag.tags['gb-raw-results'];
+      tag = mount();
 
-    rawTag.updateRecords([{ allMeta: { title } }])
+    tag.updateRecords([{ allMeta: { title } }])
 
     expect(products()[0].querySelector('.gb-product__title').textContent).to.eq(title);
   });

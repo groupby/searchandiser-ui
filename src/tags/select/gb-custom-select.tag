@@ -1,7 +1,7 @@
 <gb-custom-select>
   <div class="gb-select { _scope.hover ? 'hoverable' : 'clickable' } { _style }">
     <button data-is="gb-select-button" type="button"></button>
-    <gb-option-list options={ _scope.options }>
+    <gb-option-list>
       <yield>
         <gb-option option={ option } send={ option.clear ? _scope.clearSelection : _scope.selectCustom }/>
       </yield>
@@ -11,8 +11,8 @@
   <script>
     this._scopeTo('gb-select');
     import './gb-select-button.tag';
-    import './gb-option.tag';
     import './gb-option-list.tag';
+    import './gb-option.tag';
   </script>
 
   <style scoped>

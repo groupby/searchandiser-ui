@@ -61,8 +61,8 @@ export function parseQueryFromLocation(queryParamName: string, queryConfig: any)
   return queryFromUrl;
 }
 
-export function unless(obj: any, defaultObj: any) {
-  return obj === undefined ? defaultObj : obj;
+export function unless(obj: any, ...defaultObjs: any[]) {
+  return obj !== undefined ? obj : unless(defaultObjs.splice(0, 1)[0], ...defaultObjs);
 }
 
 export function getPath(obj: any, path: string = '') {

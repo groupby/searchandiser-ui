@@ -1,4 +1,5 @@
 import { FluxCapacitor } from 'groupby-api';
+import { expect } from 'chai';
 import { initCapacitor } from '../searchandiser';
 
 export interface FluxTag extends Riot.Tag.Instance {
@@ -45,6 +46,7 @@ export function setParents(tag: FluxTag) {
   if (tagName) tag._parents[tagName] = tag;
 }
 
+// somehow this function isn't working for the gb-select inside gb-sort
 export function setScope(tag: FluxTag) {
   if (tag.opts.scope in tag._parents) {
     tag._scope = tag._parents[tag.opts.scope];
@@ -53,6 +55,6 @@ export function setScope(tag: FluxTag) {
   } else {
     let parent: any = tag;
     while (parent.parent) tag._scope = parent = parent.parent;
+    tag._top = tag._scope;
   }
-  tag._top = tag._scope;
 }

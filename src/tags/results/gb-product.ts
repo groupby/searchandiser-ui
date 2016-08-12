@@ -13,8 +13,8 @@ export class Product {
   transform: (obj: any) => any;
 
   init() {
-    this.struct = this.parent ? this.parent.struct : this.config.structure;
-    this.allMeta = this.parent ? this.parent.allMeta : this.opts.all_meta;
+    this.struct = unless(this._scope.struct, this.config.structure);
+    this.allMeta = this.opts.all_meta;
     this.transform = unless(this.struct._transform, (val) => val);
     this.getPath = getPath;
     this.on('update', this.transformRecord);

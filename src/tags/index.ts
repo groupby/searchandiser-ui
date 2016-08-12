@@ -18,7 +18,6 @@ import './record-count/gb-record-count.tag';
 import './related-queries/gb-related-queries.tag';
 import './reset/gb-reset.tag';
 import './results/gb-results.tag';
-import './results/gb-raw-results.tag';
 import './select/gb-select.tag';
 import './snippet/gb-snippet.tag';
 import './sort/gb-sort.tag';

@@ -7,7 +7,6 @@
   <style>
     .gb-query-wrapper {
       position: relative;
-      display: inline-block;
     }
     .gb-sayt-target {
       top: 31px;

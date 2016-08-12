@@ -1,6 +1,7 @@
 <gb-sort>
   <yield>
-    <gb-select>
+    <!-- figure out why we need this scope here (otherwise gets an empty) -->
+    <gb-select scope="gb-sort">
     </gb-select>
   </yield>
 

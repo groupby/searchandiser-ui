@@ -8,11 +8,10 @@ export interface Sort extends SelectTag { }
 export class Sort {
 
   init() {
-    this.options = unless(getPath(this.config, 'tags.sort.options'), this.opts.options)
-      || [
-        { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
-        { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
-      ];
+    this.options = unless(getPath(this.config, 'tags.sort.options'), this.opts.options, [
+      { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
+      { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
+    ]);
   }
 
   sortValues() {

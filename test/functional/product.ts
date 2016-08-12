@@ -12,7 +12,7 @@ describe(`${TAG} tag`, () => {
   let html: HTMLElement;
 
   beforeEach(() => {
-    mixinFlux({ config: { structure } });
+    mixinFlux({ config: { structure }, _scope: { opts: {} } });
     html = createTag(TAG);
   });
   afterEach(() => removeTag(html));
