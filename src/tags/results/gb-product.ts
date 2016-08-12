@@ -20,6 +20,7 @@ export class Product {
   init() {
     this.struct = this.parent ? this.parent.struct : this.config.structure;
     this.variantStruct = this.parent ? this.parent.variantStruct : this.config.structure;
+    this.variantIndex = 0;
     this.allMeta = this.parent ? this.parent.allMeta : this.opts.all_meta;
     this.transform = unless(this.struct._transform, (val) => val);
     this.getPath = getPath;
@@ -39,7 +40,7 @@ export class Product {
   }
 
   link() {
-    return this.get(this.struct.url) || `details.html?id=${this.allMeta.id}`;
+    return this.currentVariant().url || `details.html?id=${this.allMeta.id}`;
   }
 
   get(path: string) {
@@ -101,5 +102,9 @@ export class Product {
         return null;
       }
     }
+  }
+
+  currentVariant() {
+    return this.variant(this.variantIndex);
   }
 }

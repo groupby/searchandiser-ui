@@ -1,11 +1,11 @@
 <gb-product>
   <div class="gb-product">
     <a class="gb-product__image-link" href={ link() }>
-      <img class="gb-product__image" src={ image(get(struct.image)) } alt=""/>
+      <img class="gb-product__image" src={ image(currentVariant().image) } alt=""/>
     </a>
     <a class="gb-product__info-link" href={ link() }>
-      <p class="gb-product__title">{ get(struct.title) }</p>
-      <p class="gb-product__price">{ get(struct.price) }</p>
+      <p class="gb-product__title">{ currentVariant().title }</p>
+      <p class="gb-product__price">{ currentVariant().price }</p>
     </a>
     <a each={ variant,i in variants } onclick={ switchVariant } data-index={ i }>
       { JSON.stringify(variant) }
