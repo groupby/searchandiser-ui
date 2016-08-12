@@ -21,21 +21,26 @@ export class Select {
     this.iconUrl = require('url!./arrow-down.png');
 
     const _scope = this._scope;
-    this.options = unless(_scope.options, []);
-    this.callback = _scope.onselect;
-    this.default = unless(_scope.default, false);
-    this.hover = unless(_scope.hover, true);
-    this.label = _scope.label || 'Select';
     this.clearOption = {
       label: _scope.clear || 'Unselect',
       clear: true
     };
+    this.options = unless(_scope.options, []);
 
+    this.callback = _scope.onselect;
+    this.default = _scope.clear === undefined;
+    this.label = _scope.label || 'Select';
+
+    this.hover = unless(_scope.opts.hover, true);
     this.native = _scope.opts.native !== undefined;
 
     if (this.default) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
     }
+  }
+
+  updateOptions(options: any[]) {
+    this.update({ options: this.default ? options : [this.clearOption, ...options] });
   }
 
   selectLabel(): string {
@@ -71,11 +76,11 @@ export class Select {
   }
 
   selectNative(event: Event) {
-    const option: HTMLOptionElement = <HTMLOptionElement>event.target;
+    const [option] = Array.from((<HTMLSelectElement>event.target).selectedOptions);
     const selected = option.value;
     this.nativeSelect().options[0].disabled = !selected;
     this.update({ selected });
-    this.selectOption(option.text, option.value);
+    this.selectOption(option.text, selected);
   }
 
   selectCustom({ value, label }) {
@@ -102,7 +107,5 @@ export interface SelectTag extends FluxTag {
 
   label?: string;
   hover?: boolean;
-  native?: boolean;
   clear?: string;
-  default?: boolean;
 }

@@ -1,7 +1,6 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mixinFlux, createTag, removeTag } from '../utils/tags';
-import { selectOptions, clearOption, label } from '../utils/raw-select';
 import { Query } from '../../src/tags/query/gb-query';
 import '../../src/tags/query/gb-raw-query.tag';
 

@@ -1,7 +1,7 @@
 <gb-option-list>
   <ul>
-    <li each={ option in opts.options } class={ clear: option.clear }
-      if={ !option.clear || !_scope.default && _scope.selectedOption }>
+    <li each={ option in opts.options } class="gb-select__option { clear: option.clear }"
+      if={ option.clear ? _scope.selectedOption : true }>
       <yield/>
     </li>
   </ul>

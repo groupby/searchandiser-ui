@@ -1,7 +1,7 @@
 <gb-native-select>
   <select name="selector" onchange={ _scope.selectNative }>
     <option if={ !_scope.default } value="" selected disabled>{ _scope.selectLabel() }</option>
-    <option each={ option in _scope.options } value={ optionValue(option) }>{ optionLabel(option) }</option>
+    <option each={ option in _scope.options } if={ !option.clear } value={ optionValue(option) }>{ optionLabel(option) }</option>
   </select>
 
   <script>
