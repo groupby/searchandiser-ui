@@ -64,7 +64,7 @@ displayed.
       <!-- Spelling suggestions from the engine -->
       <div class="didYouMean"></div>
       <!-- Related searches defined by the merchandisers -->
-      <div class="relatedSearches"></div>
+      <div class="relatedQueries"></div>
       <!-- A static refinement dropdown for a single navigation.
            Uses a semi-detached search state. -->
       <div class="filter"></div>
@@ -76,7 +76,7 @@ displayed.
     <div>
       <!-- Based on the current search and navigation state
            these are the available filters that can be used -->
-      <div class="availableNavigation"></div>
+      <div class="navigation"></div>
       <!-- Records that match the search and nav state -->
       <div class="results"></div>
       <!-- Optionally construct your own product template by using the raw-results class -->
@@ -122,7 +122,7 @@ Use the searchandiser method to set up your configurations in a script tag at th
         // page size options
         // pageSizes: [10, 20, 50],
 
-        // The paths for structure elements can be any nested 
+        // The paths for structure elements can be any nested
         // paths within allMeta like 'deep.nested.wideImage[0]'
         structure: {
           title: 'title',
@@ -215,7 +215,7 @@ Use the searchandiser method to set up your configurations in a script tag at th
       // an <input> element. The 'raw-query' component accepts
       // the same options as 'query'
       searchandiser.attach('raw-query', '.raw-query');
-      
+
       // Attach to a pre-existing submit button
       // The 'raw-submit' component accepts the same options as
       // 'query' but ignores the 'sayt' property.
@@ -248,7 +248,7 @@ Use the searchandiser method to set up your configurations in a script tag at th
         }
       });
 
-      searchandiser.attach('available-navigation', '.availableNavigation', {
+      searchandiser.attach('navigation', '.navigation', {
         // hide the refinement count
         // badge: false,
         //
@@ -294,7 +294,7 @@ Use the searchandiser method to set up your configurations in a script tag at th
         // hideRefinements: true
       });
       searchandiser.attach('did-you-mean', '.didYouMean');
-      searchandiser.attach('related-searches', '.relatedSearches');
+      searchandiser.attach('related-queries', '.relatedQueries');
 
       // To register templates use the name of the template
       // and a css selector
@@ -317,8 +317,8 @@ document: [docs/css-reference.md](docs/css-reference.md)
  - `results`
  - `raw-results`
  - `record-count`
- - `available-navigation`
+ - `navigation`
  - `breadcrumbs`
  - `did-you-mean`
- - `related-searches`
+ - `related-queries`
  - `template`

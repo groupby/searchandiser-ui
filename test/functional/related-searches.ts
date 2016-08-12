@@ -1,10 +1,10 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
 import { expect } from 'chai';
 import { mixinFlux, createTag, removeTag } from '../utils/tags';
-import { RelatedSearches } from '../../src/tags/related-searches/gb-related-searches';
-import '../../src/tags/related-searches/gb-related-searches.tag';
+import { RelatedQueries } from '../../src/tags/related-queries/gb-related-queries';
+import '../../src/tags/related-queries/gb-related-queries.tag';
 
-const TAG = 'gb-related-searches';
+const TAG = 'gb-related-queries';
 
 describe(`${TAG} tag`, () => {
   let html: HTMLElement,
@@ -49,6 +49,6 @@ describe(`${TAG} tag`, () => {
   }
 
   function mount() {
-    return <RelatedSearches>riot.mount(TAG)[0];
+    return <RelatedQueries>riot.mount(TAG)[0];
   }
 });
