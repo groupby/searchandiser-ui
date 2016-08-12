@@ -11,7 +11,7 @@ export function initSearchandiser() {
     const flux = initCapacitor(finalConfig);
     Object.assign(flux, Events);
     riot.mixin(RootTag(flux, finalConfig));
-    Object.assign(configure, new Searchandiser(flux, finalConfig));
+    Object.assign(configure, new Searchandiser(flux, finalConfig)['__proto__']);
   }
 }
 
@@ -27,17 +27,38 @@ export class Searchandiser {
     if (config.initialSearch) this.search();
   }
 
-  attach = (tagName: Component, cssSelector: string = `.${tagName}`, options: any = {}, handler?: (tag) => void) => {
-    const tag = riot.mount(cssSelector, `gb-${tagName}`, options);
-    if (handler && tag.length) handler(tag[0]);
-  };
+  attach(tagName: string, opts: any);
+  attach(tagName: string, cssSelector: string, opts: any);
+  attach(tagName: string, selectorOrOpts?: any, options?: any) {
+    let tag;
+    if (typeof selectorOrOpts === 'string') {
+      tag = this.cssAttach(tagName, selectorOrOpts, options);
+    } else {
+      tag = this.simpleAttach(tagName, selectorOrOpts);
+    }
+    return tag.length ? tag[0] : null;
+  }
 
-  template = (templateName: string, cssSelector: string, options: any = {}) => {
+  private simpleAttach(tagName: string, options: any = {}) {
+    return riot.mount(this.riotTagName(tagName), options);
+  }
+
+  private cssAttach(tagName: string, cssSelector: string = `.${tagName}`, options: any = {}) {
+    return riot.mount(cssSelector, this.riotTagName(tagName), options);
+  }
+
+  private riotTagName(tagName: string) {
+    return tagName.startsWith('gb-') ? tagName : `gb-${tagName}`;
+  }
+
+  template(templateName: string, cssSelector: string, options: any = {}) {
     this.attach('template', cssSelector, Object.assign(options, { templateName }));
-  };
+  }
 
-  search = (query?: string) => this.flux.search(query)
-    .then(res => this.flux.emit(Events.PAGE_CHANGED, { pageIndex: 0, finalPage: this.flux.page.finalPage }));
+  search(query?: string) {
+    return this.flux.search(query)
+      .then(res => this.flux.emit(Events.PAGE_CHANGED, { pageIndex: 0, finalPage: this.flux.page.finalPage }));
+  }
 }
 
 export type Component = 'query' |

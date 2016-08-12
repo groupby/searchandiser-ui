@@ -1,4 +1,4 @@
-<gb-available-navigation>
+<gb-navigation>
   <div class="gb-side-nav { _style }">
     <div class="gb-nav" each={ name, nav in processed }>
       <h4 class="gb-nav__title">{ nav.displayName }</h4>
@@ -31,4 +31,4 @@
       padding-left: 8px;
     }
   </style>
-</gb-available-navigation>
+</gb-navigation>

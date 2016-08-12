@@ -1,7 +1,10 @@
 <gb-option>
-  <a>{ label }</a>
+  <a onclick={ send }>{ label }</a>
 
   <script>
-    this.label = this.parent.label;
+    import { Select } from './gb-select';
+    this.label = Select.optionLabel(opts.option);
+    this.value = Select.optionValue(opts.option);
+    this.send = () => opts.send(this);
   </script>
 </gb-option>

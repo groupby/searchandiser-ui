@@ -1,10 +1,12 @@
 <gb-page-size>
-  <gb-raw-page-size passthrough={ opts }>
-    <gb-option></gb-option>
-  </gb-raw-page-size>
+  <yield>
+    <gb-select>
+    </gb-select>
+  </yield>
 
   <script>
-    import './gb-raw-page-size.tag';
-    import '../select/gb-option.tag';
+    import '../select/gb-select.tag';
+    import { PageSize } from './gb-page-size';
+    this.mixin(new PageSize().__proto__);
   </script>
 </gb-page-size>

@@ -7,36 +7,33 @@ export class Select {
 
   iconUrl: string;
   label: string;
-  clearOption: { label: string };
+  clearOption: { label: string, clear: boolean };
   options: any[];
   hover: boolean;
   native: boolean;
-  hasDefault: boolean;
   callback: Function;
   selectedOption: any;
   selected: any;
   focused: boolean;
-  selectButton: HTMLButtonElement;
-  nativeSelect: HTMLSelectElement;
-
-  optionLabel: typeof optionLabel;
-  optionValue: typeof optionValue;
+  default: boolean;
 
   init(): void {
-    const opts = this.opts.passthrough || this.opts;
     this.iconUrl = require('url!./arrow-down.png');
-    this.label = opts.label || 'Select';
-    this.clearOption = { label: opts.clear || 'Unselect' };
-    this.options = opts.options || [];
-    this.hover = unless(opts.hover, true);
-    this.native = unless(opts.native, false);
-    this.hasDefault = unless(opts.default, false);
-    this.callback = opts.update;
 
-    this.optionLabel = optionLabel;
-    this.optionValue = optionValue;
+    const _scope = this._scope;
+    this.options = unless(_scope.options, []);
+    this.callback = _scope.onselect;
+    this.default = unless(_scope.default, false);
+    this.hover = unless(_scope.hover, true);
+    this.label = _scope.label || 'Select';
+    this.clearOption = {
+      label: _scope.clear || 'Unselect',
+      clear: true
+    };
 
-    if (this.hasDefault) {
+    this.native = _scope.opts.native !== undefined;
+
+    if (this.default) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
     }
   }
@@ -49,9 +46,17 @@ export class Select {
     return this.focused = false;
   }
 
+  selectButton() {
+    return this.tags['gb-custom-select'].tags['gb-select-button'].root;
+  }
+
+  nativeSelect() {
+    return this.tags['gb-native-select'].selector;
+  }
+
   unfocus() {
     this.focused = this.hover || !this.focused;
-    if (!this.focused) this.selectButton.blur();
+    if (!this.focused) this.selectButton().blur();
   }
 
   selectOption(selectedOption: string, value: any): void {
@@ -68,38 +73,36 @@ export class Select {
   selectNative(event: Event) {
     const option: HTMLOptionElement = <HTMLOptionElement>event.target;
     const selected = option.value;
-    this.nativeSelect.options[0].disabled = !selected;
+    this.nativeSelect().options[0].disabled = !selected;
     this.update({ selected });
     this.selectOption(option.text, option.value);
   }
 
-  selectCustom(event: MouseEvent) {
-    let node: Element & any = (<Element>event.target);
-    while (!node['_tag'] || node.tagName !== 'GB-OPTION-WRAPPER') node = node.parentElement;
-    const tag = node._tag;
-    this.selectButton.blur();
-    this.selectOption(tag.label, tag.value);
+  selectCustom({ value, label }) {
+    this.selectButton().blur();
+    this.selectOption(label, value);
   }
 
   clearSelection() {
     return this.selectOption(undefined, '*');
   }
+
+  static optionValue(option: any) {
+    return typeof option === 'object' ? JSON.stringify(option.value) : option;
+  }
+
+  static optionLabel(option: any) {
+    return typeof option === 'object' ? option.label : option;
+  }
 }
 
-export function optionValue(option: any) {
-  return typeof option === 'object' ? JSON.stringify(option.value) : option;
-}
+export interface SelectTag extends FluxTag {
+  options: any[]
+  onselect: Function;
 
-export function optionLabel(option: any) {
-  return typeof option === 'object' ? option.label : option;
-}
-
-export interface SelectConfig {
   label?: string;
-  update?: Function;
   hover?: boolean;
   native?: boolean;
   clear?: string;
   default?: boolean;
-  options?: any[]
 }

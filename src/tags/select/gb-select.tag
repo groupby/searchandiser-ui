@@ -1,10 +1,13 @@
 <gb-select>
-  <gb-raw-select passthrough={ opts }>
-    <gb-option></gb-option>
-  </gb-raw-select>
+  <yield>
+    <gb-native-select if={ native }/>
+    <gb-custom-select if={ !native }/>
+  </yield>
 
   <script>
-    import './gb-raw-select.tag';
-    import './gb-option.tag';
+    import './gb-native-select.tag';
+    import './gb-custom-select.tag';
+    import { Select } from './gb-select';
+    this.mixin(new Select().__proto__);
   </script>
 </gb-select>
