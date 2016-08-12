@@ -1,13 +1,13 @@
 import { FluxCapacitor, Events } from 'groupby-api';
 import { fluxTag } from '../utils/tags';
-import { RelatedSearches } from '../../src/tags/related-searches/gb-related-searches';
+import { RelatedQueries } from '../../src/tags/related-queries/gb-related-queries';
 import { expect } from 'chai';
 
-describe('gb-related-searches logic', () => {
-  let tag: RelatedSearches,
+describe('gb-related-queries logic', () => {
+  let tag: RelatedQueries,
     flux: FluxCapacitor;
 
-  beforeEach(() => ({ tag, flux } = fluxTag(new RelatedSearches())));
+  beforeEach(() => ({ tag, flux } = fluxTag(new RelatedQueries())));
 
   it('should rewrite on send', () => {
     const query = 'red sneakers';

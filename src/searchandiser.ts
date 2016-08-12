@@ -61,15 +61,6 @@ export class Searchandiser {
   }
 }
 
-export type Component = 'query' |
-  'didYouMean' |
-  'relatedSearches' |
-  'selectedNavigation' |
-  'availableNavigation' |
-  'paging' |
-  'results' |
-  'template';
-
 export interface ProductStructure {
   title?: string;
   image?: string;

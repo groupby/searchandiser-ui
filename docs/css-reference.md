@@ -26,7 +26,7 @@ record-count
 ---
 <!-- TODO -->
 
-available-navigation
+navigation
 ---
 `.gb-side-nav`
 `.gb-nav`
@@ -46,7 +46,7 @@ did-you-mean
 ---
 <!-- TODO -->
 
-related-searches
+related-queries
 ---
 <!-- TODO -->
 
