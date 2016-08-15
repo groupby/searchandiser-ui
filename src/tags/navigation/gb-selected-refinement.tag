@@ -1,6 +1,6 @@
 <gb-selected-refinement>
   <li class="gb-ref { _style }">
-    <a class="gb-ref__link" href="#" onclick={ remove }>&times;</a>
+    <a class="gb-ref__link" onclick={ remove }>&times;</a>
     <span class="gb-ref__value">{ toView(ref) }</span>
   </li>
 

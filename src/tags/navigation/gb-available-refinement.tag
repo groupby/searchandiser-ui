@@ -1,6 +1,6 @@
 <gb-available-refinement>
   <li class="gb-ref { _style }">
-    <a class="gb-ref__link" href="#" onclick={ send }>
+    <a class="gb-ref__link" onclick={ send }>
       <span class="gb-ref__title">{ toView(ref) }</span>
       <span class="gb-filler"></span>
       <gb-badge if={ badge }>{ ref.count }</gb-badge>

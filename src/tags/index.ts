@@ -5,7 +5,6 @@ import './details/gb-details.tag';
 import './did-you-mean/gb-did-you-mean.tag';
 import './filter/gb-filter.tag';
 import './navigation/gb-navigation.tag';
-import './navigation/gb-raw-navigation.tag';
 import './page-size/gb-page-size.tag';
 import './paging/gb-paging.tag';
 import './paging/gb-terminal-pager.tag';

@@ -1,6 +1,8 @@
 import { FluxTag } from '../tag';
-import { unless } from '../../utils';
-import { Events, Results, Navigation as NavModel } from 'groupby-api';
+import { unless, toRefinement } from '../../utils';
+import { Events, Results, Navigation as NavModel, NavigationInfo } from 'groupby-api';
+
+export { NavigationInfo }
 
 export interface Navigation extends FluxTag { }
 
@@ -24,6 +26,14 @@ export class Navigation {
       .map((nav: NavModel) => Object.assign(nav, { selected: true }))
       .concat(availableNavigation)
       .reduce(this.combineNavigations, {});
+  }
+
+  send(ref, nav) {
+    return this.flux.refine(toRefinement(ref, nav));
+  }
+
+  remove(ref, nav) {
+    return this.flux.unrefine(toRefinement(ref, nav));
   }
 
   private combineNavigations(processed: any, nav: SelectionNavigation) {

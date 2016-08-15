@@ -44,4 +44,30 @@ describe('gb-navigation logic', () => {
       c: Object.assign({}, selectedNavigation[0], { selected: selectedNavigation[0].refinements })
     });
   });
+
+  it('should refine on send()', () => {
+    flux.refine = (ref): any => expect(ref).to.eql({
+      navigationName: 'price',
+      type: 'Range',
+      low: 4,
+      high: 6
+    });
+
+    tag.init();
+
+    tag.send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
+  });
+
+  it('should unrefine on remove()', () => {
+    flux.refine = (ref): any => expect(ref).to.eql({
+      navigationName: 'price',
+      type: 'Range',
+      low: 4,
+      high: 6
+    });
+
+    tag.init();
+
+    tag.remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
+  });
 });

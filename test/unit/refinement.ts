@@ -12,30 +12,32 @@ describe('gb-refinement logic', () => {
 
   describe('generic refinement logic', () => {
     let tag: Refinement;
-    beforeEach(() => ({ tag, flux } = fluxTag(new Refinement())));
+    beforeEach(() => ({ tag, flux } = fluxTag(new Refinement(), {
+      _scopeTo: () => null
+    })));
 
     it('should have default values', () => {
       tag.init();
 
       expect(tag.toView).to.eq(displayRefinement);
-      expect(tag.toRefinement).to.eq(toRefinement);
     });
   });
 
   describe('gb-available-refinement logic', () => {
     let tag: AvailableRefinement;
-    beforeEach(() => ({ tag, flux } = fluxTag(new AvailableRefinement())));
+    beforeEach(() => ({ tag, flux } = fluxTag(new AvailableRefinement(), {
+      _scopeTo: () => null
+    })));
 
     it('should make refinement', () => {
-      flux.refine = (ref): any => expect(ref).to.eql({
-        navigationName: 'price',
-        type: 'Range',
-        low: 4,
-        high: 6
-      });
-
       tag.ref = { type: 'Range', low: 4, high: 6 };
       tag.nav = { name: 'price' };
+      tag._scope = {
+        send(ref, nav) {
+          expect(ref).to.eq(tag.ref);
+          expect(nav).to.eq(tag.nav);
+        }
+      };
       tag.init();
 
       tag.send();
@@ -44,18 +46,26 @@ describe('gb-refinement logic', () => {
 
   describe('gb-selected-refinement logic', () => {
     let tag: SelectedRefinement;
-    beforeEach(() => ({ tag, flux } = fluxTag(new SelectedRefinement())));
+    beforeEach(() => ({ tag, flux } = fluxTag(new SelectedRefinement(), {
+      _scopeTo: () => null
+    })));
 
     it('should remove refinement', () => {
-      flux.unrefine = (ref): any => expect(ref).to.eql({
-        navigationName: 'price',
-        type: 'Range',
-        low: 4,
-        high: 6
-      });
+      // flux.unrefine = (ref): any => expect(ref).to.eql({
+      //   navigationName: 'price',
+      //   type: 'Range',
+      //   low: 4,
+      //   high: 6
+      // });
 
       tag.ref = { type: 'Range', low: 4, high: 6 };
       tag.nav = { name: 'price' };
+      tag._scope = {
+        remove(ref, nav) {
+          expect(ref).to.eq(tag.ref);
+          expect(nav).to.eq(tag.nav);
+        }
+      };
       tag.init();
 
       tag.remove();
