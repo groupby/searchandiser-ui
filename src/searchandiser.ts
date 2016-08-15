@@ -36,7 +36,11 @@ export class Searchandiser {
     } else {
       tag = this.simpleAttach(tagName, selectorOrOpts);
     }
-    return tag.length ? tag[0] : null;
+    return tag && tag.length ? tag[0] : null;
+  }
+
+  compile() {
+    riot.compile(() => null);
   }
 
   private simpleAttach(tagName: string, options: any = {}) {

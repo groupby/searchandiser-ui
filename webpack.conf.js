@@ -5,6 +5,9 @@ module.exports = {
   entry: './src/index.ts',
   output: { filename: pjson.name + '-' + pjson.version + '.js' },
   resolve: {
+    alias: {
+      riot: 'riot/riot+compiler'
+    },
     extensions: ['', '.ts', '.js'],
     modulesDirectories: ['bower_components', 'node_modules']
   },
