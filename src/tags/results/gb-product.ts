@@ -18,29 +18,24 @@ export class Product {
   transform: (obj: any) => any;
 
   init() {
-    this.struct = this.parent ? this.parent.struct : this.config.structure;
-    this.variantStruct = this.parent ? this.parent.variantStruct : this.config.structure;
+    this.struct = (this.parent ? this.parent.struct : (this.config && this.config.structure));
+    this.variantStruct = (this.parent ? this.parent.variantStruct : (this.config && this.config.variantStructure)) || this.struct;
     this.variantIndex = 0;
     this.allMeta = this.parent ? this.parent.allMeta : this.opts.all_meta;
+    this.initVariants();
     this.transform = unless(this.struct._transform, (val) => val);
+
     this.getPath = getPath;
     this.on('update', this.transformRecord);
   }
 
   transformRecord() {
     this.allMeta = this.transform(this.allMeta);
-
-    this.variants = [];
-    let i = 0;
-    let variant;
-    while (variant = this.variant(i)) {
-      this.variants.push(variant);
-      ++i;
-    }
+    this.initVariants();
   }
 
   link() {
-    return this.currentVariant().url || `details.html?id=${this.allMeta.id}`;
+    return this.currentVariant().url || `details.html?id=${this.currentVariant().id}`;
   }
 
   get(path: string) {
@@ -77,13 +72,18 @@ export class Product {
       }
     };
 
-    const isVariantsConfigured = (this.struct && this.struct.variants) !== undefined;
+    // TODO: Add a typing to filter-object that permits a callback (any => boolean)
+    // Remove properties that don't refer to paths in the records
+    const struct = (<any>filterObject)(this.struct || {}, (val) => (typeof val === 'string'));
+
+    const isVariantsConfigured = (struct && struct.variants) !== undefined;
     if (isVariantsConfigured) {
-      const variantsArray: any[] = this.get(this.struct.variants);
+      const variantsArray: any[] = this.get(struct.variants);
       if (variantsArray) {
         const variant = variantsArray[index];
         if (variant) {
-          return filterObject(Object.assign(remapWithValuesAsKeys(this.allMeta, this.struct), remapWithValuesAsKeys(variant, this.variantStruct || this.struct)),
+          return filterObject(Object.assign(remapWithValuesAsKeys(this.allMeta, struct || {}),
+            remapWithValuesAsKeys(variant, this.variantStruct || {})),
             ['*', '!variants']);
         }
         else {
@@ -96,7 +96,7 @@ export class Product {
     }
     else {
       if (index === 0) {
-        return filterObject(remapWithValuesAsKeys(this.allMeta, this.struct), ['*', '!variants']);
+        return filterObject(remapWithValuesAsKeys(this.allMeta, struct || {}), ['*', '!variants']);
       }
       else {
         return null;
@@ -105,6 +105,16 @@ export class Product {
   }
 
   currentVariant() {
-    return this.variant(this.variantIndex);
+    return this.variants[this.variantIndex];
+  }
+
+  initVariants() {
+    this.variants = [];
+    let i = 0;
+    let variant;
+    while (variant = this.variant(i)) {
+      this.variants.push(variant);
+      ++i;
+    }
   }
 }

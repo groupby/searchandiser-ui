@@ -3,7 +3,7 @@ import { fluxTag } from '../utils/tags';
 import { expect } from 'chai';
 
 describe('gb-product logic', () => {
-  const struct = { title: 'title', price: 'price', image: 'image', url: 'url' },
+  const struct = { title: 'title', price: 'price', image: 'image', url: 'url', id: 'id' },
     allMeta = {
       title: 'Red Sneakers',
       price: '$12.45',
@@ -96,7 +96,8 @@ describe('gb-product logic', () => {
       expect(tag.variant(0)).to.eql({
         title: 'Red Sneakers',
         price: '$12.45',
-        image: 'image.png'
+        image: 'image.png',
+        id: '1340'
       });
     });
 

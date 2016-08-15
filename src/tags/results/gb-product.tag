@@ -7,7 +7,7 @@
       <p class="gb-product__title">{ currentVariant().title }</p>
       <p class="gb-product__price">{ currentVariant().price }</p>
     </a>
-    <a each={ variant,i in variants } onclick={ switchVariant } data-index={ i }>
+    <a each={ variant,i in variants } class="gb-product__variant-link" onclick={ switchVariant } data-index={ i }>
       { JSON.stringify(variant) }
     </a>
   </div>
