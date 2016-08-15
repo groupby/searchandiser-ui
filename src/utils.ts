@@ -4,6 +4,10 @@ import { CONFIGURATION_MASK } from './searchandiser';
 import queryString = require('query-string');
 import filterObject = require('filter-object');
 
+export function findSearchBox() {
+  return <HTMLInputElement>oget(findTag('gb-query'), '_tag.searchBox');
+}
+
 export function findTag(tagName: string): Element {
   return document.querySelector(tagName) || document.querySelector(`[riot-tag="${tagName}"]`);
 }

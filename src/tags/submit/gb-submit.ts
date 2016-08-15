@@ -1,5 +1,5 @@
 import { FluxTag } from '../tag';
-import { unless, updateLocation, findTag } from '../../utils';
+import { unless, updateLocation, findSearchBox } from '../../utils';
 
 export interface Submit extends FluxTag {
   root: HTMLElement & { value: any };
@@ -21,13 +21,13 @@ export class Submit {
 
     if (this.root.tagName === 'INPUT') this.root.value = this.label;
 
-    this.on('mount', this.findSearchBox);
+    this.on('mount', this.setSearchBox);
 
     this.root.addEventListener('click', this.submitQuery);
   }
 
-  findSearchBox() {
-    this.searchBox = <HTMLInputElement>findTag('gb-raw-query');
+  setSearchBox() {
+    this.searchBox = findSearchBox();
   }
 
   submitQuery() {

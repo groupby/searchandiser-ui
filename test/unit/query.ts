@@ -69,7 +69,7 @@ describe('gb-query logic', () => {
   it('should listen for input event', (done) => {
     let callback;
     tag.on = (event: string, cb: Function): any => {
-      if (event === 'before-mount') callback = cb;
+      if (event === 'mount') callback = cb;
     };
     tag.listenForInput = () => done();
 
@@ -78,24 +78,21 @@ describe('gb-query logic', () => {
     callback();
   });
 
-  it('should listen for enter keypress event', (done) => {
-    let callback;
+  it('should listen for enter keypress event', () => {
+    let count = 0;
     tag.opts = { autoSearch: false, staticSearch: true };
     tag.on = (event: string, cb: Function): any => {
-      if (event === 'before-mount') callback = cb;
+      if (event === 'mount' && ++count === 2) expect(cb).to.eq(tag.listenForStaticSearch);
     };
-    tag.listenForEnter = () => done();
 
     tag.init();
-
-    callback();
   });
 
   it('should listen for submit event', (done) => {
     let callback;
     tag.opts = { autoSearch: false };
     tag.on = (event: string, cb: Function): any => {
-      if (event === 'before-mount') callback = cb;
+      if (event === 'mount') callback = cb;
     };
     tag.listenForSubmit = () => done();
 
@@ -107,37 +104,37 @@ describe('gb-query logic', () => {
   describe('event listeners', () => {
     it('should add input listener', (done) => {
       flux.reset = () => done();
-      tag.root = <any>{
-        addEventListener: (event: string, cb: Function) => {
+      tag.searchBox = <any>{
+        addEventListener(event: string, cb: Function) {
           expect(event).to.eq('input');
           cb();
         }
       };
 
-      tag.listenForInput(() => null);
+      tag.listenForInput();
     });
 
     it('should add submit listener', (done) => {
       flux.reset = () => done();
-      tag.root = <any>{
-        addEventListener: (event: string, cb: Function) => {
+      tag.searchBox = <any>{
+        addEventListener(event: string, cb: Function) {
           expect(event).to.eq('keydown');
           cb({ keyCode: 13 });
         }
       };
 
-      tag.listenForSubmit(() => null);
+      tag.listenForSubmit();
     });
 
     it('should add enter key listener', (done) => {
-      tag.root = <any>{
-        addEventListener: (event: string, cb: Function) => {
+      tag.searchBox = <any>{
+        addEventListener(event: string, cb: Function) {
           expect(event).to.eq('keydown');
           done();
         }
       };
 
-      tag.listenForEnter(() => null);
+      tag.onPressEnter(() => null);
     });
   });
 

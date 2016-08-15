@@ -1,5 +1,5 @@
 import { Sayt } from './gb-sayt';
-import { findTag } from '../../utils';
+import { findSearchBox } from '../../utils';
 
 const KEY_UP = 38;
 const KEY_DOWN = 40;
@@ -17,7 +17,7 @@ export class Autocomplete {
   originalValue: string;
 
   constructor(public tag: Sayt) {
-    this.selected = this.searchInput = <HTMLInputElement>findTag('gb-query')['_tag'].searchBox;
+    this.selected = this.searchInput = findSearchBox();
     this.searchInput.addEventListener('keydown', (event) => this.keyListener(event));
   }
 

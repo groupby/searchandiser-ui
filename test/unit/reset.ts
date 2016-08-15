@@ -14,7 +14,7 @@ describe('gb-reset logic', () => {
   it('should listen for mount event', () => {
     tag.on = (event, cb) => {
       expect(event).to.eq('mount');
-      expect(cb).to.eq(tag.findSearchBox);
+      expect(cb).to.eq(tag.setSearchBox);
     };
     tag.init();
   });
@@ -27,19 +27,6 @@ describe('gb-reset logic', () => {
       }
     };
     tag.init();
-  });
-
-  it('should find search box', () => {
-    const queryTag = document.createElement('div');
-    document.body.appendChild(queryTag);
-    queryTag.setAttribute('riot-tag', 'gb-raw-query');
-
-    tag.init();
-    tag.findSearchBox();
-
-    expect(tag.searchBox).to.eq(queryTag);
-
-    document.body.removeChild(queryTag);
   });
 
   it('should clear query', () => {

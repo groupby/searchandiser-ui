@@ -46,7 +46,7 @@ export class Sayt {
       }
     });
 
-    this.on('before-mount', () => this.autocomplete = new Autocomplete(this));
+    this.on('mount', () => this.autocomplete = new Autocomplete(this));
 
     this.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
       .then(({result}) => {

@@ -30,20 +30,20 @@ export class Query {
     this.saytEnabled = unless(this.parentOpts.sayt, true);
     this.autoSearch = unless(this.parentOpts.autoSearch, true);
     this.staticSearch = unless(this.parentOpts.staticSearch, false);
-    this.searchBox = this.findSearchBox();
-
-    this.on('before-mount', () => console.log(this.root.innerHTML))
 
     this.queryFromUrl = parseQueryFromLocation(this.queryParam, this.config);
 
-    if (this.saytEnabled) Sayt.listenForInput(this);
+    this.on('mount', () => {
+      this.searchBox = this.findSearchBox();
+      if (this.saytEnabled) Sayt.listenForInput(this)
+    });
 
     if (this.autoSearch) {
-      this.on('before-mount', () => this.listenForInput(this.inputValue));
+      this.on('mount', this.listenForInput);
     } else if (this.staticSearch) {
-      this.on('before-mount', () => this.listenForEnter(this.setLocation));
+      this.on('mount', this.listenForStaticSearch);
     } else {
-      this.on('before-mount', () => this.listenForSubmit(this.inputValue));
+      this.on('mount', this.listenForSubmit);
     }
 
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
@@ -79,15 +79,19 @@ export class Query {
     }
   }
 
-  listenForInput(value: () => string) {
-    this.searchBox.addEventListener('input', () => this.flux.reset(value()));
+  listenForInput() {
+    this.searchBox.addEventListener('input', () => this.flux.reset(this.inputValue()));
   }
 
-  listenForSubmit(value: () => string) {
-    this.listenForEnter(() => this.flux.reset(value()));
+  listenForSubmit() {
+    this.onPressEnter(() => this.flux.reset(this.inputValue()));
   }
 
-  listenForEnter(cb: () => void) {
+  listenForStaticSearch() {
+    this.onPressEnter(this.setLocation);
+  }
+
+  onPressEnter(cb: () => void) {
     this.searchBox.addEventListener('keydown', (event: KeyboardEvent) => {
       switch (event.keyCode) {
         case ENTER_KEY:
