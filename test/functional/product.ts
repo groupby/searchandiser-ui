@@ -1,8 +1,8 @@
 import { FluxCapacitor, Events } from 'groupby-api';
 import { expect } from 'chai';
 import { mixinFlux, createTag, removeTag } from '../utils/tags';
-import { Product } from '../../src/tags/results/gb-product';
-import '../../src/tags/results/gb-product.tag';
+import { Product } from '../../src/tags/product/gb-product';
+import '../../src/tags/product/gb-product.tag';
 
 const TAG = 'gb-product';
 
@@ -21,13 +21,13 @@ describe(`${TAG} tag`, () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector(`div.${TAG}`)).to.be.ok;
+    expect(html.querySelector('gb-product-image')).to.be.ok;
   });
 
   it('renders product info', () => {
     const tag = mount();
 
-    expect(html.querySelector('.gb-product')).to.be.ok;
+    expect(html.querySelector('gb-product-info')).to.be.ok;
     expect(html.querySelector('.gb-product__title').textContent).to.eq(all_meta.title);
     expect(html.querySelector('.gb-product__price').textContent).to.eq(all_meta.price);
     expect(html.querySelector('img').src).to.include(all_meta.image);

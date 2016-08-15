@@ -1,4 +1,4 @@
-import { Product } from '../../src/tags/results/gb-product';
+import { Product } from '../../src/tags/product/gb-product';
 import { fluxTag } from '../utils/tags';
 import { expect } from 'chai';
 

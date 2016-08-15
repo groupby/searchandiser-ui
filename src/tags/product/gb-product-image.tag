@@ -1,0 +1,17 @@
+<gb-product-image>
+  <a class="gb-product-image { _style }" href={ _scope.link() }>
+    <img src={ imageLink() } alt=""/>
+  </a>
+
+  <script>
+    this._scopeTo('gb-product');
+    const _scope = this._scope;
+    this.imageLink = () => _scope.image(_scope.get(_scope.struct.image));
+  </script>
+
+  <style>
+    .gb-product-image.gb-stylish img {
+      width: 380px;
+    }
+  </style>
+</gb-product-image>

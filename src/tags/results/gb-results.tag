@@ -7,7 +7,7 @@
 
   <script>
     import '../list/gb-list.tag';
-    import './gb-product.tag';
+    import '../product/gb-product.tag';
     import { Results } from './gb-results';
     this.mixin(new Results().__proto__);
   </script>

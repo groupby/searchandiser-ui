@@ -33,7 +33,7 @@
 
   <script>
     import '../raw/gb-raw.tag';
-    import '../results/gb-product.tag';
+    import '../product/gb-product.tag';
     import { Sayt } from './gb-sayt';
     this.mixin(new Sayt().__proto__);
   </script>
@@ -91,16 +91,16 @@
       margin: 3px;
     }
 
-    .gb-stylish .gb-sayt__products .gb-product__image {
+    .gb-stylish gb-product-image img {
       vertical-align: bottom;
       width: 80px;
     }
 
-    .gb-stylish .gb-sayt__products .gb-product__info-link {
+    .gb-stylish gb-product-info a {
       display: none;
     }
 
-    .gb-stylish .gb-sayt__products .gb-product:hover {
+    .gb-stylish .gb-product:hover {
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     }
   </style>
