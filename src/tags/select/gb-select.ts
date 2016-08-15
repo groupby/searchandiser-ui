@@ -56,7 +56,11 @@ export class Select {
   }
 
   nativeSelect() {
-    return this.tags['gb-native-select'].selector;
+    if (this.tags['gb-native-select']) {
+      return this.tags['gb-native-select'].selector;
+    } else {
+      return this.root.querySelector('select');
+    }
   }
 
   unfocus() {

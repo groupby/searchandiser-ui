@@ -30,7 +30,12 @@ export class Filter {
   }
 
   updateValues(res: Results) {
-    return this.tags['gb-select'].updateOptions(this.convertRefinements(res.availableNavigation));
+    const converted = this.convertRefinements(res.availableNavigation);
+    if (this.tags['gb-select']) {
+      this.tags['gb-select'].updateOptions(converted);
+    } else {
+      this.update({ options: converted });
+    }
   }
 
   updateFluxClone() {
