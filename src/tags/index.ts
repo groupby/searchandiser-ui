@@ -11,7 +11,6 @@ import './paging/gb-terminal-pager.tag';
 import './paging/gb-pager.tag';
 import './paging/gb-pages.tag';
 import './query/gb-query.tag';
-import './query/gb-raw-query.tag';
 import './raw/gb-raw.tag';
 import './record-count/gb-record-count.tag';
 import './related-queries/gb-related-queries.tag';

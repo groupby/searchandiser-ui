@@ -1,24 +1,36 @@
 <gb-query>
-  <div class="gb-query { _style }">
-    <input riot-tag="gb-raw-query" passthrough={ opts } class="gb-query__box" type="text" placeholder="Search..." autofocus>
-    <gb-submit></gb-submit>
-    <gb-reset></gb-reset>
-  </div>
+  <yield>
+    <div class="gb-query { _style }">
+      <gb-search-box></gb-search-box>
+      <gb-submit></gb-submit>
+      <gb-reset></gb-reset>
+      <gb-sayt if={ saytEnabled }></gb-sayt>
+    </div>
+  </yield>
 
   <script>
-    import './gb-raw-query.tag';
+    import './gb-search-box.tag';
     import '../submit/gb-submit.tag';
     import '../reset/gb-reset.tag';
+    import '../sayt/gb-sayt.tag';
+    import { Query } from './gb-query';
+    this.mixin(new Query().__proto__);
   </script>
 
   <style scoped>
     .gb-stylish.gb-query {
+      position: relative;
       display: flex;
       align-items: baseline;
     }
-    .gb-stylish .gb-query__box {
-      padding: 6px 12px;
-      font-size: 14px;
+    .gb-stylish.gb-query gb-sayt {
+      top: 31px;
+      left: 0;
+      z-index: 10;
+      position: absolute;
+      min-width: 175px;
+      background-color: #fff;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     }
   </style>
 </gb-query>

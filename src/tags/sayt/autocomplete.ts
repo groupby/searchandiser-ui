@@ -17,7 +17,7 @@ export class Autocomplete {
   originalValue: string;
 
   constructor(public tag: Sayt) {
-    this.selected = this.searchInput = <HTMLInputElement>findTag('gb-raw-query');
+    this.selected = this.searchInput = <HTMLInputElement>findTag('gb-query')['_tag'].searchBox;
     this.searchInput.addEventListener('keydown', (event) => this.keyListener(event));
   }
 

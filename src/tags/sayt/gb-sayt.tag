@@ -1,5 +1,5 @@
 <gb-sayt>
-  <div class="gb-sayt { _style }" name="saytNode" if={ queries || navigations }>
+  <div class="gb-sayt { _style }" if={ queries || navigations }>
     <ul class="gb-sayt__autocomplete" name="autocompleteList">
       <li class="gb-autocomplete__item" each={ query in categoryResults } data-value={ query.value } data-refinement={
           query.category } data-field={ categoryField }>
@@ -24,16 +24,12 @@
         </li>
       </div>
     </ul>
-    <ul if={ products } class="gb-sayt__products">
-      <li each="{ products }">
-        <gb-product></gb-product>
-      </li>
-    </ul>
+    <gb-sayt-products></gb-sayt-products>
   </div>
 
   <script>
     import '../raw/gb-raw.tag';
-    import '../product/gb-product.tag';
+    import './gb-sayt-products.tag';
     import { Sayt } from './gb-sayt';
     this.mixin(new Sayt().__proto__);
   </script>
@@ -78,30 +74,8 @@
       margin: 4px;
     }
 
-    .gb-stylish .gb-sayt__products {
+    .gb-stylish gb-sayt-products {
       min-width: 300px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      width: calc(86px * 4);
-      align-content: flex-start;
-    }
-
-    .gb-stylish .gb-sayt__products > * {
-      margin: 3px;
-    }
-
-    .gb-stylish gb-product-image img {
-      vertical-align: bottom;
-      width: 80px;
-    }
-
-    .gb-stylish gb-product-info a {
-      display: none;
-    }
-
-    .gb-stylish .gb-product:hover {
-      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     }
   </style>
 </gb-sayt>

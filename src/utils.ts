@@ -5,7 +5,7 @@ import queryString = require('query-string');
 import filterObject = require('filter-object');
 
 export function findTag(tagName: string): Element {
-  return document.querySelector(`[riot-tag="${tagName}"]`);
+  return document.querySelector(tagName) || document.querySelector(`[riot-tag="${tagName}"]`);
 }
 
 export function toRefinement(ref, nav) {

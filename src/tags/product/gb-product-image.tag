@@ -1,6 +1,6 @@
 <gb-product-image>
   <a class="gb-product-image { _style }" href={ _scope.link() }>
-    <img src={ imageLink() } alt=""/>
+    <img class={ thumbnail: opts.thumbnail !== undefined } src={ imageLink() } alt=""/>
   </a>
 
   <script>
@@ -9,9 +9,12 @@
     this.imageLink = () => _scope.image(_scope.get(_scope.struct.image));
   </script>
 
-  <style>
+  <style scoped>
     .gb-product-image.gb-stylish img {
       width: 380px;
+    }
+    .gb-product-image.gb-stylish img.thumbnail {
+      width: 80px;
     }
   </style>
 </gb-product-image>

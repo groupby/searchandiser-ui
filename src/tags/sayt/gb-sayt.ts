@@ -1,7 +1,9 @@
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import { Autocomplete } from './autocomplete';
+import { Query } from '../query/gb-query';
 import { findTag, getPath, updateLocation } from '../../utils';
+import debounce = require('debounce');
 const sayt = require('sayt');
 
 const DEFAULT_CONFIG = {
@@ -158,5 +160,21 @@ export class Sayt {
     const query = node.getAttribute('data-value')
     this.rewriteQuery(query)
     this.flux.reset(query);
+  }
+
+  static listenForInput(tag: Query) {
+    const input = <HTMLInputElement>tag.searchBox;
+    input.autocomplete = 'off';
+    const minimumCharacters = tag.config.tags.sayt.minimumCharacters || 1;
+    const delay = tag.config.tags.sayt.delay || 0;
+    const debouncedSearch = debounce(() => {
+      if (input.value.length >= minimumCharacters) {
+        tag.flux.emit('autocomplete', input.value);
+      } else {
+        tag.flux.emit('autocomplete:hide');
+      }
+    }, delay);
+    document.addEventListener('click', () => tag.flux.emit('autocomplete:hide'));
+    input.addEventListener('input', debouncedSearch);
   }
 }

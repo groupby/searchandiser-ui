@@ -2,7 +2,7 @@ import '../sayt/gb-sayt.tag';
 import { FluxTag } from '../tag';
 import { Events, Query as QueryModel } from 'groupby-api';
 import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
-import { QueryWrapper } from '../sayt/query-wrapper';
+import { Sayt } from '../sayt/gb-sayt';
 import queryString = require('query-string');
 import riot = require('riot');
 
@@ -21,6 +21,7 @@ export class Query {
   saytEnabled: boolean;
   autoSearch: boolean;
   queryFromUrl: QueryModel;
+  searchBox: HTMLInputElement;
 
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
@@ -29,10 +30,13 @@ export class Query {
     this.saytEnabled = unless(this.parentOpts.sayt, true);
     this.autoSearch = unless(this.parentOpts.autoSearch, true);
     this.staticSearch = unless(this.parentOpts.staticSearch, false);
+    this.searchBox = this.findSearchBox();
+
+    this.on('before-mount', () => console.log(this.root.innerHTML))
 
     this.queryFromUrl = parseQueryFromLocation(this.queryParam, this.config);
 
-    if (this.saytEnabled) new QueryWrapper(this).mount();
+    if (this.saytEnabled) Sayt.listenForInput(this);
 
     if (this.autoSearch) {
       this.on('before-mount', () => this.listenForInput(this.inputValue));
@@ -50,12 +54,20 @@ export class Query {
     }
   }
 
+  private findSearchBox() {
+    if (this.tags['gb-search-box']) {
+      return this.tags['gb-search-box'].searchBox;
+    } else {
+      return this.root.querySelector('input');
+    }
+  }
+
   rewriteQuery(query: string) {
-    this.root.value = query;
+    this.searchBox.value = query;
   }
 
   private inputValue() {
-    return this.root.value;
+    return this.searchBox.value;
   }
 
   private setLocation() {
@@ -68,7 +80,7 @@ export class Query {
   }
 
   listenForInput(value: () => string) {
-    this.root.addEventListener('input', () => this.flux.reset(value()));
+    this.searchBox.addEventListener('input', () => this.flux.reset(value()));
   }
 
   listenForSubmit(value: () => string) {
@@ -76,7 +88,7 @@ export class Query {
   }
 
   listenForEnter(cb: () => void) {
-    this.root.addEventListener('keydown', (event: KeyboardEvent) => {
+    this.searchBox.addEventListener('keydown', (event: KeyboardEvent) => {
       switch (event.keyCode) {
         case ENTER_KEY:
           return cb();
