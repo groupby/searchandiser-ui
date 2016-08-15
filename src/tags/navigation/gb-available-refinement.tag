@@ -23,6 +23,7 @@
     }
 
     .gb-stylish .gb-ref__link {
+      cursor: pointer;
       display: flex;
       padding: 4px 6px;
       border-radius: 4px;

@@ -18,6 +18,7 @@
     }
 
     .gb-stylish .gb-ref__link {
+      cursor: pointer;
       left: -8px;
       position: absolute;
       color: black;
