@@ -95,6 +95,7 @@ export class Query {
     this.searchBox.addEventListener('keydown', (event: KeyboardEvent) => {
       switch (event.keyCode) {
         case ENTER_KEY:
+          this.flux.emit('autocomplete:hide');
           return cb();
       }
     });

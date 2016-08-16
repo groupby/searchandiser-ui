@@ -37,7 +37,7 @@ describe(`${TAG} tag`, () => {
   });
 
   describe('redirect when autoSearch off', () => {
-    it('should register for keydown', () => {
+    it('should register for input event', () => {
       const tag = mount(false);
 
       const input = tag.searchBox = document.createElement('input');
@@ -46,8 +46,9 @@ describe(`${TAG} tag`, () => {
       tag.listenForInput();
     });
 
-    it('should customise search URL', () => {
+    it('should hide autocomplete and modify URL on static search', () => {
       sandbox.stub(window.location, 'replace', (url) => expect(url).to.eq('search?q='));
+      flux.emit = (event): any => expect(event).to.eq('autocomplete:hide');
 
       const tag = mount(false);
 
