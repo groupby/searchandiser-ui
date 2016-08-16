@@ -128,6 +128,18 @@ describe('gb-product logic', () => {
       variants
     };
 
+    it('should allow variantStructure from struct', () => {
+      const _variantStructure = { g: 'h' };
+      const struct = { b: 'e', d: 'f', _variantStructure };
+
+      tag._scope = {};
+      tag.config = <any>{ structure: struct };
+      tag.init();
+
+      expect(tag.struct).to.eq(struct);
+      expect(tag.variantStruct).to.eq(_variantStructure);
+    });
+
     it('should return the sole implicit variant', () => {
       tag.init();
 

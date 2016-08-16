@@ -35,8 +35,8 @@ describe(`${TAG} tag`, () => {
   });
 
   describe('product with variants', () => {
-    const structure = { title: 'title', variants: 'variants' };
     const variantStructure = { image: 'image', price: 'price', id: 'id' };
+    const structure = { title: 'title', variants: 'variants', _variantStructure: variantStructure };
     const all_meta = {
       title: 'Sneaky Sneakers',
       variants: [
@@ -55,7 +55,7 @@ describe(`${TAG} tag`, () => {
     let html: HTMLElement;
 
     beforeEach(() => {
-      mixinFlux({ config: { structure, variantStructure } });
+      mixinFlux({ config: { structure } });
       html = createTag(TAG);
     });
     afterEach(() => removeTag(html));

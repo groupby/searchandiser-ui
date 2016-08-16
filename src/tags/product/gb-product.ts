@@ -19,7 +19,7 @@ export class Product {
     this.variants = [];
 
     this.struct = unless(this._scope.struct, this.config.structure, {});
-    this.variantStruct = unless(this._scope.variantStruct, this.config.variantStructure, this.struct);
+    this.variantStruct = unless(this._scope.variantStruct, this.struct._variantStructure, this.struct);
     this.variantIndex = 0;
     this.allMeta = this.opts.all_meta;
     this.initVariants();
