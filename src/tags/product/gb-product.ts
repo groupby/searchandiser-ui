@@ -72,16 +72,12 @@ export class Product {
   }
 
   productMeta() {
-    console.log(this.variants);
-    console.log(this.variantIndex);
     return this.variants[this.variantIndex];
   }
 
   initVariants() {
     this.variants = [];
-    let i = 0;
-    let variant;
-    while (variant = this.variant(i++)) {
+    for (let i = 0, variant; variant = this.variant(i); ++i) {
       this.variants.push(variant);
     }
   }
