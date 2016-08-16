@@ -1,7 +1,7 @@
 <gb-product-info>
   <a href={ _scope.link() }>
-    <p class="gb-product__title">{ _scope.get(_scope.struct.title) }</p>
-    <p class="gb-product__price">{ _scope.get(_scope.struct.price) }</p>
+    <p class="gb-product__title">{ _scope.productMeta().title }</p>
+    <p class="gb-product__price">{ _scope.productMeta().price }</p>
   </a>
 
   <script>

@@ -69,7 +69,10 @@ export interface ProductStructure {
   title?: string;
   image?: string;
   description?: string;
+  url?: string;
+  variants?: string;
   _transform?: (original: any) => any;
+  _variantStructure?: ProductStructure;
 }
 
 export interface SearchandiserConfig {
