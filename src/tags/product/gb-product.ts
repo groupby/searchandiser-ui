@@ -1,11 +1,9 @@
 import { FluxTag } from '../tag';
-import { getPath, unless } from '../../utils';
+import { getPath, unless, remap } from '../../utils';
 import filterObject = require('filter-object');
 import { ProductStructure } from '../../searchandiser';
 
-export interface Product extends FluxTag {
-  parent: FluxTag & { struct: ProductStructure, variantStruct: ProductStructure, allMeta: any };
-}
+export interface Product extends FluxTag { }
 
 export class Product {
 
@@ -18,7 +16,9 @@ export class Product {
   transform: (obj: any) => any;
 
   init() {
-    this.struct = unless(this._scope.struct, this.config.structure);
+    this.variants = [];
+
+    this.struct = unless(this._scope.struct, this.config.structure, {});
     this.variantStruct = unless(this._scope.variantStruct, this.config.variantStructure, this.struct);
     this.variantIndex = 0;
     this.allMeta = this.opts.all_meta;
@@ -35,7 +35,7 @@ export class Product {
   }
 
   link() {
-    return this.currentVariant().url || `details.html?id=${this.currentVariant().id || this.allMeta.id}`;
+    return this.productMeta().url || `details.html?id=${this.productMeta().id}`;
   }
 
   get(path: string) {
@@ -51,29 +51,8 @@ export class Product {
   }
 
   variant(index: number) {
-    /*
-    Example:
-    ({x: 3, y: 4, h: 8}, {z: 'x', i: 'h'}) -> {z: 3, i: 8}
-
-    N.B. It removes keys that do not appear in the mapping
-    */
-    const remapWithValuesAsKeys = (x: any, mapping: any) => {
-      if (mapping) {
-        return Object.keys(mapping).reduce((acc, key) => {
-          const value = getPath(x, mapping[key]);
-          if (value) {
-            return Object.assign(acc, { [key]: value });
-          } else {
-            return acc;
-          }
-        }, {});
-      } else {
-        return x;
-      }
-    };
-
-    // Remove properties that don't refer to paths in the records
-    const struct = filterObject(this.struct || {}, (val) => (typeof val === 'string'));
+    // Remove non-field mapping properties
+    const struct = filterObject(this.struct, ['*', '!_*']);
 
     const isVariantsConfigured = (struct && struct.variants) !== undefined;
     if (isVariantsConfigured) {
@@ -81,29 +60,20 @@ export class Product {
       if (variantsArray) {
         const variant = variantsArray[index];
         if (variant) {
-          return filterObject(Object.assign(remapWithValuesAsKeys(this.allMeta, struct || {}),
-            remapWithValuesAsKeys(variant, this.variantStruct || {})),
+          return filterObject(Object.assign(remap(this.allMeta, struct),
+            remap(variant, this.variantStruct)),
             ['*', '!variants']);
         }
-        else {
-          return null;
-        }
       }
-      else {
-        return null;
-      }
+    } else if (index === 0) {
+      return filterObject(remap(this.allMeta, struct), ['*', '!variants']);
     }
-    else {
-      if (index === 0) {
-        return filterObject(remapWithValuesAsKeys(this.allMeta, struct || {}), ['*', '!variants']);
-      }
-      else {
-        return null;
-      }
-    }
+    return null;
   }
 
-  currentVariant() {
+  productMeta() {
+    console.log(this.variants);
+    console.log(this.variantIndex);
     return this.variants[this.variantIndex];
   }
 
@@ -111,9 +81,8 @@ export class Product {
     this.variants = [];
     let i = 0;
     let variant;
-    while (variant = this.variant(i)) {
+    while (variant = this.variant(i++)) {
       this.variants.push(variant);
-      ++i;
     }
   }
 }

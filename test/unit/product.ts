@@ -3,7 +3,7 @@ import { fluxTag } from '../utils/tags';
 import { expect } from 'chai';
 
 describe('gb-product logic', () => {
-  const struct = { title: 'title', price: 'price', image: 'image', url: 'url' };
+  const struct = { title: 'title', price: 'price', image: 'image', url: 'url', id: 'id' };
   const all_meta = {
     title: 'Red Sneakers',
     price: '$12.45',
@@ -51,6 +51,7 @@ describe('gb-product logic', () => {
 
   it('should perform transformation', () => {
     tag.allMeta = { a: 'b', c: 'd' };
+    tag.struct = struct;
     tag.transform = (obj) => Object.assign(obj, { e: 'f' });
 
     tag.transformRecord();
@@ -133,7 +134,8 @@ describe('gb-product logic', () => {
       expect(tag.variant(0)).to.eql({
         title: 'Red Sneakers',
         price: '$12.45',
-        image: 'image.png'
+        image: 'image.png',
+        id: '1340'
       });
     });
 

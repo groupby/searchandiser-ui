@@ -72,6 +72,7 @@ export interface ProductStructure {
   url?: string;
   variants?: string;
   _transform?: (original: any) => any;
+  _variantStructure?: ProductStructure;
 }
 
 export interface SearchandiserConfig {
@@ -105,5 +106,4 @@ export interface SearchandiserConfig {
   stylish?: boolean;
   initialSearch?: boolean;
   structure?: ProductStructure;
-  variantStructure?: ProductStructure;
 }
