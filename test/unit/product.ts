@@ -50,12 +50,30 @@ describe('gb-product logic', () => {
   });
 
   it('should perform transformation', () => {
-    tag.allMeta = { a: 'b', c: 'd' };
-    tag.struct = struct;
-    tag.transform = (obj) => Object.assign(obj, { e: 'f' });
+    const _transform = (obj) => Object.assign(obj, { e: 'f' });
+
+    tag.opts.all_meta = { a: 'b', c: 'd' };
+    tag._scope.struct = Object.assign({}, struct, { _transform });
+    tag.init();
 
     tag.transformRecord();
     expect(tag.allMeta.e).to.eq('f');
+  });
+
+  it('should not transform multiple times', () => {
+    const _transform = (obj) => {
+      obj.a += obj.a;
+      return obj;
+    };
+
+    tag.opts.all_meta = { a: 'b', c: 'd' };
+    tag._scope.struct = Object.assign({}, struct, { _transform });
+    tag.init();
+
+    tag.transformRecord();
+    expect(tag.allMeta.a).to.eq('bb');
+    tag.transformRecord();
+    expect(tag.allMeta.a).to.eq('bb');
   });
 
   it('should return product url', () => {

@@ -1,12 +1,14 @@
 import { FluxTag } from '../tag';
 import { getPath, unless, remap } from '../../utils';
-import filterObject = require('filter-object');
 import { ProductStructure } from '../../searchandiser';
+import filterObject = require('filter-object');
+import clone = require('clone');
 
 export interface Product extends FluxTag { }
 
 export class Product {
 
+  private originalAllMeta;
   struct: ProductStructure;
   variantStruct: ProductStructure;
   variants: any[];
@@ -21,7 +23,7 @@ export class Product {
     this.struct = unless(this._scope.struct, this.config.structure, {});
     this.variantStruct = unless(this._scope.variantStruct, this.struct._variantStructure, this.struct);
     this.variantIndex = 0;
-    this.allMeta = this.opts.all_meta;
+    this.allMeta = this.originalAllMeta = this.opts.all_meta;
     this.initVariants();
     this.transform = unless(this.struct._transform, (val) => val);
 
@@ -30,7 +32,7 @@ export class Product {
   }
 
   transformRecord() {
-    this.allMeta = this.transform(this.allMeta);
+    this.allMeta = this.transform(clone(this.originalAllMeta, false));
     this.initVariants();
   }
 
