@@ -36,7 +36,8 @@ describe('gb-navigation logic', () => {
   it('should process navigations', () => {
     const availableNavigation = [
       { name: 'a', refinements: [{ type: 'Value', value: 'b' }] },
-      { name: 'c', refinements: [{ type: 'Value', value: 'b' }] }
+      { name: 'c', refinements: [{ type: 'Value', value: 'b' }] },
+      { name: 'e', refinements: [{ type: 'Value', value: 'f' }] }
     ];
     const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }] }];
     const results = <any>{ availableNavigation, selectedNavigation };
@@ -44,7 +45,8 @@ describe('gb-navigation logic', () => {
     const processed = tag.processNavigations(results);
     expect(processed).to.eql([
       availableNavigation[0],
-      Object.assign({}, availableNavigation[1], { selected: selectedNavigation[0].refinements })
+      Object.assign(availableNavigation[1], { selected: selectedNavigation[0].refinements }),
+      availableNavigation[2]
     ]);
   });
 

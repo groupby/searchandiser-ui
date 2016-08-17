@@ -25,13 +25,10 @@ export class Navigation {
   processNavigations({ selectedNavigation, availableNavigation }: Results) {
     let processed = <SelectionNavigation[]>clone(availableNavigation);
     selectedNavigation.forEach(selNav => {
-      let match = false;
-      processed.forEach(availNav => {
-        if (match = availNav.name === selNav.name) {
-          availNav.selected = selNav.refinements;
-        }
-      });
-      if (!match) {
+      const availNav = processed.find(nav => nav.name === selNav.name);
+      if (availNav) {
+        availNav.selected = selNav.refinements;
+      } else {
         processed.unshift(Object.assign({}, selNav, { selected: selNav.refinements, refinements: [] }));
       }
     });
