@@ -38,20 +38,12 @@ export class Navigation {
     return processed;
   }
 
-  private mapSelected(nav: NavModel) {
-    return Object.assign(nav, { selected: true });
-  }
-
   send(ref, nav) {
     return this.flux.refine(toRefinement(ref, nav));
   }
 
   remove(ref, nav) {
     return this.flux.unrefine(toRefinement(ref, nav));
-  }
-
-  private combineNavigations(processed: any, nav: SelectionNavigation) {
-    return Object.assign(processed, { [nav.name]: Object.assign(processed[nav.name] ? processed[nav.name] : nav, { [nav.selected ? 'selected' : 'available']: nav.refinements }) });
   }
 }
 
