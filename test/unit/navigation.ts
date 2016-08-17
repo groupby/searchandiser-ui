@@ -34,15 +34,18 @@ describe('gb-navigation logic', () => {
   });
 
   it('should process navigations', () => {
-    const availableNavigation = [{ name: 'a', refinements: [{ type: 'Value', value: 'b' }] }];
+    const availableNavigation = [
+      { name: 'a', refinements: [{ type: 'Value', value: 'b' }] },
+      { name: 'c', refinements: [{ type: 'Value', value: 'b' }] }
+    ];
     const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }] }];
     const results = <any>{ availableNavigation, selectedNavigation };
 
     const processed = tag.processNavigations(results);
-    expect(processed).to.eql({
-      a: Object.assign({}, availableNavigation[0], { available: availableNavigation[0].refinements }),
-      c: Object.assign({}, selectedNavigation[0], { selected: selectedNavigation[0].refinements })
-    });
+    expect(processed).to.eql([
+      availableNavigation[0],
+      Object.assign({}, availableNavigation[1], { selected: selectedNavigation[0].refinements })
+    ]);
   });
 
   it('should refine on send()', () => {

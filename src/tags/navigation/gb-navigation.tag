@@ -1,7 +1,7 @@
 <gb-navigation>
   <yield>
     <div class="gb-side-nav { _style }">
-      <gb-refinement-list each={ name, nav in processed }></gb-refinement-list>
+      <gb-refinement-list each={ nav in processed }></gb-refinement-list>
     </div>
   </yield>
 
