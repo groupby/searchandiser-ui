@@ -1,6 +1,7 @@
 import { FluxTag } from '../tag';
 import { unless, toRefinement } from '../../utils';
 import { Events, Results, Navigation as NavModel, NavigationInfo } from 'groupby-api';
+import clone = require('clone');
 
 export { NavigationInfo }
 
@@ -22,10 +23,19 @@ export class Navigation {
   }
 
   processNavigations({ selectedNavigation, availableNavigation }: Results) {
-    return selectedNavigation
-      .map((nav: NavModel) => Object.assign(nav, { selected: true }))
-      .concat(availableNavigation)
-      .reduce(this.combineNavigations, {});
+    let processed = <SelectionNavigation[]>clone(availableNavigation);
+    selectedNavigation.forEach(selNav => {
+      let match = false;
+      processed.forEach(availNav => {
+        if (match = availNav.name === selNav.name) {
+          availNav.selected = selNav.refinements;
+        }
+      });
+      if (!match) {
+        processed.unshift(Object.assign({}, selNav, { selected: selNav.refinements, refinements: [] }));
+      }
+    });
+    return processed;
   }
 
   send(ref, nav) {
@@ -35,12 +45,8 @@ export class Navigation {
   remove(ref, nav) {
     return this.flux.unrefine(toRefinement(ref, nav));
   }
-
-  private combineNavigations(processed: any, nav: SelectionNavigation) {
-    return Object.assign(processed, { [nav.name]: Object.assign(processed[nav.name] ? processed[nav.name] : nav, { [nav.selected ? 'selected' : 'available']: nav.refinements }) });
-  }
 }
 
 export interface SelectionNavigation extends NavModel {
-  selected: boolean;
+  selected: any[];
 }

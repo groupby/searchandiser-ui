@@ -3,7 +3,7 @@
     <h4 class="gb-navigation-title">{ nav.displayName }</h4>
     <ul>
       <gb-selected-refinement if={ showSelected } each={ ref in nav.selected }></gb-selected-refinement>
-      <gb-available-refinement each={ ref in nav.available }></gb-available-refinement>
+      <gb-available-refinement each={ ref in nav.refinements }></gb-available-refinement>
     </ul>
   </div>
 
