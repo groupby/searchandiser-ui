@@ -1,7 +1,7 @@
 <gb-sayt-products>
   <ul class={ _style }>
     <li class="gb-sayt-product" each={ products }>
-      <gb-product>
+      <gb-product all_meta={ allMeta }>
         <gb-product-image thumbnail></gb-product-image>
       </gb-product>
     </li>
