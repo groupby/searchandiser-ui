@@ -36,7 +36,11 @@ export class Searchandiser {
     } else {
       tag = this.simpleAttach(tagName, selectorOrOpts);
     }
-    return tag && tag.length ? tag[0] : null;
+    if (tag) {
+      return tag.length === 1 ? tag[0] : tag;
+    } else {
+      return null;
+    }
   }
 
   compile() {
