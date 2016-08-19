@@ -1,20 +1,19 @@
 <gb-template>
-  <div class="gb-template { _style }" if={ isActive }>
-    <yield/>
-    <gb-snippet if={ url } url={ url } raw={ raw }></gb-snippet>
+  <div if={ isActive }>
+    <yield>
+      <div each={ zone in zones } class="gb-zone-{ zone.name }">
+        <gb-content-zone if={ zone.type === 'Content' }></gb-content-zone>
+        <gb-rich-content-zone if={ zone.type === 'Rich_Content' }></gb-rich-content-zone>
+        <gb-record-zone if={ zone.type === 'Record' }></gb-record-zone>
+      </div>
+    </yield>
   </div>
 
   <script>
-    import '../snippet/gb-snippet.tag';
+    import './gb-content-zone.tag';
+    import './gb-rich-content-zone.tag';
+    import './gb-record-zone.tag';
     import { Template } from './gb-template';
     this.mixin(new Template().__proto__);
   </script>
-
-  <style scoped>
-    .gb-stylish.gb-template {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  </style>
 </gb-template>
