@@ -30,8 +30,8 @@ export class Searchandiser {
     if (this.config.initialSearch) this.search();
   }
 
-  attach(tagName: string, opts: any);
-  attach(tagName: string, cssSelector: string, opts: any);
+  attach(tagName: string, opts?: any);
+  attach(tagName: string, cssSelector: string, opts?: any);
   attach(tagName: string, selectorOrOpts?: any, options?: any) {
     let tag;
     if (typeof selectorOrOpts === 'string') {
@@ -60,10 +60,6 @@ export class Searchandiser {
 
   private riotTagName(tagName: string) {
     return tagName.startsWith('gb-') ? tagName : `gb-${tagName}`;
-  }
-
-  template(templateName: string, cssSelector: string, options: any = {}) {
-    this.attach('template', cssSelector, Object.assign(options, { templateName }));
   }
 
   search(query?: string) {
