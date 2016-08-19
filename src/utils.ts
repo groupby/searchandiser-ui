@@ -9,7 +9,9 @@ export function findSearchBox() {
 }
 
 export function findTag(tagName: string): Element {
-  return document.querySelector(tagName) || document.querySelector(`[riot-tag="${tagName}"]`);
+  return document.querySelector(tagName)
+    || document.querySelector(`[data-is="${tagName}"]`)
+    || document.querySelector(`[riot-tag="${tagName}"]`);
 }
 
 export function toRefinement(ref, nav) {
