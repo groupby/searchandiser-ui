@@ -16,6 +16,7 @@ describe('gb-template logic', () => {
     expect(tag.target).to.not.be.ok;
     expect(tag.isActive).to.not.be.ok;
     expect(tag.zones).to.not.be.ok;
+    expect(tag.zoneMap).to.not.be.ok;
   });
 
   it('should get default from opts', () => {
@@ -35,9 +36,25 @@ describe('gb-template logic', () => {
   });
 
   it('should update active on RESULTS', () => {
+    const zones = {
+      a: {
+        name: 'a',
+        type: 'Content'
+      },
+      b: {
+        name: 'b',
+        type: 'Rich_Content'
+      },
+      c: {
+        name: 'c',
+        type: 'Record'
+      }
+    };
+
     tag.update = (obj: any) => {
       expect(obj.isActive).to.be.true;
       expect(obj.zones.map((zone) => zone.name)).to.eql(['b', 'a', 'c'])
+      expect(obj.zoneMap).to.eq(zones);
     };
     tag.init();
     tag.target = target
@@ -45,20 +62,7 @@ describe('gb-template logic', () => {
     tag.updateActive(<any>{
       template: {
         name: target,
-        zones: {
-          a: {
-            name: 'a',
-            type: 'Content'
-          },
-          b: {
-            name: 'b',
-            type: 'Rich_Content'
-          },
-          c: {
-            name: 'c',
-            type: 'Record'
-          }
-        }
+        zones
       }
     });
   });

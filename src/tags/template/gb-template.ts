@@ -9,6 +9,7 @@ export class Template {
   isActive: boolean;
   target: string;
   zones: any[];
+  zoneMap: any;
 
   init() {
     this.target = this.opts.target;
@@ -18,6 +19,7 @@ export class Template {
   updateActive({ template }: Results) {
     this.update({
       isActive: template.name === this.target,
+      zoneMap: template.zones,
       zones: Object.keys(template.zones).map((key) => template.zones[key])
         .reduce((list, zone) => {
           if (zone.type === 'Record') {
