@@ -11,7 +11,7 @@ export function initSearchandiser() {
     const flux = initCapacitor(finalConfig);
     Object.assign(flux, Events);
     riot.mixin(RootTag(flux, finalConfig));
-    Object.assign(configure, new Searchandiser(flux, finalConfig)['__proto__']);
+    Object.assign(configure, { flux, config: finalConfig }, new Searchandiser()['__proto__']);
   }
 }
 
@@ -23,8 +23,11 @@ export function initCapacitor(config: SearchandiserConfig) {
 
 export class Searchandiser {
 
-  constructor(public flux: FluxCapacitor, public config: SearchandiserConfig) {
-    if (config.initialSearch) this.search();
+  flux: FluxCapacitor;
+  config: SearchandiserConfig;
+
+  init() {
+    if (this.config.initialSearch) this.search();
   }
 
   attach(tagName: string, opts: any);
