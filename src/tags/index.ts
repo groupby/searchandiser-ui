@@ -1,4 +1,5 @@
 import './breadcrumbs/gb-breadcrumbs.tag';
+import './carousel/gb-carousel.tag';
 import './category-menu/gb-category-menu.tag';
 import './collections/gb-collections.tag';
 import './details/gb-details.tag';

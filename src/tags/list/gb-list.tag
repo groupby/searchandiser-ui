@@ -1,6 +1,6 @@
 <gb-list>
   <ul class={ _style }>
-    <li each={ item in opts.items } class={ active: opts.activation(item) }>
+    <li each={ item, i in opts.items } class={ active: isActive(i) }>
       <yield/>
     </li>
   </ul>
@@ -23,4 +23,8 @@
       color: black;
     }
   </style>
+
+  <script>
+    this.isActive = opts.activation;
+  </script>
 </gb-list>
