@@ -23,7 +23,9 @@ export class Collections {
   }
 
   switchCollection(event: MouseEvent) {
-    this.flux.switchCollection((<HTMLElement>event.target).dataset['collection']);
+    let element = <HTMLElement>event.target;
+    while (element.tagName !== 'A') element = element.parentElement;
+    this.flux.switchCollection(element.dataset['collection']);
   }
 
   updateCollectionCounts() {

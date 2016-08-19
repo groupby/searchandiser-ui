@@ -26,11 +26,16 @@ describe('gb-results logic', () => {
 
   it('should update selected on RESULTS', () => {
     const records = [{ a: 'b' }, { c: 'd' }];
+    const collection = 'mycollection';
     let callback;
 
+    flux.query.withConfiguration({ collection });
     flux.on = (event: string, cb: Function): any => callback = cb;
 
-    tag.update = (obj: any) => expect(obj.records).to.eq(records);;
+    tag.update = (obj: any) => {
+      expect(obj.records).to.eq(records);
+      expect(obj.collection).to.eq(collection);
+    };
     tag.init();
 
     callback({ records });

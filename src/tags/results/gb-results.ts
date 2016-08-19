@@ -12,6 +12,7 @@ export class Results {
   struct: ProductStructure;
   variantStruct: ProductStructure;
   records: Record[];
+  collection: string;
   getPath: typeof getPath;
 
   init() {
@@ -22,7 +23,7 @@ export class Results {
   }
 
   updateRecords(records) {
-    this.update({ records });
+    this.update({ records, collection: this.flux.query.raw.collection });
   }
 
   userStyle(key: string) {
