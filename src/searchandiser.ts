@@ -16,9 +16,19 @@ export function initSearchandiser() {
 }
 
 export function initCapacitor(config: SearchandiserConfig) {
-  if (config.pageSizes) config.pageSize = config.pageSizes[0];
-  if (checkNested(config, 'tags', 'sort', 'options')) config.sort = [config.tags.sort.options.map(val => val.value)[0]];
-  return new FluxCapacitor(config.customerId, config, CONFIGURATION_MASK);
+  let finalConfig: SearchandiserConfig & { headers: any } = <any>config;
+  if (config.pageSizes) finalConfig.pageSize = config.pageSizes[0];
+  if (config.bridge) {
+    let headers = config.bridge.headers || {};
+    if (config.bridge.skipCache) headers['Skip-Caching'] = true;
+    if (config.bridge.skipSemantish) headers['Skip-Semantish'] = true;
+    finalConfig.headers = headers;
+    delete finalConfig.bridge;
+  }
+  if (checkNested(config, 'tags', 'sort', 'options')) {
+    finalConfig.sort = [config.tags.sort.options.map(val => val.value)[0]];
+  }
+  return new FluxCapacitor(finalConfig.customerId, finalConfig, CONFIGURATION_MASK);
 }
 
 export class Searchandiser {
@@ -78,7 +88,15 @@ export interface ProductStructure {
   _variantStructure?: ProductStructure;
 }
 
+export interface BridgeConfig {
+  headers?: any;
+  skipCache?: boolean;
+  skipSemantish?: boolean;
+}
+
 export interface SearchandiserConfig {
+  bridge?: BridgeConfig;
+
   customerId: string;
   area?: string;
   collection?: string;
