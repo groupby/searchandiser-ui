@@ -21,6 +21,13 @@ describe('gb-paging logic', () => {
     parent: { struct, allMeta }
   })));
 
+  it('should have default initial state', () => {
+    tag.init();
+
+    expect(tag.currentPage).to.eq(1);
+    expect(tag.backDisabled).to.be.true;
+  });
+
   it('should inherit values from parent', () => {
     tag.init();
 
@@ -37,6 +44,11 @@ describe('gb-paging logic', () => {
     expect(tag.next_label).to.not.be.ok;
     expect(tag.first_label).to.not.be.ok;
     expect(tag.last_label).to.not.be.ok;
+
+    expect(tag.prev_icon).to.not.be.ok;
+    expect(tag.next_icon).to.not.be.ok;
+    expect(tag.first_icon).to.not.be.ok;
+    expect(tag.last_icon).to.not.be.ok;
   });
 
   it('should allow override from opts', () => {
@@ -49,7 +61,11 @@ describe('gb-paging logic', () => {
       prev_label: 'back',
       next_label: 'forward',
       first_label: 'beginning',
-      last_label: 'end'
+      last_label: 'end',
+      prev_icon: 'fa fa-backward',
+      next_icon: 'fa fa-forward',
+      first_icon: 'fa fa-double-backward',
+      last_icon: 'fa fa-double-forward'
     };
     Object.assign(tag.opts, overrides);
     tag.init();
@@ -63,6 +79,10 @@ describe('gb-paging logic', () => {
     expect(tag.next_label).to.eq(overrides.next_label);
     expect(tag.first_label).to.eq(overrides.first_label);
     expect(tag.last_label).to.eq(overrides.last_label);
+    expect(tag.prev_icon).to.eq(overrides.prev_icon);
+    expect(tag.next_icon).to.eq(overrides.next_icon);
+    expect(tag.first_icon).to.eq(overrides.first_icon);
+    expect(tag.last_icon).to.eq(overrides.last_icon);
   });
 
   it('should listen for events', () => {
