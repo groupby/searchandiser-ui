@@ -28,6 +28,7 @@ export class Sayt {
   queryParam: string;
   originalQuery: string;
   searchUrl: string;
+  showProducts: boolean;
   queries: any[];
 
   init() {
@@ -36,6 +37,7 @@ export class Sayt {
     this.struct = Object.assign({}, this.config.structure, this.saytConfig.structure);
     this.searchUrl = this.opts.searchUrl || '/search';
     this.queryParam = this.opts.queryParam || 'q';
+    this.showProducts = this.saytConfig.products > 0;
 
     sayt.configure({
       subdomain: this.config.customerId,
@@ -53,7 +55,7 @@ export class Sayt {
       .then(({result}) => {
         this.update({ originalQuery });
         this.processResults(result);
-        if (this.queries) this.searchProducts(this.queries[0].value);
+        if (this.queries && this.showProducts) this.searchProducts(this.queries[0].value);
       })
       .catch((err) => console.error(err)));
 

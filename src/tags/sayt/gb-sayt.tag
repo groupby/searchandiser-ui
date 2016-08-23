@@ -24,7 +24,7 @@
         </li>
       </div>
     </ul>
-    <gb-sayt-products></gb-sayt-products>
+    <gb-sayt-products if={ showProducts }></gb-sayt-products>
   </div>
 
   <script>
