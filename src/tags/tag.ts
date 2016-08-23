@@ -1,6 +1,7 @@
 import { FluxCapacitor } from 'groupby-api';
 import { expect } from 'chai';
 import { initCapacitor } from '../searchandiser';
+const sayt = require('sayt');
 
 export interface FluxTag extends Riot.Tag.Instance {
   root: HTMLElement;
@@ -42,6 +43,17 @@ export class FluxTag {
     let parentTag: Riot.Tag.Instance = tag;
     while (parentTag.root.localName !== name && parentTag.parent) parentTag = parentTag.parent;
     return parentTag;
+  }
+}
+
+export interface SaytTag extends FluxTag { }
+
+export class SaytTag {
+
+  sayt: any;
+
+  init() {
+    this.sayt = sayt;
   }
 }
 
