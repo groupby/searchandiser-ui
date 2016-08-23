@@ -1,11 +1,10 @@
-import { FluxTag } from '../tag';
+import { SaytTag } from '../tag';
 import { Events } from 'groupby-api';
 import { Autocomplete } from './autocomplete';
 import { Query } from '../query/gb-query';
 import { findTag, getPath, updateLocation } from '../../utils';
 import debounce = require('debounce');
 import escapeStringRegexp = require('escape-string-regexp');
-const sayt = require('sayt');
 
 const DEFAULT_CONFIG = {
   products: 4,
@@ -17,7 +16,7 @@ const DEFAULT_CONFIG = {
 };
 const ESCAPE_KEY = 27;
 
-export interface Sayt extends FluxTag { }
+export interface Sayt extends SaytTag { }
 
 export class Sayt {
 
@@ -40,7 +39,7 @@ export class Sayt {
     this.queryParam = this.opts.queryParam || 'q';
     this.showProducts = this.saytConfig.products > 0;
 
-    sayt.configure({
+    this.sayt.configure({
       subdomain: this.config.customerId,
       collection: this.saytConfig.collection || this.config.collection,
       autocomplete: { numSearchTerms: this.saytConfig.queries },
@@ -52,7 +51,7 @@ export class Sayt {
 
     this.on('mount', () => this.autocomplete = new Autocomplete(this));
 
-    this.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
+    this.flux.on('autocomplete', (originalQuery) => this.sayt.autocomplete(originalQuery)
       .then(({result}) => {
         this.update({ originalQuery });
         this.processResults(result);
@@ -68,7 +67,7 @@ export class Sayt {
 
   searchProducts(query) {
     if (this.saytConfig.products) {
-      sayt.productSearch(query)
+      this.sayt.productSearch(query)
         .then((res) => this.update({ products: res.result.products }));
     }
   }

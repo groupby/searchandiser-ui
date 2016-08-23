@@ -93,10 +93,12 @@ export class Query {
 
   onPressEnter(cb: () => void) {
     this.searchBox.addEventListener('keydown', (event: KeyboardEvent) => {
-      switch (event.keyCode) {
-        case ENTER_KEY:
-          this.flux.emit('autocomplete:hide');
-          return cb();
+      if (!(this.root.querySelector('gb-sayt-autocomplete'))) {
+        switch (event.keyCode) {
+          case ENTER_KEY:
+            this.flux.emit('autocomplete:hide');
+            return cb();
+        }
       }
     });
   }
