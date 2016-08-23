@@ -1,5 +1,5 @@
 <gb-sayt>
-  <div class="gb-sayt { _style }" if={ queries || navigations }>
+  <div class="gb-sayt { _style }" if={ queries.length || navigations.length }>
     <ul class="gb-sayt__autocomplete" name="autocompleteList">
       <li class="gb-autocomplete__item" each={ query in categoryResults } data-value={ query.value } data-refinement={
           query.category } data-field={ categoryField }>
@@ -7,13 +7,13 @@
           <gb-raw content={ enhanceCategoryQuery(query) }></gb-raw>
         </a>
       </li>
-      <div if={ queries && categoryResults.length } class="gb-autocomplete__divider"></div>
+      <div if={ queries.length && categoryResults.length } class="gb-autocomplete__divider"></div>
       <li class="gb-autocomplete__item" each={ queries } data-value={ value }>
         <a class="gb-autocomplete__link" href="#" onclick={ search }>
           <gb-raw content={ enhanceQuery(value) }></gb-raw>
         </a>
       </li>
-      <div if={ queries && navigations } class="gb-autocomplete__divider"></div>
+      <div if={ queries.length && navigations.length } class="gb-autocomplete__divider"></div>
       <div each={ navigations }>
         <h4 class="gb-navigation__title">{ displayName }</h4>
         <li class="gb-autocomplete__item" each={ value in values } data-value="{ displayName }: { value }"
