@@ -11,18 +11,23 @@ export interface FluxTag extends Riot.Tag.Instance {
 }
 
 export class FluxTag {
-
   _tagName: string;
+  _simpleTagName: string;
   _parents: any;
+  _parentsList: any[];
   _scope: FluxTag & any;
   _top: FluxTag & any;
   _style: string;
 
   init() {
     this._style = this.config.stylish ? 'gb-stylish' : '';
-    this.setTagName();
-    this.setParents();
-    this.setScope();
+    setTagName(this);
+    setParents(this);
+    setScope(this);
+  }
+
+  _mixin(Mixin: any) {
+    this.mixin(new Mixin().__proto__);
   }
 
   _clone() {
@@ -38,34 +43,41 @@ export class FluxTag {
     while (parentTag.root.localName !== name && parentTag.parent) parentTag = parentTag.parent;
     return parentTag;
   }
+}
 
-  private setTagName() {
-    const htmlTagName = this.root.tagName.toLowerCase();
-    const tagName = htmlTagName.startsWith('gb-') ?
-      htmlTagName :
-      this.root.dataset['is'] || this.root.getAttribute('riot-tag');
+function setTagName(tag: FluxTag) {
+  const htmlTagName = tag.root.tagName.toLowerCase();
+  const tagName = htmlTagName.startsWith('gb-') ?
+    htmlTagName :
+    tag.root.dataset['is'] || tag.root.getAttribute('riot-tag');
 
-    if (tagName) this._tagName = tagName;
+  if (tagName) {
+    tag._tagName = tagName;
+    tag._simpleTagName = tag._tagName.replace(/^gb-/, '');
+  }
+}
+
+function setParents(tag: FluxTag) {
+  tag._parents = tag.parent ? Object.assign({}, tag.parent['_parents']) : {};
+  if (tag._tagName) {
+    tag._parents[tag._tagName] = tag;
   }
 
-  private setParents() {
-    this._parents = this.parent ? Object.assign({}, this.parent['_parents']) : {};
-    if (this._tagName) {
-      this._parents[this._tagName] = this;
-    }
-  }
+  tag._parentsList = [];
+  let currTag = tag;
+  while (currTag = currTag.parent) tag._parentsList.push(currTag);
+}
 
-  // somehow this function isn't working for the gb-select inside gb-sort
-  private setScope() {
-    if (this.opts.scope in this._parents) {
-      this._scope = this._parents[this.opts.scope];
-    } else if (this.parent && this.parent._scope) {
-      this._scope = this.parent._scope;
-    } else {
-      let parent: any = this;
-      while (parent.parent) this._scope = parent = parent.parent;
-      this._top = this._scope;
-    }
+// somehow this function isn't working for the gb-select inside gb-sort
+function setScope(tag: FluxTag) {
+  if (tag.opts.scope in tag._parents) {
+    tag._scope = tag._parents[tag.opts.scope];
+  } else if (tag.parent && tag.parent._scope) {
+    tag._scope = tag.parent._scope;
+  } else {
+    let parent: any = tag;
+    while (parent.parent) tag._scope = parent = parent.parent;
+    tag._top = tag._scope;
   }
 }
 

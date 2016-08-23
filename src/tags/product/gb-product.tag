@@ -10,6 +10,6 @@
     import './gb-product-info.tag';
     import './gb-variant-switcher.tag';
     import { Product } from './gb-product';
-    this.mixin(new Product().__proto__);
+    this._mixin(Product);
   </script>
 </gb-product>

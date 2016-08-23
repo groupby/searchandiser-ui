@@ -8,6 +8,6 @@
   <script>
     import '../list/gb-list.tag';
     import { DidYouMean } from './gb-did-you-mean';
-    this.mixin(new DidYouMean().__proto__);
+    this._mixin(DidYouMean);
   </script>
 </gb-did-you-mean>

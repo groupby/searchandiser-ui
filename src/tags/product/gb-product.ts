@@ -54,7 +54,7 @@ export class Product {
 
   variant(index: number) {
     // Remove non-field mapping properties
-    const struct = filterObject(this.struct, ['*', '!_*']);
+    const struct = filterObject(this.struct, '!_*');
 
     const isVariantsConfigured = (struct && struct.variants) !== undefined;
     if (isVariantsConfigured) {
@@ -63,12 +63,11 @@ export class Product {
         const variant = variantsArray[index];
         if (variant) {
           return filterObject(Object.assign(remap(this.allMeta, struct),
-            remap(variant, this.variantStruct)),
-            ['*', '!variants']);
+            remap(variant, this.variantStruct)), '!variants');
         }
       }
     } else if (index === 0) {
-      return filterObject(remap(this.allMeta, struct), ['*', '!variants']);
+      return filterObject(remap(this.allMeta, struct), '!variants');
     }
     return null;
   }

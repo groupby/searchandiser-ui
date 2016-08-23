@@ -9,7 +9,7 @@
     import '../list/gb-list.tag';
     import '../product/gb-product.tag';
     import { Results } from './gb-results';
-    this.mixin(new Results().__proto__);
+    this._mixin(Results);
   </script>
 
   <style scoped>

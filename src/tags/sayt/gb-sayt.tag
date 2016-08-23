@@ -31,7 +31,7 @@
     import '../raw/gb-raw.tag';
     import './gb-sayt-products.tag';
     import { Sayt } from './gb-sayt';
-    this.mixin(new Sayt().__proto__);
+    this._mixin(Sayt);
   </script>
 
   <style scoped>

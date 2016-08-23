@@ -7,6 +7,6 @@
   <script>
     import '../select/gb-select.tag';
     import { PageSize } from './gb-page-size';
-    this.mixin(new PageSize().__proto__);
+    this._mixin(PageSize);
   </script>
 </gb-page-size>

@@ -9,6 +9,6 @@
     import './gb-collection-item.tag';
     import '../list/gb-list.tag';
     import { Collections } from './gb-collections';
-    this.mixin(new Collections().__proto__);
+    this._mixin(Collections);
   </script>
 </gb-collections>

@@ -14,6 +14,6 @@
     import './gb-rich-content-zone.tag';
     import './gb-record-zone.tag';
     import { Template } from './gb-template';
-    this.mixin(new Template().__proto__);
+    this._mixin(Template);
   </script>
 </gb-template>

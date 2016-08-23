@@ -3,6 +3,6 @@
 
   <script>
     import { Raw } from './gb-raw';
-    this.mixin(new Raw().__proto__);
+    this._mixin(Raw);
   </script>
 </gb-raw>

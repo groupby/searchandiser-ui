@@ -5,6 +5,6 @@
 
   <script>
     import { Details } from './gb-details';
-    this.mixin(new Details().__proto__);
+    this._mixin(Details);
   </script>
 </gb-details>

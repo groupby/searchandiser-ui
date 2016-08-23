@@ -8,6 +8,6 @@
     import './gb-native-select.tag';
     import './gb-custom-select.tag';
     import { Select } from './gb-select';
-    this.mixin(new Select().__proto__);
+    this._mixin(Select);
   </script>
 </gb-select>

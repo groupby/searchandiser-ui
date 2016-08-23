@@ -5,7 +5,7 @@
 
   <script>
     import { Submit } from './gb-submit';
-    this.mixin(new Submit().__proto__);
+    this._mixin(Submit);
   </script>
 
   <style scoped>
