@@ -8,7 +8,7 @@
   <script>
     import '../list/gb-list.tag';
     import { Carousel } from './gb-carousel';
-    this.mixin(new Carousel().__proto__);
+    this._mixin(Carousel);
   </script>
 
   <style scoped>

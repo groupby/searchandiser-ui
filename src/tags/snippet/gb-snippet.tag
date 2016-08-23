@@ -5,6 +5,6 @@
 
   <script>
     import { Snippet } from '../snippet/gb-snippet';
-    this.mixin(new Snippet().__proto__);
+    this._mixin(Snippet);
   </script>
 </gb-snippet>

@@ -12,6 +12,6 @@
     import './gb-pager.tag';
     import './gb-pages.tag';
     import { Paging } from './gb-paging';
-    this.mixin(new Paging().__proto__);
+    this._mixin(Paging);
   </script>
 </gb-paging>

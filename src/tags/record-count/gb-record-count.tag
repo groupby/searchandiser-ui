@@ -5,6 +5,6 @@
 
   <script>
     import { RecordCount } from './gb-record-count';
-    this.mixin(new RecordCount().__proto__);
+    this._mixin(RecordCount);
   </script>
 </gb-record-count>

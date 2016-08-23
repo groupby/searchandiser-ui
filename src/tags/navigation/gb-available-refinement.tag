@@ -10,7 +10,7 @@
   <script>
     import '../badge/gb-badge.tag';
     import { AvailableRefinement } from './gb-refinement';
-    this.mixin(new AvailableRefinement().__proto__);
+    this._mixin(AvailableRefinement);
   </script>
 
   <style scoped>

@@ -5,7 +5,7 @@
 
   <script>
     import { Reset } from './gb-reset';
-    this.mixin(new Reset().__proto__);
+    this._mixin(Reset);
   </script>
 
   <style scoped>

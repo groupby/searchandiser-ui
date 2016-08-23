@@ -14,7 +14,7 @@
     import '../reset/gb-reset.tag';
     import '../sayt/gb-sayt.tag';
     import { Query } from './gb-query';
-    this.mixin(new Query().__proto__);
+    this._mixin(Query);
   </script>
 
   <style scoped>

@@ -6,7 +6,7 @@
 
   <script>
     import { SelectedRefinement } from './gb-refinement';
-    this.mixin(new SelectedRefinement().__proto__);
+    this._mixin(SelectedRefinement);
   </script>
 
   <style scoped>

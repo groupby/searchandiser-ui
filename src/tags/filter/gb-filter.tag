@@ -7,6 +7,6 @@
   <script>
     import '../select/gb-select.tag';
     import { Filter } from './gb-filter';
-    this.mixin(new Filter().__proto__);
+    this._mixin(Filter);
   </script>
 </gb-filter>

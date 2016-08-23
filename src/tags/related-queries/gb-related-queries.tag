@@ -8,6 +8,6 @@
   <script>
     import '../list/gb-list.tag';
     import { RelatedQueries } from './gb-related-queries';
-    this.mixin(new RelatedQueries().__proto__);
+    this._mixin(RelatedQueries);
   </script>
 </gb-related-queries>
