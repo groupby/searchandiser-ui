@@ -3,7 +3,7 @@ import { fluxTag } from '../utils/tags';
 import { expect } from 'chai';
 
 describe('gb-product logic', () => {
-  const struct = { title: 'title', price: 'price', image: 'image', url: 'url', id: 'id' };
+  const struct = { title: 'title', price: 'price', image: 'image', url: 'url' };
   const all_meta = {
     title: 'Red Sneakers',
     price: '$12.45',
@@ -23,10 +23,20 @@ describe('gb-product logic', () => {
   it('should inherit values from _scope', () => {
     tag.init();
 
-    expect(tag.struct).to.eq(struct);
+    expect(tag.struct).to.eql(Object.assign({ id: 'id' }, struct));
     expect(tag.allMeta).to.eq(all_meta);
     expect(tag.transform).to.be.a('function');
     expect(tag.getPath).to.be.a('function');
+  });
+
+  it('should override struct defaults', () => {
+    const overrideStruct = {
+      id: 'MY_ID'
+    };
+    tag._scope = { struct: overrideStruct };
+    tag.init();
+
+    expect(tag.struct).to.eql(overrideStruct);
   });
 
   it('should allow default from config', () => {
@@ -37,7 +47,7 @@ describe('gb-product logic', () => {
     tag.config = <any>{ structure: struct };
     tag.init();
 
-    expect(tag.struct).to.eq(struct);
+    expect(tag.struct).to.eql(Object.assign({ id: 'id' }, struct));
     expect(tag.transform).to.eq(transform);
   });
 
@@ -154,7 +164,7 @@ describe('gb-product logic', () => {
       tag.config = <any>{ structure: struct };
       tag.init();
 
-      expect(tag.struct).to.eq(struct);
+      expect(tag.struct).to.eql(Object.assign({ id: 'id' }, struct));
       expect(tag.variantStruct).to.eq(_variantStructure);
     });
 

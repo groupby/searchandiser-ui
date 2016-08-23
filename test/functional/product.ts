@@ -7,7 +7,7 @@ import '../../src/tags/product/gb-product.tag';
 const TAG = 'gb-product';
 
 describe(`${TAG} tag`, () => {
-  const structure = { title: 'title', price: 'price', image: 'image', id: 'id' },
+  const structure = { title: 'title', price: 'price', image: 'image' },
     all_meta = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
   let html: HTMLElement;
 

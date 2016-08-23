@@ -6,6 +6,10 @@ import clone = require('clone');
 
 export interface Product extends FluxTag { }
 
+const DEFAULT_STRUCTURE = {
+  id: 'id'
+};
+
 export class Product {
 
   private originalAllMeta;
@@ -20,7 +24,7 @@ export class Product {
   init() {
     this.variants = [];
 
-    this.struct = unless(this._scope.struct, this.config.structure, {});
+    this.struct = Object.assign({}, DEFAULT_STRUCTURE, unless(this._scope.struct, this.config.structure, {}));
     this.variantStruct = unless(this._scope.variantStruct, this.struct._variantStructure, this.struct);
     this.variantIndex = 0;
     this.allMeta = this.originalAllMeta = this.opts.all_meta;
