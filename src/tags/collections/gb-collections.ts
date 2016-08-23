@@ -6,18 +6,21 @@ export interface Collections extends FluxTag { }
 
 export class Collections {
 
+  options: any[];
   collections: string[];
   counts: any;
   labels: any;
   fetchCounts: boolean;
+  dropdown: boolean;
 
   init() {
     const config = Object.assign({}, getPath(this.config, 'tags.collections'), this.opts);
-    const rawCollections = unless(config.options, []);
-    const isLabeledCollections = rawCollections.length !== 0 && typeof rawCollections[0] === 'object';
-    this.collections = isLabeledCollections ? rawCollections.map((collection) => collection.value) : rawCollections;
-    this.labels = isLabeledCollections ? rawCollections.reduce((labels, collection) => Object.assign(labels, { [collection.value]: collection.label }), {}) : {};
+    this.options = unless(config.options, []);
+    const isLabeledCollections = this.options.length !== 0 && typeof this.options[0] === 'object';
+    this.collections = isLabeledCollections ? this.options.map((collection) => collection.value) : this.options;
+    this.labels = isLabeledCollections ? this.options.reduce((labels, collection) => Object.assign(labels, { [collection.value]: collection.label }), {}) : {};
     this.fetchCounts = unless(config.counts, true);
+    this.dropdown = unless(config.dropdown, false);
     this.flux.on(Events.REQUEST_CHANGED, this.updateCollectionCounts);
     this.updateCollectionCounts();
   }
@@ -25,7 +28,11 @@ export class Collections {
   switchCollection(event: MouseEvent) {
     let element = <HTMLElement>event.target;
     while (element.tagName !== 'A') element = element.parentElement;
-    this.flux.switchCollection(element.dataset['collection']);
+    this.onselect(element.dataset['collection']);
+  }
+
+  onselect(collection: string) {
+    this.flux.switchCollection(collection);
   }
 
   updateCollectionCounts() {

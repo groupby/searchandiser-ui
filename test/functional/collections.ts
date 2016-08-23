@@ -20,7 +20,21 @@ describe(`${TAG} tag`, () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector(`gb-list.${TAG}`)).to.be.ok;
+  });
+
+  it('renders as list by default', () => {
+    mount();
+
+    expect(html.querySelector('gb-list')).to.be.ok;
+    expect(html.querySelector('gb-select')).to.not.be.ok;
+  });
+
+  it('renders as dropdown when configured', () => {
+    const tag = mount();
+    tag.update({ dropdown: true });
+
+    expect(html.querySelector('gb-list')).to.not.be.ok;
+    expect(html.querySelector('gb-select')).to.be.ok;
   });
 
   it('renders without collections', () => {
@@ -69,6 +83,17 @@ describe(`${TAG} tag`, () => {
     (<HTMLAnchorElement>html.querySelectorAll('.gb-collection')[1]).click();
   });
 
+  it('switches collection on dropdown', () => {
+    const collections = ['a', 'b', 'c'];
+    const tag = mount();
+    tag.collections = collections;
+
+    tag.onselect = (collection): any => expect(collection).to.eq(collections[1]);
+
+    tag.update();
+    (<HTMLAnchorElement>html.querySelectorAll('.gb-collection')[1]).click();
+  });
+
   function labels() {
     return <NodeListOf<HTMLSpanElement>>html.querySelectorAll('.gb-collection__name');
   }
@@ -77,7 +102,7 @@ describe(`${TAG} tag`, () => {
     return <NodeListOf<HTMLSpanElement>>html.querySelectorAll('gb-badge');
   }
 
-  function mount(options: any[] = []) {
+  function mount() {
     return <Collections>riot.mount(TAG)[0];
   }
 });

@@ -14,6 +14,7 @@ describe('gb-collections logic', () => {
 
     expect(tag.fetchCounts).to.be.true;
     expect(tag.collections).to.eql([]);
+    expect(tag.options).to.eql([]);
     expect(tag.labels).to.eql({});
     expect(tag.counts).to.not.be.ok;
   });
@@ -24,6 +25,7 @@ describe('gb-collections logic', () => {
     tag.init();
 
     expect(tag.fetchCounts).to.be.false;
+    expect(tag.options).to.eq(options);
     expect(tag.collections).to.eq(options);
   });
 
@@ -33,6 +35,7 @@ describe('gb-collections logic', () => {
     tag.init();
 
     expect(tag.fetchCounts).to.be.false;
+    expect(tag.options).to.eq(options);
     expect(tag.collections).to.eq(options);
   });
 
@@ -45,6 +48,7 @@ describe('gb-collections logic', () => {
     tag.init();
 
     expect(tag.fetchCounts).to.be.false;
+    expect(tag.options).to.eql(options);
     expect(tag.collections).to.eql(options.map((collection) => collection.value));
     expect(tag.labels).to.eql({
       a: 'A',
@@ -94,5 +98,43 @@ describe('gb-collections logic', () => {
     tag.fetchCounts = false;
 
     tag.updateCollectionCounts();
+  });
+
+  it('should switch collection using value on anchor tag', () => {
+    const collection = 'my collection';
+
+    tag.init();
+    tag.onselect = (coll) => expect(coll).to.eq(collection);
+
+    tag.switchCollection(<any>{
+      target: {
+        tagName: 'SPAN',
+        parentElement: {
+          tagName: 'A',
+          dataset: {
+            collection
+          }
+        }
+      }
+    });
+  });
+
+  it('should switch collection', () => {
+    const collection = 'my collection';
+
+    flux.switchCollection = (coll): any => expect(coll).to.eq(collection);
+    tag.init();
+
+    tag.onselect(collection);
+  });
+
+  it('should determine if collection is currently selected', () => {
+    const collection = 'my collection';
+
+    flux.query.withConfiguration({ collection });
+    tag.init();
+
+    expect(tag.selected(collection)).to.be.true;
+    expect(tag.selected('some collection')).to.be.false;
   });
 });
