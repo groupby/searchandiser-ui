@@ -8,7 +8,8 @@
     import './gb-sayt-autocomplete.tag';
     import './gb-sayt-products.tag';
     import { Sayt } from './gb-sayt';
-    this._mixin(Sayt);
+    import { SaytTag } from '../tag';
+    this._mixin(SaytTag, Sayt);    
   </script>
 
   <style scoped>

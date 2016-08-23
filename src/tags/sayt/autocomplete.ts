@@ -53,11 +53,6 @@ export class Autocomplete {
         }
         break;
       case KEY_ENTER:
-        if (this.selected !== this.searchInput) {
-          (<HTMLElement>this.selected.firstElementChild).click();
-          this.removeActive();
-          this.reset();
-        }
         break;
       default:
         this.removeActive();
