@@ -1,11 +1,11 @@
 import { FluxCapacitor } from 'groupby-api';
-import { FluxTag } from '../../src/tags/tag';
+import { FluxTag, MixinFlux } from '../../src/tags/tag';
 
 // for functional tests
 
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
-  riot.mixin('test', Object.assign({}, { flux }, obj));
+  riot.mixin('test', Object.assign(MixinFlux(flux, {}), obj));
   return flux;
 }
 

@@ -1,5 +1,5 @@
 import { Query, BrowserBridge, Results, FluxCapacitor, Events, Sort } from 'groupby-api';
-import { RootTag } from './tags/tag';
+import { FluxTag, MixinFlux } from './tags/tag';
 import { checkNested } from './utils';
 import riot = require('riot');
 
@@ -10,7 +10,7 @@ export function initSearchandiser() {
     const finalConfig = Object.assign({ initialSearch: true }, config);
     const flux = initCapacitor(finalConfig);
     Object.assign(flux, Events);
-    riot.mixin(RootTag(flux, finalConfig));
+    riot.mixin(MixinFlux(flux, finalConfig));
     Object.assign(configure, { flux, config: finalConfig }, new Searchandiser()['__proto__']);
   }
 }

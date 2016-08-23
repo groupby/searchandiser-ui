@@ -1,7 +1,6 @@
 import { FluxCapacitor } from 'groupby-api';
 import { expect } from 'chai';
 import { mixinFlux, createTag, removeTag } from '../utils/tags';
-import { setParents } from '../../src/tags/tag';
 import { Collections } from '../../src/tags/collections/gb-collections';
 import '../../src/tags/collections/gb-collections.tag';
 
