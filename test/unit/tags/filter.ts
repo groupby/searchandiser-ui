@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Filter } from '../../src/tags/filter/gb-filter';
+import { fluxTag } from '../../utils/tags';
+import { Filter } from '../../../src/tags/filter/gb-filter';
 import { expect } from 'chai';
 
 describe('gb-filter logic', () => {

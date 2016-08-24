@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events, Request } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Collections } from '../../src/tags/collections/gb-collections';
+import { fluxTag } from '../../utils/tags';
+import { Collections } from '../../../src/tags/collections/gb-collections';
 import { expect } from 'chai';
 
 describe('gb-collections logic', () => {

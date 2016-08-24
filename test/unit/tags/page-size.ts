@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events, Results } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { PageSize } from '../../src/tags/page-size/gb-page-size';
+import { fluxTag } from '../../utils/tags';
+import { PageSize } from '../../../src/tags/page-size/gb-page-size';
 import { expect } from 'chai';
 
 describe('gb-page-size logic', () => {

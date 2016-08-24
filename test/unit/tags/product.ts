@@ -1,5 +1,5 @@
-import { Product } from '../../src/tags/product/gb-product';
-import { fluxTag } from '../utils/tags';
+import { Product } from '../../../src/tags/product/gb-product';
+import { fluxTag } from '../../utils/tags';
 import { expect } from 'chai';
 
 describe('gb-product logic', () => {

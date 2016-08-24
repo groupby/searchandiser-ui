@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Reset } from '../../src/tags/reset/gb-reset';
+import { fluxTag } from '../../utils/tags';
+import { Reset } from '../../../src/tags/reset/gb-reset';
 import { expect } from 'chai';
 
 describe('gb-reset logic', () => {

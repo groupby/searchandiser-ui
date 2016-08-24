@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
+import { fluxTag } from '../../utils/tags';
+import { DidYouMean } from '../../../src/tags/did-you-mean/gb-did-you-mean';
 import { expect } from 'chai';
 
 describe('gb-did-you-mean logic', () => {

@@ -74,7 +74,7 @@ export class Searchandiser {
 
   search(query?: string) {
     return this.flux.search(query)
-      .then(res => this.flux.emit(Events.PAGE_CHANGED, { pageIndex: 0, finalPage: this.flux.page.finalPage }));
+      .then(() => this.flux.emit(Events.PAGE_CHANGED, { pageIndex: 0, finalPage: this.flux.page.finalPage }));
   }
 }
 

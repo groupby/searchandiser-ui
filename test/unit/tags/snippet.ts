@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Snippet } from '../../src/tags/snippet/gb-snippet';
+import { fluxTag } from '../../utils/tags';
+import { Snippet } from '../../../src/tags/snippet/gb-snippet';
 import { expect } from 'chai';
 
 describe('gb-snippet logic', () => {

@@ -1,7 +1,7 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Refinement, AvailableRefinement, SelectedRefinement } from '../../src/tags/navigation/gb-refinement';
-import { displayRefinement, toRefinement } from '../../src/utils';
+import { fluxTag } from '../../utils/tags';
+import { Refinement, AvailableRefinement, SelectedRefinement } from '../../../src/tags/navigation/gb-refinement';
+import { displayRefinement, toRefinement } from '../../../src/utils';
 import { expect } from 'chai';
 
 describe('gb-refinement logic', () => {

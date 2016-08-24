@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events, Navigation as NavigationModel } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Navigation } from '../../src/tags/navigation/gb-navigation';
+import { fluxTag } from '../../utils/tags';
+import { Navigation } from '../../../src/tags/navigation/gb-navigation';
 import { expect } from 'chai';
 
 describe('gb-navigation logic', () => {

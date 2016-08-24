@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { RecordCount } from '../../src/tags/record-count/gb-record-count';
+import { fluxTag } from '../../utils/tags';
+import { RecordCount } from '../../../src/tags/record-count/gb-record-count';
 import { expect } from 'chai';
 
 describe('gb-record-count logic', () => {

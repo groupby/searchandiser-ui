@@ -1,7 +1,7 @@
 import { FluxCapacitor, Events, Query as QueryModel } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Query } from '../../src/tags/query/gb-query';
-import * as utils from '../../src/utils';
+import { fluxTag } from '../../utils/tags';
+import { Query } from '../../../src/tags/query/gb-query';
+import * as utils from '../../../src/utils';
 import { expect } from 'chai';
 
 describe('gb-query logic', () => {

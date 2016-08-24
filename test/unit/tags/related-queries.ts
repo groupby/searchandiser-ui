@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { RelatedQueries } from '../../src/tags/related-queries/gb-related-queries';
+import { fluxTag } from '../../utils/tags';
+import { RelatedQueries } from '../../../src/tags/related-queries/gb-related-queries';
 import { expect } from 'chai';
 
 describe('gb-related-queries logic', () => {

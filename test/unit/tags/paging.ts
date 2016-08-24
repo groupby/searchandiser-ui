@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Paging } from '../../src/tags/paging/gb-paging';
+import { fluxTag } from '../../utils/tags';
+import { Paging } from '../../../src/tags/paging/gb-paging';
 import { expect } from 'chai';
 
 describe('gb-paging logic', () => {

@@ -1,8 +1,8 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Submit } from '../../src/tags/submit/gb-submit';
+import { fluxTag } from '../../utils/tags';
+import { Submit } from '../../../src/tags/submit/gb-submit';
 import { expect } from 'chai';
-import utils = require('../../src/utils');
+import utils = require('../../../src/utils');
 
 describe('gb-submit logic', () => {
   let sandbox: Sinon.SinonSandbox,

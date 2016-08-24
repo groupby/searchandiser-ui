@@ -1,6 +1,6 @@
 import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../utils/tags';
-import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
+import { fluxTag } from '../../utils/tags';
+import { Breadcrumbs } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
 import { expect } from 'chai';
 
 describe('gb-breadcrumbs logic', () => {
