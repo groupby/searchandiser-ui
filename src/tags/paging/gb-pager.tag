@@ -1,19 +1,20 @@
 <gb-pager>
   <div class="gb-pager { _style }">
     <a class="gb-pager__link prev { disabled: _scope.backDisabled }" onclick={ _scope.pager.prev }>
-      <span if={ _scope.icons } class="gb-paging__icon">&lt;</span>
-      { prev_label }
+      <gb-icon if={ _scope.icons } value={ prev_icon }></gb-icon>
+      <span if={ _scope.labels }>{ prev_label }</span>
     </a>
     <yield/>
     <a class="gb-pager__link next { disabled: _scope.forwardDisabled }" onclick={ _scope.pager.next }>
-      { next_label }
-      <span if={ _scope.icons } class="gb-paging__icon">&gt;</span>
+      <span if={ _scope.labels }>{ next_label }</span>
+      <gb-icon if={ _scope.icons } value={ next_icon }></gb-icon>
     </a>
   </div>
 
   <script>
-    this.prev_label = this._scope.prev_label || 'Prev';
-    this.next_label = this._scope.next_label || 'Next';
+    import '../icon/gb-icon.tag';
+    import { Pager } from './gb-pager';
+    this._mixin(Pager);
   </script>
 
   <style scoped>
@@ -26,11 +27,9 @@
     }
 
     .gb-stylish .gb-pager__link {
+      display: flex;
       text-decoration: none;
       color: #888;
-    }
-
-    .gb-stylish .gb-pager__link {
       padding: 5px 14px;
     }
 
@@ -45,6 +44,10 @@
 
     .gb-stylish gb-pages {
       flex: 1;
+    }
+
+    .gb-stylish gb-icon img {
+      width: 20px;
     }
   </style>
 </gb-pager>

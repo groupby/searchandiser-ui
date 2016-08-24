@@ -1,19 +1,20 @@
 <gb-terminal-pager>
   <div class="gb-terminal-pager { _style }">
     <a class="gb-terminal__link first { disabled: _scope.backDisabled }" if={ _scope.terminals } onclick={ _scope.pager.first }>
-      <span if={ _scope.icons } class="gb-paging__icon">&larr;</span>
-      { _scope.numeric ? 1 : first_label }
+      <gb-icon if={ _scope.icons } value={ first_icon }></gb-icon>
+      <span if={ _scope.labels }>{ _scope.numeric ? 1 : first_label }</span>
     </a>
     <yield/>
     <a class="gb-terminal__link last { disabled: _scope.forwardDisabled }" if={ _scope.terminals } onclick={ _scope.pager.last }>
-      { _scope.numeric ? _scope.lastPage : last_label }
-      <span if={ _scope.icons } class="gb-paging__icon">&rarr;</span>
+      <span if={ _scope.labels }>{ _scope.numeric ? _scope.lastPage : last_label }</span>
+      <gb-icon if={ _scope.icons } value={ last_icon }></gb-icon>
     </a>
   </div>
 
   <script>
-    this.last_label = this._scope.last_label || 'Last';
-    this.first_label = this._scope.first_label || 'First';
+    import '../icon/gb-icon.tag';
+    import { TerminalPager } from './gb-terminal-pager';
+    this._mixin(TerminalPager);
   </script>
 
   <style scoped>
@@ -27,6 +28,7 @@
     }
 
     .gb-stylish .gb-terminal__link {
+      display: flex;
       text-decoration: none;
       color: #888;
       padding: 5px 14px;
@@ -43,6 +45,10 @@
 
     .gb-stylish gb-pager {
       flex: 1;
+    }
+
+    .gb-stylish gb-icon img {
+      width: 20px;
     }
   </style>
 </gb-terminal-pager>
