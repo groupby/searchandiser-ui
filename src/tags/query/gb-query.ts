@@ -93,7 +93,9 @@ export class Query {
 
   onPressEnter(cb: () => void) {
     this.searchBox.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (!(this.root.querySelector('gb-sayt-autocomplete'))) {
+      const searchInput = this.tags['gb-sayt'].autocomplete.searchInput;
+      const selected = this.tags['gb-sayt'].autocomplete.selected
+      if (searchInput === selected) {
         switch (event.keyCode) {
           case ENTER_KEY:
             this.flux.emit('autocomplete:hide');
