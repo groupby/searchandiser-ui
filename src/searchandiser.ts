@@ -16,6 +16,11 @@ export function initSearchandiser() {
 }
 
 export function initCapacitor(config: SearchandiserConfig) {
+  const finalConfig = extractConfig(config);
+  return new FluxCapacitor(finalConfig.customerId, finalConfig, CONFIGURATION_MASK);
+}
+
+export function extractConfig(config: SearchandiserConfig): SearchandiserConfig & any {
   let finalConfig: SearchandiserConfig & { headers: any } = <any>config;
   if (config.pageSizes) finalConfig.pageSize = config.pageSizes[0];
   if (config.bridge) {
@@ -28,7 +33,7 @@ export function initCapacitor(config: SearchandiserConfig) {
   if (checkNested(config, 'tags', 'sort', 'options')) {
     finalConfig.sort = [config.tags.sort.options.map(val => val.value)[0]];
   }
-  return new FluxCapacitor(finalConfig.customerId, finalConfig, CONFIGURATION_MASK);
+  return finalConfig
 }
 
 export class Searchandiser {
@@ -121,7 +126,7 @@ export interface SearchandiserConfig {
       delay?: number;
     };
     collections?: {
-      options?: string[]
+      options?: string[];
     };
   };
   stylish?: boolean;

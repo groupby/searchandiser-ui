@@ -1,5 +1,5 @@
 import { FluxCapacitor } from 'groupby-api';
-import { Searchandiser } from '../../src/searchandiser';
+import { Searchandiser, extractConfig } from '../../src/searchandiser';
 import { expect } from 'chai';
 import riot = require('riot');
 import '../../src/tags/query/gb-query.tag';
@@ -122,6 +122,78 @@ describe('searchandiser', () => {
       flux.search = (query) => Promise.resolve(expect(query).to.eq(someQuery));
 
       searchandiser.search(someQuery);
+    });
+  });
+
+  describe('extract configuration', () => {
+    it('should not modify the configuration', () => {
+      const config = extractConfig(<any>{});
+      expect(config).to.eql({});
+    });
+
+    it('should set the pageSize', () => {
+      const config = extractConfig(<any>{
+        pageSizes: [5, 10, 25, 50, 100]
+      });
+      expect(config.pageSize).to.eq(5);
+    });
+
+    it('should set the default sort', () => {
+      const config = extractConfig(<any>{
+        tags: {
+          sort: {
+            options: [
+              { value: { field: 'A', order: 'B' } },
+              { value: { field: 'C', order: 'D' } }
+            ]
+          }
+        }
+      });
+
+      expect(config.sort).to.eql([{ field: 'A', order: 'B' }]);
+    });
+
+    describe('bridge configuration', () => {
+      it('should remove the bridge configuration', () => {
+        const config = extractConfig(<any>{ bridge: {} });
+        expect(config.bridge).to.not.be.ok;
+      });
+
+      it('should accept headers', () => {
+        const headers = {
+          These: 'Are',
+          My: 'Headers'
+        };
+
+        const config = extractConfig(<any>{ bridge: { headers } });
+        expect(config.headers).to.eq(headers);
+      });
+
+      it('should set configured headers', () => {
+        const config = extractConfig(<any>{
+          bridge: {
+            skipCache: true,
+            skipSemantish: true
+          }
+        });
+        expect(config.headers).to.eql({
+          'Skip-Caching': true,
+          'Skip-Semantish': true
+        });
+      });
+
+      it('should merge headers', () => {
+        const config = extractConfig(<any>{
+          bridge: {
+            headers: { Some: 'Headers' },
+            skipCache: true
+          }
+        });
+        expect(config.headers).to.eql({
+          Some: 'Headers',
+          'Skip-Caching': true
+        });
+      });
     });
   });
 });
