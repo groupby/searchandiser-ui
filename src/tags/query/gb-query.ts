@@ -6,9 +6,9 @@ import { Sayt } from '../sayt/gb-sayt';
 import queryString = require('query-string');
 import riot = require('riot');
 
-const KEY_UP: number = 38;
-const KEY_DOWN: number = 40;
-const KEY_ENTER: number = 13;
+const KEY_UP = 38;
+const KEY_DOWN = 40;
+const KEY_ENTER = 13;
 
 export interface Query extends FluxTag {
   root: HTMLInputElement;
@@ -36,13 +36,14 @@ export class Query {
 
     this.queryFromUrl = parseQueryFromLocation(this.queryParam, this.config);
 
+    this.enterKeyHandlers = [];
+
     this.on('mount', () => {
       this.searchBox = this.findSearchBox();
       this.searchBox.addEventListener('keydown', this.keydownListener);
       if (this.saytEnabled) Sayt.listenForInput(this)
     });
 
-    this.enterKeyHandlers = [];
     if (this.autoSearch) {
       this.on('mount', this.listenForInput);
     } else if (this.staticSearch) {
@@ -102,6 +103,7 @@ export class Query {
       autocomplete = (<Sayt>((<any>findTag('gb-sayt'))._tag)).autocomplete;
     }
 
+
     if (autocomplete && autocomplete.isSelectedInAutocomplete()) {
       switch (event.keyCode) {
         case KEY_UP:
@@ -122,7 +124,6 @@ export class Query {
       switch (event.keyCode) {
         case KEY_UP:
           if (autocomplete) {
-            autocomplete.reset();
             this.flux.emit('autocomplete:hide');
           }
           break;
