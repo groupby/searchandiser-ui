@@ -60,7 +60,6 @@ export class Sayt {
       .catch((err) => console.error(err)));
 
     this.flux.on('autocomplete:hide', () => {
-      this.autocomplete.reset();
       this.update({ queries: null, navigations: null });
     });
   }
