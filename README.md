@@ -332,11 +332,6 @@ Use the searchandiser method to set up your configurations in a script tag at th
 </html>
 ```
 
-###Step 4
-
-To theme the results use CSS for each of the elements.  For a complete style reference see this
-document: [docs/css-reference.md](docs/css-reference.md)
-
 ## Components:
 
  - `query`
