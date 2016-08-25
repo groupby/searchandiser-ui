@@ -1,5 +1,5 @@
 <gb-badge>
-  <span class="badge { _style }"><yield/></span>
+  <span class={ _style }><yield/></span>
 
   <style scoped>
     .gb-stylish {
