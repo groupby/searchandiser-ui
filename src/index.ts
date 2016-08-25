@@ -4,6 +4,7 @@
 
 import riot = require('riot');
 import { initSearchandiser, Searchandiser } from './searchandiser';
+require('array-includes').shim();
 import './tags/index';
 
 if (!window['riot']) {
