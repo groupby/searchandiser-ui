@@ -111,12 +111,12 @@ export class Sayt {
   }
 
   searchRefinement(event) {
-    this.flux.reset();
+    this.flux.resetRecall();
     this.refine(event.target, '');
   }
 
   searchCategory(event) {
-    this.flux.reset();
+    this.flux.resetRecall();
     this.refine(event.target, this.originalQuery);
   }
 
@@ -145,11 +145,13 @@ export class Sayt {
       ]);
     }
 
+    // TODO: Implement fix to prevent double api call
+    this.flux.rewrite(query, { skipSearch: true })
     this.flux.refine({
       navigationName: node.dataset['field'],
       type: 'Value',
       value: node.dataset['refinement']
-    }).then(() => this.flux.rewrite(query))
+    })
   }
 
   search(event) {
@@ -161,7 +163,7 @@ export class Sayt {
     }
 
     const query = node.dataset['value']
-    this.rewriteQuery(query)
+    this.rewriteQuery(query);
     this.flux.reset(query);
   }
 
