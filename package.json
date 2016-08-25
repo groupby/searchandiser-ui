@@ -84,7 +84,7 @@
     "debounce": "^1.0.0",
     "es6-promise": "^3.2.1",
     "filter-object": "^2.1.0",
-    "groupby-api": "^1.0.57",
+    "groupby-api": "^1.0.58",
     "oget": "^1.0.6",
     "query-string": "^4.2.2",
     "riot": "^2.5.0",
