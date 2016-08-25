@@ -4,23 +4,23 @@ import { checkNested } from './utils';
 import riot = require('riot');
 
 export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields}';
+export const DEFAULT_CONFIG = { initialSearch: true };
 
 export function initSearchandiser() {
-  return function configure(config: SearchandiserConfig & any = {}) {
-    const finalConfig = Object.assign({ initialSearch: true }, config);
-    const flux = initCapacitor(finalConfig);
-    Object.assign(flux, Events);
-    riot.mixin(MixinFlux(flux, finalConfig));
-    Object.assign(configure, { flux, config: finalConfig }, new Searchandiser()['__proto__']);
+  return function configure(rawConfig: SearchandiserConfig & any = {}) {
+    const config = Object.assign(DEFAULT_CONFIG, rawConfig);
+    const flux = Object.assign(initCapacitor(config), Events);
+    riot.mixin(MixinFlux(flux, config));
+    Object.assign(configure, { flux, config }, new Searchandiser()['__proto__']);
   }
 }
 
 export function initCapacitor(config: SearchandiserConfig) {
-  const finalConfig = extractConfig(config);
+  const finalConfig = transformConfig(config);
   return new FluxCapacitor(finalConfig.customerId, finalConfig, CONFIGURATION_MASK);
 }
 
-export function extractConfig(config: SearchandiserConfig): SearchandiserConfig & any {
+export function transformConfig(config: SearchandiserConfig): SearchandiserConfig & any {
   let finalConfig: SearchandiserConfig & { headers: any } = <any>config;
   if (config.pageSizes) finalConfig.pageSize = config.pageSizes[0];
   if (config.bridge) {

@@ -1,5 +1,6 @@
 import { FluxCapacitor } from 'groupby-api';
-import { Searchandiser, extractConfig } from '../../src/searchandiser';
+import { Searchandiser, transformConfig, initSearchandiser } from '../../src/searchandiser';
+import * as Tags from '../../src/tags/tag';
 import { expect } from 'chai';
 import riot = require('riot');
 import '../../src/tags/query/gb-query.tag';
@@ -127,19 +128,19 @@ describe('searchandiser', () => {
 
   describe('extract configuration', () => {
     it('should not modify the configuration', () => {
-      const config = extractConfig(<any>{});
+      const config = transformConfig(<any>{});
       expect(config).to.eql({});
     });
 
     it('should set the pageSize', () => {
-      const config = extractConfig(<any>{
+      const config = transformConfig(<any>{
         pageSizes: [5, 10, 25, 50, 100]
       });
       expect(config.pageSize).to.eq(5);
     });
 
     it('should set the default sort', () => {
-      const config = extractConfig(<any>{
+      const config = transformConfig(<any>{
         tags: {
           sort: {
             options: [
@@ -155,7 +156,7 @@ describe('searchandiser', () => {
 
     describe('bridge configuration', () => {
       it('should remove the bridge configuration', () => {
-        const config = extractConfig(<any>{ bridge: {} });
+        const config = transformConfig(<any>{ bridge: {} });
         expect(config.bridge).to.not.be.ok;
       });
 
@@ -165,12 +166,12 @@ describe('searchandiser', () => {
           My: 'Headers'
         };
 
-        const config = extractConfig(<any>{ bridge: { headers } });
+        const config = transformConfig(<any>{ bridge: { headers } });
         expect(config.headers).to.eq(headers);
       });
 
       it('should set configured headers', () => {
-        const config = extractConfig(<any>{
+        const config = transformConfig(<any>{
           bridge: {
             skipCache: true,
             skipSemantish: true
@@ -183,7 +184,7 @@ describe('searchandiser', () => {
       });
 
       it('should merge headers', () => {
-        const config = extractConfig(<any>{
+        const config = transformConfig(<any>{
           bridge: {
             headers: { Some: 'Headers' },
             skipCache: true
@@ -195,5 +196,19 @@ describe('searchandiser', () => {
         });
       });
     });
+  });
+
+  it('should generate a configuration function', () => {
+    const fluxMixin = { a: 'b', c: 'd' };
+    sandbox.stub(Tags, 'MixinFlux', () => fluxMixin)
+    sandbox.stub(riot, 'mixin', (mixin) => expect(mixin).to.eq(fluxMixin));
+
+    const configure = initSearchandiser();
+    expect(configure).to.be.a('function');
+
+    configure();
+
+    expect(configure['flux']).to.be.an.instanceof(FluxCapacitor);
+    expect(configure['config']).to.eql({ initialSearch: true });
   });
 });
