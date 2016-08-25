@@ -48,6 +48,7 @@ describe(`${TAG} tag`, () => {
 
     it('should hide autocomplete and modify URL on static search', () => {
       sandbox.stub(window.location, 'replace', (url) => expect(url).to.eq('search?q='));
+      flux.search = (): any => { };
       flux.emit = (event): any => expect(event).to.eq('autocomplete:hide');
 
       const tag = mount(false);
