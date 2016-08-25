@@ -161,7 +161,7 @@ export class Sayt {
     }
 
     const query = node.dataset['value']
-    this.rewriteQuery(query)
+    this.rewriteQuery(query);
     this.flux.reset(query);
   }
 

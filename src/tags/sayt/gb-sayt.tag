@@ -1,5 +1,5 @@
 <gb-sayt>
-  <div class="{ _style }" if={ queries.length || navigations.length }>
+  <div class="{ _style }" if={ (queries && queries.length) || (navigations && navigations.length) }>
     <gb-sayt-autocomplete></gb-sayt-autocomplete>
     <gb-sayt-products if={ showProducts }></gb-sayt-products>
   </div>
@@ -9,7 +9,7 @@
     import './gb-sayt-products.tag';
     import { Sayt } from './gb-sayt';
     import { SaytTag } from '../tag';
-    this._mixin(SaytTag, Sayt);    
+    this._mixin(SaytTag, Sayt);
   </script>
 
   <style scoped>

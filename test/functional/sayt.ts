@@ -191,7 +191,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       dispatchKeydownEvent(searchBox(), KEY_UP);
     });
 
-    it.skip('restores original query to search box and clears selected autocomplete suggestion when you press KEY_UP while at the top suggestion', (done) => {
+    it('restores original query to search box and clears selected autocomplete suggestion when you press KEY_UP while at the top suggestion', (done) => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
@@ -209,12 +209,16 @@ describe(`${TAG} tag with sayt:true`, () => {
 
       while (!(saytTag.root.querySelector('gb-sayt-link')));
 
+      let noReset = 0;
       autocomplete['f'] = autocomplete.reset;
       autocomplete.reset = () => {
+        ++noReset;
         autocomplete['f']();
-        expect(searchBox().value).to.eql('original');
-        expect(html.querySelector('gb-sayt-link.selected')).to.eql(null);
-        done();
+        if (noReset === 1) {
+          expect(searchBox().value).to.eql('original');
+          expect(html.querySelector('gb-sayt-link.selected')).to.eql(null);
+          done();
+        }
       };
 
       searchBox().focus();
@@ -270,13 +274,27 @@ describe(`${TAG} tag with sayt:true`, () => {
       autocomplete.selectOneAbove = () => {
         ++noTimesUp;
         autocomplete['f2']();
-        if (noTimesSelectedFirstLink === 1
-          && noTimesDown === 2
-          && noTimesUp === 1) {
+        if (noTimesUp === 1) {
           expect(searchBox().selectionStart).to.eql('0123456789'.length);
-          done();
+        }
+        else if (noTimesUp === 2) {
+          expect(searchBox().selectionStart).to.eql('four'.length);
         }
       };
+
+      let noTimesReset = 0;
+      autocomplete['f3'] = autocomplete.reset;
+      autocomplete.reset = () => {
+        ++noTimesReset;
+        autocomplete['f3']();
+        if (noTimesReset === 1) {
+          expect(noTimesSelectedFirstLink).to.eql(1);
+          expect(noTimesDown).to.eql(2);
+          expect(noTimesUp).to.eql(2);
+          expect(searchBox().selectionStart).to.eql('original'.length);
+          done();
+        }
+      }
 
       // TODO make sure we get to the end oforiginal query string
 
@@ -285,14 +303,132 @@ describe(`${TAG} tag with sayt:true`, () => {
       dispatchKeydownEvent(searchBox(), KEY_DOWN);
       dispatchKeydownEvent(searchBox(), KEY_DOWN);
       dispatchKeydownEvent(searchBox(), KEY_UP);
+      dispatchKeydownEvent(searchBox(), KEY_UP);
+      dispatchKeydownEvent(searchBox(), KEY_UP);
     });
 
-    it('does a search of a suggested query');
+    it('does a search of a suggested query when you click', (done) => {
+      flux = mixinFlux({
+        config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
+      });
+      flux.reset = (query): any => {
+        expect(query).to.eq('five');
+        done();
+      };
 
-    it('does a search of a suggested query with a category refinement');
+      const tag = mount();
+      const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
 
-    it('does a refinement search');
+      searchBox().value = 'original';
+      saytTag.update({
+        queries: [
+          { value: 'four' },
+          { value: 'five' }
+        ]
+      });
+      while (!(saytTag.root.querySelector('gb-sayt-link')));
+
+      (<HTMLElement>saytTag.root.querySelectorAll('gb-sayt-link a')[1]).click();
+    });
+
+    it('does the same thing as clicking when you make .active a suggestion and press enter', (done) => {
+      flux = mixinFlux({
+        config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
+      });
+      const tag = mount();
+      const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
+
+      saytTag.update({
+        queries: [
+          { value: 'four' }
+        ]
+      });
+
+      while (!(saytTag.root.querySelector('gb-sayt-link')));
+
+      html.querySelector('gb-sayt-link')['_tag'].update({
+        opts: {
+          send: () => done()
+        }
+      });
+
+      dispatchKeydownEvent(searchBox(), KEY_DOWN);
+      dispatchKeydownEvent(searchBox(), KEY_ENTER);
+    });
+
+    it('does a search of a suggested query with a category refinement when you click', (done) => {
+      flux = mixinFlux({
+        config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
+      });
+      const tag = mount();
+      const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
+      saytTag.refine = (target, query) => {
+        expect(target.parentNode.dataset['refinement']).to.eq('the category');
+        done();
+      };
+
+      searchBox().value = 'original';
+      saytTag.update({
+        categoryResults: [
+          { value: 'four', category: 'the category' }
+        ],
+        // This is necessary in order to have autocopmlete be visible
+        queries: ['four']
+      });
+      while (!(saytTag.root.querySelector('gb-sayt-link')));
+
+      (<HTMLElement>saytTag.root.querySelectorAll('gb-sayt-link a')[0]).click();
+    });
+
+    it('does a refinement search when you click', (done) => {
+      flux = mixinFlux({
+        config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
+      });
+      const tag = mount();
+      const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
+      saytTag.refine = (target, query) => {
+        expect(query).to.eq('');
+        expect(target.parentNode.dataset['field']).to.eq('brand000');
+        expect(target.parentNode.dataset['value']).to.eq('Brand: 3');
+        expect(target.parentNode.dataset['refinement']).to.eq('3');
+        done();
+      };
+
+      searchBox().value = 'original';
+      saytTag.update({
+        navigations: [
+          {
+            displayName: 'Brand',
+            name: 'brand000',
+            values: [0, 1, 2, 3]
+          }
+        ]
+      });
+
+      while (!(saytTag.root.querySelector('gb-sayt-link')));
+
+      (<HTMLElement>saytTag.root.querySelectorAll('gb-sayt-link a')[3]).click();
+    });
+
+    it('show navigations when there are no queries', (done) => {
+      flux = mixinFlux({
+        config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
+      });
+      const tag = mount();
+      const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
+      saytTag.update({
+        navigations: [{
+          values: [{}, {}, {}]
+        }]
+      });
+      while (!(saytTag.root.querySelector('gb-sayt-link')));
+      expect(saytTag.root.querySelectorAll('gb-sayt-link').length).to.eql(3);
+      done();
+    });
   });
+
+
+
 
   function dispatchKeydownEvent(t: EventTarget, keyCode: number) {
     const e = new Event('keydown');

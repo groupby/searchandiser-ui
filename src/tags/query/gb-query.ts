@@ -109,7 +109,12 @@ export class Query {
         case KEY_UP:
           // Prevent cursor from moving to front of text box
           event.preventDefault();
-          autocomplete.selectOneAbove();
+
+          if (autocomplete.getOneAbove()) autocomplete.selectOneAbove();
+          else {
+            this.rewriteQuery(autocomplete.preautocompleteValue);
+            autocomplete.reset();
+          }
           break;
         case KEY_DOWN:
           autocomplete.selectOneBelow();
@@ -129,6 +134,7 @@ export class Query {
           break;
         case KEY_DOWN:
           if (autocomplete) {
+            autocomplete.preautocompleteValue = this.searchBox.value;
             autocomplete.selectFirstLink();
             this.flux.emit('autocomplete');
           }

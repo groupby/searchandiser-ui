@@ -15,35 +15,38 @@ export class Autocomplete {
 
   selected: HTMLElement;
   searchInput: HTMLInputElement;
-  originalValue: string;
+  preautocompleteValue: string;
 
   constructor(public tag: Sayt) {
     this.selected = this.searchInput = findSearchBox();
   }
 
-  resetSelected() {
-    this.selected = this.searchInput;
-  }
+
 
   selectFirstLink() {
     this.selected = this.swap(<HTMLElement>((<FluxTag>this.tag).root.querySelector('gb-sayt-autocomplete gb-sayt-link')));
   }
 
-  selectOneAbove() {
+  getOneAbove(): HTMLElement {
     const links = this.links();
     const i = links.indexOf(this.selected);
-    const nodeBelow = links[i - 1];
-    if (nodeBelow) {
-      this.selected = this.swap(<HTMLElement>nodeBelow);
-    }
+    return <HTMLElement>links[i - 1];
+  }
+
+  getOneBelow(): HTMLElement {
+    const links = this.links();
+    const i = links.indexOf(this.selected);
+    return <HTMLElement>links[i + 1];
+  }
+
+  selectOneAbove() {
+    let link = this.getOneAbove();
+    if (link) this.selected = this.swap(link);
   }
 
   selectOneBelow() {
-    const links = this.links();
-    const nodeBelow = links[links.indexOf(this.selected) + 1];
-    if (nodeBelow) {
-      this.selected = this.swap(<HTMLElement>nodeBelow);
-    }
+    let link = this.getOneBelow();
+    if (link) this.selected = this.swap(link);
   }
 
   links() {
@@ -64,6 +67,11 @@ export class Autocomplete {
       return next;
     }
     return this.selected;
+  }
+
+
+  resetSelected() {
+    this.selected = this.searchInput;
   }
 
   removeActiveClass() {
