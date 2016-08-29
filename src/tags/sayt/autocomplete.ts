@@ -1,15 +1,7 @@
 import { Sayt } from './gb-sayt';
 import { findSearchBox } from '../../utils';
-import { FluxTag } from '../tag';
 
-const KEY_UP = 38;
-const KEY_DOWN = 40;
-const KEY_ENTER = 13;
-const KEY_BACKSPACE = 8;
-const KEY_DEL = 46;
-const DATA_VALUE = 'data-value';
 const ACTIVE = 'active';
-const ITEM_TAG = 'LI';
 
 export class Autocomplete {
 
@@ -48,11 +40,11 @@ export class Autocomplete {
   }
 
   links() {
-    return Array.from((<FluxTag>this.tag).root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'));
+    return Array.from(this.tag.root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'));
   }
 
   isSelectedInAutocomplete() {
-    const links = Array.from((<FluxTag>this.tag).root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'));
+    const links = Array.from(this.tag.root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'));
     return links.indexOf(this.selected) !== -1;
   }
 

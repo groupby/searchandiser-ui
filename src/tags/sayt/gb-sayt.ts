@@ -145,8 +145,7 @@ export class Sayt {
       ]);
     }
 
-    // TODO: Implement fix to prevent double api call
-    this.flux.rewrite(query, { skipSearch: true })
+    this.flux.rewrite(query, { skipSearch: true });
     this.flux.refine({
       navigationName: node.dataset['field'],
       type: 'Value',

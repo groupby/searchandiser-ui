@@ -44,8 +44,8 @@ describe(`${TAG} tag with sayt:true`, () => {
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
       const tag = mount();
-      const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
-      const autocomplete: Autocomplete = saytTag.autocomplete;
+      const saytTag = <Sayt>html.querySelector('gb-sayt')['_tag'];
+      const autocomplete = saytTag.autocomplete;
 
       saytTag.update({
         queries: [
@@ -54,8 +54,7 @@ describe(`${TAG} tag with sayt:true`, () => {
         ]
       });
 
-      while (!(saytTag.root.querySelector('gb-sayt-link')));
-
+      while (!saytTag.root.querySelector('gb-sayt-link'));
 
       autocomplete['f'] = autocomplete.selectFirstLink;
       autocomplete.selectFirstLink = () => {
@@ -427,13 +426,9 @@ describe(`${TAG} tag with sayt:true`, () => {
     });
   });
 
-
-
-
-  function dispatchKeydownEvent(t: EventTarget, keyCode: number) {
-    const e = new Event('keydown');
-    Object.assign(e, { keyCode });
-    t.dispatchEvent(e);
+  function dispatchKeydownEvent(target: EventTarget, keyCode: number) {
+    const event = Object.assign(new Event('keydown'), { keyCode });
+    target.dispatchEvent(event);
   }
 
   function searchBox() {
