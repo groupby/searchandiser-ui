@@ -1,7 +1,9 @@
 <gb-sayt-search-terms>
   <gb-list items={ _scope.queries }>
     <gb-sayt-link send={ _scope.search } data-value="{ item.value }">
+      <yield>
         <gb-raw content={ _scope.highlightCurrentQuery(item.value, '<b>$&</b>') }></gb-raw>
+      </yield>
     </gb-sayt-link>
   </gb-list>
 

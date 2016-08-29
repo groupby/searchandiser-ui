@@ -2,9 +2,11 @@
   <gb-list items={ categoryResults }>
     <gb-sayt-link send={ _scope.searchCategory } data-value={ item.value }
         data-refinement={ item.category } data-field={ _scope.categoryField }>
-      <gb-raw content={ _scope.highlightCurrentQuery(item.value, '<b>$&</b>') }></gb-raw>
-      in
-      <span class="gb-category-query">{ item.category }</span>
+      <yield>
+        <gb-raw content={ _scope.highlightCurrentQuery(item.value, '<b>$&</b>') }></gb-raw>
+        in
+        <span class="gb-category-query">{ item.category }</span>
+      </yield>
     </gb-sayt-link>
   </gb-list>
 

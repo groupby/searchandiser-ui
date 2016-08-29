@@ -1,9 +1,11 @@
 <gb-sayt-autocomplete>
-  <gb-sayt-categories></gb-sayt-categories>
-  <gb-sayt-divider></gb-sayt-divider>
-  <gb-sayt-search-terms></gb-sayt-search-terms>
-  <gb-sayt-divider></gb-sayt-divider>
-  <gb-sayt-refinements each={ navigations }></gb-sayt-refinements>
+  <yield>
+    <gb-sayt-categories></gb-sayt-categories>
+    <gb-sayt-divider></gb-sayt-divider>
+    <gb-sayt-search-terms></gb-sayt-search-terms>
+    <gb-sayt-divider></gb-sayt-divider>
+    <gb-sayt-refinements each={ navigations }></gb-sayt-refinements>
+  </yield>
 
   <script>
     import './gb-sayt-categories.tag';

@@ -1,8 +1,10 @@
 <gb-sayt>
-  <div class="{ _style }" if={ (queries && queries.length) || (navigations && navigations.length) }>
-    <gb-sayt-autocomplete></gb-sayt-autocomplete>
-    <gb-sayt-products if={ showProducts }></gb-sayt-products>
-  </div>
+  <yield>
+    <div class="{ _style }" if={ (queries && queries.length) || (navigations && navigations.length) }>
+      <gb-sayt-autocomplete></gb-sayt-autocomplete>
+      <gb-sayt-products if={ showProducts }></gb-sayt-products>
+    </div>
+  </yield>
 
   <script>
     import './gb-sayt-autocomplete.tag';
