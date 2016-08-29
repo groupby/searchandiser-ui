@@ -13,30 +13,20 @@ export class Autocomplete {
     this.selected = this.searchInput = findSearchBox();
   }
 
-  selectFirstLink() {
-    this.selected = this.swap(<HTMLElement>this.tag.root.querySelector('gb-sayt-autocomplete gb-sayt-link'));
+  indexOfSelected() {
+    return this.links().indexOf(this.selected);
   }
 
-  getOneAbove(): HTMLElement {
-    const links = this.links();
-    const i = links.indexOf(this.selected);
-    return <HTMLElement>links[i - 1];
+  selectLink(link) {
+    if (link) this.selected = this.swapAttributes(link);
   }
 
-  getOneBelow(): HTMLElement {
-    const links = this.links();
-    const i = links.indexOf(this.selected);
-    return <HTMLElement>links[i + 1];
+  linkAbove() {
+    return <HTMLElement>this.links()[this.indexOfSelected() - 1];
   }
 
-  selectOneAbove() {
-    let link = this.getOneAbove();
-    if (link) this.selected = this.swap(link);
-  }
-
-  selectOneBelow() {
-    let link = this.getOneBelow();
-    if (link) this.selected = this.swap(link);
+  linkBelow() {
+    return <HTMLElement>this.links()[this.indexOfSelected() + 1];
   }
 
   links() {
@@ -44,18 +34,14 @@ export class Autocomplete {
   }
 
   isSelectedInAutocomplete() {
-    const links = Array.from(this.tag.root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'));
-    return links.indexOf(this.selected) !== -1;
+    return this.links().indexOf(this.selected) !== -1;
   }
 
-  swap(next: HTMLElement) {
-    if (next) {
-      this.removeActiveClass();
-      next.classList.add(ACTIVE);
-      if (next.dataset['value']) this.tag.notifier(next.dataset['value']);
-      return next;
-    }
-    return this.selected;
+  swapAttributes(next: HTMLElement) {
+    this.removeActiveClass();
+    next.classList.add(ACTIVE);
+    if (next.dataset['value']) this.tag.notifier(next.dataset['value']);
+    return next;
   }
 
   resetSelected() {
@@ -63,8 +49,7 @@ export class Autocomplete {
   }
 
   removeActiveClass() {
-    Array.from(this.tag.root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'))
-      .forEach((element) => element.classList.remove('active'));
+    this.links().forEach(element => element.classList.remove('active'));
   }
 
   reset() {
