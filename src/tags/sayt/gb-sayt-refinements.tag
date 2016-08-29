@@ -3,7 +3,9 @@
   <gb-list items={ values }>
     <gb-sayt-link send={ _scope.searchRefinement } data-value="{ displayName }: { item }"
         data-refinement={ item } data-field={ name }>
-      <gb-raw content={ _scope.highlightCurrentQuery(item, '<b>$&</b>') }></gb-raw>
+      <yield>
+        <gb-raw content={ _scope.highlightCurrentQuery(item, '<b>$&</b>') }></gb-raw>
+      </yield>
     </gb-sayt-link>
   </gb-list>
 
