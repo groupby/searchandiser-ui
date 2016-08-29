@@ -27,8 +27,8 @@ export class FluxTag {
     setScope(this);
   }
 
-  _mixin(Mixin: any) {
-    this.mixin(new Mixin().__proto__);
+  _mixin(...mixins: any[]) {
+    this.mixin(...mixins.map((Mixin) => new Mixin().__proto__));
   }
 
   _clone() {

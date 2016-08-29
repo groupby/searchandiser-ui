@@ -1,7 +1,7 @@
 import '../sayt/gb-sayt.tag';
 import { FluxTag } from '../tag';
 import { Events, Query as QueryModel } from 'groupby-api';
-import { unless, updateLocation, parseQueryFromLocation } from '../../utils';
+import { unless, updateLocation, parseQueryFromLocation, findTag } from '../../utils';
 import { Sayt } from '../sayt/gb-sayt';
 import queryString = require('query-string');
 import riot = require('riot');
@@ -95,6 +95,16 @@ export class Query {
     this.searchBox.addEventListener('keydown', (event: KeyboardEvent) => {
       switch (event.keyCode) {
         case ENTER_KEY:
+          if (findTag('gb-sayt') && this.tags['gb-sayt']) {
+            const autocomplete = this.tags['gb-sayt'].autocomplete;
+            const selected = autocomplete.selected
+            if (this.searchBox !== selected) {
+              (<HTMLElement>selected.firstElementChild).click();
+              autocomplete.removeActive();
+              autocomplete.reset();
+              return;
+            }
+          }
           this.flux.emit('autocomplete:hide');
           return cb();
       }
