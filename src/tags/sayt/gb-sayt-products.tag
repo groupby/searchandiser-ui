@@ -9,10 +9,15 @@
 
   <script>
     import '../product/gb-product.tag';
+    import '../product/gb-product-image.tag';
     this._scopeTo('gb-sayt')
   </script>
 
   <style scoped>
+    .gb-stylish :scope {
+      min-width: 300px;
+    }
+
     ul.gb-stylish {
       display: flex;
       flex-wrap: wrap;

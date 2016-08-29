@@ -1,10 +1,10 @@
-import { FluxTag } from '../tag';
+import { SaytTag } from '../tag';
 import { Events } from 'groupby-api';
 import { Autocomplete } from './autocomplete';
 import { Query } from '../query/gb-query';
 import { findTag, getPath, updateLocation } from '../../utils';
 import debounce = require('debounce');
-const sayt = require('sayt');
+import escapeStringRegexp = require('escape-string-regexp');
 
 const DEFAULT_CONFIG = {
   products: 4,
@@ -16,7 +16,7 @@ const DEFAULT_CONFIG = {
 };
 const ESCAPE_KEY = 27;
 
-export interface Sayt extends FluxTag { }
+export interface Sayt extends SaytTag { }
 
 export class Sayt {
 
@@ -39,7 +39,7 @@ export class Sayt {
     this.queryParam = this.opts.queryParam || 'q';
     this.showProducts = this.saytConfig.products > 0;
 
-    sayt.configure({
+    this.sayt.configure({
       subdomain: this.config.customerId,
       collection: this.saytConfig.collection || this.config.collection,
       autocomplete: { numSearchTerms: this.saytConfig.queries },
@@ -51,7 +51,7 @@ export class Sayt {
 
     this.on('mount', () => this.autocomplete = new Autocomplete(this));
 
-    this.flux.on('autocomplete', (originalQuery) => sayt.autocomplete(originalQuery)
+    this.flux.on('autocomplete', (originalQuery) => this.sayt.autocomplete(originalQuery)
       .then(({result}) => {
         this.update({ originalQuery });
         this.processResults(result);
@@ -67,7 +67,7 @@ export class Sayt {
 
   searchProducts(query) {
     if (this.saytConfig.products) {
-      sayt.productSearch(query)
+      this.sayt.productSearch(query)
         .then((res) => this.update({ products: res.result.products }));
     }
   }
@@ -111,17 +111,17 @@ export class Sayt {
   }
 
   searchRefinement(event) {
-    this.flux.reset();
+    this.flux.resetRecall();
     this.refine(event.target, '');
   }
 
   searchCategory(event) {
-    this.flux.reset();
+    this.flux.resetRecall();
     this.refine(event.target, this.originalQuery);
   }
 
-  enhanceQuery(query) {
-    return this.saytConfig.highlight ? query.replace(this.originalQuery, '<b>$&</b>') : query;
+  highlightCurrentQuery(value: string, regexReplacement: string) {
+    return this.saytConfig.highlight ? value.replace(new RegExp(escapeStringRegexp(this.originalQuery), 'i'), regexReplacement) : value;
   }
 
   enhanceCategoryQuery(query) {
@@ -133,35 +133,37 @@ export class Sayt {
   }
 
   refine(node, query) {
-    while (node.tagName !== 'LI') node = node.parentNode;
+    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
 
     if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
       return updateLocation(this.opts.searchUrl || '/search', this.opts.queryParam || 'q', query, [
         {
-          navigationName: node.getAttribute('data-field'),
+          navigationName: node.dataset['field'],
           type: 'Value',
-          value: node.getAttribute('data-refinement')
+          value: node.dataset['refinement']
         }
       ]);
     }
 
+    this.flux.rewrite(query, { skipSearch: true });
     this.flux.refine({
-      navigationName: node.getAttribute('data-field'),
+      navigationName: node.dataset['field'],
       type: 'Value',
-      value: node.getAttribute('data-refinement')
-    }).then(() => this.flux.rewrite(query))
+      value: node.dataset['refinement']
+    });
   }
 
   search(event) {
     let node = event.target;
-    while (node.tagName !== 'LI') node = node.parentNode;
+    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
 
     if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.searchUrl, this.queryParam, node.getAttribute('data-value'), []);
+      return updateLocation(this.searchUrl, this.queryParam, node.dataset['value'], []);
     }
 
-    const query = node.getAttribute('data-value')
-    this.rewriteQuery(query)
+    const query = node.dataset['value']
+
+    this.rewriteQuery(query);
     this.flux.reset(query);
   }
 

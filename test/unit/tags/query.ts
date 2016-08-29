@@ -101,43 +101,6 @@ describe('gb-query logic', () => {
     callback();
   });
 
-  describe('event listeners', () => {
-    it('should add input listener', (done) => {
-      flux.reset = () => done();
-      tag.searchBox = <any>{
-        addEventListener(event: string, cb: Function) {
-          expect(event).to.eq('input');
-          cb();
-        }
-      };
-
-      tag.listenForInput();
-    });
-
-    it('should add submit listener', (done) => {
-      flux.reset = () => done();
-      tag.searchBox = <any>{
-        addEventListener(event: string, cb: Function) {
-          expect(event).to.eq('keydown');
-          cb({ keyCode: 13 });
-        }
-      };
-
-      tag.listenForSubmit();
-    });
-
-    it('should add enter key listener', (done) => {
-      tag.searchBox = <any>{
-        addEventListener(event: string, cb: Function) {
-          expect(event).to.eq('keydown');
-          done();
-        }
-      };
-
-      tag.onPressEnter(() => null);
-    });
-  });
-
   it('should do a search from the parsed url', () => {
     const query = 'red sneakers';
     sinon.stub(utils, 'parseQueryFromLocation', () => new QueryModel(query));
@@ -152,4 +115,41 @@ describe('gb-query logic', () => {
 
     tag.init();
   });
+
+  // describe('event listeners', () => {
+  //   it('should add input listener', (done) => {
+  //     flux.reset = () => done();
+  //     tag.searchBox = <any>{
+  //       addEventListener(event: string, cb: Function) {
+  //         expect(event).to.eq('input');
+  //         cb();
+  //       }
+  //     };
+  //
+  //     tag.listenForInput();
+  //   });
+  //
+  //   it('should add submit listener', (done) => {
+  //     flux.reset = () => done();
+  //     tag.searchBox = <any>{
+  //       addEventListener(event: string, cb: Function) {
+  //         expect(event).to.eq('keydown');
+  //         cb({ keyCode: 13 });
+  //       }
+  //     };
+  //
+  //     tag.listenForSubmit();
+  //   });
+  //
+  //   it('should add enter key listener', (done) => {
+  //     tag.searchBox = <any>{
+  //       addEventListener(event: string, cb: Function) {
+  //         expect(event).to.eq('keydown');
+  //         done();
+  //       }
+  //     };
+  //
+  //     tag.onPressEnter(() => null);
+  //   });
+  // });
 });

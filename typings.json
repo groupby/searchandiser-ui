@@ -4,6 +4,7 @@
   "ambientDependencies": {},
   "dependencies": {
     "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958",
+    "escape-string-regexp": "registry:npm/escape-string-regexp#1.0.0+20160723033700",
     "filter-object": "registry:npm/filter-object#2.1.0+20160816021609"
   },
   "globalDevDependencies": {
