@@ -1,5 +1,5 @@
 import { SaytTag } from '../tag';
-import { Events } from 'groupby-api';
+import { Events, SelectedValueRefinement } from 'groupby-api';
 import { Autocomplete } from './autocomplete';
 import { Query } from '../query/gb-query';
 import { findTag, getPath, updateLocation } from '../../utils';
@@ -40,7 +40,15 @@ export class Sayt {
     this.queryParam = this.saytConfig.queryParam || 'q';
     this.showProducts = this.saytConfig.products > 0;
 
-    this.sayt.configure({
+    this.sayt.configure(this.generateSaytConfig());
+
+    this.on('mount', () => this.autocomplete = new Autocomplete(this));
+    this.flux.on('autocomplete', this.fetchSuggestions);
+    this.flux.on('autocomplete:hide', this.reset);
+  }
+
+  generateSaytConfig() {
+    return {
       subdomain: this.config.customerId,
       collection: this.saytConfig.collection || this.config.collection,
       autocomplete: { numSearchTerms: this.saytConfig.queries },
@@ -48,26 +56,26 @@ export class Sayt {
         area: this.saytConfig.area || this.config.area,
         numProducts: this.saytConfig.products
       }
-    });
+    };
+  }
 
-    this.on('mount', () => this.autocomplete = new Autocomplete(this));
+  reset() {
+    this.autocomplete.reset();
+    this.update({ queries: null, navigations: null });
+  }
 
-    this.flux.on('autocomplete', (originalQuery) => this.sayt.autocomplete(originalQuery)
-      .then(({result}) => {
+  fetchSuggestions(originalQuery: string) {
+    this.sayt.autocomplete(originalQuery)
+      .then(({ result }) => {
         this.update({ originalQuery });
         this.processResults(result);
         if (this.queries && this.showProducts) this.searchProducts(this.queries[0].value);
       })
-      .catch((err) => console.error(err)));
-
-    this.flux.on('autocomplete:hide', () => {
-      this.autocomplete.reset();
-      this.update({ queries: null, navigations: null });
-    });
+      .catch((err) => console.error(err));
   }
 
   searchProducts(query) {
-    if (this.saytConfig.products) {
+    if (this.showProducts) {
       this.sayt.productSearch(query)
         .then((res) => this.update({ products: res.result.products }));
     }
@@ -136,33 +144,29 @@ export class Sayt {
   refine(node, query) {
     while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
 
+    const refinement: SelectedValueRefinement = {
+      navigationName: node.dataset['field'],
+      value: node.dataset['refinement'],
+      type: 'Value'
+    };
+
     if (this.saytConfig.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.searchUrl, this.queryParam, query, [
-        {
-          navigationName: node.dataset['field'],
-          type: 'Value',
-          value: node.dataset['refinement']
-        }
-      ]);
+      return updateLocation(this.searchUrl, this.queryParam, query, [refinement]);
     }
 
     this.flux.rewrite(query, { skipSearch: true });
-    this.flux.refine({
-      navigationName: node.dataset['field'],
-      type: 'Value',
-      value: node.dataset['refinement']
-    });
+    this.flux.refine(refinement);
   }
 
   search(event) {
     let node = event.target;
     while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
 
-    if (this.saytConfig.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.searchUrl, this.queryParam, node.dataset['value'], []);
-    }
+    const query = node.dataset['value'];
 
-    const query = node.dataset['value']
+    if (this.saytConfig.staticSearch && window.location.pathname !== this.searchUrl) {
+      return updateLocation(this.searchUrl, this.queryParam, query, []);
+    }
 
     this.rewriteQuery(query);
     this.flux.reset(query);
