@@ -120,6 +120,7 @@ export interface SearchandiserConfig {
       products?: number;
       queries?: number;
       autoSearch?: boolean;
+      staticSearch?: boolean;
       highlight?: boolean;
       categoryField?: string;
       navigationNames?: any;
