@@ -10,6 +10,7 @@ const DEFAULT_CONFIG = {
   products: 4,
   queries: 5,
   autoSearch: true,
+  staticSearch: false,
   highlight: true,
   navigationNames: {},
   allowedNavigations: []
@@ -35,8 +36,8 @@ export class Sayt {
     this.saytConfig = Object.assign({}, DEFAULT_CONFIG, getPath(this.config, 'tags.sayt'));
     this.categoryField = this.saytConfig.categoryField;
     this.struct = Object.assign({}, this.config.structure, this.saytConfig.structure);
-    this.searchUrl = this.opts.searchUrl || '/search';
-    this.queryParam = this.opts.queryParam || 'q';
+    this.searchUrl = this.saytConfig.searchUrl || '/search';
+    this.queryParam = this.saytConfig.queryParam || 'q';
     this.showProducts = this.saytConfig.products > 0;
 
     this.sayt.configure({
@@ -135,8 +136,8 @@ export class Sayt {
   refine(node, query) {
     while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
 
-    if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.opts.searchUrl || '/search', this.opts.queryParam || 'q', query, [
+    if (this.saytConfig.staticSearch && window.location.pathname !== this.searchUrl) {
+      return updateLocation(this.searchUrl, this.queryParam, query, [
         {
           navigationName: node.dataset['field'],
           type: 'Value',
@@ -157,7 +158,7 @@ export class Sayt {
     let node = event.target;
     while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
 
-    if (this.opts.staticSearch && window.location.pathname !== this.searchUrl) {
+    if (this.saytConfig.staticSearch && window.location.pathname !== this.searchUrl) {
       return updateLocation(this.searchUrl, this.queryParam, node.dataset['value'], []);
     }
 
