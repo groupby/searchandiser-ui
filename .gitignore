@@ -13,4 +13,5 @@ coverage
 compiled-tags
 bower_components
 
-dist/
+dist
+docs
