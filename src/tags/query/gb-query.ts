@@ -86,15 +86,15 @@ export class Query {
           // prevent cursor from moving to front of text box
           event.preventDefault();
 
-          if (autocomplete.getOneAbove()) {
-            autocomplete.selectOneAbove();
+          if (autocomplete.linkAbove()) {
+            autocomplete.selectLink(autocomplete.linkAbove());
           } else {
             this.rewriteQuery(autocomplete.preautocompleteValue);
             autocomplete.reset();
           }
           break;
         case KEY_DOWN:
-          autocomplete.selectOneBelow();
+          autocomplete.selectLink(autocomplete.linkBelow());
           break;
         case KEY_ENTER:
           autocomplete.selected.querySelector('a').click();
@@ -111,12 +111,12 @@ export class Query {
         case KEY_DOWN:
           if (autocomplete) {
             autocomplete.preautocompleteValue = this.searchBox.value;
-            autocomplete.selectFirstLink();
-            // this.flux.emit('autocomplete');
+            autocomplete.selectLink(autocomplete.linkBelow());
           }
           break;
         case KEY_ENTER:
           this.enterKeyHandlers.forEach((f) => f());
+          this.flux.emit('autocomplete:hide');
           break;
       }
     }
