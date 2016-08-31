@@ -1,6 +1,5 @@
 import { Query } from '../../src/tags/query/gb-query';
 import '../../src/tags/query/gb-query.tag';
-import { Autocomplete } from '../../src/tags/sayt/autocomplete.ts';
 import { Sayt } from '../../src/tags/sayt/gb-sayt';
 import { createTag, mixinFlux, removeTag } from '../utils/tags';
 import { expect } from 'chai';
@@ -39,7 +38,6 @@ describe(`${TAG} tag with sayt:true`, () => {
     it('highlights first element of autocomplete when you press KEY_DOWN from search box', (done) => {
       const tag = mount();
       const saytTag = html.querySelector('gb-sayt')['_tag'];
-      const autocomplete = saytTag.autocomplete;
 
       saytTag.update({
         queries: [
@@ -65,7 +63,6 @@ describe(`${TAG} tag with sayt:true`, () => {
     it('highlights next element when you press down', (done) => {
       const tag = mount();
       const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
-      const autocomplete: Autocomplete = saytTag.autocomplete;
 
       saytTag.update({
         queries: [
@@ -89,7 +86,6 @@ describe(`${TAG} tag with sayt:true`, () => {
     it('gracefully handles there not being any more links to go down to', (done) => {
       const tag = mount();
       const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
-      const autocomplete: Autocomplete = saytTag.autocomplete;
 
       saytTag.update({
         queries: [
@@ -108,13 +104,12 @@ describe(`${TAG} tag with sayt:true`, () => {
 
         expect(searchBox().value).to.eql('b');
         done();
-      })
+      });
     });
 
     it('goes up a link', (done) => {
       const tag = mount();
       const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
-      const autocomplete: Autocomplete = saytTag.autocomplete;
 
       saytTag.update({
         queries: [
@@ -141,7 +136,6 @@ describe(`${TAG} tag with sayt:true`, () => {
     it('restores original query to search box and clears selected autocomplete suggestion when you press KEY_UP while at the top suggestion', (done) => {
       const tag = mount();
       const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
-      const autocomplete: Autocomplete = saytTag.autocomplete;
 
       searchBox().value = 'original';
       saytTag.update({
@@ -157,13 +151,12 @@ describe(`${TAG} tag with sayt:true`, () => {
         expect(searchBox().value).to.eql('original');
         expect(html.querySelector('gb-sayt-link.selected')).to.eql(null);
         done();
-      })
+      });
     });
 
     it('keeps the cursor at the end of the search term in the search box', (done) => {
       const tag = mount();
       const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
-      const autocomplete: Autocomplete = saytTag.autocomplete;
 
       searchBox().value = 'original';
       saytTag.update({
@@ -253,7 +246,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
       tag.on('updated', () => {
         (<HTMLElement>saytTag.root.querySelectorAll('gb-sayt-link a')[0]).click();
-      })
+      });
     });
 
     it('does a refinement search when you click', (done) => {
@@ -280,7 +273,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
       tag.on('updated', () => {
         (<HTMLElement>saytTag.root.querySelectorAll('gb-sayt-link a')[3]).click();
-      })
+      });
     });
 
     it('show navigations when there are no queries', (done) => {
@@ -296,7 +289,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       tag.on('updated', () => {
         expect(saytTag.root.querySelectorAll('gb-sayt-link').length).to.eql(3);
         done();
-      })
+      });
     });
   });
 
