@@ -1,6 +1,10 @@
 import { findSearchBox } from '../../utils';
 import { Sayt } from './gb-sayt';
 
+const KEY_UP = 38;
+const KEY_DOWN = 40;
+const KEY_ENTER = 13;
+const KEY_ESCAPE = 27;
 const ACTIVE = 'active';
 
 export class Autocomplete {
@@ -17,7 +21,7 @@ export class Autocomplete {
     return this.links().indexOf(this.selected);
   }
 
-  selectLink(link) {
+  selectLink(link: HTMLElement) {
     if (link) this.selected = this.swapAttributes(link);
   }
 
@@ -49,11 +53,50 @@ export class Autocomplete {
   }
 
   removeActiveClass() {
-    this.links().forEach(element => element.classList.remove('active'));
+    this.links().forEach((element) => element.classList.remove('active'));
   }
 
   reset() {
     this.removeActiveClass();
     this.resetSelected();
+  }
+
+  keyboardListener(event: KeyboardEvent, submitDefault: Function) {
+    switch (event.keyCode) {
+      case KEY_UP:
+        // prevent cursor from moving to front of text box
+        event.preventDefault();
+
+        if (this.isSelectedInAutocomplete()) {
+          if (this.linkAbove()) {
+            this.selectLink(this.linkAbove());
+          } else {
+            this.searchInput.value = this.preautocompleteValue;
+            this.reset();
+          }
+        } else {
+          this.tag.flux.emit('autocomplete:hide');
+        }
+        break;
+      case KEY_DOWN:
+        if (this.isSelectedInAutocomplete()) {
+          this.selectLink(this.linkBelow());
+        } else {
+          this.preautocompleteValue = this.searchInput.value;
+          this.selectLink(this.linkBelow());
+        }
+        break;
+      case KEY_ENTER:
+        if (this.isSelectedInAutocomplete()) {
+          this.selected.querySelector('a').click();
+          this.reset();
+        } else {
+          submitDefault();
+        }
+        break;
+      case KEY_ESCAPE:
+        this.tag.flux.emit('autocomplete:hide');
+        break;
+    }
   }
 }

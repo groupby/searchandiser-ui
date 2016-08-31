@@ -4,8 +4,6 @@ import '../sayt/gb-sayt.tag';
 import { FluxTag } from '../tag';
 import { Events, Query as QueryModel } from 'groupby-api';
 
-const KEY_UP = 38;
-const KEY_DOWN = 40;
 const KEY_ENTER = 13;
 
 export interface Query extends FluxTag {
@@ -75,51 +73,18 @@ export class Query {
   }
 
   keydownListener(event: KeyboardEvent) {
-    let autocomplete = null;
-    if (findTag('gb-sayt')) {
-      autocomplete = (<Sayt>findTag('gb-sayt')['_tag']).autocomplete;
+    let sayt = findTag('gb-sayt');
+    if (sayt) {
+      let autocomplete = (<Sayt>sayt['_tag']).autocomplete;
+      autocomplete.keyboardListener(event, this.onSubmit);
+    } else if (event.keyCode === KEY_ENTER) {
+      this.onSubmit();
     }
+  }
 
-    if (autocomplete && autocomplete.isSelectedInAutocomplete()) {
-      switch (event.keyCode) {
-        case KEY_UP:
-          // prevent cursor from moving to front of text box
-          event.preventDefault();
-
-          if (autocomplete.linkAbove()) {
-            autocomplete.selectLink(autocomplete.linkAbove());
-          } else {
-            this.rewriteQuery(autocomplete.preautocompleteValue);
-            autocomplete.reset();
-          }
-          break;
-        case KEY_DOWN:
-          autocomplete.selectLink(autocomplete.linkBelow());
-          break;
-        case KEY_ENTER:
-          autocomplete.selected.querySelector('a').click();
-          autocomplete.reset();
-          break;
-      }
-    } else {
-      switch (event.keyCode) {
-        case KEY_UP:
-          if (autocomplete) {
-            this.flux.emit('autocomplete:hide');
-          }
-          break;
-        case KEY_DOWN:
-          if (autocomplete) {
-            autocomplete.preautocompleteValue = this.searchBox.value;
-            autocomplete.selectLink(autocomplete.linkBelow());
-          }
-          break;
-        case KEY_ENTER:
-          this.enterKeyHandlers.forEach((f) => f());
-          this.flux.emit('autocomplete:hide');
-          break;
-      }
-    }
+  onSubmit() {
+    this.enterKeyHandlers.forEach((f) => f());
+    this.flux.emit('autocomplete:hide');
   }
 
   private findSearchBox() {

@@ -461,17 +461,5 @@ describe('gb-sayt logic', () => {
 
       Sayt.listenForInput(tag);
     });
-
-    it('should attach keydown listener to searchBox', (done) => {
-      flux.emit = (event) => expect(event).to.eq('autocomplete:hide');
-      searchBox.addEventListener = (event, cb) => {
-        if (event === 'keydown') {
-          cb({ keyCode: 27 });
-          done();
-        }
-      };
-
-      Sayt.listenForInput(tag);
-    });
   });
 });

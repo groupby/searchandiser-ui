@@ -77,12 +77,12 @@ export function getPath(obj: any, path: string = '') {
   return oget(obj, path);
 }
 
-/*
-Example:
-({x: 3, y: 4, h: 8}, {z: 'x', i: 'h'}) -> {z: 3, i: 8}
-
-N.B. It removes keys that do not appear in the mapping
-*/
+/**
+ * Example:
+ * ({x: 3, y: 4, h: 8}, {z: 'x', i: 'h'}) -> {z: 3, i: 8}
+ *
+ * N.B. It removes keys that do not appear in the mapping
+ */
 export function remap(x: any, mapping: any) {
   if (mapping) {
     return Object.keys(mapping).reduce((acc, key) => {

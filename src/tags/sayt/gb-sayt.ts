@@ -15,7 +15,6 @@ const DEFAULT_CONFIG = {
   navigationNames: {},
   allowedNavigations: []
 };
-const ESCAPE_KEY = 27;
 
 export interface Sayt extends SaytTag { }
 
@@ -186,8 +185,5 @@ export class Sayt {
     }, delay);
     document.addEventListener('click', () => tag.flux.emit('autocomplete:hide'));
     input.addEventListener('input', debouncedSearch);
-    input.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.keyCode === ESCAPE_KEY) tag.flux.emit('autocomplete:hide');
-    });
   }
 }
