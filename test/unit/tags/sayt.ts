@@ -1,6 +1,6 @@
-import * as utils from '../../../src/utils';
 import { Autocomplete } from '../../../src/tags/sayt/autocomplete';
 import { Sayt } from '../../../src/tags/sayt/gb-sayt';
+import * as utils from '../../../src/utils';
 import { fluxTag } from '../../utils/tags';
 import { expect } from 'chai';
 import { Events, FluxCapacitor } from 'groupby-api';
@@ -112,7 +112,7 @@ describe('gb-sayt logic', () => {
       expect(event).to.eq('mount');
       cb();
       expect(tag.autocomplete).to.be.instanceof(Autocomplete);
-    }
+    };
   });
 
   it('should listen for events', () => {
@@ -157,7 +157,7 @@ describe('gb-sayt logic', () => {
         }
       };
     };
-    tag.update = (data) => expect(data.originalQuery).to.eq(originalQuery);;
+    tag.update = (data) => expect(data.originalQuery).to.eq(originalQuery);
     tag.processResults = (res) => expect(res).to.eql(result);
     tag.searchProducts = () => expect.fail();
 
@@ -229,7 +229,6 @@ describe('gb-sayt logic', () => {
     tag.notifier(newQuery);
   });
 
-
   it('should refine', () => {
     const target = { a: 'b' };
     const mock = sandbox.stub(flux, 'resetRecall');
@@ -261,6 +260,16 @@ describe('gb-sayt logic', () => {
 
     const highlighted = tag.highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
     expect(highlighted).to.eq('hi-top <b>blue sneakers</b>');
+  });
+
+  it('should apply regex replacement with slashes', () => {
+    tag.originalQuery = 'blue sneakers\\';
+    tag.saytConfig = { highlight: true };
+
+    const currentQuery = 'hi-top blue sneakers';
+    const highlight = () => tag.highlightCurrentQuery(currentQuery, '<b>$&</b>');
+    expect(highlight).to.not.throw();
+    expect(highlight()).to.eq('hi-top blue sneakers');
   });
 
   it('should not apply regex replacement', () => {
