@@ -1,5 +1,4 @@
 import { Collections } from '../../src/tags/collections/gb-collections';
-import '../../src/tags/collections/gb-collections.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

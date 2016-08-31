@@ -1,5 +1,4 @@
 import { Results } from '../../src/tags/results/gb-results';
-import '../../src/tags/results/gb-results.tag';
 import { createTag, mixinFlux, removeTag } from '../utils/tags';
 import { expect } from 'chai';
 

@@ -1,5 +1,4 @@
 import { RecordCount } from '../../src/tags/record-count/gb-record-count';
-import '../../src/tags/record-count/gb-record-count.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

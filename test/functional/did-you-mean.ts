@@ -1,5 +1,4 @@
 import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
-import '../../src/tags/did-you-mean/gb-did-you-mean.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

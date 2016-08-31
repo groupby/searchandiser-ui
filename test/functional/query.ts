@@ -1,5 +1,4 @@
 import { Query } from '../../src/tags/query/gb-query';
-import '../../src/tags/query/gb-query.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

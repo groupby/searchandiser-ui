@@ -1,5 +1,4 @@
 import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
-import '../../src/tags/breadcrumbs/gb-breadcrumbs.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

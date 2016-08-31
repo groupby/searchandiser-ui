@@ -1,5 +1,4 @@
 import { PageSize } from '../../src/tags/page-size/gb-page-size';
-import '../../src/tags/page-size/gb-page-size.tag';
 import { clearOption, label, selectOptions } from '../utils/select';
 import suite from './_suite';
 import { expect } from 'chai';

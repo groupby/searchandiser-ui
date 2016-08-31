@@ -1,5 +1,4 @@
 import { Paging } from '../../src/tags/paging/gb-paging';
-import '../../src/tags/paging/gb-paging.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

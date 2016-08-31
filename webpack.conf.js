@@ -3,7 +3,9 @@ var pjson = require('./package.json');
 
 module.exports = {
   entry: './src/index.ts',
-  output: { filename: pjson.name + '-' + pjson.version + '.js' },
+  output: {
+    filename: pjson.name + '-' + pjson.version + '.js'
+  },
   resolve: {
     alias: {
       riot: 'riot/riot+compiler'
@@ -17,13 +19,25 @@ module.exports = {
     })
   ],
   module: {
-    preLoaders: [
-      { test: /\.tag$/, exclude: /node_modules/, loader: 'riotjs-loader' }
-    ],
-    loaders: [
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader' },
-      { test: /\.tag$/, exclude: /node_modules/, loader: 'babel-loader', query: { presets: ['es2015'] } }
-    ]
+    preLoaders: [{
+      test: /\.tag(\.html)?$/,
+      exclude: /node_modules/,
+      loader: 'riotjs-loader'
+    }],
+    loaders: [{
+      test: /\.css$/,
+      loader: 'style-loader!css-loader'
+    }, {
+      test: /\.ts$/,
+      exclude: /node_modules/,
+      loader: 'ts-loader'
+    }, {
+      test: /\.tag(\.html)?$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader',
+      query: {
+        presets: ['es2015']
+      }
+    }]
   }
 };

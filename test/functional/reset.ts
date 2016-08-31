@@ -1,5 +1,4 @@
 import { Reset } from '../../src/tags/reset/gb-reset';
-import '../../src/tags/reset/gb-reset.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

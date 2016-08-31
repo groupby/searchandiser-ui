@@ -1,5 +1,4 @@
 import { Snippet } from '../../src/tags/snippet/gb-snippet';
-import '../../src/tags/snippet/gb-snippet.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 
