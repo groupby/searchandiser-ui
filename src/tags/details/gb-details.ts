@@ -1,6 +1,6 @@
+import { getParam, getPath } from '../../utils';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
-import { getParam, getPath } from '../../utils';
 
 export interface Details extends FluxTag { }
 
@@ -19,7 +19,7 @@ export class Details {
     if (this.query) this.flux.details(this.query);
   }
 
-  updateRecord(record) {
+  updateRecord(record: any) {
     this.update({ record });
   }
 }

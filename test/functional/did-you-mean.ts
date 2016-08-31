@@ -1,26 +1,14 @@
-import { FluxCapacitor, Events, Results } from 'groupby-api';
-import { expect } from 'chai';
-import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
 import '../../src/tags/did-you-mean/gb-did-you-mean.tag';
+import suite from './_suite';
+import { expect } from 'chai';
 
-const TAG = 'gb-did-you-mean';
-
-describe(`${TAG} tag`, () => {
-  let html: HTMLElement,
-    flux: FluxCapacitor;
-
-  beforeEach(() => {
-    flux = mixinFlux();
-    html = createTag(TAG);
-  });
-  afterEach(() => removeTag(html));
-
+suite<DidYouMean>('gb-did-you-mean', ({ tagName, flux, html, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector(`gb-list.${TAG}`)).to.be.ok;
+    expect(html().querySelector(`gb-list.${tagName}`)).to.be.ok;
   });
 
   describe('render behaviour', () => {
@@ -37,7 +25,7 @@ describe(`${TAG} tag`, () => {
     it('rewrites on option selected', () => {
       const tag = mount();
 
-      flux.rewrite = (query): any => expect(query).to.eq(didYouMeans[1]);
+      flux().rewrite = (query): any => expect(query).to.eq(didYouMeans[1]);
 
       tag.updateDidYouMean(didYouMeans);
       tag.on('updated', () => dymLinks()[1].click());
@@ -45,10 +33,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function dymLinks(): NodeListOf<HTMLAnchorElement> {
-    return <NodeListOf<HTMLAnchorElement>>html.querySelectorAll('li > a');
-  }
-
-  function mount() {
-    return <DidYouMean>riot.mount(TAG)[0];
+    return <NodeListOf<HTMLAnchorElement>>html().querySelectorAll('li > a');
   }
 });

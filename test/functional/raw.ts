@@ -1,33 +1,27 @@
-import { expect } from 'chai';
-import { createTag, removeTag } from '../utils/tags';
 import { Raw } from '../../src/tags/raw/gb-raw';
 import '../../src/tags/raw/gb-raw.tag';
+import suite from './_suite';
+import { expect } from 'chai';
 
-const TAG = 'gb-raw';
-
-describe(`${TAG} tag`, () => {
-  let html: HTMLElement;
+suite<Raw>('gb-raw', ({ html, mount: _mount }) => {
   const content = '<div>red sneakers</div>';
-
-  beforeEach(() => html = createTag(TAG));
-  afterEach(() => removeTag(html));
 
   it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector('div')).to.be.ok;
+    expect(html().querySelector('div')).to.be.ok;
   });
 
   describe('render behaviour', () => {
     it('should not render content as html', () => {
-      const tag = mount();
+      mount();
 
-      expect(html.querySelector('div').textContent).to.eq('red sneakers');
+      expect(html().querySelector('div').textContent).to.eq('red sneakers');
     });
   });
 
   function mount() {
-    return <Raw>riot.mount(TAG, { content })[0];
+    return _mount({ content });
   }
 });

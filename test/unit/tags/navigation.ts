@@ -1,36 +1,31 @@
-import { FluxCapacitor, Events, Navigation as NavigationModel } from 'groupby-api';
-import { fluxTag } from '../../utils/tags';
 import { Navigation } from '../../../src/tags/navigation/gb-navigation';
+import suite from './_suite';
 import { expect } from 'chai';
+import { Events } from 'groupby-api';
 
-describe('gb-navigation logic', () => {
-  let tag: Navigation;
-  let flux: FluxCapacitor;
-
-  beforeEach(() => ({ tag, flux } = fluxTag(new Navigation())));
-
+suite('gb-navigation', Navigation, ({ flux, tag }) => {
   it('should have default values', () => {
-    tag.init();
+    tag().init();
 
-    expect(tag.badge).to.be.true;
-    expect(tag.showSelected).to.be.true;
+    expect(tag().badge).to.be.true;
+    expect(tag().showSelected).to.be.true;
   });
 
   it('should allow override from opts', () => {
-    tag.opts = { badge: false, showSelected: false };
-    tag.init();
+    tag().opts = { badge: false, showSelected: false };
+    tag().init();
 
-    expect(tag.badge).to.be.false;
-    expect(tag.showSelected).to.be.false;
+    expect(tag().badge).to.be.false;
+    expect(tag().showSelected).to.be.false;
   });
 
   it('should listen for flux events', () => {
-    flux.on = (event: string, cb: Function): any => {
+    flux().on = (event: string, cb: Function): any => {
       expect(event).to.eq(Events.RESULTS);
-      expect(cb).to.eq(tag.updateNavigations);
+      expect(cb).to.eq(tag().updateNavigations);
     };
 
-    tag.init();
+    tag().init();
   });
 
   it('should process navigations', () => {
@@ -42,7 +37,7 @@ describe('gb-navigation logic', () => {
     const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }] }];
     const results = <any>{ availableNavigation, selectedNavigation };
 
-    const processed = tag.processNavigations(results);
+    const processed = tag().processNavigations(results);
     expect(processed).to.eql([
       availableNavigation[0],
       Object.assign(availableNavigation[1], { selected: selectedNavigation[0].refinements }),
@@ -51,28 +46,28 @@ describe('gb-navigation logic', () => {
   });
 
   it('should refine on send()', () => {
-    flux.refine = (ref): any => expect(ref).to.eql({
+    flux().refine = (ref): any => expect(ref).to.eql({
       navigationName: 'price',
       type: 'Range',
       low: 4,
       high: 6
     });
 
-    tag.init();
+    tag().init();
 
-    tag.send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
+    tag().send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
   });
 
   it('should unrefine on remove()', () => {
-    flux.refine = (ref): any => expect(ref).to.eql({
+    flux().refine = (ref): any => expect(ref).to.eql({
       navigationName: 'price',
       type: 'Range',
       low: 4,
       high: 6
     });
 
-    tag.init();
+    tag().init();
 
-    tag.remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
+    tag().remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
   });
 });

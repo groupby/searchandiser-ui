@@ -1,5 +1,5 @@
+import { findSearchBox, unless, updateLocation } from '../../utils';
 import { FluxTag } from '../tag';
-import { unless, updateLocation, findSearchBox } from '../../utils';
 
 export interface Submit extends FluxTag {
   root: HTMLElement & { value: any };

@@ -1,18 +1,13 @@
-import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../../utils/tags';
 import { RecordCount } from '../../../src/tags/record-count/gb-record-count';
+import suite from './_suite';
 import { expect } from 'chai';
+import { Events } from 'groupby-api';
 
-describe('gb-record-count logic', () => {
-  let tag: RecordCount,
-    flux: FluxCapacitor;
-
-  beforeEach(() => ({ tag, flux } = fluxTag(new RecordCount())));
-
+suite('gb-record-count', RecordCount, ({ flux, tag }) => {
   it('should listen for events', () => {
-    flux.on = (event: string): any => expect(event).to.eq(Events.RESULTS);
+    flux().on = (event: string): any => expect(event).to.eq(Events.RESULTS);
 
-    tag.init();
+    tag().init();
   });
 
   it('should update page info on RESULTS', () => {
@@ -25,14 +20,14 @@ describe('gb-record-count logic', () => {
     };
     let callback;
 
-    flux.on = (event: string, cb: Function): any => callback = cb;
+    flux().on = (event: string, cb: Function): any => callback = cb;
 
-    tag.update = (obj: any) => {
+    tag().update = (obj: any) => {
       expect(obj.first).to.eq(results.pageInfo.recordStart);
       expect(obj.last).to.eq(results.pageInfo.recordEnd);
       expect(obj.total).to.eq(results.totalRecordCount);
     };
-    tag.init();
+    tag().init();
 
     callback(results);
   });

@@ -1,26 +1,16 @@
-import { FluxCapacitor, Events, Results } from 'groupby-api';
-import { expect } from 'chai';
-import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { RelatedQueries } from '../../src/tags/related-queries/gb-related-queries';
 import '../../src/tags/related-queries/gb-related-queries.tag';
+import suite from './_suite';
+import { expect } from 'chai';
 
 const TAG = 'gb-related-queries';
 
-describe(`${TAG} tag`, () => {
-  let html: HTMLElement,
-    flux: FluxCapacitor;
-
-  beforeEach(() => {
-    flux = mixinFlux();
-    html = createTag(TAG);
-  });
-  afterEach(() => removeTag(html));
-
+suite<RelatedQueries>('gb-related-queries', ({ flux, html, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector(`gb-list.${TAG}`)).to.be.ok;
+    expect(html().querySelector(`gb-list.${TAG}`)).to.be.ok;
   });
 
   describe('render behaviour', () => {
@@ -37,7 +27,7 @@ describe(`${TAG} tag`, () => {
     it('rewrites on option selected', () => {
       const tag = mount();
 
-      flux.rewrite = (query): any => expect(query).to.eq(relatedQueries[1]);
+      flux().rewrite = (query): any => expect(query).to.eq(relatedQueries[1]);
 
       tag.updatedRelatedQueries(relatedQueries);
       tag.on('updated', () => relatedLinks()[1].click());
@@ -45,10 +35,6 @@ describe(`${TAG} tag`, () => {
   });
 
   function relatedLinks(): NodeListOf<HTMLAnchorElement> {
-    return <NodeListOf<HTMLAnchorElement>>html.querySelectorAll('li > a');
-  }
-
-  function mount() {
-    return <RelatedQueries>riot.mount(TAG)[0];
+    return <NodeListOf<HTMLAnchorElement>>html().querySelectorAll('li > a');
   }
 });

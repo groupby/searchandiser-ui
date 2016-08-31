@@ -1,6 +1,5 @@
 import { FluxTag } from '../tag';
 import { Events, Results } from 'groupby-api';
-import { unless } from '../../utils';
 
 export interface Template extends FluxTag { }
 

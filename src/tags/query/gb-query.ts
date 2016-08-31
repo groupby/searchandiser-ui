@@ -1,10 +1,8 @@
+import { findTag, parseQueryFromLocation, unless, updateLocation } from '../../utils';
+import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag';
 import { FluxTag } from '../tag';
 import { Events, Query as QueryModel } from 'groupby-api';
-import { unless, updateLocation, parseQueryFromLocation, findTag } from '../../utils';
-import { Sayt } from '../sayt/gb-sayt';
-import queryString = require('query-string');
-import riot = require('riot');
 
 const KEY_UP = 38;
 const KEY_DOWN = 40;
@@ -41,7 +39,7 @@ export class Query {
     this.on('mount', () => {
       this.searchBox = this.findSearchBox();
       this.searchBox.addEventListener('keydown', this.keydownListener);
-      if (this.saytEnabled) Sayt.listenForInput(this)
+      if (this.saytEnabled) Sayt.listenForInput(this);
     });
 
     if (this.autoSearch) {
@@ -60,29 +58,8 @@ export class Query {
     }
   }
 
-  private findSearchBox() {
-    if (this.tags['gb-search-box']) {
-      return this.tags['gb-search-box'].searchBox;
-    } else {
-      return this.root.querySelector('input');
-    }
-  }
-
   rewriteQuery(query: string) {
     this.searchBox.value = query;
-  }
-
-  private inputValue() {
-    return this.searchBox.value;
-  }
-
-  private setLocation() {
-    // Better way to do this is with browser history rewrites
-    if (window.location.pathname !== this.searchUrl) {
-      updateLocation(this.searchUrl, this.queryParam, this.inputValue(), this.flux.query.raw.refinements);
-    } else {
-      this.flux.reset(this.inputValue());
-    }
   }
 
   listenForInput() {
@@ -106,7 +83,7 @@ export class Query {
     if (autocomplete && autocomplete.isSelectedInAutocomplete()) {
       switch (event.keyCode) {
         case KEY_UP:
-          // Prevent cursor from moving to front of text box
+          // prevent cursor from moving to front of text box
           event.preventDefault();
 
           if (autocomplete.getOneAbove()) {
@@ -142,6 +119,27 @@ export class Query {
           this.enterKeyHandlers.forEach((f) => f());
           break;
       }
+    }
+  }
+
+  private findSearchBox() {
+    if (this.tags['gb-search-box']) {
+      return this.tags['gb-search-box'].searchBox;
+    } else {
+      return this.root.querySelector('input');
+    }
+  }
+
+  private inputValue() {
+    return this.searchBox.value;
+  }
+
+  private setLocation() {
+    // TODO better way to do this is with browser history rewrites
+    if (window.location.pathname !== this.searchUrl) {
+      updateLocation(this.searchUrl, this.queryParam, this.inputValue(), this.flux.query.raw.refinements);
+    } else {
+      this.flux.reset(this.inputValue());
     }
   }
 }

@@ -1,17 +1,15 @@
-import { FluxCapacitor, Events, Results } from 'groupby-api';
-import { expect } from 'chai';
-import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { Query } from '../../src/tags/query/gb-query';
-import { Sayt } from '../../src/tags/sayt/gb-sayt';
-import { Autocomplete } from '../../src/tags/sayt/autocomplete.ts'
 import '../../src/tags/query/gb-query.tag';
+import { Autocomplete } from '../../src/tags/sayt/autocomplete.ts';
+import { Sayt } from '../../src/tags/sayt/gb-sayt';
+import { createTag, mixinFlux, removeTag } from '../utils/tags';
+import { expect } from 'chai';
+import { FluxCapacitor } from 'groupby-api';
 
 const TAG = 'gb-query';
 const KEY_UP = 38;
 const KEY_ENTER = 13;
 const KEY_DOWN = 40;
-const KEY_BACKSPACE = 8;
-const KEY_DEL = 46;
 
 describe(`${TAG} tag with sayt:true`, () => {
   let html: HTMLElement;
@@ -43,7 +41,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag = <Sayt>html.querySelector('gb-sayt')['_tag'];
       const autocomplete = saytTag.autocomplete;
 
@@ -77,7 +75,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
       const autocomplete: Autocomplete = saytTag.autocomplete;
 
@@ -89,7 +87,6 @@ describe(`${TAG} tag with sayt:true`, () => {
       });
 
       while (!(saytTag.root.querySelector('gb-sayt-link')));
-
 
       autocomplete['f'] = autocomplete.selectOneBelow;
       autocomplete.selectOneBelow = () => {
@@ -110,7 +107,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
       const autocomplete: Autocomplete = saytTag.autocomplete;
 
@@ -147,7 +144,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
       const autocomplete: Autocomplete = saytTag.autocomplete;
 
@@ -160,7 +157,6 @@ describe(`${TAG} tag with sayt:true`, () => {
       });
 
       while (!(saytTag.root.querySelector('gb-sayt-link')));
-
 
       let noTimesDown = 0;
       let noTimesUp = 0;
@@ -194,7 +190,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
       const autocomplete: Autocomplete = saytTag.autocomplete;
 
@@ -229,10 +225,9 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
       const autocomplete: Autocomplete = saytTag.autocomplete;
-
 
       searchBox().value = 'original';
       saytTag.update({
@@ -262,8 +257,7 @@ describe(`${TAG} tag with sayt:true`, () => {
         autocomplete['f1']();
         if (noTimesDown === 1) {
           expect(searchBox().selectionStart).to.eql('0123456789'.length);
-        }
-        else if (noTimesDown === 2) {
+        } else if (noTimesDown === 2) {
           expect(searchBox().selectionStart).to.eql('aaa'.length);
         }
       };
@@ -275,8 +269,7 @@ describe(`${TAG} tag with sayt:true`, () => {
         autocomplete['f2']();
         if (noTimesUp === 1) {
           expect(searchBox().selectionStart).to.eql('0123456789'.length);
-        }
-        else if (noTimesUp === 2) {
+        } else if (noTimesUp === 2) {
           expect(searchBox().selectionStart).to.eql('four'.length);
         }
       };
@@ -293,7 +286,7 @@ describe(`${TAG} tag with sayt:true`, () => {
           expect(searchBox().selectionStart).to.eql('original'.length);
           done();
         }
-      }
+      };
 
       // TODO make sure we get to the end oforiginal query string
 
@@ -315,7 +308,7 @@ describe(`${TAG} tag with sayt:true`, () => {
         done();
       };
 
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
 
       searchBox().value = 'original';
@@ -334,7 +327,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
 
       saytTag.update({
@@ -359,10 +352,10 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
       saytTag.refine = (target, query) => {
-        expect(target.parentNode.dataset['refinement']).to.eq('the category');
+        expect(target.parentElement.dataset['refinement']).to.eq('the category');
         done();
       };
 
@@ -371,7 +364,7 @@ describe(`${TAG} tag with sayt:true`, () => {
         categoryResults: [
           { value: 'four', category: 'the category' }
         ],
-        // This is necessary in order to have autocopmlete be visible
+        // this is necessary in order to have autocomplete be visible
         queries: ['four']
       });
       while (!(saytTag.root.querySelector('gb-sayt-link')));
@@ -383,13 +376,13 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
       saytTag.refine = (target, query) => {
         expect(query).to.eq('');
-        expect(target.parentNode.dataset['field']).to.eq('brand000');
-        expect(target.parentNode.dataset['value']).to.eq('Brand: 3');
-        expect(target.parentNode.dataset['refinement']).to.eq('3');
+        expect(target.parentElement.dataset['field']).to.eq('brand000');
+        expect(target.parentElement.dataset['value']).to.eq('Brand: 3');
+        expect(target.parentElement.dataset['refinement']).to.eq('3');
         done();
       };
 
@@ -413,7 +406,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       flux = mixinFlux({
         config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
       });
-      const tag = mount();
+      mount();
       const saytTag: Sayt = <Sayt>((<any>html.querySelector('gb-sayt'))._tag);
       saytTag.update({
         navigations: [{

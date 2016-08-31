@@ -1,21 +1,21 @@
-import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../../utils/tags';
 import { Paging } from '../../../src/tags/paging/gb-paging';
+import { fluxTag } from '../../utils/tags';
 import { expect } from 'chai';
+import { Events, FluxCapacitor } from 'groupby-api';
 
 describe('gb-paging logic', () => {
-  const struct = { title: 'title', price: 'price', image: 'image', url: 'url' },
-    allMeta = {
-      title: 'Red Sneakers',
-      price: '$12.45',
-      image: 'image.png',
-      id: '1340',
-      nested: {
-        value: '6532'
-      }
-    };
-  let tag: Paging,
-    flux: FluxCapacitor;
+  const struct = { title: 'title', price: 'price', image: 'image', url: 'url' };
+  const allMeta = {
+    title: 'Red Sneakers',
+    price: '$12.45',
+    image: 'image.png',
+    id: '1340',
+    nested: {
+      value: '6532'
+    }
+  };
+  let tag: Paging;
+  let flux: FluxCapacitor;
 
   beforeEach(() => ({ tag, flux } = fluxTag(new Paging(), {
     parent: { struct, allMeta }
@@ -92,14 +92,14 @@ describe('gb-paging logic', () => {
   });
 
   it('should update page position', (done) => {
-    const pageNumbers = [1, 2, 3, 4, 5],
-      pager = {
-        pageNumbers: (limit) => {
-          expect(limit).to.eq(5);
-          return pageNumbers;
-        },
-        finalPage: 16
-      };
+    const pageNumbers = [1, 2, 3, 4, 5];
+    const pager = {
+      pageNumbers: (limit) => {
+        expect(limit).to.eq(5);
+        return pageNumbers;
+      },
+      finalPage: 16
+    };
 
     Object.defineProperty(flux, 'page', { get: () => pager });
 
@@ -169,13 +169,13 @@ describe('gb-paging logic', () => {
     });
 
     it('should jump to the given page', () => {
-      const page = 7,
-        pager = { jump: (page) => expect(page).to.eq(page) };
+      const newPage = 7;
+      const pager = { jump: (page) => expect(page).to.eq(newPage) };
       Object.defineProperty(flux, 'page', { get: () => pager });
 
       tag.init();
 
-      tag.pager.jump(page);
+      tag.pager.jump(newPage);
     });
   });
 });

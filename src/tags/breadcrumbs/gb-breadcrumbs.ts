@@ -1,6 +1,6 @@
+import { displayRefinement, toRefinement, unless } from '../../utils';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
-import { unless, toRefinement, displayRefinement } from '../../utils';
 
 export interface Breadcrumbs extends FluxTag { }
 
@@ -26,7 +26,7 @@ export class Breadcrumbs {
     this.updateRefinements([]);
   }
 
-  updateRefinements(selected) {
+  updateRefinements(selected: any[]) {
     this.update({ selected });
   }
 
@@ -34,7 +34,7 @@ export class Breadcrumbs {
     this.update({ originalQuery });
   }
 
-  remove(ref, nav) {
+  remove(ref: any, nav: any) {
     this.flux.unrefine(toRefinement(ref, nav));
   }
 }

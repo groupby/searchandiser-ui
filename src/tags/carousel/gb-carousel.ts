@@ -1,5 +1,5 @@
-import { FluxTag } from '../tag';
 import { unless } from '../../utils';
+import { FluxTag } from '../tag';
 
 export interface Carousel extends FluxTag { }
 
@@ -13,7 +13,7 @@ export class Carousel {
     this.options = unless(this.opts.options, this._scope.options, []);
   }
 
-  isSelected(index) {
+  isSelected(index: number) {
     return this.currentIndex === index;
   }
 

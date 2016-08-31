@@ -1,6 +1,5 @@
-import { NavigationInfo } from 'groupby-api';
+import { displayRefinement } from '../../utils';
 import { FluxTag } from '../tag';
-import { unless, getPath, displayRefinement } from '../../utils';
 
 export interface Refinement extends FluxTag { }
 

@@ -1,6 +1,5 @@
-import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../../utils/tags';
 import { Raw } from '../../../src/tags/raw/gb-raw';
+import { fluxTag } from '../../utils/tags';
 import { expect } from 'chai';
 
 describe('gb-raw logic', () => {

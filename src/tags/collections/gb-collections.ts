@@ -1,6 +1,6 @@
+import { getPath, unless } from '../../utils';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
-import { unless, getPath } from '../../utils';
 
 export interface Collections extends FluxTag { }
 

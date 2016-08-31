@@ -1,14 +1,13 @@
-import { FluxCapacitor, Events } from 'groupby-api';
-import { expect } from 'chai';
-import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { Product } from '../../src/tags/product/gb-product';
 import '../../src/tags/product/gb-product.tag';
+import { createTag, mixinFlux, removeTag } from '../utils/tags';
+import { expect } from 'chai';
 
 const TAG = 'gb-product';
 
 describe(`${TAG} tag`, () => {
-  const structure = { title: 'title', price: 'price', image: 'image' },
-    all_meta = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
+  const structure = { title: 'title', price: 'price', image: 'image' };
+  const all_meta = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
   let html: HTMLElement;
 
   beforeEach(() => {
@@ -25,7 +24,7 @@ describe(`${TAG} tag`, () => {
   });
 
   it('renders product info', () => {
-    const tag = mount();
+    mount();
 
     expect(html.querySelector('gb-product-info')).to.be.ok;
     expect(html.querySelector('.gb-product__title').textContent).to.eq(all_meta.title);

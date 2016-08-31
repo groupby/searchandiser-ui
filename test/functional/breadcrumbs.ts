@@ -1,26 +1,14 @@
-import { FluxCapacitor } from 'groupby-api';
-import { expect } from 'chai';
-import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import '../../src/tags/breadcrumbs/gb-breadcrumbs.tag';
+import suite from './_suite';
+import { expect } from 'chai';
 
-const TAG = 'gb-breadcrumbs';
-
-describe(`${TAG} tag`, () => {
-  let html: HTMLElement,
-    flux: FluxCapacitor;
-
-  beforeEach(() => {
-    flux = mixinFlux();
-    html = createTag(TAG);
-  });
-  afterEach(() => removeTag(html));
-
+suite<Breadcrumbs>('gb-breadcrumbs', ({ tagName, flux, html, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector(`div.${TAG}`)).to.be.ok;
+    expect(html().querySelector(`div.${tagName}`)).to.be.ok;
   });
 
   describe('with query', () => {
@@ -52,7 +40,7 @@ describe(`${TAG} tag`, () => {
       const tag = mount();
 
       tag.updateRefinements(selected);
-      expect(html.querySelectorAll('.gb-navigation-crumb').length).to.eq(1);
+      expect(html().querySelectorAll('.gb-navigation-crumb').length).to.eq(1);
       expect(crumbs().length).to.eq(3);
       expect(crumbs()[1].querySelector('b').textContent).to.eq('First: B');
     });
@@ -62,13 +50,13 @@ describe(`${TAG} tag`, () => {
 
       tag.clearRefinements();
       expect(tag['selected'].length).to.eq(0);
-      expect(html.querySelectorAll('.gb-nav-crumb').length).to.eq(0);
+      expect(html().querySelectorAll('.gb-nav-crumb').length).to.eq(0);
     });
 
     it('unrefines on click', () => {
       const tag = mount();
 
-      flux.unrefine = (refinement): any => expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' });
+      flux().unrefine = (refinement): any => expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' });
 
       tag.updateRefinements(selected);
       (<HTMLAnchorElement>crumbs()[1].querySelector('a')).click();
@@ -76,14 +64,10 @@ describe(`${TAG} tag`, () => {
   });
 
   function queryCrumb() {
-    return <HTMLLIElement>html.querySelector('.gb-query-crumb');
+    return <HTMLLIElement>html().querySelector('.gb-query-crumb');
   }
 
   function crumbs() {
-    return <NodeListOf<HTMLLIElement>>html.querySelectorAll('.gb-navigation-crumb gb-refinement-crumb');
-  }
-
-  function mount() {
-    return <Breadcrumbs>riot.mount(TAG)[0];
+    return <NodeListOf<HTMLLIElement>>html().querySelectorAll('.gb-navigation-crumb gb-refinement-crumb');
   }
 });

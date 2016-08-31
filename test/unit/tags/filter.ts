@@ -1,18 +1,15 @@
-import { FluxCapacitor, Events, Results } from 'groupby-api';
-import { fluxTag } from '../../utils/tags';
 import { Filter } from '../../../src/tags/filter/gb-filter';
+import suite from './_suite';
 import { expect } from 'chai';
+import { Events, FluxCapacitor, Results } from 'groupby-api';
 
-describe('gb-filter logic', () => {
-  let tag: Filter,
-    flux: FluxCapacitor,
-    fluxClone: FluxCapacitor;
+suite('gb-filter', Filter, ({ flux, tag: _tag }) => {
+  let tag: Filter;
+  let fluxClone: FluxCapacitor;
 
-  beforeEach(() => tag = Object.assign(new Filter(), {
-    flux: flux = new FluxCapacitor(''),
-    _clone: () => fluxClone = new FluxCapacitor(''),
-    opts: {}
-  }));
+  beforeEach(() => {
+    tag = Object.assign(_tag(), { _clone: () => fluxClone = new FluxCapacitor('') });
+  });
 
   it('should have default values', () => {
     tag.init();
@@ -23,9 +20,9 @@ describe('gb-filter logic', () => {
   });
 
   it('should allow override from opts', () => {
-    const label = 'Select Brand',
-      clear = 'All Brands',
-      field = 'Brand';
+    const label = 'Select Brand';
+    const clear = 'All Brands';
+    const field = 'Brand';
 
     Object.assign(tag.opts, { label, clear, field });
     tag.init();
@@ -36,14 +33,14 @@ describe('gb-filter logic', () => {
   });
 
   it('should listen for events', () => {
-    flux.on = (event: string): any => expect(event).to.eq(Events.RESULTS);
+    flux().on = (event: string): any => expect(event).to.eq(Events.RESULTS);
 
     tag.init();
   });
 
   it('should call updateFluxClone on RESULTS', (done) => {
     let callback;
-    flux.on = (event: string, cb: Function): any => callback = cb;
+    flux().on = (event: string, cb: Function): any => callback = cb;
 
     tag.updateFluxClone = () => done();
     tag.init();
@@ -61,14 +58,14 @@ describe('gb-filter logic', () => {
 
     tag.init();
 
-    flux.query.withQuery(parentQuery);
+    flux().query.withQuery(parentQuery);
     tag.updateFluxClone();
     expect(fluxClone.query.raw.refinements.length).to.eq(0);
   });
 
   it('should update fluxClone state with refinements', () => {
-    const parentQuery = 'red sneakers',
-      refinements: any = { a: 'b', c: 'd' };
+    const parentQuery = 'red sneakers';
+    const refinements: any = { a: 'b', c: 'd' };
 
     fluxClone.search = (query: string): any => {
       expect(query).to.eq(parentQuery);
@@ -78,7 +75,7 @@ describe('gb-filter logic', () => {
     tag.init();
     tag.isTargetNav = () => false;
 
-    flux.query.withQuery(parentQuery).withSelectedRefinements(refinements);
+    flux().query.withQuery(parentQuery).withSelectedRefinements(refinements);
     tag.updateFluxClone();
     expect(fluxClone.query.raw.refinements).to.eql([refinements]);
   });
@@ -99,7 +96,7 @@ describe('gb-filter logic', () => {
     tag.isTargetNav = () => true;
 
     const converted = tag.convertRefinements([{ refinements: [refinement] }]);
-    expect(converted).to.eql([{ label: refinement.value, value: refinement }])
+    expect(converted).to.eql([{ label: refinement.value, value: refinement }]);
   });
 
   it('should return an empty list if not found', () => {
@@ -107,7 +104,7 @@ describe('gb-filter logic', () => {
     tag.isTargetNav = () => false;
 
     const converted = tag.convertRefinements([{ refinements: [{ a: 'b' }] }]);
-    expect(converted.length).to.eq(0)
+    expect(converted.length).to.eq(0);
   });
 
   it('should update the select tag with options', () => {
@@ -125,7 +122,7 @@ describe('gb-filter logic', () => {
   });
 
   it('should call reset on clear navigation', (done) => {
-    flux.reset = () => done();
+    flux().reset = () => done();
 
     tag.init();
 
@@ -133,10 +130,10 @@ describe('gb-filter logic', () => {
   });
 
   it('should call refine on navigation selected', (done) => {
-    const selection = { type: 'Value', value: 'DeWalt' },
-      navigationName = 'brand';
+    const selection = { type: 'Value', value: 'DeWalt' };
+    const navigationName = 'brand';
 
-    flux.refine = (selected): any => {
+    flux().refine = (selected): any => {
       expect(selected).to.eql(Object.assign(selection, { navigationName }));
       done();
     };
@@ -150,7 +147,7 @@ describe('gb-filter logic', () => {
   it('should call unrefine to clear current selection', (done) => {
     const selection = { a: 'b', c: 'd' };
 
-    flux.unrefine = (selected, opts): any => {
+    flux().unrefine = (selected, opts): any => {
       expect(selected).to.eq(selection);
       expect(opts.skipSearch).to.be.true;
       done();

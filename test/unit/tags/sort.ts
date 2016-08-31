@@ -1,18 +1,12 @@
-import { FluxCapacitor, Events, Results } from 'groupby-api';
-import { fluxTag } from '../../utils/tags';
 import { Sort } from '../../../src/tags/sort/gb-sort';
+import suite from './_suite';
 import { expect } from 'chai';
 
-describe('gb-sort logic', () => {
-  let tag: Sort,
-    flux: FluxCapacitor;
-
-  beforeEach(() => ({ tag, flux } = fluxTag(new Sort())));
-
+suite('gb-sort', Sort, ({ flux, tag }) => {
   it('should have default values', () => {
-    tag.init();
+    tag().init();
 
-    expect(tag.options).to.eql(tag.options);
+    expect(tag().options).to.eql(tag().options);
   });
 
   describe('override behaviour', () => {
@@ -22,42 +16,42 @@ describe('gb-sort logic', () => {
     ];
 
     it('should allow override from opts', () => {
-      Object.assign(tag.opts, { options });
-      tag.init();
+      Object.assign(tag().opts, { options });
+      tag().init();
 
-      expect(tag.options).to.eq(options);
+      expect(tag().options).to.eq(options);
     });
 
     it('should allow override from tags config', () => {
-      tag.config = { tags: { sort: { options } } };
-      tag.init();
+      tag().config = { tags: { sort: { options } } };
+      tag().init();
 
-      expect(tag.options).to.eq(options);
+      expect(tag().options).to.eq(options);
     });
   });
 
   it('should return option values', () => {
-    tag.init();
+    tag().init();
 
-    const values = tag.sortValues();
+    const values = tag().sortValues();
     expect(values).to.eql([
       { field: 'title', order: 'Descending' },
       { field: 'title', order: 'Ascending' }
-    ])
+    ]);
   });
 
   it('should sort on value', () => {
     const nextSort = { a: 'b', c: 'd' };
     const pastSorts = [{ e: 'f' }, { g: 'h' }];
 
-    flux.sort = (newSort, oldSorts): any => {
+    flux().sort = (newSort, oldSorts): any => {
       expect(newSort).to.eq(nextSort);
       expect(oldSorts).to.eq(pastSorts);
     };
 
-    tag.sortValues = () => pastSorts;
-    tag.init();
+    tag().sortValues = () => pastSorts;
+    tag().init();
 
-    tag.onselect(nextSort);
+    tag().onselect(<any>nextSort);
   });
 });

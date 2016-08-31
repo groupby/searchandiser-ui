@@ -1,5 +1,5 @@
-import { FluxTag } from '../tag';
 import { unless } from '../../utils';
+import { FluxTag } from '../tag';
 
 export interface Select extends FluxTag { }
 
@@ -87,7 +87,7 @@ export class Select {
     this.selectOption(option.text, selected);
   }
 
-  selectCustom({ value, label }) {
+  selectCustom({ value, label }: { value: string, label: string }) {
     this.selectButton().blur();
     this.selectOption(label, value);
   }
@@ -106,7 +106,7 @@ export class Select {
 }
 
 export interface SelectTag extends FluxTag {
-  options: any[]
+  options: any[];
   onselect: Function;
 
   label?: string;

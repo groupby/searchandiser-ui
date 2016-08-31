@@ -1,7 +1,6 @@
-import { FluxTag } from '../tag';
-import { FluxCapacitor, Events, QueryConfiguration, Results } from 'groupby-api';
 import { toRefinement } from '../../utils';
 import { SelectTag } from '../select/gb-select';
+import { Events, FluxCapacitor, QueryConfiguration, Results } from 'groupby-api';
 
 export interface Filter extends SelectTag { }
 
@@ -24,7 +23,7 @@ export class Filter {
     return navName === this.navField;
   }
 
-  convertRefinements(navigations): any[] {
+  convertRefinements(navigations: any[]): any[] {
     const found = navigations.find(({ name }) => this.isTargetNav(name));
     return found ? found.refinements.map((ref) => ({ label: ref.value, value: ref })) : [];
   }
@@ -50,12 +49,12 @@ export class Filter {
     this.fluxClone.search(searchRequest.query).then(this.updateValues);
   }
 
-  onselect(value) {
+  onselect(value: any | '*') {
     if (this.selected) this.flux.unrefine(this.selected, { skipSearch: true });
     if (value === '*') {
       this.flux.reset();
     } else {
-      this.flux.refine(this.selected = toRefinement(value, { name: this.navField }));
+      this.flux.refine(this.selected = toRefinement(value, <any>{ name: this.navField }));
     }
   }
 }

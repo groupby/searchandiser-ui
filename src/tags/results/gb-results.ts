@@ -1,7 +1,7 @@
+import { ProductStructure } from '../../searchandiser';
+import { getPath, unless } from '../../utils';
 import { FluxTag } from '../tag';
 import { Events, Record } from 'groupby-api';
-import { getPath, unless } from '../../utils';
-import { ProductStructure } from '../../searchandiser';
 
 export interface Results extends FluxTag {
   parent: Riot.Tag.Instance;
@@ -22,7 +22,7 @@ export class Results {
     this.flux.on(Events.RESULTS, ({ records }) => this.updateRecords(records));
   }
 
-  updateRecords(records) {
+  updateRecords(records: Record[]) {
     this.update({ records, collection: this.flux.query.raw.collection });
   }
 

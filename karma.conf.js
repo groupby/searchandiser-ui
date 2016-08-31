@@ -9,7 +9,8 @@ module.exports = function(config) {
       'test/**/*.ts'
     ],
     exclude: [
-      'test/utils/**'
+      'test/utils/**',
+      'test/**/_suite.ts'
     ],
     preprocessors: {
       'test/**/*.ts': ['webpack']

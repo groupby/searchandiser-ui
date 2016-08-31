@@ -1,5 +1,5 @@
-import { FluxTag } from '../tag';
 import { unless } from '../../utils';
+import { FluxTag } from '../tag';
 
 export interface Snippet extends FluxTag { }
 

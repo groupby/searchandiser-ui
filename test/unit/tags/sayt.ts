@@ -1,9 +1,9 @@
-import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../../utils/tags';
-import { Sayt } from '../../../src/tags/sayt/gb-sayt';
-import { Autocomplete } from '../../../src/tags/sayt/autocomplete';
-import { expect } from 'chai';
 import * as utils from '../../../src/utils';
+import { Autocomplete } from '../../../src/tags/sayt/autocomplete';
+import { Sayt } from '../../../src/tags/sayt/gb-sayt';
+import { fluxTag } from '../../utils/tags';
+import { expect } from 'chai';
+import { Events, FluxCapacitor } from 'groupby-api';
 
 describe('gb-sayt logic', () => {
   const structure = { title: 'title', price: 'price', image: 'image' };
@@ -238,7 +238,7 @@ describe('gb-sayt logic', () => {
       expect(query).to.eq('');
     };
 
-    tag.searchRefinement({ target });
+    tag.searchRefinement(<any>{ target });
     expect(mock.called).to.be.true;
   });
 
@@ -251,7 +251,7 @@ describe('gb-sayt logic', () => {
     };
     tag.originalQuery = 'boots';
 
-    tag.searchCategory({ target });
+    tag.searchCategory(<any>{ target });
     expect(mock.called).to.be.true;
   });
 
@@ -297,7 +297,7 @@ describe('gb-sayt logic', () => {
     tag.rewriteQuery = (query) => expect(query).to.eq(suggestion);
     flux.reset = (query): any => expect(query).to.eq(suggestion);
 
-    tag.search({
+    tag.search(<any>{
       target: {
         tagName: 'GB-SAYT-LINK',
         dataset: { value: suggestion }
@@ -311,10 +311,10 @@ describe('gb-sayt logic', () => {
     tag.rewriteQuery = (query) => expect(query).to.eq(suggestion);
     flux.reset = (query): any => expect(query).to.eq(suggestion);
 
-    tag.search({
+    tag.search(<any>{
       target: {
-        parentNode: {
-          parentNode: {
+        parentElement: {
+          parentElement: {
             tagName: 'GB-SAYT-LINK',
             dataset: { value: suggestion }
           }
@@ -336,7 +336,7 @@ describe('gb-sayt logic', () => {
     tag.init();
     tag.saytConfig.staticSearch = true;
 
-    tag.search({
+    tag.search(<any>{
       target: {
         tagName: 'GB-SAYT-LINK',
         dataset: { value: suggestion }
@@ -361,7 +361,7 @@ describe('gb-sayt logic', () => {
       });
     };
 
-    tag.refine({
+    tag.refine(<any>{
       tagName: 'GB-SAYT-LINK',
       dataset: { field, refinement }
     }, suggestion);
@@ -383,7 +383,7 @@ describe('gb-sayt logic', () => {
     tag.init();
     tag.saytConfig.staticSearch = true;
 
-    tag.refine({
+    tag.refine(<any>{
       tagName: 'GB-SAYT-LINK',
       dataset: { field, refinement }
     }, suggestion);
