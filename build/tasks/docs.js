@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
   typedoc = require('gulp-typedoc');
 
-gulp.task('docs', () => {
+gulp.task('docs', function() {
   return gulp.src(['src/**/*.ts'])
     .pipe(typedoc({
       module: 'commonjs',
