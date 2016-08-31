@@ -6,21 +6,19 @@
       "order": "instance-sandwich"
     }],
     "no-internal-module": true,
-    "typedef-whitespace": [
-      true, {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      }, {
-        "call-signature": "space",
-        "index-signature": "space",
-        "parameter": "space",
-        "property-declaration": "space",
-        "variable-declaration": "space"
-      }
-    ],
+    "typedef-whitespace": [true, {
+      "call-signature": "nospace",
+      "index-signature": "nospace",
+      "parameter": "nospace",
+      "property-declaration": "nospace",
+      "variable-declaration": "nospace"
+    }, {
+      "call-signature": "space",
+      "index-signature": "space",
+      "parameter": "space",
+      "property-declaration": "space",
+      "variable-declaration": "space"
+    }],
     "forin": true,
     "label-position": true,
     "label-undefined": true,
@@ -74,7 +72,6 @@
     "no-sparse-arrays": true,
     "no-unexpected-multiline": true,
     "valid-typeof": true,
-    "block-spacing": [true, "always"],
     "block-spacing": [true, "always"],
     "brace-style": [true, "1tbs", {
       "allowSingleLine": true
