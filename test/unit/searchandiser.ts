@@ -1,10 +1,10 @@
-import { FluxCapacitor } from 'groupby-api';
-import { Searchandiser, transformConfig, initSearchandiser } from '../../src/searchandiser';
-import * as Tags from '../../src/tags/tag';
 import * as handlers from '../../src/handlers';
-import { expect } from 'chai';
-import riot = require('riot');
+import { initSearchandiser, transformConfig, Searchandiser } from '../../src/searchandiser';
 import '../../src/tags/query/gb-query.tag';
+import * as Tags from '../../src/tags/tag';
+import { expect } from 'chai';
+import { FluxCapacitor } from 'groupby-api';
+import riot = require('riot');
 
 describe('searchandiser', () => {
   let sandbox: Sinon.SinonSandbox;
@@ -201,9 +201,9 @@ describe('searchandiser', () => {
 
   it('should generate a configuration function', () => {
     const fluxMixin = { a: 'b', c: 'd' };
-    sandbox.stub(Tags, 'MixinFlux', () => fluxMixin)
+    sandbox.stub(Tags, 'MixinFlux', () => fluxMixin);
     sandbox.stub(riot, 'mixin', (mixin) => expect(mixin).to.eq(fluxMixin));
-    sandbox.stub(handlers, 'attachHandlers', (flux) => expect(flux).to.be.an.instanceof(FluxCapacitor));
+    sandbox.stub(handlers, 'attachHandlers', (flx) => expect(flx).to.be.an.instanceof(FluxCapacitor));
 
     const configure = initSearchandiser();
     expect(configure).to.be.a('function');

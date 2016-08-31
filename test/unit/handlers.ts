@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import { handleRedirect } from '../../src/handlers';
+import { expect } from 'chai';
 
 describe('handlers', () => {
   let sandbox;

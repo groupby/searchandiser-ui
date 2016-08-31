@@ -1,38 +1,34 @@
-import { FluxCapacitor, Events } from 'groupby-api';
 import { Template } from '../../../src/tags/template/gb-template';
-import { fluxTag } from '../../utils/tags';
+import suite from './_suite';
 import { expect } from 'chai';
+import { Events } from 'groupby-api';
 
-describe('gb-template logic', () => {
+suite('gb-template', Template, ({ flux, tag }) => {
   const target = 'My Spotlight Template';
-  let tag: Template;
-  let flux: FluxCapacitor;
-
-  beforeEach(() => ({ tag, flux } = fluxTag(new Template())));
 
   it('should have default values', () => {
-    tag.init();
+    tag().init();
 
-    expect(tag.target).to.not.be.ok;
-    expect(tag.isActive).to.not.be.ok;
-    expect(tag.zones).to.not.be.ok;
-    expect(tag.zoneMap).to.not.be.ok;
+    expect(tag().target).to.not.be.ok;
+    expect(tag().isActive).to.not.be.ok;
+    expect(tag().zones).to.not.be.ok;
+    expect(tag().zoneMap).to.not.be.ok;
   });
 
   it('should get default from opts', () => {
-    tag.opts = { target }
-    tag.init();
+    tag().opts = { target };
+    tag().init();
 
-    expect(tag.target).to.eq(target);
+    expect(tag().target).to.eq(target);
   });
 
   it('should listen for events', () => {
-    flux.on = (event: string, cb: Function): any => {
+    flux().on = (event: string, cb: Function): any => {
       expect(event).to.eq(Events.RESULTS);
-      expect(cb).to.eq(tag.updateActive);
+      expect(cb).to.eq(tag().updateActive);
     };
 
-    tag.init();
+    tag().init();
   });
 
   it('should update active on RESULTS', () => {
@@ -51,15 +47,15 @@ describe('gb-template logic', () => {
       }
     };
 
-    tag.update = (obj: any) => {
+    tag().update = (obj: any) => {
       expect(obj.isActive).to.be.true;
-      expect(obj.zones.map((zone) => zone.name)).to.eql(['b', 'a', 'c'])
+      expect(obj.zones.map((zone) => zone.name)).to.eql(['b', 'a', 'c']);
       expect(obj.zoneMap).to.eq(zones);
     };
-    tag.init();
-    tag.target = target
+    tag().init();
+    tag().target = target;
 
-    tag.updateActive(<any>{
+    tag().updateActive(<any>{
       template: {
         name: target,
         zones

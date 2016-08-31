@@ -1,83 +1,70 @@
-import { FluxCapacitor, Events } from 'groupby-api';
-import { fluxTag } from '../../utils/tags';
 import { Submit } from '../../../src/tags/submit/gb-submit';
-import { expect } from 'chai';
 import utils = require('../../../src/utils');
+import suite from './_suite';
+import { expect } from 'chai';
 
-describe('gb-submit logic', () => {
-  let sandbox: Sinon.SinonSandbox,
-    tag: Submit,
-    flux: FluxCapacitor;
-
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-    ({ tag, flux } = fluxTag(new Submit(), {
-      root: <HTMLElement & any>{ addEventListener: () => null }
-    }));
-  });
-  afterEach(() => sandbox.restore());
-
+suite('gb-submit', Submit, { root: <any>{ addEventListener: () => null } }, ({ flux, sandbox, tag }) => {
   it('should have default values', () => {
-    tag.init();
+    tag().init();
 
-    expect(tag.label).to.eq('Search');
-    expect(tag.queryParam).to.eq('q');
-    expect(tag.searchUrl).to.eq('search');
-    expect(tag.staticSearch).to.be.false;
+    expect(tag().label).to.eq('Search');
+    expect(tag().queryParam).to.eq('q');
+    expect(tag().searchUrl).to.eq('search');
+    expect(tag().staticSearch).to.be.false;
   });
 
   it('should allow override from opts', () => {
     const label = 'Submit query';
     const queryParam = 'query';
     const searchUrl = 'search.html';
-    tag.opts = { label, queryParam, searchUrl, staticSearch: true };
-    tag.init();
+    tag().opts = { label, queryParam, searchUrl, staticSearch: true };
+    tag().init();
 
-    expect(tag.label).to.eq(label);
-    expect(tag.queryParam).to.eq(queryParam);
-    expect(tag.searchUrl).to.eq(searchUrl);
-    expect(tag.staticSearch).to.be.true;
+    expect(tag().label).to.eq(label);
+    expect(tag().queryParam).to.eq(queryParam);
+    expect(tag().searchUrl).to.eq(searchUrl);
+    expect(tag().staticSearch).to.be.true;
   });
 
   it('should set label for input tag', () => {
-    Object.assign(tag.root, { tagName: 'INPUT' });
-    tag.init();
+    Object.assign(tag().root, { tagName: 'INPUT' });
+    tag().init();
 
-    expect(tag.root.value).to.eq('Search');
+    expect(tag().root.value).to.eq('Search');
   });
 
   it('should listen for mount event', () => {
-    tag.on = (event, cb) => {
+    tag().on = (event, cb) => {
       expect(event).to.eq('mount');
-      expect(cb).to.eq(tag.setSearchBox);
+      expect(cb).to.eq(tag().setSearchBox);
     };
-    tag.init();
+    tag().init();
   });
 
   it('should register click listener', () => {
-    tag.root = <HTMLElement & any>{
+    tag().root = <HTMLElement & any>{
       addEventListener: (event, cb): any => {
         expect(event).to.eq('click');
-        expect(cb).to.eq(tag.submitQuery);
+        expect(cb).to.eq(tag().submitQuery);
       }
     };
-    tag.init();
+    tag().init();
   });
 
   it('should submit query', () => {
     const query = 'something';
-    flux.reset = (value): any => expect(value).to.eq(query);
+    flux().reset = (value): any => expect(value).to.eq(query);
 
-    tag.searchBox = <HTMLInputElement>{ value: query };
-    tag.init();
+    tag().searchBox = <HTMLInputElement>{ value: query };
+    tag().init();
 
-    tag.submitQuery();
-    expect(tag.searchBox.value).to.eq(query);
+    tag().submitQuery();
+    expect(tag().searchBox.value).to.eq(query);
   });
 
   it('should submit static query', (done) => {
     const query = 'something';
-    sandbox.stub(utils, 'updateLocation', (searchUrl, queryParam, queryString, refinements) => {
+    sandbox().stub(utils, 'updateLocation', (searchUrl, queryParam, queryString, refinements) => {
       expect(searchUrl).to.eq('search');
       expect(queryParam).to.eq('q');
       expect(queryString).to.eq(query);
@@ -85,10 +72,10 @@ describe('gb-submit logic', () => {
       done();
     });
 
-    tag.searchBox = <HTMLInputElement>{ value: query };
-    tag.init();
-    tag.staticSearch = true;
+    tag().searchBox = <HTMLInputElement>{ value: query };
+    tag().init();
+    tag().staticSearch = true;
 
-    tag.submitQuery();
+    tag().submitQuery();
   });
 });
