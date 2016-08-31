@@ -1,5 +1,5 @@
-import { Sayt } from './gb-sayt';
 import { findSearchBox } from '../../utils';
+import { Sayt } from './gb-sayt';
 
 const ACTIVE = 'active';
 
@@ -48,7 +48,6 @@ export class Autocomplete {
     return links.indexOf(this.selected) !== -1;
   }
 
-
   swap(next: HTMLElement) {
     if (next) {
       this.removeActiveClass();
@@ -59,14 +58,13 @@ export class Autocomplete {
     return this.selected;
   }
 
-
   resetSelected() {
     this.selected = this.searchInput;
   }
 
   removeActiveClass() {
     Array.from(this.tag.root.querySelectorAll('gb-sayt-autocomplete gb-sayt-link'))
-      .forEach(element => element.classList.remove('active'));
+      .forEach((element) => element.classList.remove('active'));
   }
 
   reset() {

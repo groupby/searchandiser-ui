@@ -1,26 +1,9 @@
-import { FluxCapacitor, Events, Results } from 'groupby-api';
-import { expect } from 'chai';
-import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { Query } from '../../src/tags/query/gb-query';
 import '../../src/tags/query/gb-query.tag';
+import suite from './_suite';
+import { expect } from 'chai';
 
-const TAG = 'gb-query';
-
-describe(`${TAG} tag`, () => {
-  let html: HTMLElement;
-  let flux: FluxCapacitor;
-  let sandbox: Sinon.SinonSandbox;
-
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-    flux = mixinFlux();
-    html = createTag(TAG);
-  });
-  afterEach(() => {
-    sandbox.restore();
-    removeTag(html);
-  });
-
+suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
@@ -47,9 +30,9 @@ describe(`${TAG} tag`, () => {
     });
 
     it('should hide autocomplete and modify URL on static search', () => {
-      sandbox.stub(window.location, 'replace', (url) => expect(url).to.eq('search?q='));
-      flux.search = (): any => { };
-      flux.emit = (event): any => expect(event).to.eq('autocomplete:hide');
+      sandbox().stub(window.location, 'replace', (url) => expect(url).to.eq('search?q='));
+      flux().search = (): any => null;
+      flux().emit = (event): any => expect(event).to.eq('autocomplete:hide');
 
       const tag = mount(false);
 
@@ -64,10 +47,10 @@ describe(`${TAG} tag`, () => {
   });
 
   function searchBox() {
-    return html.querySelector('input');
+    return html().querySelector('input');
   }
 
   function mount(autoSearch: boolean = true) {
-    return <Query>riot.mount(html, TAG, { sayt: false, autoSearch })[0];
+    return _mount({ sayt: false, autoSearch });
   }
 });

@@ -1,6 +1,6 @@
+import { toRefinement, unless } from '../../utils';
 import { FluxTag } from '../tag';
-import { unless, toRefinement } from '../../utils';
-import { Events, Results, Navigation as NavModel, NavigationInfo } from 'groupby-api';
+import { Events, Navigation as NavModel, NavigationInfo, Results } from 'groupby-api';
 import clone = require('clone');
 
 export { NavigationInfo }
@@ -24,8 +24,8 @@ export class Navigation {
 
   processNavigations({ selectedNavigation, availableNavigation }: Results) {
     let processed = <SelectionNavigation[]>clone(availableNavigation);
-    selectedNavigation.forEach(selNav => {
-      const availNav = processed.find(nav => nav.name === selNav.name);
+    selectedNavigation.forEach((selNav) => {
+      const availNav = processed.find((nav) => nav.name === selNav.name);
       if (availNav) {
         availNav.selected = selNav.refinements;
       } else {
@@ -35,11 +35,11 @@ export class Navigation {
     return processed;
   }
 
-  send(ref, nav) {
+  send(ref: any, nav: any) {
     return this.flux.refine(toRefinement(ref, nav));
   }
 
-  remove(ref, nav) {
+  remove(ref: any, nav: any) {
     return this.flux.unrefine(toRefinement(ref, nav));
   }
 }

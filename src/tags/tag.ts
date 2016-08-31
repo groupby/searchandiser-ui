@@ -1,6 +1,5 @@
-import { FluxCapacitor } from 'groupby-api';
-import { expect } from 'chai';
 import { initCapacitor } from '../searchandiser';
+import { FluxCapacitor } from 'groupby-api';
 const sayt = require('sayt');
 
 export interface FluxTag extends Riot.Tag.Instance {
@@ -28,7 +27,7 @@ export class FluxTag {
   }
 
   _mixin(...mixins: any[]) {
-    this.mixin(...mixins.map((Mixin) => new Mixin().__proto__));
+    this.mixin(...mixins.map((mixin) => new mixin().__proto__));
   }
 
   _clone() {

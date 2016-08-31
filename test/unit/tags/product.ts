@@ -41,13 +41,13 @@ describe('gb-product logic', () => {
 
   it('should allow default from config', () => {
     const transform = () => null;
-    const struct = { b: 'e', d: 'f', _transform: transform };
+    const structure = { b: 'e', d: 'f', _transform: transform };
 
     tag._scope = {};
-    tag.config = <any>{ structure: struct };
+    tag.config = <any>{ structure };
     tag.init();
 
-    expect(tag.struct).to.eql(Object.assign({ id: 'id' }, struct));
+    expect(tag.struct).to.eql(Object.assign({ id: 'id' }, structure));
     expect(tag.transform).to.eq(transform);
   });
 
@@ -88,7 +88,7 @@ describe('gb-product logic', () => {
 
   it('should return product url', () => {
     tag.init();
-    expect(tag.link()).to.eq(`details.html?id=${all_meta.id}`)
+    expect(tag.link()).to.eq(`details.html?id=${all_meta.id}`);
   });
 
   it('should return url from data', () => {
@@ -158,13 +158,13 @@ describe('gb-product logic', () => {
 
     it('should allow variantStructure from struct', () => {
       const _variantStructure = { g: 'h' };
-      const struct = { b: 'e', d: 'f', _variantStructure };
+      const structure = { b: 'e', d: 'f', _variantStructure };
 
       tag._scope = {};
-      tag.config = <any>{ structure: struct };
+      tag.config = <any>{ structure };
       tag.init();
 
-      expect(tag.struct).to.eql(Object.assign({ id: 'id' }, struct));
+      expect(tag.struct).to.eql(Object.assign({ id: 'id' }, structure));
       expect(tag.variantStruct).to.eq(_variantStructure);
     });
 

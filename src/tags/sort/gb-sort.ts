@@ -1,7 +1,6 @@
-import { Results } from 'groupby-api';
-import { FluxTag } from '../tag';
+import { getPath, unless } from '../../utils';
 import { SelectTag } from '../select/gb-select';
-import { checkNested, unless, getPath } from '../../utils';
+import { Results, Sort as SortModel } from 'groupby-api';
 
 export interface Sort extends SelectTag { }
 
@@ -15,10 +14,10 @@ export class Sort {
   }
 
   sortValues() {
-    return this.options.map(option => option.value);
+    return this.options.map((option) => option.value);
   }
 
-  onselect(value) {
-    return this.flux.sort(value, this.sortValues())
+  onselect(value: SortModel): Promise<Results> {
+    return this.flux.sort(value, this.sortValues());
   }
 }

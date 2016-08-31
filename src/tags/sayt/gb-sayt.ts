@@ -1,8 +1,8 @@
-import { SaytTag } from '../tag';
-import { Events, SelectedValueRefinement } from 'groupby-api';
-import { Autocomplete } from './autocomplete';
+import { getPath, updateLocation } from '../../utils';
 import { Query } from '../query/gb-query';
-import { findTag, getPath, updateLocation } from '../../utils';
+import { SaytTag } from '../tag';
+import { Autocomplete } from './autocomplete';
+import { Events, SelectedValueRefinement } from 'groupby-api';
 import debounce = require('debounce');
 import escapeStringRegexp = require('escape-string-regexp');
 
@@ -74,7 +74,7 @@ export class Sayt {
       .catch((err) => console.error(err));
   }
 
-  searchProducts(query) {
+  searchProducts(query: string) {
     if (this.showProducts) {
       this.sayt.productSearch(query)
         .then((res) => this.update({ products: res.result.products }));
@@ -85,12 +85,12 @@ export class Sayt {
     this.flux.emit(Events.REWRITE_QUERY, query);
   }
 
-  notifier(query) {
+  notifier(query: string) {
     if (this.saytConfig.autoSearch) this.searchProducts(query);
     this.rewriteQuery(query);
   }
 
-  processResults(result) {
+  processResults(result: any) {
     let categoryResults = [];
     if (result.searchTerms && result.searchTerms[0].value === this.originalQuery) {
       const categoryQuery = result.searchTerms[0];
@@ -119,21 +119,21 @@ export class Sayt {
     });
   }
 
-  searchRefinement(event) {
+  searchRefinement(event: Event) {
     this.flux.resetRecall();
-    this.refine(event.target, '');
+    this.refine(<HTMLElement>event.target, '');
   }
 
-  searchCategory(event) {
+  searchCategory(event: Event) {
     this.flux.resetRecall();
-    this.refine(event.target, this.originalQuery);
+    this.refine(<HTMLElement>event.target, this.originalQuery);
   }
 
   highlightCurrentQuery(value: string, regexReplacement: string) {
     return this.saytConfig.highlight ? value.replace(new RegExp(escapeStringRegexp(this.originalQuery), 'i'), regexReplacement) : value;
   }
 
-  enhanceCategoryQuery(query) {
+  enhanceCategoryQuery(query: any) {
     if (this.saytConfig.categoryField) {
       return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
     } else {
@@ -141,8 +141,8 @@ export class Sayt {
     }
   }
 
-  refine(node, query) {
-    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
+  refine(node: HTMLElement, query: string) {
+    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
 
     const refinement: SelectedValueRefinement = {
       navigationName: node.dataset['field'],
@@ -158,9 +158,9 @@ export class Sayt {
     this.flux.refine(refinement);
   }
 
-  search(event) {
-    let node = event.target;
-    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentNode;
+  search(event: Event) {
+    let node = <HTMLElement>event.target;
+    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
 
     const query = node.dataset['value'];
 

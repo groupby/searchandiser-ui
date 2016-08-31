@@ -1,33 +1,21 @@
-import { FluxCapacitor, Events } from 'groupby-api';
-import { expect } from 'chai';
-import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { Template } from '../../src/tags/template/gb-template';
 import '../../src/tags/template/gb-template.tag';
+import suite from './_suite';
+import { expect } from 'chai';
 
-const TAG = 'gb-template';
-
-describe(`${TAG} tag`, () => {
-  const structure = { title: 'title' };
-  let html: HTMLElement;
-
-  beforeEach(() => {
-    mixinFlux({ config: { structure } });
-    html = createTag(TAG);
-  });
-  afterEach(() => removeTag(html));
-
+suite<Template>('gb-template', ({ html, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html.querySelector('div')).to.not.be.ok;
+    expect(html().querySelector('div')).to.not.be.ok;
   });
 
   it('renders when active', () => {
     const tag = mount();
 
     tag.update({ isActive: true });
-    expect(html.querySelector('div')).to.be.ok;
+    expect(html().querySelector('div')).to.be.ok;
   });
 
   it('renders from template', () => {
@@ -68,25 +56,21 @@ describe(`${TAG} tag`, () => {
     expect(contentZones()[0].textContent).to.eq(content);
 
     expect(richContentZones().length).to.eq(1);
-    expect(richContentZones()[0].firstElementChild.innerHTML).to.eq(richContent)
+    expect(richContentZones()[0].firstElementChild.innerHTML).to.eq(richContent);
 
     expect(recordZones().length).to.eq(1);
     expect(recordZones()[0].querySelectorAll('gb-product').length).to.eq(1);
   });
 
   function contentZones() {
-    return html.querySelectorAll('gb-content-zone');
+    return html().querySelectorAll('gb-content-zone');
   }
 
   function richContentZones() {
-    return html.querySelectorAll('gb-rich-content-zone');
+    return html().querySelectorAll('gb-rich-content-zone');
   }
 
   function recordZones() {
-    return html.querySelectorAll('gb-record-zone');
-  }
-
-  function mount() {
-    return <Template>riot.mount(TAG)[0];
+    return html().querySelectorAll('gb-record-zone');
   }
 });

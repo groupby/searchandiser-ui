@@ -1,6 +1,6 @@
-import { FluxTag } from '../tag';
-import { getPath, unless, remap } from '../../utils';
 import { ProductStructure } from '../../searchandiser';
+import { getPath, remap, unless } from '../../utils';
+import { FluxTag } from '../tag';
 import filterObject = require('filter-object');
 import clone = require('clone');
 
@@ -12,7 +12,6 @@ const DEFAULT_STRUCTURE = {
 
 export class Product {
 
-  private originalAllMeta;
   struct: ProductStructure;
   variantStruct: ProductStructure;
   variants: any[];
@@ -20,6 +19,7 @@ export class Product {
   allMeta: any;
   getPath: typeof getPath;
   transform: (obj: any) => any;
+  private originalAllMeta: any;
 
   init() {
     this.variants = [];
@@ -57,7 +57,7 @@ export class Product {
   }
 
   variant(index: number) {
-    // Remove non-field mapping properties
+    // TODO remove non-field mapping properties
     const struct = filterObject(this.struct, '!_*');
 
     const isVariantsConfigured = (struct && struct.variants) !== undefined;

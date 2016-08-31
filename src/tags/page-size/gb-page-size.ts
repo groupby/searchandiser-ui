@@ -9,7 +9,7 @@ export class PageSize {
     this.options = unless(this.config.pageSizes, [10, 25, 50, 100]);
   }
 
-  onselect(value) {
+  onselect(value: number) {
     return this.flux.resize(value, this.opts.resetOffset ? 0 : undefined);
   }
 }

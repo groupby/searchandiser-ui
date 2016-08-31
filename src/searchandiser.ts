@@ -1,7 +1,7 @@
-import { Query, BrowserBridge, Results, FluxCapacitor, Events, Sort } from 'groupby-api';
-import { FluxTag, MixinFlux } from './tags/tag';
 import { attachHandlers } from './handlers';
+import { MixinFlux } from './tags/tag';
 import { checkNested } from './utils';
+import { Events, FluxCapacitor, Sort } from 'groupby-api';
 import riot = require('riot');
 
 export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields}';
@@ -14,7 +14,7 @@ export function initSearchandiser() {
     attachHandlers(flux);
     riot.mixin(MixinFlux(flux, config));
     Object.assign(configure, { flux, config }, new Searchandiser()['__proto__']);
-  }
+  };
 }
 
 export function initCapacitor(config: SearchandiserConfig) {
@@ -33,9 +33,9 @@ export function transformConfig(config: SearchandiserConfig): SearchandiserConfi
     delete finalConfig.bridge;
   }
   if (checkNested(config, 'tags', 'sort', 'options')) {
-    finalConfig.sort = [config.tags.sort.options.map(val => val.value)[0]];
+    finalConfig.sort = [config.tags.sort.options.map((val) => val.value)[0]];
   }
-  return finalConfig
+  return finalConfig;
 }
 
 export class Searchandiser {
@@ -67,6 +67,11 @@ export class Searchandiser {
     riot.compile(() => null);
   }
 
+  search(query?: string) {
+    return this.flux.search(query)
+      .then(() => this.flux.emit(Events.PAGE_CHANGED, { pageIndex: 0, finalPage: this.flux.page.finalPage }));
+  }
+
   private simpleAttach(tagName: string, options: any = {}) {
     return riot.mount(this.riotTagName(tagName), options);
   }
@@ -77,11 +82,6 @@ export class Searchandiser {
 
   private riotTagName(tagName: string) {
     return tagName.startsWith('gb-') ? tagName : `gb-${tagName}`;
-  }
-
-  search(query?: string) {
-    return this.flux.search(query)
-      .then(() => this.flux.emit(Events.PAGE_CHANGED, { pageIndex: 0, finalPage: this.flux.page.finalPage }));
   }
 }
 

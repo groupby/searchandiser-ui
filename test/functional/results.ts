@@ -1,8 +1,7 @@
-import { FluxCapacitor, Events } from 'groupby-api';
-import { expect } from 'chai';
-import { mixinFlux, createTag, removeTag } from '../utils/tags';
 import { Results } from '../../src/tags/results/gb-results';
 import '../../src/tags/results/gb-results.tag';
+import { createTag, mixinFlux, removeTag } from '../utils/tags';
+import { expect } from 'chai';
 
 const TAG = 'gb-results';
 
@@ -26,16 +25,16 @@ describe(`${TAG} tag`, () => {
   it('renders from records', () => {
     const tag = mount();
 
-    tag.updateRecords([{}, {}, {}]);
+    tag.updateRecords(<any>[{}, {}, {}]);
     expect(products().length).to.eq(3);
     expect(html.querySelectorAll('gb-list li').length).to.eq(3);
   });
 
   it('renders product info', () => {
-    const title = 'Red Sneakers',
-      tag = mount();
+    const title = 'Red Sneakers';
+    const tag = mount();
 
-    tag.updateRecords([{ allMeta: { title } }])
+    tag.updateRecords(<any>[{ allMeta: { title } }]);
 
     expect(products()[0].querySelector('.gb-product__title').textContent).to.eq(title);
   });

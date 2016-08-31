@@ -1,4 +1,4 @@
-import { FluxCapacitor, Events } from 'groupby-api';
+import { Events, FluxCapacitor } from 'groupby-api';
 
 export function attachHandlers(flux: FluxCapacitor) {
   handleRedirect(flux);

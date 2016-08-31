@@ -1,8 +1,10 @@
-import oget = require('oget');
-import { Query } from 'groupby-api';
 import { CONFIGURATION_MASK } from './searchandiser';
+import oget = require('oget');
+import { Navigation, Query, SelectedRangeRefinement, SelectedValueRefinement } from 'groupby-api';
 import queryString = require('query-string');
 import filterObject = require('filter-object');
+
+export type SelectedRefinement = SelectedValueRefinement & SelectedRangeRefinement;
 
 export function findSearchBox() {
   return <HTMLInputElement>oget(findTag('gb-query'), '_tag.searchBox');
@@ -14,11 +16,11 @@ export function findTag(tagName: string): Element {
     || document.querySelector(`[riot-tag="${tagName}"]`);
 }
 
-export function toRefinement(ref, nav) {
+export function toRefinement(ref: SelectedRefinement, nav: Navigation) {
   return Object.assign({}, filterObject(ref, '{type,value,low,high}'), { navigationName: nav.name });
 }
 
-export function displayRefinement(ref) {
+export function displayRefinement(ref: SelectedRefinement) {
   return ref.type === 'Value' ? ref.value : `${ref.low} - ${ref.high}`;
 }
 
@@ -31,7 +33,7 @@ export function checkNested(obj: any, ...keys: string[]): boolean {
     }, true);
 }
 
-export function getParam(param): string | null {
+export function getParam(param: string): string | null {
   return queryString.parse(window.location.search)[param] || null;
 }
 
@@ -39,13 +41,13 @@ export function updateLocation(searchUrl: string, queryParamName: string, query:
   const queryObj = {};
 
   if (refinements.length > 0) {
-    queryObj['refinements'] = JSON.stringify(refinements)
+    queryObj['refinements'] = JSON.stringify(refinements);
   }
 
   queryObj[queryParamName] = query;
 
   if (window.location.pathname === searchUrl) {
-    // Better way to do this is with browser history rewrites
+    // TODO better way to do this is with browser history rewrites
     window.location.search = `?${queryString.stringify(queryObj)}`;
   } else {
     window.location.replace(`${searchUrl}?${queryString.stringify(queryObj)}`);
