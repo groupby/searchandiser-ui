@@ -119,13 +119,11 @@ export class Sayt {
 
   extractCategoryResults({ additionalInfo, value }: any) {
     let categoryResults = [];
-    if (additionalInfo) {
-      if (this.categoryField && additionalInfo[this.categoryField]) {
-        categoryResults = additionalInfo[this.categoryField]
-          .map((category) => ({ category, value }))
-          .slice(0, 3);
-        categoryResults.unshift({ category: this.allCategoriesLabel, value });
-      }
+    if (this.categoryField && this.categoryField in additionalInfo) {
+      categoryResults = additionalInfo[this.categoryField]
+        .map((category) => ({ category, value }))
+        .slice(0, 3);
+      categoryResults.unshift({ category: this.allCategoriesLabel, value });
     }
     return categoryResults;
   }
@@ -145,11 +143,7 @@ export class Sayt {
   }
 
   enhanceCategoryQuery(query: any) {
-    if (this.saytConfig.categoryField) {
-      return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
-    } else {
-      return query.value;
-    }
+    return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
   }
 
   refine(node: HTMLElement, query: string) {

@@ -302,17 +302,6 @@ describe('gb-sayt logic', () => {
     expect(highlighted).to.eq('<b>blue sneakers</b> in <span class="gb-category-query">Footwear</span>');
   });
 
-  it('should not enhance category suggestions', () => {
-    tag.saytConfig = {};
-
-    const highlighted = tag.enhanceCategoryQuery({
-      value: 'blue sneakers',
-      category: 'Footwear'
-    });
-    expect(highlighted).to.eq('blue sneakers');
-    expect(highlighted).to.not.eq('Footwear');
-  });
-
   it('should update results with suggestion as query', () => {
     const suggestion = 'red heels';
     tag.saytConfig = {};
@@ -464,6 +453,7 @@ describe('gb-sayt logic', () => {
       const searchTerms = [{ value, additionalInfo }, { value: 'other' }];
       tag.extractCategoryResults = (categoryQuery) => {
         expect(categoryQuery.additionalInfo).to.eq(additionalInfo);
+        expect(categoryQuery.value).to.eq(value);
         return categories;
       };
       tag.originalQuery = query;
@@ -488,18 +478,12 @@ describe('gb-sayt logic', () => {
       const query = 'Red Boots';
       const value = 'red boots';
       const additionalInfo = { a: 'b' };
-      const categories = ['a', 'b'];
       const searchTerms = [{ value, additionalInfo }, { value: 'other' }];
-      tag.extractCategoryResults = (categoryQuery) => {
-        expect(categoryQuery.additionalInfo).to.eq(additionalInfo);
-        return categories;
-      };
       tag.originalQuery = query;
-      tag.update = ({ categoryResults }) => expect(categoryResults).to.eq(categories);
+      tag.update = () => null;
 
       tag.processResults({ searchTerms });
       expect(tag.matchesInput).to.be.true;
-      expect(searchTerms.length).to.eq(1);
     });
   });
 
@@ -512,13 +496,11 @@ describe('gb-sayt logic', () => {
       tag.allCategoriesLabel = 'All Categories';
       tag.categoryField = 'department';
       tag.originalQuery = 'tool';
-      const value = 'tool';
-      const additionalInfo = { [tag.categoryField]: ['Power Tools', 'Patio Furniture', 'Camping'] };
-
       const categories = tag.extractCategoryResults({
-        value,
-        additionalInfo
+        value: 'tool',
+        additionalInfo: { [tag.categoryField]: ['Power Tools', 'Patio Furniture', 'Camping'] }
       });
+
       expect(categories).to.eql([
         { category: tag.allCategoriesLabel, value: 'tool' },
         { category: 'Power Tools', value: 'tool' },
