@@ -2,7 +2,7 @@ import { getPath, updateLocation } from '../../utils';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete } from './autocomplete';
-import { Events, SelectedValueRefinement } from 'groupby-api';
+import { Events, Record, SelectedValueRefinement } from 'groupby-api';
 import debounce = require('debounce');
 import escapeStringRegexp = require('escape-string-regexp');
 
@@ -20,6 +20,7 @@ export interface Sayt extends SaytTag { }
 
 export class Sayt {
 
+  products: Record[];
   struct: any;
   saytConfig: any;
   autocomplete: Autocomplete;
@@ -60,7 +61,7 @@ export class Sayt {
 
   reset() {
     this.autocomplete.reset();
-    this.update({ queries: null, navigations: null });
+    this.update({ queries: null, navigations: null, products: null });
   }
 
   fetchSuggestions(originalQuery: string) {
