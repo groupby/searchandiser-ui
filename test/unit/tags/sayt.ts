@@ -489,6 +489,7 @@ describe('gb-sayt logic', () => {
     });
 
     it('should extract categories for configured field', () => {
+      tag.allCategoriesLabel = 'All Categories';
       tag.categoryField = 'department';
       tag.originalQuery = 'tool';
 
@@ -496,7 +497,7 @@ describe('gb-sayt logic', () => {
         [tag.categoryField]: ['Power Tools', 'Patio Furniture', 'Camping']
       });
       expect(categories).to.eql([
-        { category: 'All Departments', value: 'tool' },
+        { category: tag.allCategoriesLabel, value: 'tool' },
         { category: 'Power Tools', value: 'tool' },
         { category: 'Patio Furniture', value: 'tool' },
         { category: 'Camping', value: 'tool' }
