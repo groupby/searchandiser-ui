@@ -150,6 +150,7 @@ export class Sayt {
   refine(node: HTMLElement, query: string) {
     while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
 
+    const doRefinement = !node.dataset['norefine'];
     const refinement: SelectedValueRefinement = {
       navigationName: node.dataset['field'],
       value: node.dataset['refinement'],
@@ -157,11 +158,15 @@ export class Sayt {
     };
 
     if (this.saytConfig.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.searchUrl, this.queryParam, query, [refinement]);
+      return updateLocation(this.searchUrl, this.queryParam, query, doRefinement ? [refinement] : []);
     }
 
-    this.flux.rewrite(query, { skipSearch: true });
-    this.flux.refine(refinement);
+    if (doRefinement) {
+      this.flux.rewrite(query, { skipSearch: true });
+      this.flux.refine(refinement);
+    } else {
+      this.flux.reset(query);
+    }
   }
 
   search(event: Event) {
