@@ -27,6 +27,7 @@ export class Sayt {
   autocomplete: Autocomplete;
   autocompleteList: HTMLUListElement;
   categoryField: string;
+  allCategoriesLabel: string;
   queryParam: string;
   originalQuery: string;
   searchUrl: string;
@@ -38,6 +39,7 @@ export class Sayt {
     this.saytConfig = Object.assign({}, DEFAULT_CONFIG, getPath(this.config, 'tags.sayt'));
     this.categoryField = this.saytConfig.categoryField;
     this.struct = Object.assign({}, this.config.structure, this.saytConfig.structure);
+    this.allCategoriesLabel = this.saytConfig.allCategoriesLabel || 'All Departments';
     this.searchUrl = this.saytConfig.searchUrl || '/search';
     this.queryParam = this.saytConfig.queryParam || 'q';
     this.showProducts = this.saytConfig.products > 0;
@@ -97,12 +99,14 @@ export class Sayt {
 
   processResults(result: any) {
     let categoryResults = [];
+
     this.matchesInput = result.searchTerms && result.searchTerms[0].value === this.originalQuery;
     if (this.matchesInput) {
       const [categoryQuery] = result.searchTerms.splice(0, 1);
 
       categoryResults = this.extractCategoryResults(categoryQuery.additionalInfo);
     }
+
     const navigations = result.navigations ? result.navigations
       .map((nav) => Object.assign(nav, { displayName: this.saytConfig.navigationNames[nav.name] || nav.name }))
       .filter(({name}) => this.saytConfig.allowedNavigations.includes(name)) : [];
@@ -120,7 +124,7 @@ export class Sayt {
       categoryResults = additionalInfo[this.categoryField]
         .map((category) => ({ category, value: this.originalQuery }))
         .slice(0, 3);
-      categoryResults.unshift({ category: 'All Departments', value: this.originalQuery });
+      categoryResults.unshift({ category: this.allCategoriesLabel, value: this.originalQuery });
     }
     return categoryResults;
   }
