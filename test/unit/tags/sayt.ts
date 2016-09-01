@@ -140,6 +140,7 @@ describe('gb-sayt logic', () => {
       expect(autocompleteReset).to.be.true;
       expect(data.queries).to.be.null;
       expect(data.navigations).to.be.null;
+      expect(data.products).to.be.null;
     };
 
     tag.reset();
