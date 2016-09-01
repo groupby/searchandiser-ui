@@ -160,6 +160,11 @@ describe('searchandiser', () => {
         expect(config.bridge).to.not.be.ok;
       });
 
+      it('should accept HTTPS', () => {
+        const config = transformConfig(<any>{ bridge: { https: true } });
+        expect(config.https).to.be.true;
+      });
+
       it('should accept headers', () => {
         const headers = {
           These: 'Are',

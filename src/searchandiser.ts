@@ -23,13 +23,14 @@ export function initCapacitor(config: SearchandiserConfig) {
 }
 
 export function transformConfig(config: SearchandiserConfig): SearchandiserConfig & any {
-  let finalConfig: SearchandiserConfig & { headers: any } = <any>config;
+  let finalConfig: SearchandiserConfig & { headers: any, https: boolean } = <any>config;
   if (config.pageSizes) finalConfig.pageSize = config.pageSizes[0];
   if (config.bridge) {
     let headers = config.bridge.headers || {};
     if (config.bridge.skipCache) headers['Skip-Caching'] = true;
     if (config.bridge.skipSemantish) headers['Skip-Semantish'] = true;
     finalConfig.headers = headers;
+    if (config.bridge.https) finalConfig.https = true;
     delete finalConfig.bridge;
   }
   if (checkNested(config, 'tags', 'sort', 'options')) {
@@ -96,6 +97,7 @@ export interface ProductStructure {
 }
 
 export interface BridgeConfig {
+  https?: boolean;
   headers?: any;
   skipCache?: boolean;
   skipSemantish?: boolean;
