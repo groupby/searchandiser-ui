@@ -37,6 +37,7 @@ describe('gb-sayt logic', () => {
     });
     expect(tag.categoryField).to.not.be.ok;
     expect(tag.struct).to.eql(structure);
+    expect(tag.allCategoriesLabel).to.eq('All Departments');
     expect(tag.searchUrl).to.eq('/search');
     expect(tag.queryParam).to.eq('q');
     expect(tag.showProducts).to.be.true;
@@ -44,6 +45,9 @@ describe('gb-sayt logic', () => {
 
   it('should take configuration overrides from global config', () => {
     const categoryField = 'category.value';
+    const searchUrl = 'productSearch';
+    const queryParam = 'query';
+    const allCategoriesLabel = 'All Departments';
     const navigationNames = { brand: 'Brand' };
     const saytStructure = {
       image: 'thumbnail',
@@ -51,35 +55,42 @@ describe('gb-sayt logic', () => {
     };
     tag.config.tags = {
       sayt: {
-        products: 12,
+        products: 0,
         queries: 10,
         categoryField,
         structure: saytStructure,
         autoSearch: false,
         staticSearch: true,
         highlight: false,
+        allowedNavigations: ['brand'],
         navigationNames,
-        allowedNavigations: ['brand']
+        searchUrl,
+        queryParam,
+        allCategoriesLabel
       }
     };
     tag.init();
 
     expect(tag.saytConfig).to.eql({
-      products: 12,
+      products: 0,
       queries: 10,
       categoryField,
       structure: saytStructure,
       autoSearch: false,
       staticSearch: true,
       highlight: false,
+      allowedNavigations: ['brand'],
       navigationNames,
-      allowedNavigations: ['brand']
+      searchUrl,
+      queryParam,
+      allCategoriesLabel
     });
     expect(tag.categoryField).to.eq(categoryField);
     expect(tag.struct).to.eql(Object.assign({}, structure, saytStructure));
-    expect(tag.searchUrl).to.eq('/search');
-    expect(tag.queryParam).to.eq('q');
-    expect(tag.showProducts).to.be.true;
+    expect(tag.allCategoriesLabel).to.eq(allCategoriesLabel);
+    expect(tag.searchUrl).to.eq(searchUrl);
+    expect(tag.queryParam).to.eq(queryParam);
+    expect(tag.showProducts).to.be.false;
   });
 
   it('should configure sayt', () => {
@@ -354,49 +365,65 @@ describe('gb-sayt logic', () => {
     });
   });
 
-  it('should update results with suggestion and refinement', () => {
-    const suggestion = 'red heels';
-    const field = 'size';
-    const refinement = 8;
-    tag.saytConfig = {};
-    tag.flux.rewrite = (query, config): any => {
-      expect(query).to.eq(suggestion);
-      expect(config.skipSearch).to.be.true;
-    };
-    flux.refine = (selectedRefinement): any => {
-      expect(selectedRefinement).to.eql({
-        navigationName: field,
-        value: refinement,
-        type: 'Value'
-      });
-    };
+  describe('refine()', () => {
+    it('should update results with suggestion and refinement', () => {
+      const suggestion = 'red heels';
+      const field = 'size';
+      const refinement = 8;
+      tag.saytConfig = {};
+      tag.flux.rewrite = (query, config): any => {
+        expect(query).to.eq(suggestion);
+        expect(config.skipSearch).to.be.true;
+      };
+      flux.refine = (selectedRefinement): any => {
+        expect(selectedRefinement).to.eql({
+          navigationName: field,
+          value: refinement,
+          type: 'Value'
+        });
+      };
 
-    tag.refine(<any>{
-      tagName: 'GB-SAYT-LINK',
-      dataset: { field, refinement }
-    }, suggestion);
-  });
-
-  it('should perform a static refinement', () => {
-    const suggestion = 'red heels';
-    const field = 'size';
-    const refinement = 8;
-    tag.saytConfig = {};
-    tag.flux.rewrite = (): any => expect.fail();
-    sandbox.stub(utils, 'updateLocation', (searchUrl, queryParam, query, refinements) => {
-      expect(searchUrl).to.eq('/search');
-      expect(queryParam).to.eq('q');
-      expect(query).to.eq(suggestion);
-      expect(refinements).to.eql([{ navigationName: field, value: refinement, type: 'Value' }]);
+      tag.refine(<any>{
+        tagName: 'GB-SAYT-LINK',
+        dataset: { field, refinement }
+      }, suggestion);
     });
 
-    tag.init();
-    tag.saytConfig.staticSearch = true;
+    it('should skip refinement and do query', () => {
+      const suggestion = 'red heels';
+      const field = 'size';
+      const refinement = 8;
+      tag.saytConfig = {};
+      flux.rewrite = (): any => expect.fail();
+      flux.reset = (query): any => expect(query).to.eq(suggestion);
 
-    tag.refine(<any>{
-      tagName: 'GB-SAYT-LINK',
-      dataset: { field, refinement }
-    }, suggestion);
+      tag.refine(<any>{
+        tagName: 'GB-SAYT-LINK',
+        dataset: { field, refinement, norefine: true }
+      }, suggestion);
+    });
+
+    it('should perform a static refinement', () => {
+      const suggestion = 'red heels';
+      const field = 'size';
+      const refinement = 8;
+      tag.saytConfig = {};
+      tag.flux.rewrite = (): any => expect.fail();
+      sandbox.stub(utils, 'updateLocation', (searchUrl, queryParam, query, refinements) => {
+        expect(searchUrl).to.eq('/search');
+        expect(queryParam).to.eq('q');
+        expect(query).to.eq(suggestion);
+        expect(refinements).to.eql([{ navigationName: field, value: refinement, type: 'Value' }]);
+      });
+
+      tag.init();
+      tag.saytConfig.staticSearch = true;
+
+      tag.refine(<any>{
+        tagName: 'GB-SAYT-LINK',
+        dataset: { field, refinement }
+      }, suggestion);
+    });
   });
 
   describe('processResults()', () => {
@@ -462,6 +489,7 @@ describe('gb-sayt logic', () => {
     });
 
     it('should extract categories for configured field', () => {
+      tag.allCategoriesLabel = 'All Categories';
       tag.categoryField = 'department';
       tag.originalQuery = 'tool';
 
@@ -469,7 +497,7 @@ describe('gb-sayt logic', () => {
         [tag.categoryField]: ['Power Tools', 'Patio Furniture', 'Camping']
       });
       expect(categories).to.eql([
-        { category: 'All Departments', value: 'tool' },
+        { category: tag.allCategoriesLabel, value: 'tool' },
         { category: 'Power Tools', value: 'tool' },
         { category: 'Patio Furniture', value: 'tool' },
         { category: 'Camping', value: 'tool' }
