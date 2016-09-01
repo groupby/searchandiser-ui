@@ -1,5 +1,4 @@
 import { Product } from '../../src/tags/product/gb-product';
-import '../../src/tags/product/gb-product.tag';
 import { createTag, mixinFlux, removeTag } from '../utils/tags';
 import { expect } from 'chai';
 

@@ -1,5 +1,4 @@
 import { Query } from '../../src/tags/query/gb-query';
-import '../../src/tags/query/gb-query.tag';
 import { Sayt } from '../../src/tags/sayt/gb-sayt';
 import { createTag, mixinFlux, removeTag } from '../utils/tags';
 import { expect } from 'chai';

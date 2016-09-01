@@ -1,5 +1,4 @@
 import { Filter } from '../../src/tags/filter/gb-filter';
-import '../../src/tags/filter/gb-filter.tag';
 import { clearOption, label, selectOptions } from '../utils/select';
 import suite from './_suite';
 import { expect } from 'chai';

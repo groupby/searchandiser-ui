@@ -1,5 +1,4 @@
 import { Sort } from '../../src/tags/sort/gb-sort';
-import '../../src/tags/sort/gb-sort.tag';
 import { clearOption, label, selectOptions } from '../utils/select';
 import suite from './_suite';
 import { expect } from 'chai';

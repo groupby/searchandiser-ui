@@ -1,3 +1,4 @@
+import '../../src/tags/index';
 import { FluxTag } from '../../src/tags/tag';
 import { createTag, mixinFlux, removeTag } from '../utils/tags';
 import { FluxCapacitor } from 'groupby-api';

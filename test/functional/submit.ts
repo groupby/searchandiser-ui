@@ -1,5 +1,4 @@
 import { Submit } from '../../src/tags/submit/gb-submit';
-import '../../src/tags/submit/gb-submit.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

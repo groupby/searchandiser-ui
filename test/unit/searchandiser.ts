@@ -1,6 +1,5 @@
 import * as handlers from '../../src/handlers';
 import { initSearchandiser, transformConfig, Searchandiser } from '../../src/searchandiser';
-import '../../src/tags/query/gb-query.tag';
 import * as Tags from '../../src/tags/tag';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';

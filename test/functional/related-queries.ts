@@ -1,5 +1,4 @@
 import { RelatedQueries } from '../../src/tags/related-queries/gb-related-queries';
-import '../../src/tags/related-queries/gb-related-queries.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 

@@ -1,5 +1,4 @@
 import { Raw } from '../../src/tags/raw/gb-raw';
-import '../../src/tags/raw/gb-raw.tag';
 import suite from './_suite';
 import { expect } from 'chai';
 
