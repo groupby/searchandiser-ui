@@ -129,6 +129,7 @@ export interface SearchandiserConfig {
       allowedNavigations?: string[];
       minimumCharacters?: number;
       delay?: number;
+      https?: boolean;
     };
     collections?: {
       options?: string[];

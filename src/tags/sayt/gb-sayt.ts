@@ -59,7 +59,8 @@ export class Sayt {
       productSearch: {
         area: this.saytConfig.area || this.config.area,
         numProducts: this.saytConfig.products
-      }
+      },
+      https: this.saytConfig.https
     };
   }
 
