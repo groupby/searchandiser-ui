@@ -310,6 +310,7 @@ describe('gb-sayt logic', () => {
       category: 'Footwear'
     });
     expect(highlighted).to.eq('blue sneakers');
+    expect(highlighted).to.not.eq('Footwear');
   });
 
   it('should update results with suggestion as query', () => {
