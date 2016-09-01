@@ -13,7 +13,7 @@ gulp.task('dev', function(cb) {
 gulp.task('dev:watch', ['dev'], function() {
   gulp.watch([
     paths.src + '/**/*.ts',
-    paths.src + '/**/*.tag',
+    paths.src + '/**/*.tag.html',
     paths.test + '/**/*.ts'
   ], ['dev']);
 });
