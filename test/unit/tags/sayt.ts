@@ -399,6 +399,84 @@ describe('gb-sayt logic', () => {
     }, suggestion);
   });
 
+  describe('processResults()', () => {
+    it('should update with defaults', () => {
+      tag.update = ({ results, queries, navigations, categoryResults }) => {
+        expect(results).to.eql({});
+        expect(queries).to.be.undefined;
+        expect(navigations).to.eql([]);
+        expect(categoryResults).to.eql([]);
+        expect(tag.matchesInput).to.not.be.ok;
+      };
+
+      tag.processResults({});
+    });
+
+    it('should extract and filter navigations', () => {
+      const newNavigations = [{ name: 'brand' }, { name: 'colour' }];
+      tag.saytConfig = { allowedNavigations: ['colour'], navigationNames: {} };
+      tag.update = ({ navigations }) => expect(navigations).to.eql([{ name: 'colour', displayName: 'colour' }]);
+
+      tag.processResults({ navigations: newNavigations });
+    });
+
+    it('should rename navigations', () => {
+      const newNavigations = [{ name: 'colour' }];
+      tag.saytConfig = { allowedNavigations: ['colour'], navigationNames: { colour: 'Colour' } };
+      tag.update = ({ navigations }) => expect(navigations).to.eql([{ name: 'colour', displayName: 'Colour' }]);
+
+      tag.processResults({ navigations: newNavigations });
+    });
+
+    it('should match input', () => {
+      const query = 'red boots';
+      const additionalInfo = { a: 'b' };
+      const categories = ['a', 'b'];
+      const searchTerms = [{ value: query, additionalInfo }, { value: 'other' }];
+      tag.extractCategoryResults = (categoryQuery) => {
+        expect(categoryQuery).to.eq(additionalInfo);
+        return categories;
+      };
+      tag.originalQuery = query;
+      tag.update = ({ categoryResults }) => expect(categoryResults).to.eq(categories);
+
+      tag.processResults({ searchTerms });
+      expect(tag.matchesInput).to.be.true;
+      expect(searchTerms.length).to.eq(1);
+    });
+
+    it('should not match input', () => {
+      const searchTerms = [{ value: 'red boots' }, { value: 'other' }];
+      tag.originalQuery = 'blue socks';
+      tag.update = ({ categoryResults }) => expect(categoryResults).to.eql([]);
+
+      tag.processResults({ searchTerms });
+      expect(tag.matchesInput).to.be.false;
+      expect(searchTerms.length).to.eq(2);
+    });
+  });
+
+  describe('extractCategoryResults()', () => {
+    it('should return empty array if not configured', () => {
+      expect(tag.extractCategoryResults({})).to.eql([]);
+    });
+
+    it('should extract categories for configured field', () => {
+      tag.categoryField = 'department';
+      tag.originalQuery = 'tool';
+
+      const categories = tag.extractCategoryResults({
+        [tag.categoryField]: ['Power Tools', 'Patio Furniture', 'Camping']
+      });
+      expect(categories).to.eql([
+        { category: 'All Departments', value: 'tool' },
+        { category: 'Power Tools', value: 'tool' },
+        { category: 'Patio Furniture', value: 'tool' },
+        { category: 'Camping', value: 'tool' }
+      ]);
+    });
+  });
+
   describe('static functions', () => {
     let tag;
     let flux;

@@ -2,7 +2,7 @@ import { getPath, updateLocation } from '../../utils';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete } from './autocomplete';
-import { Events, Record, SelectedValueRefinement } from 'groupby-api';
+import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
 import debounce = require('debounce');
 import escapeStringRegexp = require('escape-string-regexp');
 
@@ -21,6 +21,7 @@ export interface Sayt extends SaytTag { }
 export class Sayt {
 
   products: Record[];
+  navigations: Navigation[];
   struct: any;
   saytConfig: any;
   autocomplete: Autocomplete;
@@ -30,6 +31,7 @@ export class Sayt {
   originalQuery: string;
   searchUrl: string;
   showProducts: boolean;
+  matchesInput: boolean;
   queries: any[];
 
   init() {
@@ -69,7 +71,10 @@ export class Sayt {
       .then(({ result }) => {
         this.update({ originalQuery });
         this.processResults(result);
-        if (this.queries && this.showProducts) this.searchProducts(this.queries[0].value);
+        if (this.queries && this.showProducts) {
+          const query = this.matchesInput ? originalQuery : this.queries[0].value;
+          this.searchProducts(query);
+        }
       })
       .catch((err) => console.error(err));
   }
@@ -92,21 +97,11 @@ export class Sayt {
 
   processResults(result: any) {
     let categoryResults = [];
-    if (result.searchTerms && result.searchTerms[0].value === this.originalQuery) {
-      const categoryQuery = result.searchTerms[0];
-      result.searchTerms.splice(0, 1);
+    this.matchesInput = result.searchTerms && result.searchTerms[0].value === this.originalQuery;
+    if (this.matchesInput) {
+      const [categoryQuery] = result.searchTerms.splice(0, 1);
 
-      if (this.categoryField && categoryQuery.additionalInfo[this.categoryField]) {
-        categoryResults = categoryQuery.additionalInfo[this.categoryField]
-          .map((value) => ({
-            category: value,
-            value: categoryQuery.value
-          })).slice(0, 3);
-        categoryResults.unshift({
-          category: 'All Departments',
-          value: categoryQuery.value
-        });
-      }
+      categoryResults = this.extractCategoryResults(categoryQuery.additionalInfo);
     }
     const navigations = result.navigations ? result.navigations
       .map((nav) => Object.assign(nav, { displayName: this.saytConfig.navigationNames[nav.name] || nav.name }))
@@ -117,6 +112,17 @@ export class Sayt {
       queries: result.searchTerms,
       categoryResults
     });
+  }
+
+  extractCategoryResults(additionalInfo: any) {
+    let categoryResults = [];
+    if (this.categoryField && additionalInfo[this.categoryField]) {
+      categoryResults = additionalInfo[this.categoryField]
+        .map((category) => ({ category, value: this.originalQuery }))
+        .slice(0, 3);
+      categoryResults.unshift({ category: 'All Departments', value: this.originalQuery });
+    }
+    return categoryResults;
   }
 
   searchRefinement(event: Event) {
