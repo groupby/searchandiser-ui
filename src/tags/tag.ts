@@ -1,6 +1,8 @@
 import { initCapacitor } from '../searchandiser';
 import { FluxCapacitor } from 'groupby-api';
-const sayt = require('sayt');
+import { Sayt } from 'sayt';
+
+const sayt = new Sayt();
 
 export interface FluxTag extends Riot.Tag.Instance {
   root: HTMLElement;
