@@ -2,14 +2,12 @@ import { RelatedQueries } from '../../src/tags/related-queries/gb-related-querie
 import suite from './_suite';
 import { expect } from 'chai';
 
-const TAG = 'gb-related-queries';
-
 suite<RelatedQueries>('gb-related-queries', ({ flux, html, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html().querySelector(`gb-list.${TAG}`)).to.be.ok;
+    expect(html().querySelector('gb-list')).to.be.ok;
   });
 
   describe('render behaviour', () => {

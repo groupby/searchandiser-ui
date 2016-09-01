@@ -12,6 +12,7 @@ export class TerminalPager {
   first_icon: string;
 
   init() {
+    this._scopeTo('gb-paging');
     this.first_label = this._scope.first_label || 'First';
     this.last_label = this._scope.last_label || 'Last';
     this.first_icon = this._scope.first_icon || lDoubleArrowUrl;

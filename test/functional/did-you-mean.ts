@@ -2,12 +2,12 @@ import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<DidYouMean>('gb-did-you-mean', ({ tagName, flux, html, mount }) => {
+suite<DidYouMean>('gb-did-you-mean', ({ flux, html, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html().querySelector(`gb-list.${tagName}`)).to.be.ok;
+    expect(html().querySelector('gb-list')).to.be.ok;
   });
 
   describe('render behaviour', () => {

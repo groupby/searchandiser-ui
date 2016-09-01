@@ -12,6 +12,7 @@ export class Pager {
   next_icon: string;
 
   init() {
+    this._scopeTo('gb-paging');
     this.prev_label = this._scope.prev_label || 'Prev';
     this.next_label = this._scope.next_label || 'Next';
     this.prev_icon = this._scope.prev_icon || lArrowUrl;
