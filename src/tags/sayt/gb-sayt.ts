@@ -100,11 +100,10 @@ export class Sayt {
   processResults(result: any) {
     let categoryResults = [];
 
-    this.matchesInput = result.searchTerms && result.searchTerms[0].value === this.originalQuery;
+    this.matchesInput = result.searchTerms && result.searchTerms[0].value.toLowerCase() === this.originalQuery.toLowerCase();
     if (this.matchesInput) {
       const [categoryQuery] = result.searchTerms.splice(0, 1);
-
-      categoryResults = this.extractCategoryResults(categoryQuery.additionalInfo);
+      categoryResults = this.extractCategoryResults(categoryQuery);
     }
 
     const navigations = result.navigations ? result.navigations
@@ -118,13 +117,15 @@ export class Sayt {
     });
   }
 
-  extractCategoryResults(additionalInfo: any) {
+  extractCategoryResults({ additionalInfo, value }: any) {
     let categoryResults = [];
-    if (this.categoryField && additionalInfo[this.categoryField]) {
-      categoryResults = additionalInfo[this.categoryField]
-        .map((category) => ({ category, value: this.originalQuery }))
-        .slice(0, 3);
-      categoryResults.unshift({ category: this.allCategoriesLabel, value: this.originalQuery });
+    if (additionalInfo) {
+      if (this.categoryField && additionalInfo[this.categoryField]) {
+        categoryResults = additionalInfo[this.categoryField]
+          .map((category) => ({ category, value }))
+          .slice(0, 3);
+        categoryResults.unshift({ category: this.allCategoriesLabel, value });
+      }
     }
     return categoryResults;
   }

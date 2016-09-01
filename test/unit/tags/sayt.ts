@@ -458,11 +458,12 @@ describe('gb-sayt logic', () => {
 
     it('should match input', () => {
       const query = 'red boots';
+      const value = 'red boots';
       const additionalInfo = { a: 'b' };
       const categories = ['a', 'b'];
-      const searchTerms = [{ value: query, additionalInfo }, { value: 'other' }];
+      const searchTerms = [{ value, additionalInfo }, { value: 'other' }];
       tag.extractCategoryResults = (categoryQuery) => {
-        expect(categoryQuery).to.eq(additionalInfo);
+        expect(categoryQuery.additionalInfo).to.eq(additionalInfo);
         return categories;
       };
       tag.originalQuery = query;
@@ -482,6 +483,24 @@ describe('gb-sayt logic', () => {
       expect(tag.matchesInput).to.be.false;
       expect(searchTerms.length).to.eq(2);
     });
+
+    it('should match case-insensitive input', () => {
+      const query = 'Red Boots';
+      const value = 'red boots';
+      const additionalInfo = { a: 'b' };
+      const categories = ['a', 'b'];
+      const searchTerms = [{ value, additionalInfo }, { value: 'other' }];
+      tag.extractCategoryResults = (categoryQuery) => {
+        expect(categoryQuery.additionalInfo).to.eq(additionalInfo);
+        return categories;
+      };
+      tag.originalQuery = query;
+      tag.update = ({ categoryResults }) => expect(categoryResults).to.eq(categories);
+
+      tag.processResults({ searchTerms });
+      expect(tag.matchesInput).to.be.true;
+      expect(searchTerms.length).to.eq(1);
+    });
   });
 
   describe('extractCategoryResults()', () => {
@@ -493,9 +512,12 @@ describe('gb-sayt logic', () => {
       tag.allCategoriesLabel = 'All Categories';
       tag.categoryField = 'department';
       tag.originalQuery = 'tool';
+      const value = 'tool';
+      const additionalInfo = { [tag.categoryField]: ['Power Tools', 'Patio Furniture', 'Camping'] };
 
       const categories = tag.extractCategoryResults({
-        [tag.categoryField]: ['Power Tools', 'Patio Furniture', 'Camping']
+        value,
+        additionalInfo
       });
       expect(categories).to.eql([
         { category: tag.allCategoriesLabel, value: 'tool' },
