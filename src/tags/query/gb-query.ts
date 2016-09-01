@@ -1,6 +1,6 @@
 import { findTag, parseQueryFromLocation, unless, updateLocation } from '../../utils';
 import { Sayt } from '../sayt/gb-sayt';
-import '../sayt/gb-sayt.tag';
+import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
 import { Events, Query as QueryModel } from 'groupby-api';
 

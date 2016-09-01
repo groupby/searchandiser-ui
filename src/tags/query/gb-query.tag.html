@@ -9,10 +9,10 @@
   </yield>
 
   <script>
-    import './gb-search-box.tag';
-    import '../submit/gb-submit.tag';
-    import '../reset/gb-reset.tag';
-    import '../sayt/gb-sayt.tag';
+    import './gb-search-box.tag.html';
+    import '../submit/gb-submit.tag.html';
+    import '../reset/gb-reset.tag.html';
+    import '../sayt/gb-sayt.tag.html';
     import { Query } from './gb-query';
     this._mixin(Query);
   </script>
@@ -23,6 +23,7 @@
       display: flex;
       align-items: baseline;
     }
+
     .gb-stylish.gb-query gb-sayt {
       top: 31px;
       left: 0;
@@ -30,7 +31,7 @@
       position: absolute;
       min-width: 175px;
       background-color: #fff;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     }
   </style>
 </gb-query>
