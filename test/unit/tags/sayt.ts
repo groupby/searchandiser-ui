@@ -113,8 +113,16 @@ describe('gb-sayt logic', () => {
       subdomain: customerId,
       collection,
       autocomplete: { numSearchTerms: 5 },
-      productSearch: { area, numProducts: 4 }
+      productSearch: { area, numProducts: 4 },
+      https: undefined
     });
+  });
+
+  it('should generate configuration with HTTPS', () => {
+    tag.saytConfig = { https: true };
+
+    const config = tag.generateSaytConfig();
+    expect(config.https).to.be.true;
   });
 
   it('should initialise autocomplete on mount', () => {
