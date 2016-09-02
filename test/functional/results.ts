@@ -1,5 +1,5 @@
 import { Results } from '../../src/tags/results/gb-results';
-import { createTag, mixinFlux, removeTag } from '../utils/tags';
+import { createTag, mixinFlux, removeTag } from './_suite';
 import { expect } from 'chai';
 
 const TAG = 'gb-results';

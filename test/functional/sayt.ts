@@ -1,6 +1,6 @@
 import { Query } from '../../src/tags/query/gb-query';
 import { Sayt } from '../../src/tags/sayt/gb-sayt';
-import { createTag, mixinFlux, removeTag } from '../utils/tags';
+import { createTag, mixinFlux, removeTag } from './_suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 

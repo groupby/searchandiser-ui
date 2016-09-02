@@ -1,5 +1,5 @@
 import { Product } from '../../src/tags/product/gb-product';
-import { createTag, mixinFlux, removeTag } from '../utils/tags';
+import { createTag, mixinFlux, removeTag } from './_suite';
 import { expect } from 'chai';
 
 const TAG = 'gb-product';
