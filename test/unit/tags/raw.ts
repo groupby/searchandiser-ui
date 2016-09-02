@@ -1,27 +1,24 @@
 import { Raw } from '../../../src/tags/raw/gb-raw';
-import { fluxTag } from '../../utils/tags';
+import suite from './_suite';
 import { expect } from 'chai';
 
-describe('gb-raw logic', () => {
-  const content = '<div>red sneakers</div>';
-  let tag: Raw;
+const content = '<div>red sneakers</div>';
 
-  beforeEach(() => ({ tag } = fluxTag(new Raw(), { opts: { content } })));
-
+suite('gb-raw', Raw, { opts: { content } }, ({ tag }) => {
   it('should listen for update event', () => {
-    tag.on = (event: string, cb) => {
+    tag().on = (event: string, cb) => {
       expect(event).to.be.oneOf(['update', 'mount']);
-      expect(cb).to.eq(tag.updateContent);
+      expect(cb).to.eq(tag().updateContent);
     };
-    tag.init();
+    tag().init();
   });
 
   it('should update innerHTML', () => {
-    tag.root = <HTMLElement>{ innerHTML: '' };
-    tag.init();
+    tag().root = <HTMLElement>{ innerHTML: '' };
+    tag().init();
 
-    tag.updateContent();
+    tag().updateContent();
 
-    expect(tag.root.innerHTML).to.eq(content);
+    expect(tag().root.innerHTML).to.eq(content);
   });
 });

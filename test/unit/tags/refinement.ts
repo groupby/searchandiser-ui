@@ -6,8 +6,9 @@ import { expect } from 'chai';
 const TAG = 'gb-refinement';
 
 describe(`${TAG} logic`, () => {
+  const mixin = { _scopeTo: () => null };
 
-  suite('gb-refinement', Refinement, { _scopeTo: () => null }, ({ tag }) => {
+  suite('gb-refinement', Refinement, mixin, ({ tag }) => {
     it('should have default values', () => {
       tag().init();
 
@@ -15,7 +16,7 @@ describe(`${TAG} logic`, () => {
     });
   });
 
-  suite('gb-available-refinement', AvailableRefinement, { _scopeTo: () => null }, ({ tag }) => {
+  suite('gb-available-refinement', AvailableRefinement, mixin, ({ tag }) => {
     it('should make refinement', () => {
       tag().ref = { type: 'Range', low: 4, high: 6 };
       tag().nav = { name: 'price' };
@@ -31,7 +32,7 @@ describe(`${TAG} logic`, () => {
     });
   });
 
-  suite('gb-selected-refinement', SelectedRefinement, { _scopeTo: () => null }, ({ flux, tag }) => {
+  suite('gb-selected-refinement', SelectedRefinement, mixin, ({ flux, tag }) => {
     it('should remove refinement', () => {
       flux().unrefine = (ref): any => expect(ref).to.eql({
         navigationName: 'price',

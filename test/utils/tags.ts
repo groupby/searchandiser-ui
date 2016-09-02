@@ -1,4 +1,4 @@
-import { FluxTag, MixinFlux } from '../../src/tags/tag';
+import { MixinFlux } from '../../src/tags/tag';
 import { FluxCapacitor } from 'groupby-api';
 
 // for functional tests
@@ -17,12 +17,4 @@ export function createTag(tag: string): HTMLElement {
 
 export function removeTag(html: HTMLElement) {
   document.body.removeChild(html);
-}
-
-// for unit tests
-
-export function fluxTag<T extends FluxTag>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
-  const flux = new FluxCapacitor('');
-  Object.assign(tag, { flux, opts: {}, config: {}, on: () => null }, obj);
-  return { flux, tag };
 }

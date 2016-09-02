@@ -1,73 +1,67 @@
 import { Product } from '../../../src/tags/product/gb-product';
-import { fluxTag } from '../../utils/tags';
+import suite, { fluxTag } from './_suite';
 import { expect } from 'chai';
 
-describe('gb-product logic', () => {
-  const struct = { title: 'title', price: 'price', image: 'image', url: 'url' };
-  const all_meta = {
-    title: 'Red Sneakers',
-    price: '$12.45',
-    image: 'image.png',
-    id: '1340',
-    nested: {
-      value: '6532'
-    }
-  };
-  let tag: Product;
+const struct = { title: 'title', price: 'price', image: 'image', url: 'url' };
+const all_meta = {
+  title: 'Red Sneakers',
+  price: '$12.45',
+  image: 'image.png',
+  id: '1340',
+  nested: {
+    value: '6532'
+  }
+};
 
-  beforeEach(() => ({ tag } = fluxTag(new Product(), {
-    _scope: { struct },
-    opts: { all_meta }
-  })));
-
+suite('gb-product', Product, { _scope: { struct }, opts: { all_meta } }, ({ tag }) => {
   it('should inherit values from _scope', () => {
-    tag.init();
+    tag().init();
 
-    expect(tag.struct).to.eql(Object.assign({ id: 'id' }, struct));
-    expect(tag.allMeta).to.eq(all_meta);
-    expect(tag.transform).to.be.a('function');
-    expect(tag.getPath).to.be.a('function');
+    expect(tag().struct).to.eql(Object.assign({ id: 'id' }, struct));
+    expect(tag().allMeta).to.eq(all_meta);
+    expect(tag().transform).to.be.a('function');
+    expect(tag().getPath).to.be.a('function');
   });
 
   it('should override struct defaults', () => {
     const overrideStruct = {
       id: 'MY_ID'
     };
-    tag._scope = { struct: overrideStruct };
-    tag.init();
+    tag()._scope = { struct: overrideStruct };
+    tag().init();
 
-    expect(tag.struct).to.eql(overrideStruct);
+    expect(tag().struct).to.eql(overrideStruct);
   });
 
   it('should allow default from config', () => {
     const transform = () => null;
     const structure = { b: 'e', d: 'f', _transform: transform };
 
-    tag._scope = {};
-    tag.config = <any>{ structure };
-    tag.init();
+    tag()._scope = {};
+    tag().config = <any>{ structure };
+    tag().init();
 
-    expect(tag.struct).to.eql(Object.assign({ id: 'id' }, structure));
-    expect(tag.transform).to.eq(transform);
+    expect(tag().struct).to.eql(Object.assign({ id: 'id' }, structure));
+    expect(tag().transform).to.eq(transform);
   });
 
   it('should listen for update', () => {
-    tag.on = (event: string, cb: Function) => {
+    tag().on = (event: string, cb: Function) => {
       expect(event).to.eq('update');
-      expect(cb).to.eq(tag.transformRecord);
+      expect(cb).to.eq(tag().transformRecord);
     };
-    tag.init();
+    tag().init();
   });
 
   it('should perform transformation', () => {
     const _transform = (obj) => Object.assign(obj, { e: 'f' });
 
-    tag.opts.all_meta = { a: 'b', c: 'd' };
-    tag._scope.struct = Object.assign({}, struct, { _transform });
-    tag.init();
+    tag().opts.all_meta = { a: 'b', c: 'd' };
+    tag()._scope.struct = Object.assign({}, struct, { _transform });
+    tag().init();
 
-    tag.transformRecord();
-    expect(tag.allMeta.e).to.eq('f');
+    tag().transformRecord();
+    expect(tag().allMeta.e).to.eq('f');
   });
 
   it('should not transform multiple times', () => {
@@ -76,44 +70,32 @@ describe('gb-product logic', () => {
       return obj;
     };
 
-    tag.opts.all_meta = { a: 'b', c: 'd' };
-    tag._scope.struct = Object.assign({}, struct, { _transform });
-    tag.init();
+    tag().opts.all_meta = { a: 'b', c: 'd' };
+    tag()._scope.struct = Object.assign({}, struct, { _transform });
+    tag().init();
 
-    tag.transformRecord();
-    expect(tag.allMeta.a).to.eq('bb');
-    tag.transformRecord();
-    expect(tag.allMeta.a).to.eq('bb');
-  });
-
-  it('should return product url', () => {
-    tag.init();
-    expect(tag.link()).to.eq(`details.html?id=${all_meta.id}`);
+    tag().transformRecord();
+    expect(tag().allMeta.a).to.eq('bb');
+    tag().transformRecord();
+    expect(tag().allMeta.a).to.eq('bb');
   });
 
   it('should return url from data', () => {
     const url = 'some/url/for/product';
 
-    tag.opts.all_meta = { url };
-    tag.init();
+    tag().opts.all_meta = { url };
+    tag().init();
 
-    expect(tag.link()).to.eq(url);
-  });
-
-  it('should access fields from allMeta', () => {
-    tag.init();
-
-    expect(tag.get('title')).to.eq(all_meta.title);
-    expect(tag.get('nested.value')).to.eq(all_meta.nested.value);
+    expect(tag().link()).to.eq(url);
   });
 
   it('should return image value', () => {
     const images = ['image1.png', 'image2.png'];
 
-    tag.init();
+    tag().init();
 
-    expect(tag.image(images[1])).to.eq(images[1]);
-    expect(tag.image(images)).to.eq(images[0]);
+    expect(tag().image(images[1])).to.eq(images[1]);
+    expect(tag().image(images)).to.eq(images[0]);
   });
 
   describe('variant logic', () => {
@@ -160,34 +142,23 @@ describe('gb-product logic', () => {
       const _variantStructure = { g: 'h' };
       const structure = { b: 'e', d: 'f', _variantStructure };
 
-      tag._scope = {};
-      tag.config = <any>{ structure };
-      tag.init();
+      tag()._scope = {};
+      tag().config = <any>{ structure };
+      tag().init();
 
-      expect(tag.struct).to.eql(Object.assign({ id: 'id' }, structure));
-      expect(tag.variantStruct).to.eq(_variantStructure);
-    });
-
-    it('should return the sole implicit variant', () => {
-      tag.init();
-
-      expect(tag.variant(0)).to.eql({
-        title: 'Red Sneakers',
-        price: '$12.45',
-        image: 'image.png',
-        id: '1340'
-      });
+      expect(tag().struct).to.eql(Object.assign({ id: 'id' }, structure));
+      expect(tag().variantStruct).to.eq(_variantStructure);
     });
 
     it('should return the sole explicit variant', () => {
-      tag._scope = { struct: structWithVariants };
-      tag.opts.all_meta = {
+      tag()._scope = { struct: structWithVariants };
+      tag().opts.all_meta = {
         variants: [variants[0]]
       };
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.eql({
+      expect(tag().variant(0)).to.eql({
         title: 'Green Shoes',
         price: '$1',
         image: 'image.tiff',
@@ -196,30 +167,30 @@ describe('gb-product logic', () => {
     });
 
     it('should return a particular explicit variant', () => {
-      tag._scope = { struct: structWithVariants };
-      tag.opts.all_meta = variantMeta;
+      tag()._scope = { struct: structWithVariants };
+      tag().opts.all_meta = variantMeta;
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.eql({
+      expect(tag().variant(0)).to.eql({
         title: 'Green Shoes',
         price: '$1',
         image: 'image.tiff',
         url: 'about:blank'
       });
-      expect(tag.variant(1)).to.eql({
+      expect(tag().variant(1)).to.eql({
         title: 'Purple Shoes',
         price: '$1',
         image: 'image.tiff',
         url: 'about:blank'
       });
-      expect(tag.variant(2)).to.eql({
+      expect(tag().variant(2)).to.eql({
         title: 'Green Moccasins',
         price: '$2',
         image: 'image.svg',
         url: 'about:mozilla'
       });
-      expect(tag.variant(3)).to.eql({
+      expect(tag().variant(3)).to.eql({
         title: 'Yellow Shoes',
         price: '$1',
         image: 'image.tiff',
@@ -228,59 +199,59 @@ describe('gb-product logic', () => {
     });
 
     it('should return null if variants is not configured properly', () => {
-      tag._scope = {
+      tag()._scope = {
         struct: {
           variants: 'varieties'
         }
       };
-      tag.opts.all_meta = variantMeta;
+      tag().opts.all_meta = variantMeta;
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.be.null;
-      expect(tag.variant(1)).to.be.null;
+      expect(tag().variant(0)).to.be.null;
+      expect(tag().variant(1)).to.be.null;
     });
 
     it('should ignore variants if variants is not configured', () => {
-      tag.opts.all_meta = variantMeta;
+      tag().opts.all_meta = variantMeta;
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.be.eql({
+      expect(tag().variant(0)).to.be.eql({
         title: 'Orange Chili',
         price: '$3',
         image: 'image.bmp'
       });
-      expect(tag.variant(1)).to.be.null;
+      expect(tag().variant(1)).to.be.null;
     });
 
     it('should vary only the specified fields over the variants', () => {
-      tag._scope = {
+      tag()._scope = {
         struct: structWithVariants,
         variantStruct: {
           title: 'title'
         }
       };
-      tag.opts.all_meta = variantMeta;
+      tag().opts.all_meta = variantMeta;
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.be.eql({
+      expect(tag().variant(0)).to.be.eql({
         title: 'Green Shoes',
         price: '$3',
         image: 'image.bmp'
       });
-      expect(tag.variant(1)).to.be.eql({
+      expect(tag().variant(1)).to.be.eql({
         title: 'Purple Shoes',
         price: '$3',
         image: 'image.bmp'
       });
-      expect(tag.variant(2)).to.be.eql({
+      expect(tag().variant(2)).to.be.eql({
         title: 'Green Moccasins',
         price: '$3',
         image: 'image.bmp'
       });
-      expect(tag.variant(3)).to.be.eql({
+      expect(tag().variant(3)).to.be.eql({
         title: 'Yellow Shoes',
         price: '$3',
         image: 'image.bmp'
@@ -288,7 +259,7 @@ describe('gb-product logic', () => {
     });
 
     it('should support alternately named fields in struct and remap them to match the keynames in Searchandiser.ProductStructure', () => {
-      tag._scope = {
+      tag()._scope = {
         struct: {
           title: 'titre',
           price: 'prix',
@@ -296,16 +267,16 @@ describe('gb-product logic', () => {
           url: 'url'
         }
       };
-      tag.opts.all_meta = {
+      tag().opts.all_meta = {
         titre: 'Chicken Dance',
         prix: '$30',
         image: 'image.apng',
         url: 'about:blank',
       };
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.eql({
+      expect(tag().variant(0)).to.eql({
         title: 'Chicken Dance',
         price: '$30',
         image: 'image.apng',
@@ -314,7 +285,7 @@ describe('gb-product logic', () => {
     });
 
     it('should support alternately named fields in variants', () => {
-      tag._scope = {
+      tag()._scope = {
         struct: {
           title: 'titre',
           price: 'prix',
@@ -323,7 +294,7 @@ describe('gb-product logic', () => {
           variants: 'genres'
         }
       };
-      tag.opts.all_meta = {
+      tag().opts.all_meta = {
         genres: [{
           titre: 'Chicken Dance',
           prix: '$30',
@@ -337,15 +308,15 @@ describe('gb-product logic', () => {
         }]
       };
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.eql({
+      expect(tag().variant(0)).to.eql({
         title: 'Chicken Dance',
         price: '$30',
         image: 'image.apng',
         url: 'about:blank',
       });
-      expect(tag.variant(1)).to.eql({
+      expect(tag().variant(1)).to.eql({
         title: 'Safari Trip',
         price: '$30',
         image: 'image.ico',
@@ -354,7 +325,7 @@ describe('gb-product logic', () => {
     });
 
     it('should support alternately named fields in variants with variant remapping', () => {
-      tag._scope = {
+      tag()._scope = {
         struct: {
           title: 'titre',
           price: 'prix',
@@ -367,7 +338,7 @@ describe('gb-product logic', () => {
           image: 'sousimage'
         }
       };
-      tag.opts.all_meta = {
+      tag().opts.all_meta = {
         titre: 'Ingenue',
         prix: '$50',
         image: 'image.dvi',
@@ -386,15 +357,15 @@ describe('gb-product logic', () => {
         }]
       };
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.eql({
+      expect(tag().variant(0)).to.eql({
         title: 'Chicken Dance',
         price: '$50',
         image: 'image.apng',
         url: 'about:mozilla',
       });
-      expect(tag.variant(1)).to.eql({
+      expect(tag().variant(1)).to.eql({
         title: 'Safari Trip',
         price: '$50',
         image: 'image.ico',
@@ -403,7 +374,7 @@ describe('gb-product logic', () => {
     });
 
     it('should support nested fields and sole implicit variant', () => {
-      tag._scope = {
+      tag()._scope = {
         struct: {
           title: 'titre.second',
           price: 'prix',
@@ -411,7 +382,7 @@ describe('gb-product logic', () => {
           url: 'url'
         }
       };
-      tag.opts.all_meta = {
+      tag().opts.all_meta = {
         titre: {
           premier: 'Oiseau Rebel',
           second: 'La Boheme'
@@ -421,9 +392,9 @@ describe('gb-product logic', () => {
         url: 'about:mozilla',
       };
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.eql({
+      expect(tag().variant(0)).to.eql({
         title: 'La Boheme',
         price: '$50',
         image: 'image.dvi',
@@ -432,7 +403,7 @@ describe('gb-product logic', () => {
     });
 
     it('should support variants having a nested location', () => {
-      tag._scope = {
+      tag()._scope = {
         struct: {
           title: 'title',
           price: 'price',
@@ -441,21 +412,21 @@ describe('gb-product logic', () => {
           variants: 'variants[me][0][0]'
         }
       };
-      tag.opts.all_meta = {
+      tag().opts.all_meta = {
         variants: {
           me: [[variants]]
         }
       };
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).to.eql({
+      expect(tag().variant(0)).to.eql({
         title: 'Green Shoes',
         price: '$1',
         image: 'image.tiff',
         url: 'about:blank'
       });
-      expect(tag.variant(1)).to.eql({
+      expect(tag().variant(1)).to.eql({
         title: 'Purple Shoes',
         price: '$1',
         image: 'image.tiff',
@@ -512,7 +483,7 @@ describe('gb-product logic', () => {
       };
 
       it('should support nested structure fields', () => {
-        tag._scope = {
+        tag()._scope = {
           struct: {
             title: 'title.second',
             price: 'price',
@@ -521,17 +492,17 @@ describe('gb-product logic', () => {
             variants: 'variants[me][0][0]'
           }
         };
-        tag.opts.all_meta = nestedVariantMeta;
+        tag().opts.all_meta = nestedVariantMeta;
 
-        tag.init();
+        tag().init();
 
-        expect(tag.variant(0)).to.eql({
+        expect(tag().variant(0)).to.eql({
           title: 'Verdant Clogs',
           price: '$1',
           image: 'image.tiff',
           url: 'about:blank'
         });
-        expect(tag.variant(1)).to.eql({
+        expect(tag().variant(1)).to.eql({
           title: 'Verdant Clogs',
           price: '$1',
           image: 'image.tiff',
@@ -540,7 +511,7 @@ describe('gb-product logic', () => {
       });
 
       it('should support varying over nested variantStructure fields', () => {
-        tag._scope = {
+        tag()._scope = {
           struct: {
             title: 'a[2].b',
             price: 'price',
@@ -552,27 +523,27 @@ describe('gb-product logic', () => {
             title: 'title.second'
           }
         };
-        tag.opts.all_meta = nestedVariantMeta;
+        tag().opts.all_meta = nestedVariantMeta;
 
-        tag.init();
+        tag().init();
 
-        expect(tag.variant(0)).to.eql({
+        expect(tag().variant(0)).to.eql({
           title: 'Verdant Clogs'
         });
-        expect(tag.variant(1)).to.eql({
+        expect(tag().variant(1)).to.eql({
           title: 'Verdant Clogs'
         });
-        expect(tag.variant(2)).to.eql({
+        expect(tag().variant(2)).to.eql({
           title: 'Verdant Socks'
         });
-        expect(tag.variant(3)).to.eql({
+        expect(tag().variant(3)).to.eql({
           title: 'Verdant Clogs'
         });
       });
     });
 
     it('should restore original field when a variant happens to lack it', () => {
-      tag._scope = {
+      tag()._scope = {
         struct: {
           title: 'a[2].b',
           price: 'prix',
@@ -587,7 +558,7 @@ describe('gb-product logic', () => {
           url: 'url'
         }
       };
-      tag.opts.all_meta = {
+      tag().opts.all_meta = {
         a: [
           'delete',
           'me',
@@ -637,37 +608,72 @@ describe('gb-product logic', () => {
         }
       };
 
-      tag.init();
+      tag().init();
 
-      expect(tag.variant(0)).eql({
+      expect(tag().variant(0)).eql({
         title: 'Green Peppers',
         price: '$1',
         image: 'image.tiff',
         url: 'about:blank'
       });
-      expect(tag.variant(1)).eql({
+      expect(tag().variant(1)).eql({
         title: 'Green Peppers',
         price: '$999',
         image: 'image.tiff',
         url: 'about:blank'
       });
-      expect(tag.variant(2)).eql({
+      expect(tag().variant(2)).eql({
         title: 'Verdant Clogs',
         price: '$1',
         image: 'image.tiff',
         url: 'about:blank'
       });
-      expect(tag.variant(3)).eql({
+      expect(tag().variant(3)).eql({
         title: 'Verdant Clogs',
         price: '$1',
         image: 'image.gs',
         url: 'about:blank'
       });
-      expect(tag.variant(4)).eql({
+      expect(tag().variant(4)).eql({
         title: 'Verdant Clogs',
         price: '$1',
         image: 'image.tiff',
         url: 'about:preferences'
+      });
+    });
+  });
+});
+
+// move these into the suite
+describe('gb-product logic', () => {
+  let tag: Product;
+
+  beforeEach(() => ({ tag } = fluxTag(new Product(), {
+    _scope: { struct },
+    opts: { all_meta }
+  })));
+
+  it('should return product url', () => {
+    tag.init();
+    expect(tag.link()).to.eq(`details.html?id=${all_meta.id}`);
+  });
+
+  it('should access fields from allMeta', () => {
+    tag.init();
+
+    expect(tag.get('title')).to.eq(all_meta.title);
+    expect(tag.get('nested.value')).to.eq(all_meta.nested.value);
+  });
+
+  describe('variant logic', () => {
+    it('should return the sole implicit variant', () => {
+      tag.init();
+
+      expect(tag.variant(0)).to.eql({
+        title: 'Red Sneakers',
+        price: '$12.45',
+        image: 'image.png',
+        id: '1340'
       });
     });
   });

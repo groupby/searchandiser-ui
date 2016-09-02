@@ -1,5 +1,4 @@
 import { FluxTag } from '../../../src/tags/tag';
-import { fluxTag } from '../../utils/tags';
 import { FluxCapacitor } from 'groupby-api';
 
 function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
@@ -16,7 +15,6 @@ function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixinOr
 
     beforeEach(() => {
       ({ tag: _tag, flux: _flux } = fluxTag(new clazz(), mixin));
-      _tag.opts = {};
       _sandbox = sinon.sandbox.create();
     });
     afterEach(() => _sandbox.restore());
@@ -42,6 +40,12 @@ function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixinOr
 }
 
 export default suite;
+
+export function fluxTag<T extends FluxTag>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
+  const flux = new FluxCapacitor('');
+  Object.assign(tag, { flux, opts: {}, config: {}, on: () => null }, obj);
+  return { flux, tag };
+}
 
 export interface UnitSuite<T> {
   flux: () => FluxCapacitor;

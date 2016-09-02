@@ -4,7 +4,7 @@ import { createTag, mixinFlux, removeTag } from '../utils/tags';
 import { FluxCapacitor } from 'groupby-api';
 
 export default function <T extends FluxTag>(tagName: string, cb: (suite: FunctionalSuite<T>) => void) {
-  describe(`${tagName} tag`, () => {
+  describe(`${tagName} behaviour`, () => {
     let _flux: FluxCapacitor;
     let _html: HTMLElement;
     let _sandbox: Sinon.SinonSandbox;
