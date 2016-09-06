@@ -37,7 +37,7 @@ export class Query {
     this.on('mount', () => {
       this.searchBox = this.findSearchBox();
       this.searchBox.addEventListener('keydown', this.keydownListener);
-      if (this.saytEnabled) Sayt.listenForInput(this);
+      if (this.saytEnabled) this.tags['gb-sayt'].listenForInput(this);
     });
 
     if (this.autoSearch) {

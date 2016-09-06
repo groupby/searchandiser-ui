@@ -527,18 +527,16 @@ describe('gb-sayt logic', () => {
     });
   });
 
-  describe('static functions', () => {
-    let tag;
-    let flux;
+  describe('listenForInput()', () => {
+    let queryTag;
     let searchBox;
 
     beforeEach(() => {
-      flux = {};
       searchBox = {
         value: '',
         addEventListener: () => null
       };
-      tag = {
+      queryTag = {
         flux, searchBox,
         config: {
           tags: {
@@ -549,46 +547,59 @@ describe('gb-sayt logic', () => {
     });
 
     it('should disable autocomplete for the searchBox', () => {
-      Sayt.listenForInput(tag);
-
+      tag.init();
+      tag.listenForInput(queryTag);
       expect(searchBox.autocomplete).to.eq('off');
     });
 
     it('should attach click listener to document', (done) => {
-      flux.emit = (event) => expect(event).to.eq('autocomplete:hide');
+      const mock = sandbox.stub(tag, 'reset');
       sandbox.stub(document, 'addEventListener', (event, cb) => {
         expect(event).to.eq('click');
         cb();
+        expect(mock.called).to.be.true;
         done();
       });
 
-      Sayt.listenForInput(tag);
+      tag.init();
+      tag.listenForInput(queryTag);
     });
 
     it('should attach input listener to hide searchBox', (done) => {
-      flux.emit = (event) => {
-        expect(event).to.eq('autocomplete:hide');
-        done();
-      };
+      tag.reset = () => done();
       searchBox.addEventListener = (event, cb) => {
         if (event === 'input') cb();
       };
 
-      Sayt.listenForInput(tag);
+      tag.init();
+      tag.listenForInput(queryTag);
     });
 
     it('should attach input listener to perform search', (done) => {
       searchBox.value = 'red leather';
-      flux.emit = (event, query) => {
-        expect(event).to.eq('autocomplete');
-        expect(query).to.eq('red leather');
-        done();
+      tag.sayt.autocomplete = (query) => {
+        expect(query).to.eq(searchBox.value);
+        return {
+          then: (cb) => cb({})
+        };
       };
       searchBox.addEventListener = (event, cb) => {
         if (event === 'input') cb();
       };
 
-      Sayt.listenForInput(tag);
+      tag.processResults = () => done();
+      tag.update = () => null;
+      tag.init();
+      tag.listenForInput(queryTag);
+    });
+
+    it('should have a delay >= 100 miliseconds', (done) => {
+      tag.saytConfig = { delay: 10 };
+      sandbox.stub(utils, 'debounce', (callback, delay) => {
+        expect(delay).to.eq(100);
+        done();
+      });
+      tag.listenForInput(queryTag);
     });
   });
 });

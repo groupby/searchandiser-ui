@@ -1,9 +1,8 @@
-import { getPath, updateLocation } from '../../utils';
+import { debounce, getPath, updateLocation } from '../../utils';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete } from './autocomplete';
 import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
-import debounce = require('debounce');
 import escapeStringRegexp = require('escape-string-regexp');
 
 const DEFAULT_CONFIG = {
@@ -47,7 +46,7 @@ export class Sayt {
     this.sayt.configure(this.generateSaytConfig());
 
     this.on('mount', () => this.autocomplete = new Autocomplete(this));
-    this.flux.on('autocomplete', this.fetchSuggestions);
+
     this.flux.on('autocomplete:hide', this.reset);
   }
 
@@ -183,19 +182,19 @@ export class Sayt {
     this.flux.reset(query);
   }
 
-  static listenForInput(tag: Query) {
+  listenForInput(tag: Query) {
     const input = <HTMLInputElement>tag.searchBox;
     input.autocomplete = 'off';
-    const minimumCharacters = tag.config.tags.sayt.minimumCharacters || 1;
-    const delay = tag.config.tags.sayt.delay || 0;
+    const minimumCharacters = this.saytConfig.minimumCharacters || 1;
+    const delay = Math.max(this.saytConfig.delay || 100, 100);
     const debouncedSearch = debounce(() => {
       if (input.value.length >= minimumCharacters) {
-        tag.flux.emit('autocomplete', input.value);
+        this.fetchSuggestions(input.value);
       } else {
-        tag.flux.emit('autocomplete:hide');
+        this.reset();
       }
     }, delay);
-    document.addEventListener('click', () => tag.flux.emit('autocomplete:hide'));
+    document.addEventListener('click', this.reset);
     input.addEventListener('input', debouncedSearch);
   }
 }
