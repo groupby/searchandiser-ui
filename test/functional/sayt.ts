@@ -33,10 +33,33 @@ describe(`${TAG} tag with sayt:true`, () => {
     expect(document.querySelector('gb-sayt')).to.be.ok;
   });
 
+  describe('category suggestions', () => {
+    it('should render category suggestions', () => {
+      mount();
+      const saytTag = sayt();
+      const allCategoriesLabel = 'All Categories';
+
+      saytTag.update({
+        queries: [{ value: 'a' }],
+        categoryResults: [
+          { category: allCategoriesLabel, value: 'b', noRefine: true },
+          { category: 'c', value: 'd' }
+        ]
+      });
+
+      const categoryLinks = html.querySelectorAll('gb-sayt-categories gb-sayt-link');
+      expect(categoryLinks.length).to.eq(2);
+      expect((<HTMLElement>categoryLinks[0]).dataset['norefine']).to.eq('true');
+      expect(categoryLinks[0].querySelector('.gb-category-query').textContent).to.eq(allCategoriesLabel);
+      expect((<HTMLElement>categoryLinks[1]).dataset['norefine']).be.undefined;
+      expect(categoryLinks[1].querySelector('.gb-category-query').textContent).to.eq('c');
+    });
+  });
+
   describe('autocomplete', () => {
     it('highlights first element of autocomplete when you press KEY_DOWN from search box', (done) => {
       const tag = mount();
-      const saytTag = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
 
       saytTag.update({
         queries: [
@@ -61,7 +84,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('highlights next element when you press down', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
 
       saytTag.update({
         queries: [
@@ -84,7 +107,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('gracefully handles there not being any more links to go down to', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
 
       saytTag.update({
         queries: [
@@ -108,7 +131,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('goes up a link', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
 
       saytTag.update({
         queries: [
@@ -134,7 +157,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('restores original query to search box and clears selected autocomplete suggestion when you press KEY_UP while at the top suggestion', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
 
       searchBox().value = 'original';
       saytTag.update({
@@ -155,7 +178,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('keeps the cursor at the end of the search term in the search box', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
 
       searchBox().value = 'original';
       saytTag.update({
@@ -192,7 +215,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       // };
 
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
       saytTag.search = () => done();
 
       searchBox().value = 'original';
@@ -210,7 +233,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('does the same thing as clicking when you make .active a suggestion and press enter', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
       saytTag.search = () => done();
 
       saytTag.update({
@@ -227,7 +250,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('does a search of a suggested query with a category refinement when you click', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
 
       saytTag.refine = (target, query) => {
         expect(target.parentElement.dataset['refinement']).to.eq('the category');
@@ -250,7 +273,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('does a refinement search when you click', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
       saytTag.refine = (target, query) => {
         expect(query).to.eq('');
         expect(target.parentElement.dataset['field']).to.eq('brand000');
@@ -277,7 +300,7 @@ describe(`${TAG} tag with sayt:true`, () => {
 
     it('show navigations when there are no queries', (done) => {
       const tag = mount();
-      const saytTag: Sayt = html.querySelector('gb-sayt')['_tag'];
+      const saytTag = sayt();
 
       saytTag.update({
         navigations: [{
@@ -299,6 +322,10 @@ describe(`${TAG} tag with sayt:true`, () => {
 
   function searchBox() {
     return html.querySelector('input');
+  }
+
+  function sayt(): Sayt {
+    return html.querySelector('gb-sayt')['_tag'];
   }
 
   function mount(autoSearch: boolean = true) {

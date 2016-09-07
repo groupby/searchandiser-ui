@@ -124,7 +124,7 @@ export class Sayt {
       categoryResults = additionalInfo[this.categoryField]
         .map((category) => ({ category, value }))
         .slice(0, 3);
-      categoryResults.unshift({ category: this.allCategoriesLabel, value });
+      categoryResults.unshift({ category: this.allCategoriesLabel, value, noRefine: true });
     }
     return categoryResults;
   }

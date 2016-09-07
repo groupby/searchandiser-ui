@@ -331,8 +331,6 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
     });
   });
 
-
-
   describe('refine()', () => {
     it('should update results with suggestion and refinement', () => {
       const suggestion = 'red heels';
@@ -370,8 +368,6 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
         dataset: { field, refinement, norefine: true }
       }, suggestion);
     });
-
-
   });
 
   describe('processResults()', () => {
@@ -460,7 +456,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       });
 
       expect(categories).to.eql([
-        { category: tag().allCategoriesLabel, value: 'tool' },
+        { category: tag().allCategoriesLabel, value: 'tool', noRefine: true },
         { category: 'Power Tools', value: 'tool' },
         { category: 'Patio Furniture', value: 'tool' },
         { category: 'Camping', value: 'tool' }
