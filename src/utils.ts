@@ -1,4 +1,5 @@
 import { CONFIGURATION_MASK } from './searchandiser';
+import debounce = require('debounce');
 import oget = require('oget');
 import { Navigation, Query, SelectedRangeRefinement, SelectedValueRefinement } from 'groupby-api';
 import queryString = require('query-string');
@@ -97,3 +98,5 @@ export function remap(x: any, mapping: any) {
     return x;
   }
 }
+
+export { debounce }

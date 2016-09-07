@@ -12,17 +12,14 @@ const KEY_DOWN = 40;
 describe(`${TAG} tag with sayt:true`, () => {
   let html: HTMLElement;
   let flux: FluxCapacitor;
-  let sandbox: Sinon.SinonSandbox;
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create();
     flux = mixinFlux({
       config: { tags: { sayt: { minimumCharacters: 1, delay: 0 } } }
     });
     html = createTag(TAG);
   });
   afterEach(() => {
-    sandbox.restore();
     removeTag(html);
   });
 
@@ -105,7 +102,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       });
     });
 
-    it('gracefully handles there not being any more links to go down to', (done) => {
+    it('stays selected on the last link when there are no more links to go down to', (done) => {
       const tag = mount();
       const saytTag = sayt();
 
@@ -298,7 +295,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       });
     });
 
-    it('show navigations when there are no queries', (done) => {
+    it('shows navigations when there are no queries', (done) => {
       const tag = mount();
       const saytTag = sayt();
 
