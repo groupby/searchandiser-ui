@@ -61,7 +61,7 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
       first_icon: 'fa fa-double-backward',
       last_icon: 'fa fa-double-forward'
     };
-    Object.assign(tag().opts, overrides);
+    tag().opts = overrides;
     tag().init();
 
     expect(tag().limit).to.eq(overrides.limit);

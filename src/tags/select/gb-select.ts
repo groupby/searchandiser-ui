@@ -1,4 +1,4 @@
-import { unless } from '../../utils';
+import { checkBooleanAttr, unless } from '../../utils';
 import { FluxTag } from '../tag';
 
 export interface Select extends FluxTag { }
@@ -31,8 +31,8 @@ export class Select {
     this.default = _scope.clear === undefined;
     this.label = _scope.label || 'Select';
 
-    this.hover = unless(_scope.opts.hover, true);
-    this.native = _scope.opts.native !== undefined;
+    this.hover = checkBooleanAttr('hover', _scope.opts);
+    this.native = checkBooleanAttr('native', _scope.opts);
 
     if (this.default) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];

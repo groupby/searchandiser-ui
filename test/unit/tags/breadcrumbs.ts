@@ -12,11 +12,21 @@ suite('gb-breadcrumbs', Breadcrumbs, ({ flux, tag }) => {
   });
 
   it('should allow override from opts', () => {
-    Object.assign(tag().opts, { hideQuery: true, hideRefinements: true });
+    tag().opts = { hideQuery: true, hideRefinements: true };
     tag().init();
 
     expect(tag().hideQuery).to.be.true;
     expect(tag().hideRefinements).to.be.true;
+    tag().opts = { hideQuery: 'true', hideRefinements: 'true' };
+    tag().init();
+
+    expect(tag().hideQuery).to.be.true;
+    expect(tag().hideRefinements).to.be.true;
+    tag().opts = { hideQuery: 'false', hideRefinements: 'false' };
+    tag().init();
+
+    expect(tag().hideQuery).to.be.false;
+    expect(tag().hideRefinements).to.be.false;
   });
 
   it('should listen for events', () => {

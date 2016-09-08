@@ -24,7 +24,7 @@ suite('gb-filter', Filter, ({ flux, tag: _tag }) => {
     const clear = 'All Brands';
     const field = 'Brand';
 
-    Object.assign(tag.opts, { label, clear, field });
+    tag.opts = { label, clear, field };
     tag.init();
 
     expect(tag.navField).to.eq(field);

@@ -16,7 +16,7 @@ suite('gb-sort', Sort, ({ flux, tag }) => {
     ];
 
     it('should allow override from opts', () => {
-      Object.assign(tag().opts, { options });
+      tag().opts = { options };
       tag().init();
 
       expect(tag().options).to.eq(options);
