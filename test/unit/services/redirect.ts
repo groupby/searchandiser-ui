@@ -1,7 +1,7 @@
-import { handleRedirect } from '../../src/handlers';
+import { Redirect } from '../../../src/services/redirect';
 import { expect } from 'chai';
 
-describe('handlers', () => {
+describe('redirect service', () => {
   let sandbox;
   beforeEach(() => sandbox = sinon.sandbox.create());
   afterEach(() => sandbox.restore());
@@ -16,6 +16,6 @@ describe('handlers', () => {
       }
     };
 
-    handleRedirect(flux);
+    new Redirect(flux, {}).init();
   });
 });

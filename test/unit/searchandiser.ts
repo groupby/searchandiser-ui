@@ -1,8 +1,15 @@
-import * as handlers from '../../src/handlers';
-import { initSearchandiser, transformConfig, Searchandiser } from '../../src/searchandiser';
+import {
+  initCapacitor,
+  initSearchandiser,
+  transformConfig,
+  CONFIGURATION_MASK,
+  Searchandiser
+} from '../../src/searchandiser';
+import * as serviceInitialiser from '../../src/services/init';
 import * as Tags from '../../src/tags/tag';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
+import * as groupby from 'groupby-api';
 import riot = require('riot');
 
 describe('searchandiser', () => {
@@ -126,7 +133,7 @@ describe('searchandiser', () => {
     });
   });
 
-  describe('extract configuration', () => {
+  describe('transformConfig()', () => {
     it('should not modify the configuration', () => {
       const config = transformConfig(<any>{});
       expect(config).to.eql({});
@@ -207,7 +214,10 @@ describe('searchandiser', () => {
     const fluxMixin = { a: 'b', c: 'd' };
     sandbox.stub(Tags, 'MixinFlux', () => fluxMixin);
     sandbox.stub(riot, 'mixin', (mixin) => expect(mixin).to.eq(fluxMixin));
-    sandbox.stub(handlers, 'attachHandlers', (flx) => expect(flx).to.be.an.instanceof(FluxCapacitor));
+    sandbox.stub(serviceInitialiser, 'initServices', (fluxInstance, config) => {
+      expect(fluxInstance).to.be.an.instanceof(FluxCapacitor);
+      expect(config).to.eql({ initialSearch: true });
+    });
 
     const configure = initSearchandiser();
     expect(configure).to.be.a('function');
@@ -216,5 +226,16 @@ describe('searchandiser', () => {
 
     expect(configure['flux']).to.be.an.instanceof(FluxCapacitor);
     expect(configure['config']).to.eql({ initialSearch: true });
+  });
+
+  it('should create a new flux capacitor', () => {
+    const config = { customerId: 123, a: 'b', c: 'd' };
+    sandbox.stub(groupby, 'FluxCapacitor', (customerId, configuration, mask) => {
+      expect(customerId).to.eq(123);
+      expect(configuration).to.eq(config);
+      expect(mask).to.eq(CONFIGURATION_MASK);
+    });
+
+    initCapacitor(<any>config);
   });
 });
