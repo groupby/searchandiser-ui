@@ -40,7 +40,7 @@ export default function <T extends FluxTag>(tagName: string, cb: (suite: Functio
 
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
-  riot.mixin('test', Object.assign(MixinFlux(flux, {}), obj));
+  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), obj));
   return flux;
 }
 

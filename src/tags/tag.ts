@@ -94,6 +94,6 @@ function setScope(tag: FluxTag) {
   }
 }
 
-export function MixinFlux(flux: FluxCapacitor, config: any) {
-  return Object.assign(new FluxTag()['__proto__'], { flux, config });
+export function MixinFlux(flux: FluxCapacitor, config: any, services: any) {
+  return Object.assign(new FluxTag()['__proto__'], { flux, config, services });
 }
