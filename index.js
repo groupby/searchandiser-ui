@@ -1,1 +1,1 @@
-module.exports = require('./dist/searchandiser-ui');
+module.exports = require('./src/index.ts');

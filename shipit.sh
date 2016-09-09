@@ -3,19 +3,30 @@ git clone -b gh-pages https://github.com/groupby/api-javascript.git ${HOME}/api-
 
 currentVersion=`cat package.json | jq -r .version`
 
-cp dist/searchandiser-ui-*.js ${HOME}/cdn/static/javascript
-cp dist/searchandiser-ui-${currentVersion}.js ${HOME}/cdn/static/javascript/searchandiser-ui-canary.js
-cp dist/searchandiser-ui-${currentVersion}.min.js ${HOME}/cdn/static/javascript/searchandiser-ui-canary.min.js
-cp dist/searchandiser-ui-*.js ${HOME}/api-javascript/dist
-cp dist/searchandiser-ui-${currentVersion}.js ${HOME}/api-javascript/dist/searchandiser-ui-canary.js
-cp dist/searchandiser-ui-${currentVersion}.min.js ${HOME}/api-javascript/dist/searchandiser-ui-canary.min.js
+copyFiles() {
+  cp dist/searchandiser-ui-*.js* ${1}
+  for file in dist/searchandiser-ui-*.js*
+  do
+    filename=$(basename "${file}")
+    target="${1}/${filename//${currentVersion}/canary}"
+
+    if [[ ${file} =~ \.min\.js$ ]]; then
+      sed "s/searchandiser-ui-${currentVersion}/searchandiser-ui-canary/g" "${file}" > "${target}"
+    else
+      cp "${file}" "${target}"
+    fi
+  done
+}
+
+copyFiles ${HOME}/cdn/static/javascript
+copyFiles ${HOME}/api-javascript/dist
 
 cd ${HOME}/cdn
-git add static/javascript/searchandiser-ui-*.js
+git add static/javascript/searchandiser-ui-*.js*
 git commit -m "Release searchandiser-ui v${currentVersion}"
 git push
 
 cd ${HOME}/api-javascript
-git add dist/searchandiser-ui-*.js
+git add dist/searchandiser-ui-*.js*
 git commit -m "Release searchandiser-ui v${currentVersion}"
 git push

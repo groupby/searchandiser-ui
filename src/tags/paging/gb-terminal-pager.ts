@@ -1,6 +1,6 @@
 import { FluxTag } from '../tag';
-const lDoubleArrowUrl = require('url!./double-arrow-left.png');
-const rDoubleArrowUrl = require('url!./double-arrow-right.png');
+const lDoubleArrowUrl = require('./double-arrow-left.png');
+const rDoubleArrowUrl = require('./double-arrow-right.png');
 
 export interface TerminalPager extends FluxTag { }
 
