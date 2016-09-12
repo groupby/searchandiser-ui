@@ -1,8 +1,0 @@
-.*
-coverage/
-scripts/
-test/
-typings/
-lib/
-
-!build/
