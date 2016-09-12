@@ -1,10 +1,17 @@
+import { UrlParser } from '../../../src/services/url-parser';
 import { Query } from '../../../src/tags/query/gb-query';
-import * as utils from '../../../src/utils';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events, Query as QueryModel } from 'groupby-api';
 
-suite('gb-query', Query, ({ tag, flux }) => {
+const config = {
+  url: {
+    queryParam: 'q',
+    searchUrl: 'search'
+  }
+};
+
+suite('gb-query', Query, { config }, ({ tag, flux }) => {
   it('should have default values', () => {
     tag().init();
 
@@ -14,24 +21,16 @@ suite('gb-query', Query, ({ tag, flux }) => {
     expect(tag().staticSearch).to.be.false;
     expect(tag().saytEnabled).to.be.true;
     expect(tag().autoSearch).to.be.true;
-    expect(tag().queryFromUrl).to.be.ok;
-    expect(tag().queryFromUrl.raw.query).to.eq('');
   });
 
   it('should allow override from opts', () => {
-    const queryParam = 'query';
-    const searchUrl = 'search.html';
-
     tag().opts = {
-      queryParam, searchUrl,
       staticSearch: true,
       sayt: false,
       autoSearch: false
     };
     tag().init();
 
-    expect(tag().queryParam).to.eq(queryParam);
-    expect(tag().searchUrl).to.eq(searchUrl);
     expect(tag().staticSearch).to.be.true;
     expect(tag().saytEnabled).to.be.false;
     expect(tag().autoSearch).to.be.false;
@@ -92,7 +91,7 @@ suite('gb-query', Query, ({ tag, flux }) => {
 
   it('should do a search from the parsed url', () => {
     const query = 'red sneakers';
-    sinon.stub(utils, 'parseQueryFromLocation', () => new QueryModel(query));
+    sinon.stub(UrlParser, 'parseQueryFromLocation', () => new QueryModel(query));
     flux().search = (queryString: string): any => expect(queryString).to.eq(queryString);
 
     tag().init();
@@ -100,7 +99,7 @@ suite('gb-query', Query, ({ tag, flux }) => {
 
   it('should not do a search from the parsed url when initialSearch is true', () => {
     flux().search = (): any => expect.fail();
-    tag().config = { initialSearch: true };
+    tag().config = { initialSearch: true, url: {} };
 
     tag().init();
   });

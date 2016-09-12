@@ -39,8 +39,9 @@ export class Sayt {
     this.categoryField = this.saytConfig.categoryField;
     this.struct = Object.assign({}, this.config.structure, this.saytConfig.structure);
     this.allCategoriesLabel = this.saytConfig.allCategoriesLabel || 'All Departments';
-    this.searchUrl = this.saytConfig.searchUrl || '/search';
-    this.queryParam = this.saytConfig.queryParam || 'q';
+    this.queryParam = this.config.url.queryParam;
+    this.searchUrl = this.config.url.searchUrl;
+
     this.showProducts = this.saytConfig.products > 0;
 
     this.sayt.configure(this.generateSaytConfig());

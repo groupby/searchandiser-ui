@@ -3,7 +3,14 @@ import { LOCATION } from '../../src/utils';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
+const config = {
+  url: {
+    queryParam: 'q',
+    searchUrl: 'search'
+  }
+};
+
+suite<Query>('gb-query', { config }, ({ flux, html, sandbox, mount: _mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
@@ -51,6 +58,6 @@ suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
   }
 
   function mount(autoSearch: boolean = true) {
-    return _mount({ sayt: false, autoSearch });
+    return _mount({ sayt: false, autoSearch, config });
   }
 });

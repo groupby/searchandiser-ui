@@ -6,10 +6,11 @@ import riot = require('riot');
 
 export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields}';
 export const DEFAULT_CONFIG = { initialSearch: true };
+export const DEFAULT_URL_CONFIG = { queryParam: 'q', searchUrl: 'search' };
 
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig & any = {}) {
-    const config = Object.assign(DEFAULT_CONFIG, rawConfig);
+    const config: SearchandiserConfig = applyDefaultConfig(rawConfig);
     const flux = Object.assign(initCapacitor(config), Events);
     const services = initServices(flux, config);
     riot.mixin(MixinFlux(flux, config, services));
@@ -20,6 +21,12 @@ export function initSearchandiser() {
 export function initCapacitor(config: SearchandiserConfig) {
   const finalConfig = transformConfig(config);
   return new FluxCapacitor(finalConfig.customerId, finalConfig, CONFIGURATION_MASK);
+}
+
+export function applyDefaultConfig(rawConfig: SearchandiserConfig): SearchandiserConfig {
+  const config = Object.assign({}, DEFAULT_CONFIG, rawConfig);
+  config.url = Object.assign(DEFAULT_URL_CONFIG, config.url);
+  return config;
 }
 
 export function transformConfig(config: SearchandiserConfig): SearchandiserConfig & any {
@@ -103,8 +110,16 @@ export interface BridgeConfig {
   skipSemantish?: boolean;
 }
 
+export interface UrlConfig {
+  // beautifier?: boolean;
+  queryParam?: string;
+  searchUrl?: string;
+}
+
 export interface SearchandiserConfig {
   bridge?: BridgeConfig;
+
+  url?: UrlConfig;
 
   customerId: string;
   area?: string;
