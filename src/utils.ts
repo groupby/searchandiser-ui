@@ -34,8 +34,15 @@ export function checkNested(obj: any, ...keys: string[]): boolean {
     }, true);
 }
 
+export const GLOBALS = {
+  windowSetLocationSearch: (search) => window.location.search = search,
+  windowGetLocationSearch: () => window.location.search,
+  windowLocationPathname: () => window.location.pathname,
+  windowLocationReplace: (url) => window.location.replace(url)
+};
+
 export function getParam(param: string): string | null {
-  return queryString.parse(window.location.search)[param] || null;
+  return queryString.parse(GLOBALS.windowGetLocationSearch())[param] || null;
 }
 
 export function updateLocation(searchUrl: string, queryParamName: string, query: string, refinements: any[]) {
@@ -47,16 +54,16 @@ export function updateLocation(searchUrl: string, queryParamName: string, query:
 
   queryObj[queryParamName] = query;
 
-  if (window.location.pathname === searchUrl) {
+  if (GLOBALS.windowLocationPathname() === searchUrl) {
     // TODO better way to do this is with browser history rewrites
-    window.location.search = `?${queryString.stringify(queryObj)}`;
+    GLOBALS.windowSetLocationSearch(`?${queryString.stringify(queryObj)}`);
   } else {
-    window.location.replace(`${searchUrl}?${queryString.stringify(queryObj)}`);
+    GLOBALS.windowLocationReplace(`${searchUrl}?${queryString.stringify(queryObj)}`);
   }
 }
 
 export function parseQueryFromLocation(queryParamName: string, queryConfig: any) {
-  const queryParams = queryString.parse(location.search);
+  const queryParams = queryString.parse(GLOBALS.windowGetLocationSearch());
   const queryFromUrl = new Query(queryParams[queryParamName] || '')
     .withConfiguration(queryConfig, CONFIGURATION_MASK);
 
@@ -66,7 +73,6 @@ export function parseQueryFromLocation(queryParamName: string, queryConfig: any)
       refinements.forEach((refinement) => queryFromUrl.withSelectedRefinements(refinement));
     }
   }
-
   return queryFromUrl;
 }
 
@@ -100,3 +106,7 @@ export function remap(x: any, mapping: any) {
 }
 
 export { debounce }
+
+export function checkBooleanAttr(attribute: string, opts: any) {
+  return attribute in opts && opts[attribute] != 'false' && opts[attribute] !== false;
+}

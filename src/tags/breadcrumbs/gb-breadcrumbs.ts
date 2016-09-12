@@ -1,4 +1,4 @@
-import { displayRefinement, toRefinement, unless } from '../../utils';
+import { checkBooleanAttr, displayRefinement, toRefinement } from '../../utils';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 
@@ -14,8 +14,8 @@ export class Breadcrumbs {
 
   init() {
     this.toView = displayRefinement;
-    this.hideQuery = unless(this.opts.hideQuery, false);
-    this.hideRefinements = unless(this.opts.hideRefinements, false);
+    this.hideQuery = checkBooleanAttr('hideQuery', this.opts);
+    this.hideRefinements = checkBooleanAttr('hideRefinements', this.opts);
 
     this.flux.on(Events.REFINEMENTS_CHANGED, ({ selected }) => this.updateRefinements(selected));
     this.flux.on(Events.RESULTS, ({ originalQuery }) => this.updateQuery(originalQuery));
