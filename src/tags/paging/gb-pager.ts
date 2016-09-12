@@ -1,6 +1,6 @@
 import { FluxTag } from '../tag';
-const lArrowUrl = require('url!./arrow-left.png');
-const rArrowUrl = require('url!./arrow-right.png');
+const lArrowUrl = require('./arrow-left.png');
+const rArrowUrl = require('./arrow-right.png');
 
 export interface Pager extends FluxTag { }
 

@@ -18,7 +18,7 @@ export class Select {
   default: boolean;
 
   init(): void {
-    this.iconUrl = require('url!./arrow-down.png');
+    this.iconUrl = require('./arrow-down.png');
 
     const _scope = this._scope;
     this.clearOption = {

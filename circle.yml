@@ -10,4 +10,5 @@ deployment:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: groupby
     commands:
+      - npm run prod
       - ./shipit.sh

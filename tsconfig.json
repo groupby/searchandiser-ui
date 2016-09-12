@@ -7,7 +7,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "declaration": true,
-    "outDir": "definitions"
+    "outDir": "/definitions"
   },
   "exclude": [
     "dist",
