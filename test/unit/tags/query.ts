@@ -1,10 +1,11 @@
 import { Url } from '../../../src/services/url';
 import { Query } from '../../../src/tags/query/gb-query';
+import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events, Query as QueryModel } from 'groupby-api';
 
-suite('gb-query', Query, ({ tag, flux }) => {
+suite('gb-query', Query, ({ tag, flux, sandbox }) => {
   it('should have default values', () => {
     tag().init();
 
@@ -96,8 +97,45 @@ suite('gb-query', Query, ({ tag, flux }) => {
   });
 
   describe('event listeners', () => {
+    it('should add click listener on mobile devices', (done) => {
+      sandbox().stub(utils, 'isMobile', () => true);
+      tag().searchBox = document.createElement('input');
+      tag().init();
+
+      tag().searchBox = <any>{
+        addEventListener(event: string, cb: Function) {
+          expect(event).to.eq('click');
+          cb();
+        }
+      };
+
+      tag().scrollToTop = done();
+
+      tag().listenForClick();
+    });
+
+    it('should not add click listener on non-mobile devices', () => {
+      sandbox().stub(utils, 'isMobile', () => false);
+      const spy = sinon.spy(tag(), 'scrollToTop');
+      tag().searchBox = document.createElement('input');
+      tag().init();
+
+      tag().searchBox = <any>{
+        addEventListener(event: string, cb: Function) {
+          expect(event).to.eq('click');
+          cb();
+        }
+      };
+
+      tag().listenForClick();
+      expect(spy.callCount).to.eq(0);
+    });
+
     it('should add input listener', (done) => {
-      flux().reset = () => done();
+      tag().searchBox = document.createElement('input');
+      tag().init();
+
+      flux().reset = (): any => done();
       tag().searchBox = <any>{
         addEventListener(event: string, cb: Function) {
           expect(event).to.eq('input');
@@ -107,28 +145,14 @@ suite('gb-query', Query, ({ tag, flux }) => {
 
       tag().listenForInput();
     });
-    //
-    // it('should add submit listener', (done) => {
-    //   flux().reset = () => done();
-    //   tag().searchBox = <any>{
-    //     addEventListener(event: string, cb: Function) {
-    //       expect(event).to.eq('keydown');
-    //       cb({ keyCode: 13 });
-    //     }
-    //   };
-    //
-    //   tag().listenForSubmit();
-    // });
-    // 
-    // it('should add enter key listener', (done) => {
-    //   tag().searchBox = <any>{
-    //     addEventListener(event: string, cb: Function) {
-    //       expect(event).to.eq('keydown');
-    //       done();
-    //     }
-    //   };
-    //
-    //   tag().onPressEnter(() => null);
-    // });
+
+    it('should submit on enter keypress', () => {
+      tag().init();
+      const spy = sandbox().spy(tag(), 'onSubmit');
+      const event = Object.assign(new Event('keydown'), { keyCode: 13 });
+
+      tag().keydownListener(event);
+      expect(spy.callCount).to.eq(1);
+    });
   });
 });

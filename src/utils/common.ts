@@ -3,6 +3,7 @@ import { Navigation, SelectedRangeRefinement, SelectedValueRefinement } from 'gr
 import * as queryString from 'query-string';
 import filterObject = require('filter-object');
 import oget = require('oget');
+import MobileDetect = require('mobile-detect');
 
 export type SelectedRefinement = SelectedValueRefinement & SelectedRangeRefinement;
 
@@ -14,6 +15,11 @@ export const LOCATION = {
   replace: (url) => window.location.replace(url),
   assign: (url) => window.location.assign(url)
 };
+
+export function isMobile() {
+  const mobileDetect = new MobileDetect(window.navigator.userAgent);
+  return mobileDetect.mobile();
+}
 
 export function findSearchBox() {
   return <HTMLInputElement>oget(findTag('gb-query'), '_tag.searchBox');
