@@ -7,7 +7,7 @@ import filterObject = require('filter-object');
 
 export type SelectedRefinement = SelectedValueRefinement & SelectedRangeRefinement;
 
-export const WINDOW = {
+export const LOCATION = {
   setSearch: (search) => window.location.search = search,
   getSearch: () => window.location.search,
   pathname: () => window.location.pathname,
@@ -43,7 +43,7 @@ export function checkNested(obj: any, ...keys: string[]): boolean {
 }
 
 export function getParam(param: string): string | null {
-  return queryString.parse(WINDOW.getSearch())[param] || null;
+  return queryString.parse(LOCATION.getSearch())[param] || null;
 }
 
 export function updateLocation(searchUrl: string, queryParamName: string, query: string, refinements: any[]) {
@@ -55,16 +55,16 @@ export function updateLocation(searchUrl: string, queryParamName: string, query:
 
   queryObj[queryParamName] = query;
 
-  if (WINDOW.pathname() === searchUrl) {
+  if (LOCATION.pathname() === searchUrl) {
     // TODO better way to do this is with browser history rewrites
-    WINDOW.setSearch(`?${queryString.stringify(queryObj)}`);
+    LOCATION.setSearch(`?${queryString.stringify(queryObj)}`);
   } else {
-    WINDOW.replace(`${searchUrl}?${queryString.stringify(queryObj)}`);
+    LOCATION.replace(`${searchUrl}?${queryString.stringify(queryObj)}`);
   }
 }
 
 export function parseQueryFromLocation(queryParamName: string, queryConfig: any) {
-  const queryParams = queryString.parse(WINDOW.getSearch());
+  const queryParams = queryString.parse(LOCATION.getSearch());
   const queryFromUrl = new Query(queryParams[queryParamName] || '')
     .withConfiguration(queryConfig, CONFIGURATION_MASK);
 

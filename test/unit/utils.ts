@@ -1,5 +1,5 @@
 import utils = require('../../src/utils');
-import { WINDOW } from '../../src/utils';
+import { LOCATION } from '../../src/utils';
 import { expect } from 'chai';
 import { Navigation } from 'groupby-api';
 
@@ -76,11 +76,11 @@ describe('utils', () => {
 
   describe('updateLocation()', () => {
     it('should update window location', () => {
-      sandbox.stub(WINDOW, 'pathname', () => 'www.google.ca');
-      sandbox.stub(WINDOW, 'setSearch', (search) => {
+      sandbox.stub(LOCATION, 'pathname', () => 'www.google.ca');
+      sandbox.stub(LOCATION, 'setSearch', (search) => {
         expect(search).to.eq('?query=shoes&refinements=%5B1%2C2%2C3%5D');
       });
-      sandbox.stub(WINDOW, 'replace', (url) => {
+      sandbox.stub(LOCATION, 'replace', (url) => {
         expect(url).to.eq('www.amazon.ca?query=shoes&refinements=%5B1%2C2%2C3%5D');
       });
 

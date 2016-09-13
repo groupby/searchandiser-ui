@@ -1,5 +1,5 @@
 import { Redirect } from '../../../src/services/redirect';
-import { WINDOW } from '../../../src/utils';
+import { LOCATION } from '../../../src/utils';
 import { expect } from 'chai';
 
 describe('redirect service', () => {
@@ -9,7 +9,7 @@ describe('redirect service', () => {
 
   it('should attach a handler for redirect events', () => {
     const redirect = 'my-page.html';
-    sandbox.stub(WINDOW, 'assign', (url) => expect(url).to.eq(redirect));
+    sandbox.stub(LOCATION, 'assign', (url) => expect(url).to.eq(redirect));
     const flux = <any>{
       on: (event, cb) => {
         expect(event).to.eq('redirect');
