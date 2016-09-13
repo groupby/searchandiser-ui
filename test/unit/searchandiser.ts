@@ -1,8 +1,10 @@
 import {
+  applyDefaultConfig,
   initCapacitor,
   initSearchandiser,
   transformConfig,
   CONFIGURATION_MASK,
+  DEFAULT_URL_CONFIG,
   Searchandiser
 } from '../../src/searchandiser';
 import * as serviceInitialiser from '../../src/services/init';
@@ -133,6 +135,27 @@ describe('searchandiser', () => {
     });
   });
 
+  describe('applyDefaultConfig()', () => {
+    it('should set defaults', () => {
+      const config = applyDefaultConfig(<any>{});
+
+      expect(config).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG });
+    });
+
+    it('should override defaults', () => {
+      const originalConfig: any = {
+        initialSearch: false,
+        url: {
+          queryParam: 'query',
+          searchUrl: '/productSearch'
+        }
+      };
+      const config = applyDefaultConfig(originalConfig);
+
+      expect(config).to.eql(originalConfig);
+    });
+  });
+
   describe('transformConfig()', () => {
     it('should not modify the configuration', () => {
       const config = transformConfig(<any>{});
@@ -216,7 +239,7 @@ describe('searchandiser', () => {
     sandbox.stub(riot, 'mixin', (mixin) => expect(mixin).to.eq(fluxMixin));
     sandbox.stub(serviceInitialiser, 'initServices', (fluxInstance, config) => {
       expect(fluxInstance).to.be.an.instanceof(FluxCapacitor);
-      expect(config).to.eql({ initialSearch: true });
+      expect(config).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG });
     });
 
     const configure = initSearchandiser();
@@ -225,7 +248,7 @@ describe('searchandiser', () => {
     configure();
 
     expect(configure['flux']).to.be.an.instanceof(FluxCapacitor);
-    expect(configure['config']).to.eql({ initialSearch: true });
+    expect(configure['config']).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG });
   });
 
   it('should create a new flux capacitor', () => {

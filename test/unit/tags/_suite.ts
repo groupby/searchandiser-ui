@@ -20,15 +20,9 @@ function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixinOr
     afterEach(() => _sandbox.restore());
 
     tests({
-      flux() {
-        return _flux;
-      },
-      tag() {
-        return _tag;
-      },
-      sandbox() {
-        return _sandbox;
-      },
+      flux: () => _flux,
+      tag: () => _tag,
+      sandbox: () => _sandbox,
       tagName,
       mount
     });

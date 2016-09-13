@@ -1,7 +1,6 @@
-import { CONFIGURATION_MASK } from './searchandiser';
 import debounce = require('debounce');
 import oget = require('oget');
-import { Navigation, Query, SelectedRangeRefinement, SelectedValueRefinement } from 'groupby-api';
+import { Navigation, SelectedRangeRefinement, SelectedValueRefinement } from 'groupby-api';
 import queryString = require('query-string');
 import filterObject = require('filter-object');
 
@@ -61,20 +60,6 @@ export function updateLocation(searchUrl: string, queryParamName: string, query:
   } else {
     LOCATION.replace(`${searchUrl}?${queryString.stringify(queryObj)}`);
   }
-}
-
-export function parseQueryFromLocation(queryParamName: string, queryConfig: any) {
-  const queryParams = queryString.parse(LOCATION.getSearch());
-  const queryFromUrl = new Query(queryParams[queryParamName] || '')
-    .withConfiguration(queryConfig, CONFIGURATION_MASK);
-
-  if (queryParams.refinements) {
-    const refinements = JSON.parse(queryParams.refinements);
-    if (refinements.length > 0) {
-      refinements.forEach((refinement) => queryFromUrl.withSelectedRefinements(refinement));
-    }
-  }
-  return queryFromUrl;
 }
 
 export function unless(obj: any, ...defaultObjs: any[]) {

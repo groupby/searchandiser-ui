@@ -1,8 +1,8 @@
-import { findTag, parseQueryFromLocation, unless, updateLocation } from '../../utils';
+import { findTag, unless, updateLocation } from '../../utils';
 import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
-import { Events, Query as QueryModel } from 'groupby-api';
+import { Events } from 'groupby-api';
 
 const KEY_ENTER = 13;
 
@@ -18,19 +18,16 @@ export class Query {
   staticSearch: string;
   saytEnabled: boolean;
   autoSearch: boolean;
-  queryFromUrl: QueryModel;
   searchBox: HTMLInputElement;
   enterKeyHandlers: Function[];
 
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
-    this.queryParam = this.parentOpts.queryParam || 'q';
-    this.searchUrl = this.parentOpts.searchUrl || 'search';
+    this.queryParam = this.config.url.queryParam;
+    this.searchUrl = this.config.url.searchUrl;
     this.saytEnabled = unless(this.parentOpts.sayt, true);
     this.autoSearch = unless(this.parentOpts.autoSearch, true);
     this.staticSearch = unless(this.parentOpts.staticSearch, false);
-
-    this.queryFromUrl = parseQueryFromLocation(this.queryParam, this.config);
 
     this.enterKeyHandlers = [];
 
@@ -49,11 +46,6 @@ export class Query {
     }
 
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
-
-    if (!this.config.initialSearch && this.queryFromUrl) {
-      this.flux.query = this.queryFromUrl;
-      this.flux.search(this.queryFromUrl.raw.query);
-    }
   }
 
   rewriteQuery(query: string) {

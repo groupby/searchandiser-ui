@@ -3,7 +3,7 @@ import { LOCATION } from '../../../src/utils';
 import { expect } from 'chai';
 
 describe('redirect service', () => {
-  let sandbox;
+  let sandbox: Sinon.SinonSandbox;
   beforeEach(() => sandbox = sinon.sandbox.create());
   afterEach(() => sandbox.restore());
 
@@ -17,6 +17,6 @@ describe('redirect service', () => {
       }
     };
 
-    new Redirect(flux, {}).init();
+    new Redirect(flux).init();
   });
 });

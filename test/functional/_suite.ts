@@ -2,7 +2,13 @@ import '../../src/tags/index';
 import { FluxTag, MixinFlux } from '../../src/tags/tag';
 import { FluxCapacitor } from 'groupby-api';
 
-export default function <T extends FluxTag>(tagName: string, cb: (suite: FunctionalSuite<T>) => void) {
+function suite<T extends FluxTag>(tagName: string, mixin: any, cb: (suite: FunctionalSuite<T>) => void);
+function suite<T extends FluxTag>(tagName: string, cb: (suite: FunctionalSuite<T>) => void);
+function suite<T extends FluxTag>(tagName: string, mixinOrCb: any, cb?: Function) {
+  const hasMixin = typeof mixinOrCb === 'object';
+  const mixin = hasMixin ? mixinOrCb : {};
+  const tests = hasMixin ? cb : mixinOrCb;
+
   describe(`${tagName} behaviour`, () => {
     let _flux: FluxCapacitor;
     let _html: HTMLElement;
@@ -10,7 +16,7 @@ export default function <T extends FluxTag>(tagName: string, cb: (suite: Functio
 
     beforeEach(() => {
       _sandbox = sinon.sandbox.create();
-      _flux = mixinFlux();
+      _flux = mixinFlux(mixin);
       _html = createTag(tagName);
     });
     afterEach(() => {
@@ -18,16 +24,10 @@ export default function <T extends FluxTag>(tagName: string, cb: (suite: Functio
       _sandbox.restore();
     });
 
-    cb({
-      flux() {
-        return _flux;
-      },
-      html() {
-        return _html;
-      },
-      sandbox() {
-        return _sandbox;
-      },
+    tests({
+      flux: () => _flux,
+      html: () => _html,
+      sandbox: () => _sandbox,
       tagName,
       mount
     });
@@ -37,6 +37,8 @@ export default function <T extends FluxTag>(tagName: string, cb: (suite: Functio
     return <T>riot.mount(tagName, opts)[0];
   }
 }
+
+export default suite;
 
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');

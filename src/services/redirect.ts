@@ -3,7 +3,7 @@ import { Events, FluxCapacitor } from 'groupby-api';
 
 export class Redirect {
 
-  constructor(private flux: FluxCapacitor, private config: any) { }
+  constructor(private flux: FluxCapacitor) { }
 
   init() {
     this.flux.on(Events.REDIRECT, (redirect) => LOCATION.assign(redirect));

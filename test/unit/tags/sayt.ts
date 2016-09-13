@@ -5,9 +5,17 @@ import suite, { fluxTag } from './_suite';
 import { expect } from 'chai';
 import { Events, FluxCapacitor } from 'groupby-api';
 
-const structure = { title: 'title', price: 'price', image: 'image' };
+const structure = {
+  title: 'title',
+  price: 'price',
+  image: 'image'
+};
+const urlConfig = {
+  queryParam: 'q',
+  searchUrl: 'search'
+};
 
-suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
+suite('gb-sayt', Sayt, { config: { structure, url: urlConfig } }, ({ flux, tag, sandbox }) => {
   let sayt;
 
   beforeEach(() => tag().sayt = sayt = { configure: () => null });
@@ -27,7 +35,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
     expect(tag().categoryField).to.not.be.ok;
     expect(tag().struct).to.eql(structure);
     expect(tag().allCategoriesLabel).to.eq('All Departments');
-    expect(tag().searchUrl).to.eq('/search');
+    expect(tag().searchUrl).to.eq('search');
     expect(tag().queryParam).to.eq('q');
     expect(tag().showProducts).to.be.true;
   });
@@ -42,6 +50,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       image: 'thumbnail',
       url: 'url'
     };
+    tag().config.url = { queryParam, searchUrl };
     tag().config.tags = {
       sayt: {
         products: 0,
@@ -53,8 +62,6 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
         highlight: false,
         allowedNavigations: ['brand'],
         navigationNames,
-        searchUrl,
-        queryParam,
         allCategoriesLabel
       }
     };
@@ -70,8 +77,6 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       highlight: false,
       allowedNavigations: ['brand'],
       navigationNames,
-      searchUrl,
-      queryParam,
       allCategoriesLabel
     });
     expect(tag().categoryField).to.eq(categoryField);
@@ -94,7 +99,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
     const customerId = 'mycustomer';
     const collection = 'mycollection';
     const area = 'MyArea';
-    tag().config = { customerId, collection, area };
+    tag().config = { customerId, collection, area, url: urlConfig };
     tag().init();
 
     const config = tag().generateSaytConfig();
@@ -474,7 +479,7 @@ describe('gb-sayt logic', () => {
   beforeEach(() => {
     sayt = { configure: () => null };
     ({ tag, flux } = fluxTag(new Sayt(), {
-      config: { structure },
+      config: { structure, url: urlConfig },
       sayt
     }));
     sandbox = sinon.sandbox.create();
@@ -486,7 +491,7 @@ describe('gb-sayt logic', () => {
     const suggestion = 'red heels';
     tag.rewriteQuery = () => expect.fail();
     sandbox.stub(utils, 'updateLocation', (searchUrl, queryParam, query, refinements) => {
-      expect(searchUrl).to.eq('/search');
+      expect(searchUrl).to.eq('search');
       expect(queryParam).to.eq('q');
       expect(query).to.eq(suggestion);
       expect(refinements).to.eql([]);
@@ -511,7 +516,7 @@ describe('gb-sayt logic', () => {
       tag.saytConfig = {};
       tag.flux.rewrite = (): any => expect.fail();
       sandbox.stub(utils, 'updateLocation', (searchUrl, queryParam, query, refinements) => {
-        expect(searchUrl).to.eq('/search');
+        expect(searchUrl).to.eq('search');
         expect(queryParam).to.eq('q');
         expect(query).to.eq(suggestion);
         expect(refinements).to.eql([{ navigationName: field, value: refinement, type: 'Value' }]);
