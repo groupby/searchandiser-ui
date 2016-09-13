@@ -1,6 +1,6 @@
-import { Query, SelectedValueRefinement, SelectedRangeRefinement } from 'groupby-api';
 import { UrlBeautifier, UrlGenerator, UrlParser } from '../../src/url-beautifier';
 import { expect } from 'chai';
+import { Query, SelectedRangeRefinement, SelectedValueRefinement } from 'groupby-api';
 
 describe('URL beautifier', () => {
   let beautifier: UrlBeautifier;
@@ -35,7 +35,7 @@ describe('URL beautifier', () => {
     });
 
     it('should convert a simple query to a URL with a custom token', () => {
-      beautifier.config.queryToken = 'a'
+      beautifier.config.queryToken = 'a';
       query.withQuery('sneakers');
 
       expect(generator.build(query)).to.eq('/sneakers/a');
@@ -45,35 +45,35 @@ describe('URL beautifier', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'DeWalt'));
 
-      expect(generator.build(query)).to.eq('/DeWalt/b')
+      expect(generator.build(query)).to.eq('/DeWalt/b');
     });
 
     it('should convert a multiple refinements on same field a URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'DeWalt'), refinement('brand', 'Henson'));
 
-      expect(generator.build(query)).to.eq('/DeWalt/Henson/bb')
+      expect(generator.build(query)).to.eq('/DeWalt/Henson/bb');
     });
 
     it('should convert a refinement with a slash to a URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'De/Walt'));
 
-      expect(generator.build(query)).to.eq('/De%2FWalt/b')
+      expect(generator.build(query)).to.eq('/De%2FWalt/b');
     });
 
     it('should convert a refinement with a plus to a URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'De+Walt'));
 
-      expect(generator.build(query)).to.eq('/De%2BWalt/b')
+      expect(generator.build(query)).to.eq('/De%2BWalt/b');
     });
 
     it('should convert a multiple refinement query to a URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' }, { h: 'height' });
       query.withSelectedRefinements(refinement('brand', 'Farmer John'), refinement('height', '20in'));
 
-      expect(generator.build(query)).to.eq('/Farmer+John/20in/bh')
+      expect(generator.build(query)).to.eq('/Farmer+John/20in/bh');
     });
 
     it('should convert query and refinements to a URL', () => {
@@ -94,7 +94,7 @@ describe('URL beautifier', () => {
     it('should convert unmapped refinements to a query parameter', () => {
       query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
 
-      expect(generator.build(query)).to.eq('/?refinements=colour%3Ddark+purple~price%3A100..220')
+      expect(generator.build(query)).to.eq('/?refinements=colour%3Ddark+purple~price%3A100..220');
     });
 
     describe('canonical URLs', () => {
@@ -108,14 +108,14 @@ describe('URL beautifier', () => {
         const otherQuery = new Query()
           .withSelectedRefinements(ref3, ref1, ref2);
 
-        expect(generator.build(query)).to.eq(generator.build(otherQuery))
+        expect(generator.build(query)).to.eq(generator.build(otherQuery));
       });
 
       it('should create canonical URLs with multiple refinements on same field', () => {
         beautifier.config.refinementMapping.push({ b: 'brand' });
         query.withSelectedRefinements(refinement('brand', 'Henson'), refinement('brand', 'DeWalt'));
 
-        expect(generator.build(query)).to.eq('/DeWalt/Henson/bb')
+        expect(generator.build(query)).to.eq('/DeWalt/Henson/bb');
       });
 
       it('should create canonical query parameters', () => {
@@ -123,11 +123,11 @@ describe('URL beautifier', () => {
         const otherQuery = new Query()
           .withSelectedRefinements(ref3, ref1, ref2);
 
-        expect(generator.build(query)).to.eq(generator.build(otherQuery))
+        expect(generator.build(query)).to.eq(generator.build(otherQuery));
       });
 
       it('should combine mapped and unmapped refinements with query and suffix', () => {
-        beautifier.config.refinementMapping.push({ b: 'brand' }, { c: 'category' })
+        beautifier.config.refinementMapping.push({ b: 'brand' }, { c: 'category' });
         beautifier.config.queryToken = 's';
         beautifier.config.extraRefinementsParam = 'refs';
         beautifier.config.suffix = 'index.php';
@@ -137,7 +137,7 @@ describe('URL beautifier', () => {
           .withSelectedRefinements(ref2, ref1, ref3);
 
         const url = generator.build(query);
-        expect(url).to.eq('/power+drill/DeWalt/Drills/sbc/index.php?refs=colour%3Dorange')
+        expect(url).to.eq('/power+drill/DeWalt/Drills/sbc/index.php?refs=colour%3Dorange');
         expect(url).to.eq(generator.build(otherQuery));
       });
     });
@@ -145,12 +145,8 @@ describe('URL beautifier', () => {
 
   describe('URL parser', () => {
     let parser: UrlParser;
-    let query: Query;
 
-    beforeEach(() => {
-      parser = new UrlParser(beautifier);
-      query = new Query();
-    });
+    beforeEach(() => parser = new UrlParser(beautifier));
 
     it('should parse simple query URL', () => {
       query.withQuery('apples');
@@ -261,7 +257,7 @@ describe('URL beautifier', () => {
         beautifier.config.refinementMapping.push({ c: 'colour' });
 
         expect(() => parser.parse('/Drills/b').build()).to.throw('unexpected token \'b\' found in reference');
-      })
+      });
     });
   });
 
@@ -316,7 +312,7 @@ describe('URL beautifier', () => {
 
   function refinement(field: string, value: string): SelectedValueRefinement;
   function refinement(field: string, low: number, high: number): SelectedRangeRefinement;
-  function refinement(navigationName: string, valueOrLow, high?): SelectedValueRefinement | SelectedRangeRefinement {
+  function refinement(navigationName: string, valueOrLow: any, high?: number): any {
     if (high) {
       return { navigationName, low: valueOrLow, high, type: 'Range' };
     } else {

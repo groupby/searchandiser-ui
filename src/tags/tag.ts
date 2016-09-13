@@ -1,4 +1,6 @@
 import { initCapacitor } from '../searchandiser';
+import { Redirect } from '../services/redirect';
+import { Url } from '../services/url';
 import { FluxCapacitor } from 'groupby-api';
 import { Sayt } from 'sayt';
 
@@ -10,6 +12,10 @@ export interface FluxTag extends Riot.Tag.Instance {
 
   flux: FluxCapacitor;
   config: any;
+  services: {
+    redirect: Redirect;
+    url: Url;
+  };
 }
 
 export class FluxTag {

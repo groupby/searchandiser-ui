@@ -1,6 +1,6 @@
 import { initServices, startServices } from '../../../src/services/init';
 import { Redirect } from '../../../src/services/redirect';
-import { UrlParser } from '../../../src/services/url-parser';
+import { Url } from '../../../src/services/url';
 import { expect } from 'chai';
 
 describe('service initialiser', () => {
@@ -11,11 +11,11 @@ describe('service initialiser', () => {
 
   it('should initialise all services', () => {
     const flux = { on: () => null, search: () => null };
-    const config = { c: 'd' };
+    const config = { url: {} };
 
     const services = initServices(<any>flux, <any>config);
     expect(services.redirect).to.be.an.instanceof(Redirect);
-    expect(services.urlParser).to.be.an.instanceof(UrlParser);
+    expect(services.url).to.be.an.instanceof(Url);
   });
 
   it('should start services in map', () => {

@@ -1,4 +1,4 @@
-import { findTag, unless, updateLocation } from '../../utils';
+import { findTag, unless } from '../../utils';
 import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
@@ -13,8 +13,6 @@ export interface Query extends FluxTag {
 export class Query {
 
   parentOpts: any;
-  queryParam: string;
-  searchUrl: string;
   staticSearch: string;
   saytEnabled: boolean;
   autoSearch: boolean;
@@ -23,8 +21,6 @@ export class Query {
 
   init() {
     this.parentOpts = this.opts.passthrough || this.opts;
-    this.queryParam = this.config.url.queryParam;
-    this.searchUrl = this.config.url.searchUrl;
     this.saytEnabled = unless(this.parentOpts.sayt, true);
     this.autoSearch = unless(this.parentOpts.autoSearch, true);
     this.staticSearch = unless(this.parentOpts.staticSearch, false);
@@ -93,8 +89,8 @@ export class Query {
 
   private setLocation() {
     // TODO better way to do this is with browser history rewrites
-    if (window.location.pathname !== this.searchUrl) {
-      updateLocation(this.searchUrl, this.queryParam, this.inputValue(), this.flux.query.raw.refinements);
+    if (this.services.url.active()) {
+      this.services.url.update(this.inputValue());
     } else {
       this.flux.reset(this.inputValue());
     }

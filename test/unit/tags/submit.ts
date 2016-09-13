@@ -1,28 +1,21 @@
 import { Submit } from '../../../src/tags/submit/gb-submit';
-import utils = require('../../../src/utils');
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-submit', Submit, { root: <any>{ addEventListener: () => null } }, ({ flux, sandbox, tag }) => {
+suite('gb-submit', Submit, { root: <any>{ addEventListener: () => null } }, ({ flux, tag }) => {
   it('should have default values', () => {
     tag().init();
 
     expect(tag().label).to.eq('Search');
-    expect(tag().queryParam).to.eq('q');
-    expect(tag().searchUrl).to.eq('search');
     expect(tag().staticSearch).to.be.false;
   });
 
   it('should allow override from opts', () => {
     const label = 'Submit query';
-    const queryParam = 'query';
-    const searchUrl = 'search.html';
-    tag().opts = { label, queryParam, searchUrl, staticSearch: true };
+    tag().opts = { label, staticSearch: true };
     tag().init();
 
     expect(tag().label).to.eq(label);
-    expect(tag().queryParam).to.eq(queryParam);
-    expect(tag().searchUrl).to.eq(searchUrl);
     expect(tag().staticSearch).to.be.true;
   });
 
@@ -62,17 +55,19 @@ suite('gb-submit', Submit, { root: <any>{ addEventListener: () => null } }, ({ f
     expect(tag().searchBox.value).to.eq(query);
   });
 
-  it('should submit static query', (done) => {
-    const query = 'something';
-    sandbox().stub(utils, 'updateLocation', (searchUrl, queryParam, queryString, refinements) => {
-      expect(searchUrl).to.eq('search');
-      expect(queryParam).to.eq('q');
-      expect(queryString).to.eq(query);
-      expect(refinements.length).to.eq(0);
-      done();
-    });
+  it('should submit static query', () => {
+    const newQuery = 'something';
 
-    tag().searchBox = <HTMLInputElement>{ value: query };
+    tag().searchBox = <HTMLInputElement>{ value: newQuery };
+    tag().services = <any>{
+      url: {
+        active: () => true,
+        update: (query, refinements) => {
+          expect(query).to.eq(newQuery);
+          expect(refinements.length).to.eq(0);
+        }
+      }
+    };
     tag().init();
     tag().staticSearch = true;
 
