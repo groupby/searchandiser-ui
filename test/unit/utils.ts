@@ -1,4 +1,5 @@
 import utils = require('../../src/utils');
+import { WINDOW } from '../../src/utils';
 import { expect } from 'chai';
 import { Navigation } from 'groupby-api';
 
@@ -6,7 +7,6 @@ describe('utils', () => {
   let sandbox;
 
   beforeEach(() => sandbox = sinon.sandbox.create());
-
   afterEach(() => sandbox.restore());
 
   describe('findSearchBox()', () => {
@@ -76,17 +76,16 @@ describe('utils', () => {
 
   describe('updateLocation()', () => {
     it('should update window location', () => {
-      sinon.stub(utils.GLOBALS, 'windowLocationPathname', () => 'www.google.ca');
-      utils.GLOBALS.windowSetLocationSearch = (search) => {
+      sandbox.stub(WINDOW, 'pathname', () => 'www.google.ca');
+      sandbox.stub(WINDOW, 'setSearch', (search) => {
         expect(search).to.eq('?query=shoes&refinements=%5B1%2C2%2C3%5D');
-      };
-      utils.GLOBALS.windowLocationReplace = (url) => {
+      });
+      sandbox.stub(WINDOW, 'replace', (url) => {
         expect(url).to.eq('www.amazon.ca?query=shoes&refinements=%5B1%2C2%2C3%5D');
-      };
+      });
 
       utils.updateLocation('www.google.ca', 'query', 'shoes', [1, 2, 3]);
       utils.updateLocation('www.amazon.ca', 'query', 'shoes', [1, 2, 3]);
-      utils.GLOBALS.windowLocationPathname['restore']();
     });
   });
 

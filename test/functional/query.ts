@@ -1,4 +1,5 @@
 import { Query } from '../../src/tags/query/gb-query';
+import { WINDOW } from '../../src/utils';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -29,7 +30,7 @@ suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
     });
 
     it('should hide autocomplete and modify URL on static search', () => {
-      sandbox().stub(window.location, 'replace', (url) => expect(url).to.eq('search?q='));
+      sandbox().stub(WINDOW, 'replace', (url) => expect(url).to.eq('search?q='));
       flux().search = (): any => null;
       flux().emit = (event): any => expect(event).to.eq('autocomplete:hide');
 
