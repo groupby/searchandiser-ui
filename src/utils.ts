@@ -7,6 +7,14 @@ import filterObject = require('filter-object');
 
 export type SelectedRefinement = SelectedValueRefinement & SelectedRangeRefinement;
 
+export const LOCATION = {
+  setSearch: (search) => window.location.search = search,
+  getSearch: () => window.location.search,
+  pathname: () => window.location.pathname,
+  replace: (url) => window.location.replace(url),
+  assign: (url) => window.location.assign(url)
+};
+
 export function findSearchBox() {
   return <HTMLInputElement>oget(findTag('gb-query'), '_tag.searchBox');
 }
@@ -34,15 +42,8 @@ export function checkNested(obj: any, ...keys: string[]): boolean {
     }, true);
 }
 
-export const GLOBALS = {
-  windowSetLocationSearch: (search) => window.location.search = search,
-  windowGetLocationSearch: () => window.location.search,
-  windowLocationPathname: () => window.location.pathname,
-  windowLocationReplace: (url) => window.location.replace(url)
-};
-
 export function getParam(param: string): string | null {
-  return queryString.parse(GLOBALS.windowGetLocationSearch())[param] || null;
+  return queryString.parse(LOCATION.getSearch())[param] || null;
 }
 
 export function updateLocation(searchUrl: string, queryParamName: string, query: string, refinements: any[]) {
@@ -54,16 +55,16 @@ export function updateLocation(searchUrl: string, queryParamName: string, query:
 
   queryObj[queryParamName] = query;
 
-  if (GLOBALS.windowLocationPathname() === searchUrl) {
+  if (LOCATION.pathname() === searchUrl) {
     // TODO better way to do this is with browser history rewrites
-    GLOBALS.windowSetLocationSearch(`?${queryString.stringify(queryObj)}`);
+    LOCATION.setSearch(`?${queryString.stringify(queryObj)}`);
   } else {
-    GLOBALS.windowLocationReplace(`${searchUrl}?${queryString.stringify(queryObj)}`);
+    LOCATION.replace(`${searchUrl}?${queryString.stringify(queryObj)}`);
   }
 }
 
 export function parseQueryFromLocation(queryParamName: string, queryConfig: any) {
-  const queryParams = queryString.parse(GLOBALS.windowGetLocationSearch());
+  const queryParams = queryString.parse(LOCATION.getSearch());
   const queryFromUrl = new Query(queryParams[queryParamName] || '')
     .withConfiguration(queryConfig, CONFIGURATION_MASK);
 
