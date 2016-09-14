@@ -10,12 +10,8 @@ const structure = {
   price: 'price',
   image: 'image'
 };
-const urlConfig = {
-  queryParam: 'q',
-  searchUrl: 'search'
-};
 
-suite('gb-sayt', Sayt, { config: { structure, url: urlConfig } }, ({ flux, tag, sandbox }) => {
+suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
   let sayt;
 
   beforeEach(() => tag().sayt = sayt = { configure: () => null });
@@ -35,22 +31,17 @@ suite('gb-sayt', Sayt, { config: { structure, url: urlConfig } }, ({ flux, tag, 
     expect(tag().categoryField).to.not.be.ok;
     expect(tag().struct).to.eql(structure);
     expect(tag().allCategoriesLabel).to.eq('All Departments');
-    expect(tag().searchUrl).to.eq('search');
-    expect(tag().queryParam).to.eq('q');
     expect(tag().showProducts).to.be.true;
   });
 
   it('should take configuration overrides from global config', () => {
     const categoryField = 'category.value';
-    const searchUrl = 'productSearch';
-    const queryParam = 'query';
     const allCategoriesLabel = 'All Departments';
     const navigationNames = { brand: 'Brand' };
     const saytStructure = {
       image: 'thumbnail',
       url: 'url'
     };
-    tag().config.url = { queryParam, searchUrl };
     tag().config.tags = {
       sayt: {
         products: 0,
@@ -82,8 +73,6 @@ suite('gb-sayt', Sayt, { config: { structure, url: urlConfig } }, ({ flux, tag, 
     expect(tag().categoryField).to.eq(categoryField);
     expect(tag().struct).to.eql(Object.assign({}, structure, saytStructure));
     expect(tag().allCategoriesLabel).to.eq(allCategoriesLabel);
-    expect(tag().searchUrl).to.eq(searchUrl);
-    expect(tag().queryParam).to.eq(queryParam);
     expect(tag().showProducts).to.be.false;
   });
 
@@ -99,7 +88,7 @@ suite('gb-sayt', Sayt, { config: { structure, url: urlConfig } }, ({ flux, tag, 
     const customerId = 'mycustomer';
     const collection = 'mycollection';
     const area = 'MyArea';
-    tag().config = { customerId, collection, area, url: urlConfig };
+    tag().config = { customerId, collection, area };
     tag().init();
 
     const config = tag().generateSaytConfig();
@@ -478,10 +467,7 @@ describe('gb-sayt logic', () => {
 
   beforeEach(() => {
     sayt = { configure: () => null };
-    ({ tag, flux } = fluxTag(new Sayt(), {
-      config: { structure, url: urlConfig },
-      sayt
-    }));
+    ({ tag, flux } = fluxTag(new Sayt(), { config: { structure }, sayt }));
     sandbox = sinon.sandbox.create();
   });
 
@@ -490,12 +476,15 @@ describe('gb-sayt logic', () => {
   it('should perform a static search', () => {
     const suggestion = 'red heels';
     tag.rewriteQuery = () => expect.fail();
-    sandbox.stub(utils, 'updateLocation', (searchUrl, queryParam, query, refinements) => {
-      expect(searchUrl).to.eq('search');
-      expect(queryParam).to.eq('q');
-      expect(query).to.eq(suggestion);
-      expect(refinements).to.eql([]);
-    });
+    tag.services = <any>{
+      url: {
+        active: () => true,
+        update: (query, refinements) => {
+          expect(query).to.eq(suggestion);
+          expect(refinements).to.eql([]);
+        }
+      }
+    };
 
     tag.init();
     tag.saytConfig.staticSearch = true;
@@ -513,14 +502,17 @@ describe('gb-sayt logic', () => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
+      tag.services = <any>{
+        url: {
+          active: () => true,
+          update: (query, refinements) => {
+            expect(query).to.eq(suggestion);
+            expect(refinements).to.eql([{ navigationName: field, value: refinement, type: 'Value' }]);
+          }
+        }
+      };
       tag.saytConfig = {};
       tag.flux.rewrite = (): any => expect.fail();
-      sandbox.stub(utils, 'updateLocation', (searchUrl, queryParam, query, refinements) => {
-        expect(searchUrl).to.eq('search');
-        expect(queryParam).to.eq('q');
-        expect(query).to.eq(suggestion);
-        expect(refinements).to.eql([{ navigationName: field, value: refinement, type: 'Value' }]);
-      });
 
       tag.init();
       tag.saytConfig.staticSearch = true;

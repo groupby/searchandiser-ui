@@ -1,4 +1,4 @@
-import { debounce, getPath, updateLocation } from '../../utils';
+import { debounce, getPath } from '../../utils';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete } from './autocomplete';
@@ -27,9 +27,7 @@ export class Sayt {
   autocompleteList: HTMLUListElement;
   categoryField: string;
   allCategoriesLabel: string;
-  queryParam: string;
   originalQuery: string;
-  searchUrl: string;
   showProducts: boolean;
   matchesInput: boolean;
   queries: any[];
@@ -39,8 +37,6 @@ export class Sayt {
     this.categoryField = this.saytConfig.categoryField;
     this.struct = Object.assign({}, this.config.structure, this.saytConfig.structure);
     this.allCategoriesLabel = this.saytConfig.allCategoriesLabel || 'All Departments';
-    this.queryParam = this.config.url.queryParam;
-    this.searchUrl = this.config.url.searchUrl;
 
     this.showProducts = this.saytConfig.products > 0;
 
@@ -157,11 +153,9 @@ export class Sayt {
       type: 'Value'
     };
 
-    if (this.saytConfig.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.searchUrl, this.queryParam, query, doRefinement ? [refinement] : []);
-    }
-
-    if (doRefinement) {
+    if (this.saytConfig.staticSearch && this.services.url.active()) {
+      this.services.url.update(query, doRefinement ? [refinement] : []);
+    } else if (doRefinement) {
       this.flux.rewrite(query, { skipSearch: true });
       this.flux.refine(refinement);
     } else {
@@ -175,12 +169,12 @@ export class Sayt {
 
     const query = node.dataset['value'];
 
-    if (this.saytConfig.staticSearch && window.location.pathname !== this.searchUrl) {
-      return updateLocation(this.searchUrl, this.queryParam, query, []);
+    if (this.saytConfig.staticSearch && this.services.url.active()) {
+      this.services.url.update(query, []);
+    } else {
+      this.rewriteQuery(query);
+      this.flux.reset(query);
     }
-
-    this.rewriteQuery(query);
-    this.flux.reset(query);
   }
 
   listenForInput(tag: Query) {

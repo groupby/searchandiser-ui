@@ -1,5 +1,6 @@
 import { initServices } from './services/init';
 import { MixinFlux } from './tags/tag';
+import { BeautifierConfig } from './url-beautifier';
 import { checkNested } from './utils';
 import { Events, FluxCapacitor, Sort } from 'groupby-api';
 import riot = require('riot');
@@ -111,7 +112,7 @@ export interface BridgeConfig {
 }
 
 export interface UrlConfig {
-  // beautifier?: boolean;
+  beautifier?: boolean | BeautifierConfig;
   queryParam?: string;
   searchUrl?: string;
 }

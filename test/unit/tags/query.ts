@@ -1,23 +1,14 @@
-import { UrlParser } from '../../../src/services/url-parser';
+import { Url } from '../../../src/services/url';
 import { Query } from '../../../src/tags/query/gb-query';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events, Query as QueryModel } from 'groupby-api';
 
-const config = {
-  url: {
-    queryParam: 'q',
-    searchUrl: 'search'
-  }
-};
-
-suite('gb-query', Query, { config }, ({ tag, flux }) => {
+suite('gb-query', Query, ({ tag, flux }) => {
   it('should have default values', () => {
     tag().init();
 
     expect(tag().parentOpts).to.eql({});
-    expect(tag().queryParam).to.eq('q');
-    expect(tag().searchUrl).to.eq('search');
     expect(tag().staticSearch).to.be.false;
     expect(tag().saytEnabled).to.be.true;
     expect(tag().autoSearch).to.be.true;
@@ -91,7 +82,7 @@ suite('gb-query', Query, { config }, ({ tag, flux }) => {
 
   it('should do a search from the parsed url', () => {
     const query = 'red sneakers';
-    sinon.stub(UrlParser, 'parseQueryFromLocation', () => new QueryModel(query));
+    sinon.stub(Url, 'parseUrl', () => new QueryModel(query));
     flux().search = (queryString: string): any => expect(queryString).to.eq(queryString);
 
     tag().init();

@@ -1,5 +1,5 @@
 import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import URI = require('urijs');
+import * as URI from 'urijs';
 
 export class UrlBeautifier {
 

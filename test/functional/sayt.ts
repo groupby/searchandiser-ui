@@ -16,8 +16,7 @@ describe(`${TAG} tag with sayt:true`, () => {
   beforeEach(() => {
     flux = mixinFlux({
       config: {
-        tags: { sayt: { minimumCharacters: 1, delay: 0 } },
-        url: { queryParam: 'query', searchUrl: 'productSearch' }
+        tags: { sayt: { minimumCharacters: 1, delay: 0 } }
       }
     });
     html = createTag(TAG);

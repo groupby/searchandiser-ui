@@ -7,6 +7,7 @@ import filterObject = require('filter-object');
 export type SelectedRefinement = SelectedValueRefinement & SelectedRangeRefinement;
 
 export const LOCATION = {
+  href: () => window.location.href,
   setSearch: (search) => window.location.search = search,
   getSearch: () => window.location.search,
   pathname: () => window.location.pathname,
@@ -43,23 +44,6 @@ export function checkNested(obj: any, ...keys: string[]): boolean {
 
 export function getParam(param: string): string | null {
   return queryString.parse(LOCATION.getSearch())[param] || null;
-}
-
-export function updateLocation(searchUrl: string, queryParamName: string, query: string, refinements: any[]) {
-  const queryObj = {};
-
-  if (refinements.length > 0) {
-    queryObj['refinements'] = JSON.stringify(refinements);
-  }
-
-  queryObj[queryParamName] = query;
-
-  if (LOCATION.pathname() === searchUrl) {
-    // TODO better way to do this is with browser history rewrites
-    LOCATION.setSearch(`?${queryString.stringify(queryObj)}`);
-  } else {
-    LOCATION.replace(`${searchUrl}?${queryString.stringify(queryObj)}`);
-  }
 }
 
 export function unless(obj: any, ...defaultObjs: any[]) {
