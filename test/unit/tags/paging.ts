@@ -92,45 +92,84 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
         expect(limit).to.eq(5);
         return pageNumbers;
       },
+      currentPage: 9,
       finalPage: 16
     };
 
     Object.defineProperty(flux(), 'page', { get: () => pager });
 
-    tag().pageInfo = (pages, last): any => {
+    tag().updatePageInfo = (pages, current, last): any => {
       expect(pages).to.eq(pageNumbers);
+      expect(current).to.eq(10);
       expect(last).to.eq(17);
       done();
     };
     tag().init();
 
-    tag().updatePageInfo();
+    tag().pageInfo();
   });
 
   it('should update page info', () => {
     tag().update = (obj: any) => {
-      expect(obj.currentPage).to.eq(14);
-      expect(obj.lastPage).to.eq(44);
+      expect(obj.backDisabled).to.be.false;
+      expect(obj.forwardDisabled).to.be.true;
+      expect(obj.lowOverflow).to.be.false;
+      expect(obj.highOverflow).to.be.true;
+      expect(obj.pageNumbers).to.eql([1, 2, 3, 4, 5, 6]);
+      expect(obj.lastPage).to.eq(43);
+    };
+
+    tag().init();
+    tag().updatePageInfo([1, 2, 3, 4, 5, 6], 43, 43);
+  });
+
+  it('should update current page', () => {
+    tag().update = (obj: any) => {
+      expect(obj.currentPage).to.eq(11);
+    };
+
+    tag().init();
+    tag().updateCurrentPage({ pageIndex: 10 });
+  });
+
+  it('should set lowOverflow and highOverflow true', () => {
+    tag().update = (obj: any) => {
+      expect(obj.lowOverflow).to.be.true;
+      expect(obj.highOverflow).to.be.true;
+    };
+
+    tag().init();
+    tag().updatePageInfo([2, 3, 4], 1, 6);
+  });
+
+  it('should set lowOverflow and highOverflow to false', () => {
+    tag().update = (obj: any) => {
+      expect(obj.lowOverflow).to.be.false;
+      expect(obj.highOverflow).to.be.false;
+    };
+
+    tag().init();
+    tag().updatePageInfo([1, 2, 3, 4], 1, 4);
+  });
+
+  it('should set backDisabled and forwardDisabled to true', () => {
+    tag().update = (obj: any) => {
+      expect(obj.backDisabled).to.be.true;
+      expect(obj.forwardDisabled).to.be.true;
+    };
+
+    tag().init();
+    tag().updatePageInfo([1], 1, 1);
+  });
+
+  it('should set backDisabled and forwardDisabled to false', () => {
+    tag().update = (obj: any) => {
       expect(obj.backDisabled).to.be.false;
       expect(obj.forwardDisabled).to.be.false;
     };
-    tag().init();
-
-    tag().updatePages({ pageIndex: 13, finalPage: 43 });
-  });
-
-  it('should generate page info', () => {
-    const pageNumbers = [4, 5, 6, 7, 8];
 
     tag().init();
-
-    const pageInfo = tag().pageInfo(pageNumbers, 14);
-    expect(pageInfo.pageNumbers).to.eq(pageNumbers);
-    expect(pageInfo.lowOverflow).to.be.true;
-    expect(pageInfo.highOverflow).to.be.true;
-
-    expect(tag().pageInfo([1], 2).lowOverflow).to.be.false;
-    expect(tag().pageInfo([4, 5, 6], 6).highOverflow).to.be.false;
+    tag().updatePageInfo([1, 2, 3], 2, 3);
   });
 
   describe('page transition behaviour', () => {
