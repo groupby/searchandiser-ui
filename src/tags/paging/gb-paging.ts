@@ -30,6 +30,7 @@ export class Paging {
   pageNumbers: number[];
   currentPage: number;
   lastPage: number;
+
   lowOverflow: boolean;
   highOverflow: boolean;
 
@@ -38,7 +39,7 @@ export class Paging {
     prev: () => void;
     next: () => void;
     last: () => void;
-    jump: (page: number) => void;
+    switchPage: (number) => void;
   };
 
   init() {
@@ -68,7 +69,7 @@ export class Paging {
       prev: () => !this.backDisabled && this.flux.page.prev(),
       next: () => !this.forwardDisabled && this.flux.page.next(),
       last: () => !this.forwardDisabled && this.flux.page.last(),
-      jump: (page) => this.flux.page.jump(page)
+      switchPage: (page) => this.flux.page.switchPage(page)
     };
 
     this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
@@ -77,8 +78,8 @@ export class Paging {
 
   pageInfo() {
     const pageNumbers = this.flux.page.pageNumbers(this.limit);
-    const lastPage = this.flux.page.finalPage + 1;
-    const currentPage = this.flux.page.currentPage + 1;
+    const lastPage = this.flux.page.finalPage;
+    const currentPage = this.flux.page.currentPage;
     this.updatePageInfo(pageNumbers, currentPage, lastPage);
   }
 
@@ -93,7 +94,7 @@ export class Paging {
     });
   }
 
-  updateCurrentPage({ pageIndex }: { pageIndex: number }) {
-    this.update({ currentPage: pageIndex + 1 });
+  updateCurrentPage({ pageNumber }: { pageNumber: number }) {
+    this.update({ currentPage: pageNumber });
   }
 }

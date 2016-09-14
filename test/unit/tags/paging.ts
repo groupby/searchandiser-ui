@@ -29,10 +29,11 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
     expect(tag().pages).to.be.false;
     expect(tag().numeric).to.be.false;
     expect(tag().terminals).to.be.true;
+    expect(tag().labels).to.be.true;
     expect(tag().icons).to.be.true;
 
     expect(tag().pager).to.be.ok;
-    expect(tag().pager).to.have.all.keys('first', 'last', 'next', 'last', 'jump');
+    expect(tag().pager).to.have.all.keys('first', 'last', 'next', 'last', 'switchPage');
 
     expect(tag().prev_label).to.not.be.ok;
     expect(tag().next_label).to.not.be.ok;
@@ -51,6 +52,7 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
       pages: true,
       numeric: true,
       terminals: false,
+      labels: false,
       icons: false,
       prev_label: 'back',
       next_label: 'forward',
@@ -68,6 +70,7 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
     expect(tag().pages).to.be.true;
     expect(tag().numeric).to.be.true;
     expect(tag().terminals).to.be.false;
+    expect(tag().labels).to.be.false;
     expect(tag().icons).to.be.false;
     expect(tag().prev_label).to.eq(overrides.prev_label);
     expect(tag().next_label).to.eq(overrides.next_label);
@@ -100,8 +103,8 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
 
     tag().updatePageInfo = (pages, current, last): any => {
       expect(pages).to.eq(pageNumbers);
-      expect(current).to.eq(10);
-      expect(last).to.eq(17);
+      expect(current).to.eq(9);
+      expect(last).to.eq(16);
       done();
     };
     tag().init();
@@ -125,11 +128,11 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
 
   it('should update current page', () => {
     tag().update = (obj: any) => {
-      expect(obj.currentPage).to.eq(11);
+      expect(obj.currentPage).to.eq(10);
     };
 
     tag().init();
-    tag().updateCurrentPage({ pageIndex: 10 });
+    tag().updateCurrentPage({ pageNumber: 10 });
   });
 
   it('should set lowOverflow and highOverflow true', () => {
@@ -201,14 +204,15 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
       tag().pager.first();
     });
 
-    it('should jump to the given page', () => {
+    it('should switch to the given page', () => {
       const newPage = 7;
-      const pager = { jump: (page) => expect(page).to.eq(newPage) };
+      const pager = { switchPage: (page) => expect(page).to.eq(newPage) };
       Object.defineProperty(flux(), 'page', { get: () => pager });
+      flux().page.pageExists = () => true;
 
       tag().init();
 
-      tag().pager.jump(newPage);
+      tag().pager.switchPage(newPage);
     });
   });
 });
