@@ -116,7 +116,7 @@ describe('searchandiser', () => {
     it('should perform a blank search', (done) => {
       flux.emit = (event, data) => {
         expect(event).to.eq('page_changed');
-        expect(data).to.eql({ pageIndex: 0, finalPage: 0 });
+        expect(data).to.eql({ pageNumber: 1, finalPage: 1 });
         done();
       };
       flux.search = (query) => {

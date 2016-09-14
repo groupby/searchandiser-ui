@@ -10,6 +10,6 @@ export class PageSize {
   }
 
   onselect(value: number) {
-    return this.flux.resize(value, this.opts.resetOffset ? 0 : undefined);
+    return this.flux.resize(value, this.opts.resetOffset ? 1 : undefined);
   }
 }

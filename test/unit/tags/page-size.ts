@@ -32,7 +32,7 @@ suite('gb-page-size', PageSize, ({ tag, flux }) => {
   });
 
   it('should resize and reset offset', () => {
-    flux().resize = (value, newOffset): any => expect(newOffset).to.eq(0);
+    flux().resize = (value, newOffset): any => expect(newOffset).to.eq(1);
 
     tag().opts = { resetOffset: true };
     tag().init();
