@@ -71,30 +71,29 @@ export class Paging {
       jump: (page) => this.flux.page.jump(page)
     };
 
-    this.flux.on(Events.PAGE_CHANGED, this.updatePages);
-    this.flux.on(Events.RESULTS, this.updatePageInfo);
+    this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
+    this.flux.on(Events.RESULTS, this.pageInfo);
   }
 
-  updatePageInfo() {
+  pageInfo() {
     const pageNumbers = this.flux.page.pageNumbers(this.limit);
     const lastPage = this.flux.page.finalPage + 1;
-    this.update(this.pageInfo(pageNumbers, lastPage));
+    const currentPage = this.flux.page.currentPage + 1;
+    this.updatePageInfo(pageNumbers, currentPage, lastPage);
   }
 
-  pageInfo(pageNumbers: number[], lastPage: number) {
-    return {
+  updatePageInfo(pageNumbers: number[], currentPage: number, lastPage: number) {
+    this.update({
       pageNumbers,
       lowOverflow: pageNumbers[0] !== 1,
-      highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage
-    };
+      highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
+      backDisabled: currentPage === 1,
+      forwardDisabled: currentPage === lastPage,
+      lastPage
+    });
   }
 
-  updatePages({ pageIndex, finalPage }) {
-    this.update({
-      currentPage: pageIndex + 1,
-      lastPage: finalPage + 1,
-      backDisabled: pageIndex === 0,
-      forwardDisabled: pageIndex === finalPage
-    });
+  updateCurrentPage({ pageIndex }) {
+    this.update({ currentPage: pageIndex + 1 });
   }
 }

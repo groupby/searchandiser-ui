@@ -80,11 +80,11 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
     expect((<HTMLImageElement>html().querySelector('.gb-pager__link.prev img')).src).to.contain(prev_icon);
   });
 
-  describe('allowed paging behvaiour', () => {
+  describe('allowed paging behaviour', () => {
     it('should be able to page backward', () => {
       const tag = mount();
 
-      tag.updatePages({ pageIndex: 2, finalPage: 4 });
+      tag.updatePageInfo([1, 2, 3, 4], 2, 6);
       expect(html().querySelector('.gb-pager__link.prev:not(.disabled)')).to.be.ok;
       expect(html().querySelector('.gb-terminal__link.first:not(.disabled)')).to.be.ok;
     });
@@ -92,7 +92,7 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
     it('should not be able to page backward', () => {
       const tag = mount();
 
-      tag.updatePages({ pageIndex: 0, finalPage: 4 });
+      tag.updatePageInfo([1, 2, 3, 4], 1, 6);
       expect(html().querySelector('.gb-pager__link.prev.disabled')).to.be.ok;
       expect(html().querySelector('.gb-terminal__link.first.disabled')).to.be.ok;
     });
@@ -100,7 +100,7 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
     it('should be able to page forward', () => {
       const tag = mount();
 
-      tag.updatePages({ pageIndex: 0, finalPage: 4 });
+      tag.updatePageInfo([1, 2, 3, 4], 1, 6);
       expect(html().querySelector('.gb-pager__link.next:not(.disabled)')).to.be.ok;
       expect(html().querySelector('.gb-terminal__link.last:not(.disabled)')).to.be.ok;
     });
@@ -108,7 +108,7 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
     it('should not be able to page forward', () => {
       const tag = mount();
 
-      tag.updatePages({ pageIndex: 4, finalPage: 4 });
+      tag.updatePageInfo([1, 2, 3, 4], 4, 4);
       expect(html().querySelector('.gb-pager__link.next.disabled')).to.be.ok;
       expect(html().querySelector('.gb-terminal__link.last.disabled')).to.be.ok;
     });
