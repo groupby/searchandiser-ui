@@ -14,18 +14,33 @@ export class UrlBeautifier {
   private generator: UrlGenerator = new UrlGenerator(this);
   private parser: UrlParser = new UrlParser(this);
 
-  constructor(private searchandiserConfig: SearchandiserConfig = <any>{ url: {} }) {
+  constructor(public searchandiserConfig: SearchandiserConfig = <any>{ url: {} }) {
     const urlConfig = searchandiserConfig.url;
     const config = typeof urlConfig.beautifier === 'object' ? urlConfig.beautifier : {};
     Object.assign(this.config, config);
 
+    const keys = [];
     for (let mapping of this.config.refinementMapping) {
-      if (Object.keys(mapping)[0].length !== 1) {
+      const key = Object.keys(mapping)[0];
+      if (key.length !== 1) {
         throw new Error('refinement mapping token must be a single character');
       }
+      if (key.match(/[aeiouy]/)) {
+        throw new Error('refinement mapping token must not be a vowel');
+      }
+      if (keys.indexOf(key) > -1) {
+        throw new Error('refinement mapping tokens must be unique');
+      }
+      keys.push(key);
     }
     if (this.config.queryToken.length !== 1) {
       throw new Error('query token must be a single character');
+    }
+    if (this.config.queryToken.match(/[aeiouy]/)) {
+      throw new Error('query token must not be a vowel');
+    }
+    if (keys.indexOf(this.config.queryToken) > -1) {
+      throw new Error('query token must be unique from refinement tokens');
     }
   }
 

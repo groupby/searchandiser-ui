@@ -246,6 +246,15 @@ describe('URL beautifier', () => {
       expect(request.query).to.eql('power drill');
     });
 
+    it('should use existing configuration to create a query', () => {
+      const collection = 'mycollection';
+      const area = 'MyArea';
+      Object.assign(beautifier.searchandiserConfig, { area, collection });
+      query.withQuery('drills').withConfiguration({ area, collection });
+
+      expect(parser.parse('/drills/q').build()).to.eql(query.build());
+    });
+
     describe('error states', () => {
       it('should error on invalid reference keys', () => {
         beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
@@ -296,21 +305,53 @@ describe('URL beautifier', () => {
     it('should not allow refinement mapping with non-character tokens', () => {
       const config: any = { url: { beautifier: { refinementMapping: [{ br: 'brand' }] } } };
 
-      try {
-        new UrlBeautifier(config);
-      } catch (e) {
-        expect(e.message).to.eq('refinement mapping token must be a single character');
-      }
+      expect(() => new UrlBeautifier(config)).to.throw('refinement mapping token must be a single character');
+    });
+
+    it('should not allow refinement mapping with vowel tokens', () => {
+      const config: any = { url: { beautifier: { refinementMapping: [{ u: 'brand' }] } } };
+
+      expect(() => new UrlBeautifier(config)).to.throw('refinement mapping token must not be a vowel');
+    });
+
+    it('should not allow duplicate refinement tokens', () => {
+      const config: any = {
+        url: {
+          beautifier: {
+            refinementMapping: [
+              { u: 'brand' },
+              { u: 'price' }
+            ]
+          }
+        }
+      };
+
+      expect(() => new UrlBeautifier(config)).to.throw('refinement mapping token must not be a vowel');
     });
 
     it('should not allow non-character query token', () => {
       const config: any = { url: { beautifier: { queryToken: 'qu' } } };
 
-      try {
-        new UrlBeautifier(config);
-      } catch (e) {
-        expect(e.message).to.eq('query token must be a single character');
-      }
+      expect(() => new UrlBeautifier(config)).to.throw('query token must be a single character');
+    });
+
+    it('should not allow vowel query token', () => {
+      const config: any = { url: { beautifier: { queryToken: 'e' } } };
+
+      expect(() => new UrlBeautifier(config)).to.throw('query token must not be a vowel');
+    });
+
+    it('should not allow duplicates between query and refinement tokens', () => {
+      const config: any = {
+        url: {
+          beautifier: {
+            queryToken: 'k',
+            refinementMapping: [{ k: 'brand' }]
+          }
+        }
+      };
+
+      expect(() => new UrlBeautifier(config)).to.throw('query token must be unique from refinement tokens');
     });
   });
 
