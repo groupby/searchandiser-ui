@@ -263,11 +263,15 @@ describe('URL beautifier', () => {
 
   describe('compatibility', () => {
 
-    beforeEach(() => beautifier = new UrlBeautifier({
-      refinementMapping: [{ b: 'brand' }, { f: 'fabric' }],
-      queryToken: 'k',
-      extraRefinementsParam: 'refs',
-      suffix: 'index.html'
+    beforeEach(() => beautifier = new UrlBeautifier(<any>{
+      url: {
+        beautifier: {
+          refinementMapping: [{ b: 'brand' }, { f: 'fabric' }],
+          queryToken: 'k',
+          extraRefinementsParam: 'refs',
+          suffix: 'index.html'
+        }
+      }
     }));
 
     it('should convert from query to a URL and back', () => {
@@ -290,7 +294,7 @@ describe('URL beautifier', () => {
 
   describe('configuration errors', () => {
     it('should not allow refinement mapping with non-character tokens', () => {
-      const config = { refinementMapping: [{ br: 'brand' }] };
+      const config: any = { url: { beautifier: { refinementMapping: [{ br: 'brand' }] } } };
 
       try {
         new UrlBeautifier(config);
@@ -300,7 +304,7 @@ describe('URL beautifier', () => {
     });
 
     it('should not allow non-character query token', () => {
-      const config = { queryToken: 'qu' };
+      const config: any = { url: { beautifier: { queryToken: 'qu' } } };
 
       try {
         new UrlBeautifier(config);

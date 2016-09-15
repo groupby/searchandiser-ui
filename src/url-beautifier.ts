@@ -1,3 +1,4 @@
+import { CONFIGURATION_MASK, SearchandiserConfig } from './searchandiser';
 import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
 import * as parseUri from 'parseuri';
 import * as queryString from 'query-string';
@@ -13,7 +14,9 @@ export class UrlBeautifier {
   private generator: UrlGenerator = new UrlGenerator(this);
   private parser: UrlParser = new UrlParser(this);
 
-  constructor(config: BeautifierConfig = {}) {
+  constructor(private searchandiserConfig: SearchandiserConfig = <any>{ url: {} }) {
+    const urlConfig = searchandiserConfig.url;
+    const config = typeof urlConfig.beautifier === 'object' ? urlConfig.beautifier : {};
     Object.assign(this.config, config);
 
     for (let mapping of this.config.refinementMapping) {
@@ -124,11 +127,13 @@ export class UrlGenerator {
 
 export class UrlParser {
 
+  searchandiserConfig: SearchandiserConfig;
   config: BeautifierConfig;
   suffixRegex: RegExp;
 
-  constructor({ config }: UrlBeautifier) {
+  constructor({ config, searchandiserConfig }: UrlBeautifier) {
     this.config = config;
+    this.searchandiserConfig = searchandiserConfig;
     this.suffixRegex = new RegExp(`^${this.config.suffix}`);
   }
 
@@ -140,7 +145,7 @@ export class UrlParser {
 
     const keys = (paths.pop() || '').split('');
     const map = this.generateRefinementMapping();
-    const query = new Query();
+    const query = new Query().withConfiguration(this.searchandiserConfig, CONFIGURATION_MASK);
 
     for (let key of keys) {
       if (!(key in map || key === this.config.queryToken)) {

@@ -18,8 +18,7 @@ export class Url {
   }
 
   init() {
-    const beautifierConfig = typeof this.urlConfig.beautifier === 'object' ? this.urlConfig.beautifier : {};
-    this.beautifier = new UrlBeautifier(beautifierConfig);
+    this.beautifier = new UrlBeautifier(this.config);
     this.simple = new SimpleBeautifier(this.config);
 
     if (!this.config.initialSearch) {
