@@ -3,8 +3,9 @@ declare interface QueryString {
   stringify: (object: any, config?: any) => any;
 }
 
-declare var queryString: QueryString;
-
 declare module 'query-string' {
+
+  var queryString: QueryString;
+
   export = queryString;
 }

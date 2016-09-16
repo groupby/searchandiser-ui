@@ -3,7 +3,7 @@ import { SimpleBeautifier } from '../simple-beautifier';
 import { UrlBeautifier } from '../url-beautifier';
 import { LOCATION } from '../utils';
 import { FluxCapacitor, Query } from 'groupby-api';
-import * as URI from 'urijs';
+import parseUri = require('parseuri');
 
 export class Url {
 
@@ -65,7 +65,7 @@ export class Url {
 
   static setLocation(url: string, config: UrlConfig) {
     if (LOCATION.pathname() === config.searchUrl) {
-      LOCATION.setSearch(new URI(url).search());
+      LOCATION.setSearch(`?${parseUri(url).query}`);
     } else {
       LOCATION.replace(url);
     }

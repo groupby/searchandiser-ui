@@ -1,6 +1,7 @@
-/// <reference path="../typings/index.d.ts" />
-
-require('es6-promise').polyfill();
+require('string.prototype.startswith');
+require('string.prototype.repeat');
+require('array.of');
+require('array.from').shim();
 require('array-includes').shim();
 import riot = require('riot');
 

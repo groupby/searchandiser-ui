@@ -1,5 +1,6 @@
 import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import * as URI from 'urijs';
+import parseUri = require('parseuri');
+import queryString = require('query-string');
 
 export class UrlBeautifier {
 
@@ -132,7 +133,7 @@ export class UrlParser {
   }
 
   parse(rawUrl: string): Query {
-    const url = URI.parse(rawUrl);
+    const url = parseUri(rawUrl);
     const paths = url.path.split('/').filter((val) => val);
 
     if (paths[paths.length - 1] === this.config.suffix) paths.pop();
@@ -160,7 +161,7 @@ export class UrlParser {
       }
     }
 
-    const unmappedRefinements = URI.parseQuery(url.query)[this.config.extraRefinementsParam];
+    const unmappedRefinements = queryString.parse(url.query)[this.config.extraRefinementsParam];
     if (unmappedRefinements) query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
 
     return query;

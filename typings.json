@@ -3,7 +3,7 @@
   "version": false,
   "ambientDependencies": {},
   "dependencies": {
-    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958",
+    "es6-promise": "registry:npm/es6-promise#3.0.0+20160723033700",
     "escape-string-regexp": "registry:npm/escape-string-regexp#1.0.0+20160723033700",
     "filter-object": "registry:npm/filter-object#2.1.0+20160816021609"
   },
@@ -17,7 +17,6 @@
     "clone": "registry:dt/clone#0.1.11+20160317120654",
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
     "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
-    "node": "registry:dt/node#6.0.0+20160621231320",
-    "urijs": "registry:dt/urijs#1.15.1+20160526132152"
+    "node": "registry:dt/node#6.0.0+20160621231320"
   }
 }

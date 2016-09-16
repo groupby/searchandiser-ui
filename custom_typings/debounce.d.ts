@@ -1,4 +1,10 @@
+declare interface Debounce {
+  <A extends Function>(f: A, interval?: number, immediate?: boolean): A;
+}
+
 declare module 'debounce' {
-  function debounce<A extends Function>(f: A, interval?: number, immediate?: boolean): A
+
+  var debounce: Debounce;
+
   export = debounce;
 }

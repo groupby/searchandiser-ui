@@ -1,7 +1,6 @@
 import { CONFIGURATION_MASK, SearchandiserConfig, UrlConfig } from './searchandiser';
 import { Query } from 'groupby-api';
 import * as queryString from 'query-string';
-import * as URI from 'urijs';
 
 export class SimpleBeautifier {
 
@@ -12,7 +11,7 @@ export class SimpleBeautifier {
   }
 
   parse(url: string) {
-    const queryParams: any = URI.parseQuery(url);
+    const queryParams: any = queryString.parse(url);
     const queryFromUrl = new Query(queryParams[this.urlConfig.queryParam] || '')
       .withConfiguration(this.config, CONFIGURATION_MASK);
 

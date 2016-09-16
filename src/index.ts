@@ -1,7 +1,7 @@
-/// <reference path="../typings/index.d.ts" />
-/// <reference path="../custom_typings/debounce.d.ts" />
-/// <reference path="../custom_typings/oget.d.ts" />
-
+require('string.prototype.startswith');
+require('string.prototype.repeat');
+require('array.of');
+require('array.from').shim();
 require('array-includes').shim();
 import { initSearchandiser } from './searchandiser';
 import './tags/index';
