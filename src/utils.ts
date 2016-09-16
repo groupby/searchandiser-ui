@@ -1,6 +1,6 @@
-import debounce = require('debounce');
-import oget = require('oget');
+import * as debounce from 'debounce';
 import { Navigation, SelectedRangeRefinement, SelectedValueRefinement } from 'groupby-api';
+import * as oget from 'oget';
 import queryString = require('query-string');
 import filterObject = require('filter-object');
 

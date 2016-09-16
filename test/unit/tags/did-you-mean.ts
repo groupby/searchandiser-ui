@@ -11,7 +11,7 @@ suite('gb-did-you-mean', DidYouMean, ({ flux, tag }) => {
 
     tag().init();
 
-    tag().send(<Event & any>{ target: { text: newQuery } });
+    tag().send(<any>{ target: { text: newQuery } });
   });
 
   it('should listen for events', () => {

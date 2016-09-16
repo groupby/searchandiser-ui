@@ -35,7 +35,7 @@ suite('gb-navigation', Navigation, ({ flux, tag }) => {
       { name: 'e', refinements: [{ type: 'Value', value: 'f' }] }
     ];
     const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }] }];
-    const results = <any>{ availableNavigation, selectedNavigation };
+    const results: any = { availableNavigation, selectedNavigation };
 
     const processed = tag().processNavigations(results);
     expect(processed).to.eql([

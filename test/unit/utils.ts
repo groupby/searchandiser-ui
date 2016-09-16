@@ -1,4 +1,4 @@
-import utils = require('../../src/utils');
+import * as utils from '../../src/utils';
 import { expect } from 'chai';
 import { Navigation } from 'groupby-api';
 

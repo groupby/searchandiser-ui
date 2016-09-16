@@ -12,7 +12,7 @@ import * as Tags from '../../src/tags/tag';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 import * as groupby from 'groupby-api';
-import riot = require('riot');
+import * as riot from 'riot';
 
 describe('searchandiser', () => {
   let sandbox: Sinon.SinonSandbox;

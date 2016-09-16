@@ -3,7 +3,7 @@ require('string.prototype.repeat');
 require('array.of');
 require('array.from').shim();
 require('array-includes').shim();
-import riot = require('riot');
+import * as riot from 'riot';
 
 window['riot'] = riot;
 riot.mixin({

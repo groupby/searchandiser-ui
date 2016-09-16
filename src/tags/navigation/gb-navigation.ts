@@ -1,7 +1,7 @@
 import { toRefinement, unless } from '../../utils';
 import { FluxTag } from '../tag';
+import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, Results } from 'groupby-api';
-import clone = require('clone');
 
 export { NavigationInfo }
 

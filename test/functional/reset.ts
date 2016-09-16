@@ -13,7 +13,7 @@ suite<Reset>('gb-reset', ({ flux, html, mount }) => {
 
   it('should clear query', (done) => {
     const tag = mount();
-    tag.searchBox = <HTMLInputElement & any>{ value: 'old' };
+    tag.searchBox = <any>{ value: 'old' };
 
     flux().reset = () => done();
 

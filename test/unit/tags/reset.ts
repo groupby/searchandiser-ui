@@ -12,7 +12,7 @@ suite('gb-reset', Reset, { root: { addEventListener: () => null } }, ({ flux, ta
   });
 
   it('should register click listener', () => {
-    tag().root = <HTMLElement>{
+    tag().root = <any>{
       addEventListener: (event, cb): any => {
         expect(event).to.eq('click');
         expect(cb).to.eq(tag().clearQuery);
@@ -24,7 +24,7 @@ suite('gb-reset', Reset, { root: { addEventListener: () => null } }, ({ flux, ta
   it('should clear query', () => {
     flux().reset = (value): any => expect(value).to.eq('');
 
-    tag().searchBox = <HTMLInputElement & any>{ value: 'something' };
+    tag().searchBox = <any>{ value: 'something' };
     tag().init();
 
     tag().clearQuery();

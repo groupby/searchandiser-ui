@@ -2,7 +2,7 @@ import { Select } from '../../../src/tags/select/gb-select';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-select', Select, { _scope: { opts: {} } }, ({ flux, tag }) => {
+suite('gb-select', Select, { _scope: { opts: {} } }, ({ tag }) => {
   it('should have default values', () => {
     tag().init();
 

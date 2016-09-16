@@ -1,6 +1,6 @@
 import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import parseUri = require('parseuri');
-import queryString = require('query-string');
+import * as parseUri from 'parseuri';
+import * as queryString from 'query-string';
 
 export class UrlBeautifier {
 

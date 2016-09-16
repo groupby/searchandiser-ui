@@ -65,10 +65,10 @@ describe('url service', () => {
 
   describe('active()', () => {
     it('should return true', () => {
-      const config = { url: { searchUrl: '/not/my/path' } };
+      const config: any = { url: { searchUrl: '/not/my/path' } };
       sandbox.stub(LOCATION, 'pathname', () => '/my/path');
 
-      expect(new Url(<any>{}, <any>config).active()).to.be.true;
+      expect(new Url(<any>{}, config).active()).to.be.true;
     });
 
     it('should return false', () => {

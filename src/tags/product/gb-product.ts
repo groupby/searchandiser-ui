@@ -1,8 +1,8 @@
 import { ProductStructure } from '../../searchandiser';
 import { getPath, remap, unless } from '../../utils';
 import { FluxTag } from '../tag';
+import * as clone from 'clone';
 import filterObject = require('filter-object');
-import clone = require('clone');
 
 export interface Product extends FluxTag { }
 

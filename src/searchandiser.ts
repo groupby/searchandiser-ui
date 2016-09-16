@@ -3,7 +3,7 @@ import { MixinFlux } from './tags/tag';
 import { BeautifierConfig } from './url-beautifier';
 import { checkNested } from './utils';
 import { Events, FluxCapacitor, Sort } from 'groupby-api';
-import riot = require('riot');
+import * as riot from 'riot';
 
 export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields}';
 export const DEFAULT_CONFIG = { initialSearch: true };

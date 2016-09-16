@@ -3,7 +3,7 @@ import { SimpleBeautifier } from '../simple-beautifier';
 import { UrlBeautifier } from '../url-beautifier';
 import { LOCATION } from '../utils';
 import { FluxCapacitor, Query } from 'groupby-api';
-import parseUri = require('parseuri');
+import * as parseUri from 'parseuri';
 
 export class Url {
 

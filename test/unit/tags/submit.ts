@@ -35,7 +35,7 @@ suite('gb-submit', Submit, { root: <any>{ addEventListener: () => null } }, ({ f
   });
 
   it('should register click listener', () => {
-    tag().root = <HTMLElement & any>{
+    tag().root = <any>{
       addEventListener: (event, cb): any => {
         expect(event).to.eq('click');
         expect(cb).to.eq(tag().submitQuery);

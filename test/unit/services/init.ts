@@ -10,10 +10,10 @@ describe('service initialiser', () => {
   afterEach(() => sandbox.restore());
 
   it('should initialise all services', () => {
-    const flux = { on: () => null, search: () => null };
-    const config = { url: {} };
+    const flux: any = { on: () => null, search: () => null };
+    const config: any = { url: {} };
 
-    const services = initServices(<any>flux, <any>config);
+    const services = initServices(flux, config);
     expect(services.redirect).to.be.an.instanceof(Redirect);
     expect(services.url).to.be.an.instanceof(Url);
   });

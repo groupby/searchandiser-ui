@@ -13,7 +13,7 @@ suite<Submit>('gb-submit', ({ flux, html, mount }) => {
 
   it('should reset query', () => {
     const tag = mount();
-    tag.searchBox = <HTMLInputElement & any>{ value: 'old' };
+    tag.searchBox = <any>{ value: 'old' };
 
     flux().reset = (value): any => expect(value).to.eq('old');
 
