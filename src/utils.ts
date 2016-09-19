@@ -78,5 +78,6 @@ export function remap(x: any, mapping: any) {
 export { debounce }
 
 export function checkBooleanAttr(attribute: string, opts: any) {
+  // tslint:disable-next-line:triple-equals
   return attribute in opts && opts[attribute] != 'false' && opts[attribute] !== false;
 }

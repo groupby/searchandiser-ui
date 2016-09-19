@@ -14,7 +14,11 @@ function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixinOr
     let _sandbox: Sinon.SinonSandbox;
 
     beforeEach(() => {
-      ({ tag: _tag, flux: _flux } = fluxTag(new clazz(), mixin));
+      // TODO: should be this vvv
+      // ({ tag: _tag, flux: _flux } = fluxTag(new clazz(), mixin));
+      let { tag, flux } = fluxTag(new clazz(), mixin);
+      _tag = tag;
+      _flux = flux;
       _sandbox = sinon.sandbox.create();
     });
     afterEach(() => _sandbox.restore());

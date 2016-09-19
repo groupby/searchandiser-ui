@@ -1,4 +1,8 @@
-import { AvailableRefinement, Refinement, SelectedRefinement } from '../../../src/tags/navigation/gb-refinement';
+import {
+  AvailableRefinement,
+  Refinement,
+  SelectedRefinement
+} from '../../../src/tags/navigation/gb-refinement';
 import { displayRefinement } from '../../../src/utils';
 import suite from './_suite';
 import { expect } from 'chai';

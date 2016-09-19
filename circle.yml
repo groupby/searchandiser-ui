@@ -1,14 +1,22 @@
+machine:
+  node:
+    version: 6.1.0
+
 dependencies:
   pre:
-    - sudo apt-get update && sudo apt-get install jq
     - git config --global user.email "ops@groubyinc.com"
     - git config --global user.name "GroupBy Ops"
     - git config --global push.default simple
+
+test:
+  override:
+    - npm run test+coverage
 
 deployment:
   npm:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: groupby
     commands:
+      - sudo apt-get update && sudo apt-get install jq
       - npm run prod
       - ./shipit.sh

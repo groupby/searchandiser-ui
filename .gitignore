@@ -1,17 +1,18 @@
 .vscode/launch.json
 .DS_Store
 .tmp
+.idea
 *.log
 tmp
+
 node_modules
 typings
-src/**/*.js
-test/**/*.js
-examples/**/*.js
-coverage
-.idea
-compiled-tags
-bower_components
 
+src/**/*.d.ts
+src/**/*.js*
+test/**/*.d.ts
+test/**/*.js*
+
+coverage
 dist
 docs

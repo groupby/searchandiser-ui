@@ -1,13 +1,13 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES5",
     "module": "commonjs",
-    "sourceMap": true,
+    "moduleResolution": "node",
+    "target": "ES5",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "declaration": true,
-    "outDir": "/definitions"
+    "declaration": false,
+    "noEmitHelpers": true
   },
   "exclude": [
     "dist",
