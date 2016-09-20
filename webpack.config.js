@@ -1,102 +1,123 @@
 var webpack = require('webpack');
 var pjson = require('./package.json');
-var TypedocPlugin = require('typedoc-webpack-plugin');
 var CleanPlugin = require('clean-webpack-plugin');
 var UnminifiedPlugin = require('unminified-webpack-plugin');
 
-var isProd = process.env.NODE_ENV === 'production';
-var isTest = process.env.NODE_ENV === 'test';
-var isDocs = process.env.NODE_ENV === 'docs';
+var isProd = false;
+var isCi = false;
+var isTest = false;
 
-function getPlugins() {
-  var plugins = [new CleanPlugin(['dist'])];
-
-  if (isProd) {
-    plugins.push(
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.UglifyJsPlugin({ comments: false }),
-      new UnminifiedPlugin()
-    );
-  }
-
-  if (isDocs) {
-    plugins.push(new TypedocPlugin({
-      name: 'searchandiser-ui',
-      mode: 'file',
-
-      includeDeclarations: true,
-      ignoreCompilerErrors: true,
-      version: true
-    }));
-  }
-
-  return plugins;
-}
-
-function getLoaders() {
-  var loaders = [{
-    test: /\.css$/,
-    loader: 'style-loader!css-loader'
-  }, {
-    test: /\.png$/,
-    loader: 'url-loader'
-  }, {
-    test: /\.ts$/,
-    exclude: /node_modules/,
-    loader: 'ts-loader'
-  }, {
-    test: /\.tag(\.html)?$/,
-    exclude: /node_modules/,
-    loader: 'babel-loader',
-    query: {
-      presets: ['es2015']
-    }
-  }, {
-    test: /src\/index.ts$/,
-    loaders: ['expose?searchandiser', 'ts-loader']
-  }];
-
-  if (!isTest) {
-    loaders.push({
-      test: require.resolve('riot/riot+compiler'),
-      loader: 'expose?riot'
-    });
-  }
-
-  return loaders;
-}
-
-module.exports = {
-  entry: './src/index.ts',
-
-  output: {
-    path: './dist',
-    filename: pjson.name + '-' + pjson.version + (isProd ? '.min' : '') + '.js'
-  },
-
-  devtool: 'source-map',
-
-  resolve: {
+function resolve() {
+  return {
     alias: {
       riot: 'riot/riot+compiler'
     },
     extensions: ['', '.ts', '.js'],
-    modulesDirectories: ['bower_components', 'node_modules']
-  },
+    modulesDirectories: ['node_modules', 'src']
+  };
+}
 
-  plugins: getPlugins(),
+function preLoaders() {
+  return [{
+    test: /\.tag(\.html)?$/,
+    exclude: /node_modules/,
+    loader: 'riotjs'
+  }];
+}
 
-  module: {
+function loaders() {
+  return [{
+    test: /\.css$/,
+    loaders: ['style', 'css']
+  }, {
+    test: /\.png$/,
+    loader: 'url'
+  }, {
+    test: /\.ts$/,
+    exclude: /node_modules/,
+    loader: 'awesome-typescript',
+    query: {
+      inlineSourceMap: isTest,
+      sourceMap: !isTest
+    }
+  }, {
+    test: /\.tag(\.html)?$/,
+    exclude: /node_modules/,
+    loader: 'babel',
+    query: {
+      presets: ['es2015']
+    }
+  }];
+}
 
-    preLoaders: [{
-      test: /\.tag(\.html)?$/,
-      exclude: /node_modules/,
-      loader: 'riotjs-loader'
-    }, {
-      test: /\.js$/,
-      loader: 'source-map-loader'
-    }],
+switch (process.env.NODE_ENV) {
+  case 'ci':
+  case 'continuous':
+    isCi = true;
+  case 'test':
+  case 'testing':
+    isTest = true;
 
-    loaders: getLoaders()
-  }
-};
+    return module.exports = {
+      resolve: resolve(),
+
+      devtool: 'inline-source-map',
+
+      module: {
+        preLoaders: isCi ? preLoaders() : preLoaders().concat({
+          test: /\.ts$/,
+          loader: 'tslint'
+        }),
+
+        postLoaders: [{
+          test: /\.ts$/,
+          loader: 'sourcemap-istanbul-instrumenter',
+          exclude: [
+            /node_modules/,
+            /test/,
+            /karma\.entry\.ts$/
+          ]
+        }],
+
+        loaders: loaders()
+      }
+    };
+  case 'prod':
+  case 'production':
+    isProd = true;
+  default:
+    return module.exports = {
+      resolve: resolve(),
+
+      entry: './src/index.ts',
+
+      output: {
+        path: './dist',
+        filename: pjson.name + '-' + pjson.version + (isProd ? '.min' : '') + '.js'
+      },
+
+      devtool: 'source-map',
+
+      plugins: isProd ? [
+        new CleanPlugin(['dist']),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin({ comments: false }),
+        new UnminifiedPlugin()
+      ] : [new CleanPlugin(['dist'])],
+
+      module: {
+        preLoaders: preLoaders().concat({
+          test: /\.ts$/,
+          loader: 'source-map'
+        }),
+
+        loaders: [{
+          test: /src\/index.ts$/,
+          loader: 'expose?searchandiser'
+        }, {
+          test: require.resolve('riot/riot+compiler'),
+          loader: 'expose?riot'
+        }].concat(...loaders())
+      }
+    };
+}
