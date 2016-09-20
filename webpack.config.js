@@ -69,7 +69,7 @@ switch (process.env.NODE_ENV) {
           loader: 'tslint'
         }),
 
-        postLoaders: [{
+        postLoaders: isCi ? [] : [{
           test: /\.ts$/,
           loader: 'sourcemap-istanbul-instrumenter',
           exclude: [
