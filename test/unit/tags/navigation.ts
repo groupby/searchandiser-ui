@@ -21,11 +21,48 @@ suite('gb-navigation', Navigation, ({ flux, tag }) => {
 
   it('should listen for flux events', () => {
     flux().on = (event: string, cb: Function): any => {
-      expect(event).to.eq(Events.RESULTS);
-      expect(cb).to.eq(tag().updateNavigations);
+      switch (event) {
+        case Events.RESULTS:
+          return expect(cb).to.eq(tag().updateNavigations);
+        case Events.REFINEMENT_RESULTS:
+          return expect(cb).to.eq(tag().updateRefinements);
+        default:
+          expect.fail();
+      }
     };
 
     tag().init();
+  });
+
+  it('should replace refinements', () => {
+    tag().processed = <any>[
+      {
+        name: 'a',
+        refinements: [{ type: 'Value', value: 'b' }]
+      }, {
+        name: 'c',
+        refinements: [{ type: 'Value', value: 'b' }],
+        selected: [{ type: 'Value', value: 'd' }]
+      }, {
+        name: 'e',
+        refinements: [{ type: 'Value', value: 'f' }]
+      }
+    ];
+
+    const processed = tag().replaceRefinements(<any>{
+      navigation: {
+        name: 'e',
+        refinements: [
+          { type: 'Value', value: 'm' },
+          { type: 'Value', value: 'n' }
+        ]
+      }
+    });
+
+    expect(processed.length).to.eq(3);
+    expect(processed[2].refinements.length).to.eq(2);
+    expect((<any>processed[2].refinements[0]).value).to.eq('m');
+    expect((<any>processed[2].refinements[1]).value).to.eq('n');
   });
 
   it('should process navigations', () => {
