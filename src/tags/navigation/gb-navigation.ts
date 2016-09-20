@@ -18,7 +18,6 @@ export class Navigation {
     this.showSelected = unless(this.opts.showSelected, true);
     this.flux.on(Events.RESULTS, this.updateNavigations);
     this.flux.on(Events.REFINEMENT_RESULTS, this.updateRefinements);
-    this.on('update', () => console.log(this.processed));
   }
 
   updateNavigations(res: Results) {
@@ -38,10 +37,7 @@ export class Navigation {
   }
 
   processNavigations({ selectedNavigation, availableNavigation }: Results) {
-    // console.log(availableNavigation);
-    // console.log(selectedNavigation);
     const processed = <SelectionNavigation[]>clone(availableNavigation);
-    // console.log(processed);
     selectedNavigation.forEach((selNav) => {
       const availNav = processed.find((nav) => nav.name === selNav.name);
       if (availNav) {
@@ -58,7 +54,6 @@ export class Navigation {
   }
 
   remove(ref: any, nav: any) {
-    console.log('remove???');
     return this.flux.unrefine(toRefinement(ref, nav));
   }
 }
