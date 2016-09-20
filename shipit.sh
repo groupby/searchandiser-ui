@@ -1,7 +1,9 @@
+#!/usr/bin/env bash
+
 git clone https://github.com/groupby/cdn.git ${HOME}/cdn
 git clone -b gh-pages https://github.com/groupby/api-javascript.git ${HOME}/api-javascript
 
-currentVersion=`cat package.json | jq -r .version`
+currentVersion=$(jq -r .version < package.json)
 
 copyFiles() {
   cp dist/searchandiser-ui-*.js* ${1}
