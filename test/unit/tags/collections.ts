@@ -1,7 +1,7 @@
 import { Collections } from '../../../src/tags/collections/gb-collections';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Events, Request } from 'groupby-api';
+import { Events, Query, Request } from 'groupby-api';
 
 suite('gb-collections', Collections, ({ flux, tag }) => {
   it('should have default values', () => {
@@ -57,42 +57,120 @@ suite('gb-collections', Collections, ({ flux, tag }) => {
     tag().init();
   });
 
-  it('should listen for query_changed event', () => {
+  it('should listen events', () => {
     flux().on = (event: string, cb: Function): any => {
-      expect(event).to.eq(Events.QUERY_CHANGED);
-      expect(cb).to.eq(tag().updateCollectionCounts);
+      switch (event) {
+        case Events.QUERY_CHANGED:
+          return expect(cb).to.eq(tag().updateCollectionCounts);
+        case Events.RESULTS:
+          return expect(cb).to.eq(tag().updateSelectedCollectionCount);
+        default:
+          expect.fail();
+      }
     };
 
     tag().init();
   });
 
-  it('should update collection counts', (done) => {
-    const counts = {
-      a: 10,
-      b: 30,
-      c: 50
-    };
+  describe('updateCollectionCounts()', () => {
+    it('should update collection counts', () => {
+      const counts = {
+        a: 10,
+        b: 30,
+        c: 50
+      };
 
-    flux().bridge.search = (request: Request): any => Promise.resolve({ totalRecordCount: counts[request.collection] });
+      flux().query.withPageSize(50)
+        .withFields('brand', 'size');
 
-    tag().update = (obj: any) => {
-      expect(obj.counts).to.eql(counts);
-      done();
-    };
-    tag().init();
-    tag().collections = ['a', 'b', 'c'];
+      flux().bridge.search = (request: Request): any => {
+        expect(request.pageSize).to.eq(0);
+        expect(request.fields).to.be.empty;
+        return Promise.resolve({ totalRecordCount: counts[request.collection] });
+      };
 
-    tag().updateCollectionCounts();
+      tag().update = (obj: any) => {
+        expect(obj.counts).to.eql(counts);
+      };
+      tag().init();
+      tag().collections = ['a', 'b', 'c'];
+
+      tag().updateCollectionCounts();
+      expect(tag().inProgress).to.be.an.instanceof(Promise);
+    });
+
+    it('should not update collection counts if fetchCounts is false', () => {
+      flux().bridge.search = (): any => expect.fail();
+
+      tag().init();
+      tag().collections = ['a', 'b', 'c'];
+      tag().fetchCounts = false;
+
+      tag().updateCollectionCounts();
+    });
+
+    it('should cancel existing search', (done) => {
+      flux().bridge.search = (): any => {
+        expect(tag().inProgress.cancelled).to.be.true;
+        return new Promise((resolve) => setTimeout(() => resolve({}), 100));
+      };
+
+      tag().inProgress = <any>{};
+      tag().update = (obj: any) => done();
+      tag().init();
+      tag().collections = ['a'];
+
+      tag().updateCollectionCounts();
+      expect(tag().inProgress).to.be.an.instanceof(Promise);
+      expect(tag().inProgress.cancelled).to.be.undefined;
+    });
+
+    it('should not update results if cancelled', (done) => {
+      flux().bridge.search = (): any => new Promise((resolve) => setTimeout(() => resolve({}), 100));
+
+      tag().update = (obj: any) => expect.fail();
+      tag().init();
+      tag().collections = ['a'];
+
+      tag().updateCollectionCounts();
+      setTimeout(() => tag().inProgress.cancelled = false, 50);
+      setTimeout(() => done(), 150);
+    });
   });
 
-  it('should not update collection counts if fetchCounts is false', () => {
-    flux().bridge.search = (): any => expect.fail();
+  describe('updateSelectedCollectionCount()', () => {
+    it('should update selected collection count', () => {
+      const collection = 'mycollection';
+      const totalRecordCount = 450;
 
-    tag().init();
-    tag().collections = ['a', 'b', 'c'];
-    tag().fetchCounts = false;
+      flux().query = new Query().withConfiguration({ collection });
 
-    tag().updateCollectionCounts();
+      tag().update = (obj: any) => {
+        expect(obj.counts).to.eql({ [collection]: totalRecordCount });
+      };
+      tag().init();
+
+      tag().updateSelectedCollectionCount(<any>{ totalRecordCount });
+    });
+
+    it('should update selected collection count with existing counts', () => {
+      const collection = 'mycollection';
+      const totalRecordCount = 450;
+
+      flux().query = new Query().withConfiguration({ collection });
+
+      tag().update = (obj: any) => {
+        expect(obj.counts).to.eql({
+          [collection]: totalRecordCount,
+          prod: 403,
+          test: 330
+        });
+      };
+      tag().init();
+      tag().counts = { prod: 403, test: 330 };
+
+      tag().updateSelectedCollectionCount(<any>{ totalRecordCount });
+    });
   });
 
   it('should switch collection using value on anchor tag', () => {
