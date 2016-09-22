@@ -204,11 +204,29 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
     tag().searchProducts(undefined);
   });
 
-  it('should emit query rewrite', () => {
+  it('should emit rewrite_query not query_changed', () => {
     const newQuery = 'slippers';
+
+    flux().query.withQuery(newQuery);
     flux().emit = (event: string, query: string): any => {
       expect(event).to.eq(Events.REWRITE_QUERY);
       expect(query).to.eq(newQuery);
+    };
+
+    tag().rewriteQuery(newQuery);
+  });
+
+  it('should emit rewrite_query and query_changed', () => {
+    const newQuery = 'slippers';
+    flux().emit = (event: string, query: string): any => {
+      switch (event) {
+        case Events.REWRITE_QUERY:
+          return expect(query).to.eq(newQuery);
+        case Events.QUERY_CHANGED:
+          break;
+        default:
+          expect.fail();
+      }
     };
 
     tag().rewriteQuery(newQuery);

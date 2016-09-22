@@ -48,7 +48,7 @@ export class Collections {
       const searches = this.collections
         .filter((collection) => !this.selected(collection))
         .map((collection) => this.flux.bridge
-          .search(Object.assign(this.flux.query.raw, { collection, pageSize: 0, fields: '' }))
+          .search(Object.assign(this.flux.query.raw, { collection, refinements: [], pageSize: 0, fields: '' }))
           .then((results) => ({ results, collection })));
 
       const promises = <CancelablePromise<any>>Promise.all(searches);

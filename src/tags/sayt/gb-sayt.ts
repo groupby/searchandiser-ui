@@ -87,6 +87,9 @@ export class Sayt {
 
   rewriteQuery(query: string) {
     this.flux.emit(Events.REWRITE_QUERY, query);
+    if (query !== this.flux.query.raw.query.toLowerCase()) {
+      this.flux.emit(Events.QUERY_CHANGED);
+    }
   }
 
   notifier(query: string) {
