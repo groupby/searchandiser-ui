@@ -285,7 +285,10 @@ describe('URL beautifier', () => {
 
     it('should convert from query to a URL and back', () => {
       query.withQuery('duvet cover')
-        .withSelectedRefinements(refinement('brand', 'Duvet King'), refinement('fabric', 'linen'), refinement('price', 10, 40));
+        .withSelectedRefinements(
+        refinement('brand', 'Duvet King'),
+        refinement('fabric', 'linen'),
+        refinement('price', 10, 40));
 
       const origRequest = query.build();
       const convertedRequest = beautifier.parse(beautifier.build(query)).build();

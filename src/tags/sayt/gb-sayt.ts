@@ -97,7 +97,9 @@ export class Sayt {
   processResults(result: any) {
     let categoryResults = [];
 
-    this.matchesInput = result.searchTerms && result.searchTerms[0].value.toLowerCase() === this.originalQuery.toLowerCase();
+    this.matchesInput = result.searchTerms
+      && result.searchTerms[0].value.toLowerCase() === this.originalQuery.toLowerCase();
+
     if (this.matchesInput) {
       const [categoryQuery] = result.searchTerms.splice(0, 1);
       categoryResults = this.extractCategoryResults(categoryQuery);
@@ -136,7 +138,9 @@ export class Sayt {
   }
 
   highlightCurrentQuery(value: string, regexReplacement: string) {
-    return this.saytConfig.highlight ? value.replace(new RegExp(escapeStringRegexp(this.originalQuery), 'i'), regexReplacement) : value;
+    return this.saytConfig.highlight
+      ? value.replace(new RegExp(escapeStringRegexp(this.originalQuery), 'i'), regexReplacement)
+      : value;
   }
 
   enhanceCategoryQuery(query: any) {

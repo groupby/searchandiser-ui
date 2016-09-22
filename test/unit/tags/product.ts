@@ -258,31 +258,32 @@ suite('gb-product', Product, { _scope: { struct }, opts: { all_meta } }, ({ tag 
       });
     });
 
-    it('should support alternately named fields in struct and remap them to match the keynames in Searchandiser.ProductStructure', () => {
-      tag()._scope = {
-        struct: {
-          title: 'titre',
-          price: 'prix',
-          image: 'image',
-          url: 'url'
-        }
-      };
-      tag().opts.all_meta = {
-        titre: 'Chicken Dance',
-        prix: '$30',
-        image: 'image.apng',
-        url: 'about:blank',
-      };
+    it(`should support alternately named fields in struct and remap them to match
+        the keynames in Searchandiser.ProductStructure`, () => {
+        tag()._scope = {
+          struct: {
+            title: 'titre',
+            price: 'prix',
+            image: 'image',
+            url: 'url'
+          }
+        };
+        tag().opts.all_meta = {
+          titre: 'Chicken Dance',
+          prix: '$30',
+          image: 'image.apng',
+          url: 'about:blank',
+        };
 
-      tag().init();
+        tag().init();
 
-      expect(tag().variant(0)).to.eql({
-        title: 'Chicken Dance',
-        price: '$30',
-        image: 'image.apng',
-        url: 'about:blank',
+        expect(tag().variant(0)).to.eql({
+          title: 'Chicken Dance',
+          price: '$30',
+          image: 'image.apng',
+          url: 'about:blank',
+        });
       });
-    });
 
     it('should support alternately named fields in variants', () => {
       tag()._scope = {

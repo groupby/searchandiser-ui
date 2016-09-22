@@ -154,26 +154,27 @@ describe(`${TAG} tag with sayt:true`, () => {
       });
     });
 
-    it('restores original query to search box and clears selected autocomplete suggestion when you press KEY_UP while at the top suggestion', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
+    it(`restores original query to search box and clears selected autocomplete
+        suggestion when you press KEY_UP while at the top suggestion`, (done) => {
+        const tag = mount();
+        const saytTag = sayt();
 
-      searchBox().value = 'original';
-      saytTag.update({
-        queries: [
-          { value: 'a' },
-          { value: 'b' }
-        ]
-      });
+        searchBox().value = 'original';
+        saytTag.update({
+          queries: [
+            { value: 'a' },
+            { value: 'b' }
+          ]
+        });
 
-      tag.on('updated', () => {
-        dispatchKeydownEvent(KEY_DOWN);
-        dispatchKeydownEvent(KEY_UP);
-        expect(searchBox().value).to.eql('original');
-        expect(html.querySelector('gb-sayt-link.selected')).to.eql(null);
-        done();
+        tag.on('updated', () => {
+          dispatchKeydownEvent(KEY_DOWN);
+          dispatchKeydownEvent(KEY_UP);
+          expect(searchBox().value).to.eql('original');
+          expect(html.querySelector('gb-sayt-link.selected')).to.eql(null);
+          done();
+        });
       });
-    });
 
     it('keeps the cursor at the end of the search term in the search box', (done) => {
       const tag = mount();

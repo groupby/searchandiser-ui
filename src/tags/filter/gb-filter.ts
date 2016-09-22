@@ -42,7 +42,8 @@ export class Filter {
     // TODO this is probably broken in terms of state propagation
     this.fluxClone.query.withConfiguration(<QueryConfiguration>{ refinements: [] });
     if (searchRequest.refinements) {
-      const filteredRefinements: any[] = searchRequest.refinements.filter(({ navigationName }) => !this.isTargetNav(navigationName));
+      const filteredRefinements: any[] = searchRequest.refinements
+        .filter(({ navigationName }) => !this.isTargetNav(navigationName));
       this.fluxClone.query.withSelectedRefinements(...filteredRefinements);
     }
 

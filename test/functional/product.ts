@@ -34,8 +34,7 @@ describe(`${TAG} tag`, () => {
 
   describe('product with variants', () => {
     const variantStructure = { image: 'image', price: 'price', id: 'id' };
-    const structure = { title: 'title', variants: 'variants', _variantStructure: variantStructure };
-    const all_meta = {
+    const variantAllMeta = {
       title: 'Sneaky Sneakers',
       variants: [
         {
@@ -50,22 +49,30 @@ describe(`${TAG} tag`, () => {
         }
       ]
     };
-    let html: HTMLElement;
+    let variantHtml: HTMLElement;
 
     beforeEach(() => {
-      mixinFlux({ config: { structure } });
-      html = createTag(TAG);
+      mixinFlux({
+        config: {
+          structure: {
+            title: 'title',
+            variants: 'variants',
+            _variantStructure: variantStructure
+          }
+        }
+      });
+      variantHtml = createTag(TAG);
     });
-    afterEach(() => removeTag(html));
+    afterEach(() => removeTag(variantHtml));
 
     it('switches variants', () => {
-      const tag = mount({ all_meta });
+      const tag = mount({ all_meta: variantAllMeta });
       expect(tag).to.be.ok;
 
-      expect(html.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
-      expect(html.querySelector('.gb-product__price').textContent).to.eq('$2000');
-      expect(html.querySelector('img').src).to.include('redsneaks.png');
-      expect(html.querySelector('a').href).to.include('details.html?id=1.1');
+      expect(variantHtml.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
+      expect(variantHtml.querySelector('.gb-product__price').textContent).to.eq('$2000');
+      expect(variantHtml.querySelector('img').src).to.include('redsneaks.png');
+      expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.1');
 
       expect(variantLinks().length).to.eq(2);
       expect((<DOMStringMap & any>(variantLinks()[0]).dataset).index).to.eq('0');
@@ -73,28 +80,28 @@ describe(`${TAG} tag`, () => {
 
       variantLinks()[0].click();
 
-      expect(html.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
-      expect(html.querySelector('.gb-product__price').textContent).to.eq('$2000');
-      expect(html.querySelector('img').src).to.include('redsneaks.png');
-      expect(html.querySelector('a').href).to.include('details.html?id=1.1');
+      expect(variantHtml.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
+      expect(variantHtml.querySelector('.gb-product__price').textContent).to.eq('$2000');
+      expect(variantHtml.querySelector('img').src).to.include('redsneaks.png');
+      expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.1');
 
       variantLinks()[1].click();
 
-      expect(html.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
-      expect(html.querySelector('.gb-product__price').textContent).to.eq('$1');
-      expect(html.querySelector('img').src).to.include('greensneaks.png');
-      expect(html.querySelector('a').href).to.include('details.html?id=1.2');
+      expect(variantHtml.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
+      expect(variantHtml.querySelector('.gb-product__price').textContent).to.eq('$1');
+      expect(variantHtml.querySelector('img').src).to.include('greensneaks.png');
+      expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.2');
 
       variantLinks()[0].click();
 
-      expect(html.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
-      expect(html.querySelector('.gb-product__price').textContent).to.eq('$2000');
-      expect(html.querySelector('img').src).to.include('redsneaks.png');
-      expect(html.querySelector('a').href).to.include('details.html?id=1.1');
+      expect(variantHtml.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
+      expect(variantHtml.querySelector('.gb-product__price').textContent).to.eq('$2000');
+      expect(variantHtml.querySelector('img').src).to.include('redsneaks.png');
+      expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.1');
     });
 
     function variantLinks() {
-      return <NodeListOf<HTMLAnchorElement>>html.querySelectorAll('.gb-product__variant-link');
+      return <NodeListOf<HTMLAnchorElement>>variantHtml.querySelectorAll('.gb-product__variant-link');
     }
   });
 

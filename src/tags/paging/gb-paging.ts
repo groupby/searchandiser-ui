@@ -38,7 +38,7 @@ export class Paging {
     prev: () => void;
     next: () => void;
     last: () => void;
-    jump: (number) => void;
+    jump: (page: number) => void;
   };
 
   init() {
@@ -93,7 +93,7 @@ export class Paging {
     });
   }
 
-  updateCurrentPage({ pageIndex }) {
+  updateCurrentPage({ pageIndex }: { pageIndex: number }) {
     this.update({ currentPage: pageIndex + 1 });
   }
 }
