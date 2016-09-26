@@ -9,7 +9,7 @@
 
   <script>
     this._scopeTo('gb-paging');
-    this.jumpTo = ({ target }) => this._scope.pager.jump(Number(target.text) - 1);
+    this.jumpTo = ({ target }) => this._scope.pager.switchPage(Number(target.text));
   </script>
 
   <style scoped>
