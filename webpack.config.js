@@ -1,11 +1,11 @@
-var webpack = require('webpack');
-var pjson = require('./package.json');
-var CleanPlugin = require('clean-webpack-plugin');
-var UnminifiedPlugin = require('unminified-webpack-plugin');
+const webpack = require('webpack');
+const pjson = require('./package.json');
+const CleanPlugin = require('clean-webpack-plugin');
+const UnminifiedPlugin = require('unminified-webpack-plugin');
 
-var isProd = false;
-var isCi = false;
-var isTest = false;
+let isProd = false;
+let isCi = false;
+let isTest = false;
 
 function resolve() {
   return {
@@ -50,6 +50,8 @@ function loaders() {
   }];
 }
 
+/* eslint-disable no-fallthrough */
+// eslint-disable-next-line no-process-env
 switch (process.env.NODE_ENV) {
   case 'ci':
   case 'continuous':
@@ -93,7 +95,7 @@ switch (process.env.NODE_ENV) {
 
       output: {
         path: './dist',
-        filename: pjson.name + '-' + pjson.version + (isProd ? '.min' : '') + '.js'
+        filename: `${pjson.name}-${pjson.version}${isProd ? '.min' : ''}.js`
       },
 
       devtool: 'source-map',
@@ -121,3 +123,4 @@ switch (process.env.NODE_ENV) {
       }
     };
 }
+/* eslint-enable no-fallthrough */

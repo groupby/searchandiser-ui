@@ -7,6 +7,7 @@ rules:
   indent:
     - error
     - 2
+    - {"SwitchCase": 1}
   linebreak-style:
     - error
     - unix
@@ -58,6 +59,7 @@ rules:
     - error
   object-curly-spacing:
     - error
+    - always
   space-infix-ops:
     - error
   arrow-spacing:
@@ -70,3 +72,6 @@ rules:
     - warn
   prefer-template:
     - error
+  no-console:
+    - error
+    - {"allow": ["error"]}
