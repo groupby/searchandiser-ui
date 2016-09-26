@@ -2,7 +2,7 @@ import { initServices } from './services/init';
 import { MixinFlux } from './tags/tag';
 import { BeautifierConfig } from './url-beautifier';
 import { checkNested } from './utils';
-import { Events, FluxCapacitor, Sort } from 'groupby-api';
+import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
 export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields}';
@@ -31,15 +31,19 @@ export function applyDefaultConfig(rawConfig: SearchandiserConfig): Searchandise
 }
 
 export function transformConfig(config: SearchandiserConfig): SearchandiserConfig & any {
-  let finalConfig: SearchandiserConfig & { headers: any, https: boolean } = <any>config;
+  let finalConfig: FluxConfiguration & { sort: any[] } = <any>config;
   if (config.pageSizes) finalConfig.pageSize = config.pageSizes[0];
   if (config.bridge) {
-    let headers = config.bridge.headers || {};
+    const bridgeConfig: BridgeConfig = {};
+
+    const headers = config.bridge.headers || {};
     if (config.bridge.skipCache) headers['Skip-Caching'] = true;
     if (config.bridge.skipSemantish) headers['Skip-Semantish'] = true;
-    finalConfig.headers = headers;
-    if (config.bridge.https) finalConfig.https = true;
-    delete finalConfig.bridge;
+    bridgeConfig.headers = headers;
+
+    if (config.bridge.https) bridgeConfig.https = true;
+
+    Object.assign(finalConfig.bridge, bridgeConfig);
   }
   if (checkNested(config, 'tags', 'sort', 'options')) {
     finalConfig.sort = [config.tags.sort.options.map((val) => val.value)[0]];

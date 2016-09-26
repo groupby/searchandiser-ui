@@ -112,7 +112,7 @@ describe('searchandiser', () => {
     searchandiser.compile();
   });
 
-  describe('search behaviour', () => {
+  describe('search()', () => {
     it('should perform a blank search', (done) => {
       flux.emit = (event, data) => {
         expect(event).to.eq('page_changed');
@@ -185,14 +185,14 @@ describe('searchandiser', () => {
     });
 
     describe('bridge configuration', () => {
-      it('should remove the bridge configuration', () => {
+      it('should not remove the bridge configuration', () => {
         const config = transformConfig(<any>{ bridge: {} });
-        expect(config.bridge).to.not.be.ok;
+        expect(config.bridge).to.be.ok;
       });
 
       it('should accept HTTPS', () => {
         const config = transformConfig(<any>{ bridge: { https: true } });
-        expect(config.https).to.be.true;
+        expect(config.bridge.https).to.be.true;
       });
 
       it('should accept headers', () => {
@@ -202,7 +202,7 @@ describe('searchandiser', () => {
         };
 
         const config = transformConfig(<any>{ bridge: { headers } });
-        expect(config.headers).to.eq(headers);
+        expect(config.bridge.headers).to.eq(headers);
       });
 
       it('should set configured headers', () => {
@@ -212,7 +212,7 @@ describe('searchandiser', () => {
             skipSemantish: true
           }
         });
-        expect(config.headers).to.eql({
+        expect(config.bridge.headers).to.eql({
           'Skip-Caching': true,
           'Skip-Semantish': true
         });
@@ -225,10 +225,19 @@ describe('searchandiser', () => {
             skipCache: true
           }
         });
-        expect(config.headers).to.eql({
+        expect(config.bridge.headers).to.eql({
           Some: 'Headers',
           'Skip-Caching': true
         });
+      });
+
+      it('should not clobber timeout', () => {
+        const config = transformConfig(<any>{
+          bridge: {
+            timeout: 1300
+          }
+        });
+        expect(config.bridge.timeout).to.eq(1300);
       });
     });
   });
