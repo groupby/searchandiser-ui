@@ -39,7 +39,7 @@ export class Paging {
     prev: () => void;
     next: () => void;
     last: () => void;
-    switchPage: (number) => void;
+    switchPage: (page: number) => void;
   };
 
   init() {
@@ -86,11 +86,12 @@ export class Paging {
   updatePageInfo(pageNumbers: number[], currentPage: number, lastPage: number) {
     this.update({
       pageNumbers,
+      currentPage,
+      lastPage,
       lowOverflow: pageNumbers[0] !== 1,
       highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
       backDisabled: currentPage === 1,
-      forwardDisabled: currentPage === lastPage,
-      lastPage
+      forwardDisabled: currentPage === lastPage
     });
   }
 
