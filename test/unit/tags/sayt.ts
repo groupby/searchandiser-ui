@@ -332,7 +332,6 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
-      const mock = sinon.stub(tag(), 'emitQueryChanged');
 
       tag().saytConfig = {};
       tag().flux.rewrite = (query, config): any => {
@@ -351,7 +350,6 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement }
       }, suggestion);
-      expect(mock.called).to.be.true;
     });
 
     it('should skip refinement and do query', () => {
@@ -460,22 +458,6 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
         { category: 'Patio Furniture', value: 'tool' },
         { category: 'Camping', value: 'tool' }
       ]);
-    });
-  });
-  describe('emitQueryChanged()', () => {
-    it('should emit event', () => {
-      flux().emit = (event): any => expect(event).to.eq(Events.QUERY_CHANGED);
-      flux().query.withQuery('shoes');
-
-      tag().emitQueryChanged('hat');
-    });
-
-    it('should not emit event', () => {
-      const newQuery = 'shoes';
-      flux().emit = (event): any => expect.fail();
-      flux().query.withQuery(newQuery);
-
-      tag().emitQueryChanged(newQuery);
     });
   });
 });

@@ -162,16 +162,9 @@ export class Sayt {
       this.services.url.update(query, doRefinement ? [refinement] : []);
     } else if (doRefinement) {
       this.flux.rewrite(query, { skipSearch: true });
-      this.emitQueryChanged(query);
       this.flux.refine(refinement);
     } else {
       this.flux.reset(query);
-    }
-  }
-
-  emitQueryChanged(query: string) {
-    if (query.toLowerCase() !== this.flux.query.raw.query.toLowerCase()) {
-      this.flux.emit(Events.QUERY_CHANGED);
     }
   }
 

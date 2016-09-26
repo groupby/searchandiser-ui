@@ -51,8 +51,7 @@ export class Collections {
           .search(Object.assign(this.flux.query.raw, { collection, refinements: [], pageSize: 0, fields: '' }))
           .then((results) => ({ results, collection })));
 
-      const promises = <CancelablePromise<any>>Promise.all(searches);
-      this.inProgress = promises;
+      const promises = this.inProgress = <CancelablePromise<any>>Promise.all(searches);
 
       promises
         .then((res) => res.reduce(this.extractCounts, {}))
