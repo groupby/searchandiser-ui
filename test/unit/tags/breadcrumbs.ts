@@ -30,53 +30,32 @@ suite('gb-breadcrumbs', Breadcrumbs, ({ flux, tag }) => {
   });
 
   it('should listen for events', () => {
-    flux().on = (event: string): any => expect(event).to.be.oneOf([
-      Events.REFINEMENTS_CHANGED,
-      Events.RESULTS,
-      Events.RESET
-    ]);
+    flux().on = (event: string): any => {
+      switch (event) {
+        case Events.RESULTS:
+        case Events.RESET:
+          break;
+        default: expect.fail();
+      }
+    };
 
     tag().init();
   });
 
-  it('should update selected on REFINEMENTS_CHANGED', (done) => {
-    const selected = ['a', 'b', 'c'];
-
-    let callback;
+  it('should empty selected on RESET', () => {
     flux().on = (event: string, cb: Function): any => {
-      if (event === Events.REFINEMENTS_CHANGED) callback = cb;
+      if (event === Events.RESET) cb();
     };
 
-    tag().update = (obj: any) => {
-      expect(obj.selected).to.eql(selected);
-      done();
-    };
+    tag().update = (obj: any) => expect(obj.selected.length).to.eq(0);
     tag().init();
-
-    callback({ selected });
-  });
-
-  it('should empty selected on RESET', (done) => {
-    let callback;
-    flux().on = (event: string, cb: Function): any => {
-      if (event === Events.RESET) callback = cb;
-    };
-
-    tag().update = (obj: any) => {
-      expect(obj.selected.length).to.eq(0);
-      done();
-    };
-    tag().init();
-
-    callback();
   });
 
   it('should update originalQuery on RESULTS', (done) => {
     const originalQuery = 'red sneakers';
 
-    let callback;
     flux().on = (event: string, cb: Function): any => {
-      if (event === Events.RESULTS) callback = cb;
+      if (event === Events.RESULTS) cb({ originalQuery });
     };
 
     tag().update = (obj: any) => {
@@ -84,7 +63,17 @@ suite('gb-breadcrumbs', Breadcrumbs, ({ flux, tag }) => {
       done();
     };
     tag().init();
+  });
 
-    callback({ originalQuery });
+  it('should update selected on RESULTS', () => {
+    const selectedNavigation = ['a', 'b', 'c'];
+
+    flux().on = (event: string, cb: Function): any => {
+      if (event === Events.RESULTS) cb({ selectedNavigation });
+    };
+
+    tag().updateQuery = () => null;
+    tag().update = (obj: any) => expect(obj.selected).to.eql(selectedNavigation);
+    tag().init();
   });
 });
