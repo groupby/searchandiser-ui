@@ -30,14 +30,21 @@ suite('gb-reset', Reset, ({
   });
 
   describe('clearQuery()', () => {
-    it('should clear query', () => {
-      const stub = sandbox().stub(flux(), 'reset', (value) => expect(value).to.eq(''));
+    it('should clear query', (done) => {
+      const stub = sandbox().stub(flux(), 'reset', (value) =>
+        Promise.resolve(expect(value).to.eq('')));
       tag().searchBox = <any>{ value: 'something' };
+      tag().services = <any>{
+        tracker: {
+          search: () => {
+            expect(tag().searchBox.value).to.eq('');
+            expect(stub.called).to.be.true;
+            done();
+          }
+        }
+      };
 
       tag().clearQuery();
-
-      expect(tag().searchBox.value).to.eq('');
-      expect(stub.called).to.be.true;
     });
   });
 });

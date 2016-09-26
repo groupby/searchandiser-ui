@@ -186,14 +186,16 @@ suite('gb-paging', Paging, ({
       expect(last.called).to.be.true;
     });
 
-    it('switchPage()', () => {
+    it('switchPage()', (done) => {
       const newPage = 7;
       const switchPage = sinon.spy((page) => Promise.resolve(expect(page).to.eq(newPage)));
       const pager = tag().wrapPager(<any>{ switchPage });
+      tag().emitEvent = () => {
+        expect(switchPage.called).to.be.true;
+        done();
+      };
 
       pager.switchPage(newPage);
-
-      expect(switchPage.called).to.be.true;
     });
 
     it('should not allow page forward', () => {
@@ -219,15 +221,13 @@ suite('gb-paging', Paging, ({
       pager.prev();
       pager.first();
     });
+  });
 
-    it('should switch to the given page', () => {
-      const newPage = 7;
-      const switchPage = sinon.spy((page) => expect(page).to.eq(newPage));
-      const pager = tag().wrapPager(<any>{ switchPage });
+  describe('emitEvent()', () => {
+    it('should emit search event', (done) => {
+      tag().services = <any>{ tracker: { search: () => done() } };
 
-      pager.switchPage(newPage);
-
-      expect(switchPage.called).to.be.true;
+      tag().emitEvent();
     });
   });
 });

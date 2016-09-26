@@ -98,11 +98,15 @@ export class Paging {
 
   wrapPager(pager: Pager): any {
     return {
-      first: () => !this.backDisabled && pager.reset(),
-      prev: () => !this.backDisabled && pager.prev(),
-      next: () => !this.forwardDisabled && pager.next(),
-      last: () => !this.forwardDisabled && pager.last(),
-      switchPage: (page) => pager.switchPage(page)
+      first: () => !this.backDisabled && pager.reset().then(this.emitEvent),
+      prev: () => !this.backDisabled && pager.prev().then(this.emitEvent),
+      next: () => !this.forwardDisabled && pager.next().then(this.emitEvent),
+      last: () => !this.forwardDisabled && pager.last().then(this.emitEvent),
+      switchPage: (page) => pager.switchPage(page).then(this.emitEvent)
     };
+  }
+
+  emitEvent() {
+    this.services.tracker.search();
   }
 }

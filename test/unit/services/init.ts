@@ -14,7 +14,7 @@ describe('service initializer', () => {
   it('should initialize all services', () => {
     const flux: any = { on: () => null, search: () => null };
 
-    const services = initServices(flux, <any>{});
+    const services = initServices(flux, <any>{ customerId: 'test', area: 'other' });
     expect(services.filter).to.be.an.instanceof(Filter);
     expect(services.redirect).to.be.an.instanceof(Redirect);
     expect(services.url).to.be.an.instanceof(Url);

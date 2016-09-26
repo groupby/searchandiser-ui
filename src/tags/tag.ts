@@ -1,6 +1,7 @@
 import { Collections } from '../services/collections';
 import { Filter } from '../services/filter';
 import { Redirect } from '../services/redirect';
+import { Tracker } from '../services/tracker';
 import { Url } from '../services/url';
 import { checkBooleanAttr, getPath } from '../utils/common';
 import { FluxCapacitor } from 'groupby-api';
@@ -18,6 +19,7 @@ export interface FluxTag<T> extends riot.Tag.Instance {
     collections: Collections;
     filter: Filter;
     redirect: Redirect;
+    tracker: Tracker;
     url: Url;
   };
 }

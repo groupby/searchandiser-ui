@@ -17,6 +17,7 @@ export class Reset {
   }
 
   clearQuery() {
-    this.flux.reset(this.searchBox.value = '');
+    this.flux.reset(this.searchBox.value = '')
+      .then(() => this.services.tracker.search());
   }
 }

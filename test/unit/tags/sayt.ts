@@ -315,11 +315,20 @@ suite('gb-sayt', Sayt, ({
   });
 
   describe('search()', () => {
-    it('should update results with suggestion as query', () => {
+    it('should update results with suggestion as query', (done) => {
       const suggestion = 'red heels';
-      tag()._config = {};
       const rewriteQuery = sandbox().stub(tag(), 'rewriteQuery', (query) => expect(query).to.eq(suggestion));
       const reset = sandbox().stub(flux(), 'reset', (query) => expect(query).to.eq(suggestion));
+      tag()._config = {};
+      tag().services = <any>{
+        tracker: {
+          sayt: () => {
+            expect(rewriteQuery.called).to.be.true;
+            expect(reset.called).to.be.true;
+            done();
+          }
+        }
+      };
 
       tag().search(<any>{
         target: {
@@ -327,16 +336,13 @@ suite('gb-sayt', Sayt, ({
           dataset: { value: suggestion }
         }
       });
-
-      expect(rewriteQuery.called).to.be.true;
-      expect(reset.called).to.be.true;
     });
 
     it('should search for the gb-sayt-link node', () => {
       const suggestion = 'red heels';
       tag()._config = {};
       const rewriteQuery = sandbox().stub(tag(), 'rewriteQuery', (query) => expect(query).to.eq(suggestion));
-      const reset = sandbox().stub(flux(), 'reset', (query) => expect(query).to.eq(suggestion));
+      const reset = sandbox().stub(flux(), 'reset', (query) => Promise.resolve(expect(query).to.eq(suggestion)));
 
       tag().search(<any>{
         target: {
@@ -375,7 +381,7 @@ suite('gb-sayt', Sayt, ({
   });
 
   describe('refine()', () => {
-    it('should update results with suggestion and refinement', () => {
+    it('should update results with suggestion and refinement', (done) => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
@@ -384,37 +390,49 @@ suite('gb-sayt', Sayt, ({
         expect(config.skipSearch).to.be.true;
       });
       const refine = sandbox().stub(flux(), 'refine', (selectedRefinement) =>
-        expect(selectedRefinement).to.eql({
+        Promise.resolve(expect(selectedRefinement).to.eql({
           navigationName: field,
           value: refinement,
           type: 'Value'
-        }));
+        })));
       tag()._config = {};
+      tag().services = <any>{
+        tracker: {
+          sayt: () => {
+            expect(rewrite.called).to.be.true;
+            expect(refine.called).to.be.true;
+            done();
+          }
+        }
+      };
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement }
       }, suggestion);
-
-      expect(rewrite.called).to.be.true;
-      expect(refine.called).to.be.true;
     });
 
-    it('should skip refinement and do query', () => {
+    it('should skip refinement and do query', (done) => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
       const stub = sandbox().stub(flux(), 'reset', (query): any =>
-        expect(query).to.eq(suggestion));
+        Promise.resolve(expect(query).to.eq(suggestion)));
       flux().rewrite = (): any => expect.fail();
       tag()._config = {};
+      tag().services = <any>{
+        tracker: {
+          sayt: () => {
+            expect(stub.called).to.be.true;
+            done();
+          }
+        }
+      };
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement, norefine: true }
       }, suggestion);
-
-      expect(stub.called).to.be.true;
     });
 
     it('should perform a static refinement', () => {

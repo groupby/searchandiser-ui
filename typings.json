@@ -7,6 +7,7 @@
     "filter-object": "registry:npm/filter-object#2.1.0+20160816021609",
     "oget": "registry:npm/oget#1.0.6+20161004214750",
     "parseUri": "registry:npm/parseUri#1.2.3-2+20161005205200",
+    "node-uuid": "registry:npm/node-uuid#1.4.7+20160723033700",
     "riot": "registry:npm/riot#2.6.0+20160825063327"
   },
   "globalDevDependencies": {
@@ -16,9 +17,11 @@
     "sinon": "registry:dt/sinon#1.16.0+20160924120326"
   },
   "globalDependencies": {
+    "axios": "registry:dt/axios#0.9.1+20160629101425",
     "clone": "registry:dt/clone#0.1.11+20160317120654",
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
     "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
+    "js-cookie": "registry:dt/js-cookie#2.0.0+20160317120654",
     "query-string": "registry:dt/query-string#3.0.0+20160331065456"
   }
 }

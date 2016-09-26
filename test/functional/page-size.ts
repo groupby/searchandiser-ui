@@ -3,7 +3,7 @@ import { clearOption, label, selectOptions } from '../utils/select';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<PageSize>('gb-page-size', ({ flux, html, mount, sandbox }) => {
+suite<PageSize>('gb-page-size', ({ flux, html, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
@@ -20,13 +20,15 @@ suite<PageSize>('gb-page-size', ({ flux, html, mount, sandbox }) => {
     expect(selectOptions()[2].textContent).to.eq('50');
   });
 
-  it('should resize on option selected', () => {
+  it('should resize on option selected', (done) => {
     mount();
-    const stub = sandbox().stub(flux(), 'resize', (value): any => expect(value).to.eq(25));
+
+    flux().resize = (value): any => {
+      expect(value).to.eq(25);
+      expect(clearOption()).to.not.be.ok;
+      done();
+    };
 
     selectOptions()[1].click();
-
-    expect(clearOption()).to.not.be.ok;
-    expect(stub.called).to.be.true;
   });
 });

@@ -10,7 +10,8 @@ export class DidYouMean {
   }
 
   send(event: Event) {
-    this.flux.rewrite((<HTMLAnchorElement>event.target).text);
+    this.flux.rewrite((<HTMLAnchorElement>event.target).text)
+      .then(() => this.services.tracker.didYouMean());
   }
 
   updateDidYouMean({ didYouMean }: Results) {

@@ -27,29 +27,35 @@ suite('gb-page-size', PageSize, ({
   });
 
   describe('onselect()', () => {
-    it('should resize and keep offset', () => {
+    it('should resize and keep offset', (done) => {
       const stub = sandbox().stub(flux(), 'resize', (pageSize, reset) => {
         expect(pageSize).to.eq(40);
         expect(reset).to.be.undefined;
+        return Promise.resolve();
       });
+      tag().services = <any>{
+        tracker: {
+          search: () => {
+            expect(stub.called).to.be.true;
+            done();
+          }
+        }
+      };
       flux().query.skip(43);
 
       tag().onselect(40);
-
-      expect(stub.called).to.be.true;
     });
 
-    it('should resize and reset offset', () => {
-      const stub = sandbox().stub(flux(), 'resize', (pageSize, reset) => {
+    it('should resize and reset offset', (done) => {
+      sandbox().stub(flux(), 'resize', (pageSize, reset) => {
         expect(pageSize).to.eq(20);
         expect(reset).to.be.true;
+        done();
       });
       flux().query.skip(43);
       tag()._config = { resetOffset: true };
 
       tag().onselect(20);
-
-      expect(stub.called).to.be.true;
     });
   });
 });

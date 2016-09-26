@@ -33,6 +33,7 @@ export class Url {
       if (query) {
         this.flux.query = query;
         this.flux.search(query.raw.query);
+        // TODO: need to beacon here
       }
     }
   }
@@ -41,6 +42,7 @@ export class Url {
     return LOCATION.pathname() !== this.urlConfig.searchUrl;
   }
 
+  // TODO: better way to do this is with browser history rewrites
   update(query: string, refinements: any[] = this.flux.query.raw.refinements) {
     const queryObj = new Query(query).withSelectedRefinements(...refinements);
 

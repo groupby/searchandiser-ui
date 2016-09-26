@@ -18,7 +18,7 @@ export function initSearchandiser() {
     const flux = Object.assign(initCapacitor(config), Events);
     const services = initServices(flux, config);
     riot.mixin(MixinFlux(flux, config, services));
-    Object.assign(configure, { flux, config }, new Searchandiser()['__proto__']);
+    Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
   };
 }
 
@@ -57,6 +57,7 @@ export function transformConfig(config: SearchandiserConfig): SearchandiserConfi
 export class Searchandiser {
 
   flux: FluxCapacitor;
+  services: any;
   config: SearchandiserConfig;
 
   init() {
@@ -115,10 +116,17 @@ export interface UrlConfig {
   detailsUrl?: string;
 }
 
+export interface TrackerConfig {
+  sessionId?: string;
+  visitorId?: string;
+}
+
 export interface SearchandiserConfig {
   bridge?: BridgeConfig;
 
   url?: UrlConfig;
+
+  tracker?: TrackerConfig;
 
   customerId: string;
   area?: string;

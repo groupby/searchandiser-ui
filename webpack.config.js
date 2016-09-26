@@ -33,6 +33,9 @@ function loaders() {
     test: /\.png$/,
     loader: 'url'
   }, {
+    test: /\.json$/,
+    loader: 'json'
+  }, {
     test: /\.ts$/,
     exclude: /node_modules/,
     loader: 'awesome-typescript',
