@@ -204,29 +204,13 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
     tag().searchProducts(undefined);
   });
 
-  it('should emit rewrite_query not query_changed', () => {
+  it('should emit rewrite_query', () => {
     const newQuery = 'slippers';
 
     flux().query.withQuery(newQuery);
     flux().emit = (event: string, query: string): any => {
       expect(event).to.eq(Events.REWRITE_QUERY);
       expect(query).to.eq(newQuery);
-    };
-
-    tag().rewriteQuery(newQuery);
-  });
-
-  it('should emit rewrite_query and query_changed', () => {
-    const newQuery = 'slippers';
-    flux().emit = (event: string, query: string): any => {
-      switch (event) {
-        case Events.REWRITE_QUERY:
-          return expect(query).to.eq(newQuery);
-        case Events.QUERY_CHANGED:
-          break;
-        default:
-          expect.fail();
-      }
     };
 
     tag().rewriteQuery(newQuery);
@@ -348,6 +332,8 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
+      const mock = sinon.stub(tag(), 'emitQueryChanged');
+
       tag().saytConfig = {};
       tag().flux.rewrite = (query, config): any => {
         expect(query).to.eq(suggestion);
@@ -365,6 +351,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement }
       }, suggestion);
+      expect(mock.called).to.be.true;
     });
 
     it('should skip refinement and do query', () => {
@@ -473,6 +460,22 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
         { category: 'Patio Furniture', value: 'tool' },
         { category: 'Camping', value: 'tool' }
       ]);
+    });
+  });
+  describe('emitQueryChanged()', () => {
+    it('should emit event', () => {
+      flux().emit = (event): any => expect(event).to.eq(Events.QUERY_CHANGED);
+      flux().query.withQuery('shoes');
+
+      tag().emitQueryChanged('hat');
+    });
+
+    it('should not emit event', () => {
+      const newQuery = 'shoes';
+      flux().emit = (event): any => expect.fail();
+      flux().query.withQuery(newQuery);
+
+      tag().emitQueryChanged(newQuery);
     });
   });
 });
