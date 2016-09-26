@@ -21,7 +21,7 @@ export class Collections {
     this.labels = isLabeledCollections ? this.options.reduce((labels, collection) => Object.assign(labels, { [collection.value]: collection.label }), {}) : {};
     this.fetchCounts = unless(config.counts, true);
     this.dropdown = unless(config.dropdown, false);
-    this.flux.on(Events.REQUEST_CHANGED, this.updateCollectionCounts);
+    this.flux.on(Events.QUERY_CHANGED, this.updateCollectionCounts);
     this.updateCollectionCounts();
   }
 

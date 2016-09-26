@@ -57,9 +57,9 @@ suite('gb-collections', Collections, ({ flux, tag }) => {
     tag().init();
   });
 
-  it('should listen for request_changed event', () => {
+  it('should listen for query_changed event', () => {
     flux().on = (event: string, cb: Function): any => {
-      expect(event).to.eq(Events.REQUEST_CHANGED);
+      expect(event).to.eq(Events.QUERY_CHANGED);
       expect(cb).to.eq(tag().updateCollectionCounts);
     };
 
