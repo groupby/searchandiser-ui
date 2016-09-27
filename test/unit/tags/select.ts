@@ -2,7 +2,7 @@ import { Select } from '../../../src/tags/select/gb-select';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-select', Select, { _scope: { opts: {} } }, ({ tag }) => {
+suite('gb-select', Select, { _scope: { _config: {} } }, ({ tag }) => {
   it('should have default values', () => {
     tag().init();
 
@@ -17,7 +17,7 @@ suite('gb-select', Select, { _scope: { opts: {} } }, ({ tag }) => {
     expect(tag().selected).to.be.undefined;
     expect(tag().focused).to.be.undefined;
     expect(tag().default).to.be.true;
-    expect(tag()._scope).to.eql({ opts: {} });
+    expect(tag()._scope).to.eql({ _config: {} });
   });
 
   it('should accept override from _scope', () => {
@@ -28,7 +28,7 @@ suite('gb-select', Select, { _scope: { opts: {} } }, ({ tag }) => {
     const onselect = () => null;
 
     tag()._scope = {
-      opts: { hover: true, native: false },
+      _config: { hover: true, native: false },
       clear: 'None selected', options, label: 'Choice', onselect
     };
     tag().init();
@@ -40,7 +40,7 @@ suite('gb-select', Select, { _scope: { opts: {} } }, ({ tag }) => {
     expect(tag().native).to.be.false;
     expect(tag().callback).to.be.a('function');
     expect(tag()._scope).to.eql({
-      opts: { hover: true, native: false },
+      _config: { hover: true, native: false },
       clear: 'None selected', options, label: 'Choice', onselect
     });
   });
@@ -59,44 +59,48 @@ suite('gb-select', Select, { _scope: { opts: {} } }, ({ tag }) => {
   });
 
   it('should be native', () => {
-    tag()._scope.opts.native = true;
+    tag()._scope._config.native = true;
     tag().init();
 
     expect(tag().native).to.be.true;
-    tag()._scope.opts.native = 'true';
+
+    tag()._scope._config.native = 'true';
     tag().init();
 
     expect(tag().native).to.be.true;
   });
 
   it('should not be native', () => {
-    tag()._scope.opts.native = false;
+    tag()._scope._config.native = false;
     tag().init();
 
     expect(tag().native).to.be.false;
-    tag()._scope.opts.native = 'false';
+
+    tag()._scope._config.native = 'false';
     tag().init();
 
     expect(tag().native).to.be.false;
   });
 
   it('should allow hover', () => {
-    tag()._scope.opts.hover = true;
+    tag()._scope._config.hover = true;
     tag().init();
 
     expect(tag().hover).to.be.true;
-    tag()._scope.opts.hover = 'true';
+
+    tag()._scope._config.hover = 'true';
     tag().init();
 
     expect(tag().hover).to.be.true;
   });
 
   it('should not allow hover', () => {
-    tag()._scope.opts.hover = false;
+    tag()._scope._config.hover = false;
     tag().init();
 
     expect(tag().hover).to.be.false;
-    tag()._scope.opts.hover = 'false';
+
+    tag()._scope._config.hover = 'false';
     tag().init();
 
     expect(tag().hover).to.be.false;

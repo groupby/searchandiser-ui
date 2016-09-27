@@ -7,6 +7,7 @@ suite('gb-collections', Collections, ({ flux, tag }) => {
   it('should have default values', () => {
     tag().init();
 
+    expect(tag()._config).to.eql({});
     expect(tag().fetchCounts).to.be.true;
     expect(tag().collections).to.eql([]);
     expect(tag().options).to.eql([]);
@@ -16,9 +17,12 @@ suite('gb-collections', Collections, ({ flux, tag }) => {
 
   it('should allow override from global tag config', () => {
     const options = ['a', 'b', 'c'];
-    tag().config = { tags: { collections: { counts: false, options } } };
+    const collectionsConfig = { counts: false, options };
+
+    tag().config = { tags: { collections: collectionsConfig } };
     tag().init();
 
+    expect(tag()._config).to.eql(collectionsConfig);
     expect(tag().fetchCounts).to.be.false;
     expect(tag().options).to.eq(options);
     expect(tag().collections).to.eq(options);
@@ -29,6 +33,7 @@ suite('gb-collections', Collections, ({ flux, tag }) => {
     tag().opts = { counts: false, options };
     tag().init();
 
+    expect(tag()._config).to.eql(tag().opts);
     expect(tag().fetchCounts).to.be.false;
     expect(tag().options).to.eq(options);
     expect(tag().collections).to.eq(options);

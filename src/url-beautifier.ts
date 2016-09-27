@@ -14,8 +14,8 @@ export class UrlBeautifier {
   private generator: UrlGenerator = new UrlGenerator(this);
   private parser: UrlParser = new UrlParser(this);
 
-  constructor(public searchandiserConfig: SearchandiserConfig = <any>{ url: {} }) {
-    const urlConfig = searchandiserConfig.url;
+  constructor(public searchandiserConfig: SearchandiserConfig = <any>{}) {
+    const urlConfig = searchandiserConfig.url || {};
     const config = typeof urlConfig.beautifier === 'object' ? urlConfig.beautifier : {};
     Object.assign(this.config, config);
 

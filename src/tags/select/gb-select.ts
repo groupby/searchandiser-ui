@@ -31,8 +31,8 @@ export class Select {
     this.default = _scope.clear === undefined;
     this.label = _scope.label || 'Select';
 
-    this.hover = checkBooleanAttr('hover', _scope.opts);
-    this.native = checkBooleanAttr('native', _scope.opts);
+    this.hover = checkBooleanAttr('hover', _scope._config);
+    this.native = checkBooleanAttr('native', _scope._config);
 
     if (this.default) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];

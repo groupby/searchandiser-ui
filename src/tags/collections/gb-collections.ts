@@ -8,6 +8,7 @@ export interface Collections extends FluxTag { }
 
 export class Collections {
 
+  _config: any;
   options: any[];
   collections: string[];
   counts: any;
@@ -17,13 +18,14 @@ export class Collections {
   inProgress: CancelablePromise<any>;
 
   init() {
-    const config = Object.assign({}, getPath(this.config, 'tags.collections'), this.opts);
-    this.options = unless(config.options, []);
+    this._config = Object.assign({}, getPath(this.config, 'tags.collections'), this.opts);
+    this.options = unless(this._config.options, []);
     const isLabeledCollections = this.options.length !== 0 && typeof this.options[0] === 'object';
     this.collections = isLabeledCollections ? this.options.map((collection) => collection.value) : this.options;
     this.labels = isLabeledCollections ? this.options.reduce(this.extractLabels, {}) : {};
-    this.fetchCounts = unless(config.counts, true);
-    this.dropdown = unless(config.dropdown, false);
+    this.fetchCounts = unless(this._config.counts, true);
+    this.dropdown = unless(this._config.dropdown, false);
+
     this.flux.on(Events.QUERY_CHANGED, this.updateCollectionCounts);
     this.flux.on(Events.RESULTS, this.updateSelectedCollectionCount);
     this.updateCollectionCounts();

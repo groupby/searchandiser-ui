@@ -1,4 +1,4 @@
-import { initCapacitor } from '../searchandiser';
+import { Filter } from '../services/filter';
 import { Redirect } from '../services/redirect';
 import { Url } from '../services/url';
 import { FluxCapacitor } from 'groupby-api';
@@ -13,6 +13,7 @@ export interface FluxTag extends Riot.Tag.Instance {
   flux: FluxCapacitor;
   config: any;
   services: {
+    filter: Filter;
     redirect: Redirect;
     url: Url;
   };
@@ -36,10 +37,6 @@ export class FluxTag {
 
   _mixin(...mixins: any[]) {
     this.mixin(...mixins.map((mixin) => new mixin().__proto__));
-  }
-
-  _clone() {
-    return initCapacitor(Object.assign({}, this.config, { initialSearch: false }));
   }
 
   _scopeTo(scope: string) {

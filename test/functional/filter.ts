@@ -23,7 +23,7 @@ suite<Filter>('gb-filter', ({ flux, html, mount }) => {
     it('renders from results', () => {
       const tag = mount();
 
-      tag.isTargetNav = () => true;
+      tag.services.filter = <any>{ isTargetNav: () => true };
       tag.updateValues(<any>{ availableNavigation: [navigation] });
 
       expect(html().querySelector('gb-option-list')).to.be.ok;
@@ -34,7 +34,7 @@ suite<Filter>('gb-filter', ({ flux, html, mount }) => {
 
     it('renders clear option', () => {
       const tag = mount();
-      tag.isTargetNav = () => true;
+      tag.services.filter = <any>{ isTargetNav: () => true };
 
       flux().refine = () => null;
 
@@ -46,7 +46,7 @@ suite<Filter>('gb-filter', ({ flux, html, mount }) => {
 
     it('navigates on clear selection', (done) => {
       const tag = mount();
-      tag.isTargetNav = () => true;
+      tag.services.filter = <any>{ isTargetNav: () => true };
 
       flux().refine = () => null;
       flux().reset = () => done();

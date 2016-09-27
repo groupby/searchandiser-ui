@@ -1,4 +1,5 @@
 import { initServices } from './services/init';
+import { FilterConfig } from './tags/filter/gb-filter';
 import { MixinFlux } from './tags/tag';
 import { BeautifierConfig } from './url-beautifier';
 import { checkNested } from './utils';
@@ -154,6 +155,7 @@ export interface SearchandiserConfig {
     collections?: {
       options?: string[];
     };
+    filter?: FilterConfig;
   };
   stylish?: boolean;
   initialSearch?: boolean;

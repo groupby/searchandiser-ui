@@ -1,30 +1,25 @@
-import { toRefinement } from '../../utils';
+import { FILTER_UPDATED_EVENT } from '../../services/filter';
+import { getPath, toRefinement } from '../../utils';
 import { SelectTag } from '../select/gb-select';
-import { Events, FluxCapacitor, QueryConfiguration, Results } from 'groupby-api';
+import { Results } from 'groupby-api';
 
 export interface Filter extends SelectTag { }
 
 export class Filter {
 
-  fluxClone: FluxCapacitor;
-  navField: string;
+  _config: FilterConfig;
   selected: any;
 
   init() {
-    this.navField = this.opts.field;
-    this.label = this.opts.label || 'Filter';
-    this.clear = this.opts.clear || 'Unfiltered';
-    this.fluxClone = this._clone();
+    this._config = getPath(this.config, 'tags.filter') || this.opts;
+    this.label = this._config.label || 'Filter';
+    this.clear = this._config.clear || 'Unfiltered';
 
-    this.flux.on(Events.RESULTS, () => this.updateFluxClone());
-  }
-
-  isTargetNav(navName: string) {
-    return navName === this.navField;
+    this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
   }
 
   convertRefinements(navigations: any[]): any[] {
-    const found = navigations.find(({ name }) => this.isTargetNav(name));
+    const found = navigations.find(({ name }) => this.services.filter.isTargetNav(name));
     return found ? found.refinements.map((ref) => ({ label: ref.value, value: ref })) : [];
   }
 
@@ -37,25 +32,18 @@ export class Filter {
     }
   }
 
-  updateFluxClone() {
-    const searchRequest = this.flux.query.raw;
-    // TODO this is probably broken in terms of state propagation
-    this.fluxClone.query.withConfiguration(<QueryConfiguration>{ refinements: [] });
-    if (searchRequest.refinements) {
-      const filteredRefinements: any[] = searchRequest.refinements
-        .filter(({ navigationName }) => !this.isTargetNav(navigationName));
-      this.fluxClone.query.withSelectedRefinements(...filteredRefinements);
-    }
-
-    this.fluxClone.search(searchRequest.query).then(this.updateValues);
-  }
-
   onselect(value: any | '*') {
     if (this.selected) this.flux.unrefine(this.selected, { skipSearch: true });
     if (value === '*') {
       this.flux.reset();
     } else {
-      this.flux.refine(this.selected = toRefinement(value, <any>{ name: this.navField }));
+      this.flux.refine(this.selected = toRefinement(value, <any>{ name: this._config.field }));
     }
   }
+}
+
+export interface FilterConfig {
+  field: string;
+  label?: string;
+  clear?: string;
 }

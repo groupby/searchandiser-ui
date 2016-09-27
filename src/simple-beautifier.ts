@@ -8,7 +8,7 @@ export class SimpleBeautifier {
   urlConfig: UrlConfig;
 
   constructor(private config: SearchandiserConfig) {
-    this.urlConfig = config.url;
+    this.urlConfig = config.url || {};
   }
 
   parse(url: string) {
