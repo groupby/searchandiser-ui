@@ -120,6 +120,7 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({ flux, tag }) => {
       expect(obj.highOverflow).to.be.true;
       expect(obj.pageNumbers).to.eql([1, 2, 3, 4, 5, 6]);
       expect(obj.lastPage).to.eq(43);
+      expect(obj.currentPage).to.eq(43);
     };
 
     tag().init();

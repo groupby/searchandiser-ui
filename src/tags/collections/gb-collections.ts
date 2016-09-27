@@ -39,7 +39,7 @@ export class Collections {
     this.flux.switchCollection(collection);
   }
 
-  updateCollectionCounts() {
+  updateCollectionCounts(query: string = '') {
     if (this.fetchCounts) {
       if (this.inProgress) {
         this.inProgress.cancelled = true;
@@ -48,11 +48,10 @@ export class Collections {
       const searches = this.collections
         .filter((collection) => !this.selected(collection))
         .map((collection) => this.flux.bridge
-          .search(Object.assign(this.flux.query.raw, { collection, pageSize: 0, fields: '' }))
+          .search(Object.assign(this.flux.query.raw, { query, collection, refinements: [], pageSize: 0, fields: '' }))
           .then((results) => ({ results, collection })));
 
-      const promises = <CancelablePromise<any>>Promise.all(searches);
-      this.inProgress = promises;
+      const promises = this.inProgress = <CancelablePromise<any>>Promise.all(searches);
 
       promises
         .then((res) => res.reduce(this.extractCounts, {}))

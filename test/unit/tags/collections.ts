@@ -74,6 +74,7 @@ suite('gb-collections', Collections, ({ flux, tag }) => {
 
   describe('updateCollectionCounts()', () => {
     it('should update collection counts', () => {
+      const collections = ['a', 'b', 'c'];
       const counts = {
         a: 10,
         b: 30,
@@ -84,8 +85,10 @@ suite('gb-collections', Collections, ({ flux, tag }) => {
         .withFields('brand', 'size');
 
       flux().bridge.search = (request: Request): any => {
+        expect(request.collection).to.be.oneOf(collections);
         expect(request.pageSize).to.eq(0);
         expect(request.fields).to.be.empty;
+        expect(request.refinements).to.be.empty;
         return Promise.resolve({ totalRecordCount: counts[request.collection] });
       };
 
@@ -93,7 +96,7 @@ suite('gb-collections', Collections, ({ flux, tag }) => {
         expect(obj.counts).to.eql(counts);
       };
       tag().init();
-      tag().collections = ['a', 'b', 'c'];
+      tag().collections = collections;
 
       tag().updateCollectionCounts();
       expect(tag().inProgress).to.be.an.instanceof(Promise);

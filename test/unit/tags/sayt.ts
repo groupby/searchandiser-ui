@@ -204,8 +204,10 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
     tag().searchProducts(undefined);
   });
 
-  it('should emit query rewrite', () => {
+  it('should emit rewrite_query', () => {
     const newQuery = 'slippers';
+
+    flux().query.withQuery(newQuery);
     flux().emit = (event: string, query: string): any => {
       expect(event).to.eq(Events.REWRITE_QUERY);
       expect(query).to.eq(newQuery);
@@ -330,6 +332,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
+
       tag().saytConfig = {};
       tag().flux.rewrite = (query, config): any => {
         expect(query).to.eq(suggestion);

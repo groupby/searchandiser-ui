@@ -87,6 +87,7 @@ export class Sayt {
 
   rewriteQuery(query: string) {
     this.flux.emit(Events.REWRITE_QUERY, query);
+
   }
 
   notifier(query: string) {
