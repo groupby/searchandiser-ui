@@ -18,21 +18,26 @@ suite('gb-page-size', PageSize, ({ tag, flux }) => {
     expect(tag().options).to.eq(pageSizes);
   });
 
-  it('should resize', () => {
-    const newPageSize = 40;
+  it('should resize and keep offset', () => {
+    flux().query.skip(43);
 
-    flux().resize = (value, newOffset): any => {
-      expect(value).to.eq(newPageSize);
-      expect(newOffset).to.not.be.ok;
+    flux().search = (): any => {
+      expect(flux().query.raw.skip).to.eq(40);
+      expect(flux().query.raw.pageSize).to.eq(40);
     };
 
     tag().init();
 
-    tag().onselect(newPageSize);
+    tag().onselect(40);
   });
 
   it('should resize and reset offset', () => {
-    flux().resize = (value, newOffset): any => expect(newOffset).to.eq(1);
+    flux().query.skip(43);
+
+    flux().search = (): any => {
+      expect(flux().query.raw.skip).to.eq(0);
+      expect(flux().query.raw.pageSize).to.eq(20);
+    };
 
     tag().opts = { resetOffset: true };
     tag().init();
