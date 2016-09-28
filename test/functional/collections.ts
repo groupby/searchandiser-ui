@@ -2,7 +2,11 @@ import { Collections } from '../../src/tags/collections/gb-collections';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<Collections>('gb-collections', ({ flux, html, mount }) => {
+const SERVICES = {
+  collections: {}
+};
+
+suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
@@ -33,8 +37,10 @@ suite<Collections>('gb-collections', ({ flux, html, mount }) => {
     const tag = mount();
     tag.collections = ['first', 'second', 'third'];
     tag.counts = { first: 344, second: 453, third: 314 };
+    tag.fetchCounts = true;
 
     tag.update();
+
     expect(labels().length).to.eq(3);
     expect(labels()[1].textContent).to.eq('second');
     expect(counts()[1].textContent).to.eq('453');

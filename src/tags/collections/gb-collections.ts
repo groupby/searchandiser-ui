@@ -1,34 +1,40 @@
+import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
 import { getPath, unless } from '../../utils';
 import { FluxTag } from '../tag';
-import { Events, Results } from 'groupby-api';
 
-export type CancelablePromise<T> = Promise<T> & { cancelled: boolean; };
+export interface CollectionOption {
+  label: string;
+  value: string;
+}
+
+export interface CollectionsConfig {
+  options: string[] | CollectionOption[];
+  counts?: boolean;
+  dropdown?: boolean;
+}
 
 export interface Collections extends FluxTag { }
 
 export class Collections {
 
-  _config: any;
-  options: any[];
+  _config: CollectionsConfig;
   collections: string[];
   counts: any;
   labels: any;
   fetchCounts: boolean;
   dropdown: boolean;
-  inProgress: CancelablePromise<any>;
 
   init() {
-    this._config = Object.assign({}, getPath(this.config, 'tags.collections'), this.opts);
-    this.options = unless(this._config.options, []);
-    const isLabeledCollections = this.options.length !== 0 && typeof this.options[0] === 'object';
-    this.collections = isLabeledCollections ? this.options.map((collection) => collection.value) : this.options;
-    this.labels = isLabeledCollections ? this.options.reduce(this.extractLabels, {}) : {};
-    this.fetchCounts = unless(this._config.counts, true);
+    this._config = Object.assign({ options: [] }, getPath(this.config, 'tags.collections'), this.opts);
+    const collectionsService = this.services.collections;
+    this.collections = collectionsService.collections;
+    this.fetchCounts = collectionsService.fetchCounts;
+    this.labels = collectionsService.isLabeled
+      ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
+      : {};
     this.dropdown = unless(this._config.dropdown, false);
 
-    this.flux.on(Events.QUERY_CHANGED, this.updateCollectionCounts);
-    this.flux.on(Events.RESULTS, this.updateSelectedCollectionCount);
-    this.updateCollectionCounts();
+    this.flux.on(COLLECTIONS_UPDATED_EVENT, (counts) => this.update({ counts }));
   }
 
   switchCollection(event: MouseEvent) {
@@ -39,44 +45,6 @@ export class Collections {
 
   onselect(collection: string) {
     this.flux.switchCollection(collection);
-  }
-
-  updateCollectionCounts(query: string = '') {
-    if (this.fetchCounts) {
-      if (this.inProgress) {
-        this.inProgress.cancelled = true;
-      }
-
-      const searches = this.collections
-        .filter((collection) => !this.selected(collection))
-        .map((collection) => this.flux.bridge
-          .search(Object.assign(this.flux.query.raw, { query, collection, refinements: [], pageSize: 0, fields: '' }))
-          .then((results) => ({ results, collection })));
-
-      const promises = this.inProgress = <CancelablePromise<any>>Promise.all(searches);
-
-      promises
-        .then((res) => res.reduce(this.extractCounts, {}))
-        .then((counts) => {
-          if (!promises.cancelled) {
-            this.update({ counts: Object.assign({}, this.counts, counts) });
-          }
-        });
-    }
-  }
-
-  updateSelectedCollectionCount(res: Results) {
-    const selectedCollection = this.flux.query.raw.collection;
-    const counts = Object.assign({}, this.counts, { [selectedCollection]: res.totalRecordCount });
-    this.update({ counts });
-  }
-
-  selected(collection: string) {
-    return collection === this.flux.query.raw.collection;
-  }
-
-  private extractCounts(counts: any, { results, collection }: { results: Results, collection: string }) {
-    return Object.assign(counts, { [collection]: results.totalRecordCount });
   }
 
   private extractLabels(labels: any, collection: { value: string; label: string; }) {
