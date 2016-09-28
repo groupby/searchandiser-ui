@@ -13,7 +13,7 @@ export class Url {
   beautify: boolean;
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
-    this.urlConfig = this.config.url;
+    this.urlConfig = this.config.url || {};
     this.beautify = !!this.urlConfig.beautifier;
   }
 

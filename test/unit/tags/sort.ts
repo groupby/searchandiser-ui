@@ -6,6 +6,7 @@ suite('gb-sort', Sort, ({ flux, tag }) => {
   it('should have default values', () => {
     tag().init();
 
+    expect(tag()._config).to.eql({});
     expect(tag().options).to.eql(tag().options);
   });
 
@@ -19,13 +20,16 @@ suite('gb-sort', Sort, ({ flux, tag }) => {
       tag().opts = { options };
       tag().init();
 
+      expect(tag()._config).to.eq(tag().opts);
       expect(tag().options).to.eq(options);
     });
 
     it('should allow override from tags config', () => {
-      tag().config = { tags: { sort: { options } } };
+      const sortConfig = { options };
+      tag().config = { tags: { sort: sortConfig } };
       tag().init();
 
+      expect(tag()._config).to.eq(sortConfig);
       expect(tag().options).to.eq(options);
     });
   });

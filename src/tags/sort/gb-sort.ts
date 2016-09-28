@@ -6,8 +6,11 @@ export interface Sort extends SelectTag { }
 
 export class Sort {
 
+  _config: any;
+
   init() {
-    this.options = unless(getPath(this.config, 'tags.sort.options'), this.opts.options, [
+    this._config = getPath(this.config, 'tags.sort') || this.opts;
+    this.options = unless(this._config.options, [
       { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
       { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
     ]);

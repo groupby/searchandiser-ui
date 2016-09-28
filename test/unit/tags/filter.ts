@@ -1,7 +1,8 @@
+import { FILTER_UPDATED_EVENT } from '../../../src/services/filter';
 import { Filter } from '../../../src/tags/filter/gb-filter';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Events, FluxCapacitor, Results } from 'groupby-api';
+import { FluxCapacitor, Results } from 'groupby-api';
 
 suite('gb-filter', Filter, ({ flux, tag: _tag }) => {
   let tag: Filter;
@@ -14,7 +15,7 @@ suite('gb-filter', Filter, ({ flux, tag: _tag }) => {
   it('should have default values', () => {
     tag.init();
 
-    expect(tag.navField).to.not.be.ok;
+    expect(tag._config).to.eql({});
     expect(tag.label).to.eq('Filter');
     expect(tag.clear).to.eq('Unfiltered');
   });
@@ -27,73 +28,26 @@ suite('gb-filter', Filter, ({ flux, tag: _tag }) => {
     tag.opts = { label, clear, field };
     tag.init();
 
-    expect(tag.navField).to.eq(field);
-    expect(tag.label).to.eq(label);
-    expect(tag.clear).to.eq(clear);
+    expect(tag._config).to.eq(tag.opts);
   });
 
   it('should listen for events', () => {
-    flux().on = (event: string): any => expect(event).to.eq(Events.RESULTS);
+    flux().on = (event: string): any => expect(event).to.eq(FILTER_UPDATED_EVENT);
 
     tag.init();
   });
 
-  it('should call updateFluxClone on RESULTS', (done) => {
-    let callback;
-    flux().on = (event: string, cb: Function): any => callback = cb;
-
-    tag.updateFluxClone = () => done();
-    tag.init();
-
-    callback();
-  });
-
-  it('should update fluxClone state', () => {
-    const parentQuery = 'red sneakers';
-
-    fluxClone.search = (query: string): any => {
-      expect(query).to.eq(parentQuery);
-      return { then: (cb: Function) => expect(cb).to.eq(tag.updateValues) };
-    };
+  it('should call updateFluxClone on RESULTS', () => {
+    flux().on = (event: string, cb: Function): any => expect(cb).to.eq(tag.updateValues);
 
     tag.init();
-
-    flux().query.withQuery(parentQuery);
-    tag.updateFluxClone();
-    expect(fluxClone.query.raw.refinements.length).to.eq(0);
-  });
-
-  it('should update fluxClone state with refinements', () => {
-    const parentQuery = 'red sneakers';
-    const refinements: any = { a: 'b', c: 'd' };
-
-    fluxClone.search = (query: string): any => {
-      expect(query).to.eq(parentQuery);
-      return { then: (cb: Function) => expect(cb).to.eq(tag.updateValues) };
-    };
-
-    tag.init();
-    tag.isTargetNav = () => false;
-
-    flux().query.withQuery(parentQuery).withSelectedRefinements(refinements);
-    tag.updateFluxClone();
-    expect(fluxClone.query.raw.refinements).to.eql([refinements]);
-  });
-
-  it('should find the configured navigation', () => {
-    const targetField = 'brand';
-
-    tag.init();
-    tag.navField = targetField;
-
-    expect(tag.isTargetNav(targetField)).to.be.true;
   });
 
   it('should convert refinements if found', () => {
     const refinement = { value: 'a', other: 'b' };
 
     tag.init();
-    tag.isTargetNav = () => true;
+    tag.services = <any>{ filter: { isTargetNav: () => true } };
 
     const converted = tag.convertRefinements([{ refinements: [refinement] }]);
     expect(converted).to.eql([{ label: refinement.value, value: refinement }]);
@@ -101,7 +55,7 @@ suite('gb-filter', Filter, ({ flux, tag: _tag }) => {
 
   it('should return an empty list if not found', () => {
     tag.init();
-    tag.isTargetNav = () => false;
+    tag.services = <any>{ filter: { isTargetNav: () => false } };
 
     const converted = tag.convertRefinements([{ refinements: [{ a: 'b' }] }]);
     expect(converted.length).to.eq(0);
@@ -139,7 +93,7 @@ suite('gb-filter', Filter, ({ flux, tag: _tag }) => {
     };
 
     tag.init();
-    tag.navField = navigationName;
+    tag._config.field = navigationName;
 
     tag.onselect(selection);
   });
