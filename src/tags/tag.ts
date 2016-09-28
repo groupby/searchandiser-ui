@@ -1,3 +1,4 @@
+import { Collections } from '../services/collections';
 import { Filter } from '../services/filter';
 import { Redirect } from '../services/redirect';
 import { Url } from '../services/url';
@@ -13,6 +14,7 @@ export interface FluxTag extends Riot.Tag.Instance {
   flux: FluxCapacitor;
   config: any;
   services: {
+    collections: Collections;
     filter: Filter;
     redirect: Redirect;
     url: Url;
