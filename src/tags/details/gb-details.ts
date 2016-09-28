@@ -4,11 +4,18 @@ import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import { Events, Record } from 'groupby-api';
 
-export interface Details extends FluxTag { }
+export interface DetailsConfig {
+  idParam: string;
+}
+
+export const DEFAULT_CONFIG: DetailsConfig = {
+  idParam: 'id'
+};
+
+export interface Details extends FluxTag<DetailsConfig> { }
 
 export class Details {
 
-  idParam: string;
   query: string;
   struct: any;
   allMeta: any;
@@ -16,8 +23,8 @@ export class Details {
   productMeta: ProductMeta;
 
   init() {
-    this.idParam = this.opts.idParam || 'id';
-    this.query = getParam(this.idParam);
+    this.configure(DEFAULT_CONFIG);
+    this.query = getParam(this._config.idParam);
     this.struct = this.config.structure || {};
     this.transformer = new ProductTransformer(this.struct);
 

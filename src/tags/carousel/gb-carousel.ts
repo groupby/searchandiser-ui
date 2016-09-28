@@ -1,7 +1,11 @@
 import { unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface Carousel extends FluxTag { }
+export interface CarouselConfig {
+  options: any[];
+}
+
+export interface Carousel extends FluxTag<CarouselConfig> { }
 
 export class Carousel {
 
@@ -9,8 +13,9 @@ export class Carousel {
   options: any[];
 
   init() {
+    this.configure();
     this.currentIndex = 0;
-    this.options = unless(this.opts.options, this._scope.options, []);
+    this.options = unless(this._config.options, this._scope.options, []);
   }
 
   isSelected(index: number) {

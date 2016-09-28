@@ -1,5 +1,4 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { getPath, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface CollectionOption {
@@ -13,28 +12,29 @@ export interface CollectionsConfig {
   dropdown?: boolean;
 }
 
-export interface Collections extends FluxTag { }
+export const DEFAULT_CONFIG: CollectionsConfig = {
+  options: [],
+  counts: true,
+  dropdown: true
+};
+
+export interface Collections extends FluxTag<CollectionsConfig> { }
 
 export class Collections {
 
-  _config: CollectionsConfig;
   collections: string[];
   counts: any;
   labels: any;
   fetchCounts: boolean;
-  dropdown: boolean;
-  options: string[] | CollectionOption[];
 
   init() {
-    this._config = Object.assign({ options: [] }, getPath(this.config, 'tags.collections'), this.opts);
+    this.configure(DEFAULT_CONFIG);
     const collectionsService = this.services.collections;
     this.collections = collectionsService.collections;
     this.fetchCounts = collectionsService.fetchCounts;
     this.labels = collectionsService.isLabeled
       ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
       : {};
-    this.dropdown = unless(this._config.dropdown, false);
-    this.options = collectionsService.options;
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, (counts) => this.update({ counts }));
   }
