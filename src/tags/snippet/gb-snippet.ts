@@ -1,16 +1,20 @@
-import { unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface Snippet extends FluxTag { }
+export interface SnippetConfig {
+  raw?: boolean;
+}
+
+export const DEFAULT_CONFIG: SnippetConfig = {
+  raw: false
+};
+
+export interface Snippet extends FluxTag<SnippetConfig> { }
 
 export class Snippet {
 
-  isRaw: boolean;
   responseText: string;
 
   init() {
-    this.isRaw = unless(this.opts.raw, false);
-
     this.on('mount', this.loadFile);
   }
 
@@ -18,7 +22,7 @@ export class Snippet {
     const req = new XMLHttpRequest();
     req.onload = () => {
       const { responseText } = req;
-      if (this.isRaw) {
+      if (this._config.raw) {
         this.root.innerHTML = responseText;
       } else {
         this.update({ responseText });

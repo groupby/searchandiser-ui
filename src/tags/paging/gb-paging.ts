@@ -1,68 +1,71 @@
-import { unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 
-export interface Labeled {
-  prev_label: string;
-  next_label: string;
-  first_label: string;
-  last_label: string;
+export interface PagingConfig {
+  limit?: number;
+  pages?: boolean;
+  numeric?: boolean;
+  terminals?: boolean;
+  labels?: boolean;
+  icons?: boolean;
 
-  prev_icon: string;
-  next_icon: string;
-  first_icon: string;
-  last_icon: string;
+  prev_label?: string;
+  next_label?: string;
+  first_label?: string;
+  last_label?: string;
+
+  prev_icon?: string;
+  next_icon?: string;
+  first_icon?: string;
+  last_icon?: string;
 }
 
-export interface Paging extends FluxTag, Labeled { }
+export const DEFAULT_CONFIG: PagingConfig = {
+  limit: 5,
+  pages: false,
+  numeric: false,
+  terminals: true,
+  labels: true,
+  icons: true,
+
+  first_label: 'First',
+  prev_label: 'Prev',
+  next_label: 'Next',
+  last_label: 'Last',
+
+  first_icon: require('./double-arrow-left.png'),
+  prev_icon: require('./arrow-left.png'),
+  next_icon: require('./arrow-right.png'),
+  last_icon: require('./double-arrow-right.png')
+};
+
+export interface FluxPager {
+  first: () => void;
+  prev: () => void;
+  next: () => void;
+  last: () => void;
+  switchPage: (page: number) => void;
+}
+
+export interface Paging extends FluxTag<PagingConfig> { }
 
 export class Paging {
 
-  limit: number;
-  pages: boolean;
-  numeric: boolean;
-  terminals: boolean;
-  icons: boolean;
-  labels: boolean;
   forwardDisabled: boolean;
   backDisabled: boolean;
-
-  pageNumbers: number[];
-  currentPage: number;
-  lastPage: number;
-
   lowOverflow: boolean;
   highOverflow: boolean;
-
-  pager: {
-    first: () => void;
-    prev: () => void;
-    next: () => void;
-    last: () => void;
-    switchPage: (page: number) => void;
-  };
+  currentPage: number;
+  lastPage: number;
+  pageNumbers: number[];
+  pager: FluxPager;
 
   init() {
+    this.configure(DEFAULT_CONFIG);
+
     // default initial state
     this.backDisabled = true;
     this.currentPage = 1;
-
-    this.limit = unless(this.opts.limit, 5);
-    this.pages = unless(this.opts.pages, false);
-    this.numeric = unless(this.opts.numeric, false);
-    this.terminals = unless(this.opts.terminals, true);
-    this.labels = unless(this.opts.labels, true);
-    this.icons = unless(this.opts.icons, true);
-
-    this.prev_label = this.opts.prev_label;
-    this.next_label = this.opts.next_label;
-    this.first_label = this.opts.first_label;
-    this.last_label = this.opts.last_label;
-
-    this.prev_icon = this.opts.prev_icon;
-    this.next_icon = this.opts.next_icon;
-    this.first_icon = this.opts.first_icon;
-    this.last_icon = this.opts.last_icon;
 
     this.pager = {
       first: () => !this.backDisabled && this.flux.page.reset(),
@@ -77,7 +80,7 @@ export class Paging {
   }
 
   pageInfo() {
-    const pageNumbers = this.flux.page.pageNumbers(this.limit);
+    const pageNumbers = this.flux.page.pageNumbers(this._config.limit);
     const lastPage = this.flux.page.finalPage;
     const currentPage = this.flux.page.currentPage;
     this.updatePageInfo(pageNumbers, currentPage, lastPage);

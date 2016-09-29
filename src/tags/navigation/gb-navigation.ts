@@ -1,21 +1,29 @@
-import { toRefinement, unless } from '../../utils/common';
+import { toRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Results } from 'groupby-api';
 
 export { NavigationInfo }
 
-export interface Navigation extends FluxTag { }
+export interface NavigationConfig {
+  badge?: boolean;
+  showSelected?: boolean;
+}
+
+export const DEFAULT_CONFIG: NavigationConfig = {
+  badge: true,
+  showSelected: true
+};
+
+export interface Navigation extends FluxTag<NavigationConfig> { }
 
 export class Navigation {
 
-  badge: boolean;
-  showSelected: boolean;
   processed: SelectionNavigation[];
 
   init() {
-    this.badge = unless(this.opts.badge, true);
-    this.showSelected = unless(this.opts.showSelected, true);
+    this.configure(DEFAULT_CONFIG);
+
     this.flux.on(Events.RESULTS, this.updateNavigations);
     this.flux.on(Events.REFINEMENT_RESULTS, this.updateRefinements);
   }

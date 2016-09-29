@@ -72,9 +72,9 @@ export class FluxTag<T> {
   }
 }
 
-export interface SaytTag extends FluxTag<any> { }
+export interface SaytTag<T> extends FluxTag<T> { }
 
-export class SaytTag {
+export class SaytTag<T> {
 
   sayt: any;
 

@@ -1,7 +1,7 @@
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 
-export interface RelatedQueries extends FluxTag { }
+export interface RelatedQueries extends FluxTag<any> { }
 
 export class RelatedQueries {
 

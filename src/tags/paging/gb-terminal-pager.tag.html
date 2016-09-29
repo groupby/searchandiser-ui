@@ -1,13 +1,13 @@
 <gb-terminal-pager>
   <div class="gb-terminal-pager { _style }">
-    <a class="gb-terminal__link first { disabled: _scope.backDisabled }" if={ _scope.terminals } onclick={ _scope.pager.first }>
-      <gb-icon if={ _scope.icons } value={ first_icon }></gb-icon>
-      <span if={ _scope.labels }>{ _scope.numeric ? 1 : first_label }</span>
+    <a class="gb-terminal__link first { disabled: _scope.backDisabled }" if={ _scope._config.terminals } onclick={ _scope.pager.first }>
+      <gb-icon if={ _config.icons } value={ _config.first_icon }></gb-icon>
+      <span if={ _config.labels }>{ _conifg.numeric ? 1 : _config.first_label }</span>
     </a>
     <yield/>
-    <a class="gb-terminal__link last { disabled: _scope.forwardDisabled }" if={ _scope.terminals } onclick={ _scope.pager.last }>
-      <span if={ _scope.labels }>{ _scope.numeric ? _scope.lastPage : last_label }</span>
-      <gb-icon if={ _scope.icons } value={ last_icon }></gb-icon>
+    <a class="gb-terminal__link last { disabled: _scope.forwardDisabled }" if={ _config.terminals } onclick={ _scope.pager.last }>
+      <span if={ _config.labels }>{ _config.numeric ? _scope.lastPage : _config.last_label }</span>
+      <gb-icon if={ _config.icons } value={ _config.last_icon }></gb-icon>
     </a>
   </div>
 

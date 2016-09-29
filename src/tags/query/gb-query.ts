@@ -1,4 +1,4 @@
-import { findTag, unless } from '../../utils/common';
+import { findTag } from '../../utils/common';
 import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
@@ -7,36 +7,41 @@ import * as riot from 'riot';
 
 const KEY_ENTER = 13;
 
-export interface Query extends FluxTag {
+export interface QueryConfig {
+  sayt?: boolean;
+  autoSearch?: boolean;
+  staticSearch?: boolean;
+}
+
+export const DEFAULT_CONFIG: QueryConfig = {
+  sayt: true,
+  autoSearch: true,
+  staticSearch: false
+};
+
+export interface Query extends FluxTag<QueryConfig> {
   root: riot.TagElement & HTMLInputElement;
 }
 
 export class Query {
 
-  parentOpts: any;
-  staticSearch: string;
-  saytEnabled: boolean;
-  autoSearch: boolean;
   searchBox: HTMLInputElement;
   enterKeyHandlers: Function[];
 
   init() {
-    this.parentOpts = this.opts.passthrough || this.opts;
-    this.saytEnabled = unless(this.parentOpts.sayt, true);
-    this.autoSearch = unless(this.parentOpts.autoSearch, true);
-    this.staticSearch = unless(this.parentOpts.staticSearch, false);
+    this.configure(DEFAULT_CONFIG);
 
     this.enterKeyHandlers = [];
 
     this.on('mount', () => {
       this.searchBox = this.findSearchBox();
       this.searchBox.addEventListener('keydown', this.keydownListener);
-      if (this.saytEnabled) this.tags['gb-sayt'].listenForInput(this);
+      if (this._config.sayt) this.tags['gb-sayt'].listenForInput(this);
     });
 
-    if (this.autoSearch) {
+    if (this._config.autoSearch) {
       this.on('mount', this.listenForInput);
-    } else if (this.staticSearch) {
+    } else if (this._config.staticSearch) {
       this.on('mount', this.listenForStaticSearch);
     } else {
       this.on('mount', this.listenForSubmit);

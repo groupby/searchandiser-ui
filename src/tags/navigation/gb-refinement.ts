@@ -1,7 +1,7 @@
 import { displayRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface Refinement extends FluxTag { }
+export interface Refinement extends FluxTag<any> { }
 
 export class Refinement {
 
