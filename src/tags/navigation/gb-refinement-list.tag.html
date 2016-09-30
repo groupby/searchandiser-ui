@@ -4,8 +4,8 @@
     <ul>
       <gb-selected-refinement if={ showSelected } each={ ref in nav.selected }></gb-selected-refinement>
       <gb-available-refinement each={ ref in nav.refinements }></gb-available-refinement>
-      <li>
-        <a onclick={ moreRefinements }>MOAR</a>
+      <li if={ this.nav.moreRefinements }>
+        <a href="#" onclick={ moreRefinements }>MOAR</a>
       </li>
     </ul>
   </div>
