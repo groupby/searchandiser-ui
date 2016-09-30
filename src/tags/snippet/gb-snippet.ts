@@ -15,6 +15,8 @@ export class Snippet {
   responseText: string;
 
   init() {
+    this.configure(DEFAULT_CONFIG);
+
     this.on('mount', this.loadFile);
   }
 

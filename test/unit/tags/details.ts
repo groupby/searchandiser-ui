@@ -1,4 +1,4 @@
-import { Details } from '../../../src/tags/details/gb-details';
+import { Details, DEFAULT_CONFIG } from '../../../src/tags/details/gb-details';
 import * as utils from '../../../src/utils/common';
 import { ProductTransformer } from '../../../src/utils/product-transformer';
 import suite from './_suite';
@@ -6,10 +6,18 @@ import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-details', Details, ({ flux, tag }) => {
+  it('should configure itself with defaults', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.eq(DEFAULT_CONFIG);
+      done();
+    };
+
+    tag().init();
+  });
+
   it('should have default values', () => {
     tag().init();
 
-    expect(tag().idParam).to.eq('id');
     expect(tag().query).to.not.be.ok;
     expect(tag().struct).to.eql({});
     expect(tag().transformer).to.be.an.instanceof(ProductTransformer);
@@ -21,13 +29,6 @@ suite('gb-details', Details, ({ flux, tag }) => {
     tag().init();
 
     expect(tag().struct).to.eq(structure);
-  });
-
-  it('should allow override from opts', () => {
-    tag().opts.idParam = 'productId';
-    tag().init();
-
-    expect(tag().idParam).to.eq('productId');
   });
 
   it('should call updateRecord() on details event', () => {
@@ -68,5 +69,4 @@ suite('gb-details', Details, ({ flux, tag }) => {
       tag().updateRecord(<any>{ allMeta: record });
     });
   });
-
 });

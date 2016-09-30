@@ -10,28 +10,16 @@ suite('gb-sort', Sort, ({ flux, tag }) => {
     expect(tag().options).to.eql(tag().options);
   });
 
-  describe('override behaviour', () => {
+  it('should set options from computed config', () => {
     const options = [
       { label: 'Value Descending', value: { field: 'value', order: 'Descending' } },
       { label: 'Value Ascending', value: { field: 'value', order: 'Ascending' } }
     ];
 
-    it('should allow override from opts', () => {
-      tag().opts = { options };
-      tag().init();
+    tag().configure = () => tag()._config = { options };
+    tag().init();
 
-      expect(tag()._config).to.eq(tag().opts);
-      expect(tag().options).to.eq(options);
-    });
-
-    it('should allow override from tags config', () => {
-      const sortConfig = { options };
-      tag().config = { tags: { sort: sortConfig } };
-      tag().init();
-
-      expect(tag()._config).to.eq(sortConfig);
-      expect(tag().options).to.eq(options);
-    });
+    expect(tag().options).to.eq(options);
   });
 
   it('should return option values', () => {

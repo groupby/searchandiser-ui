@@ -1,22 +1,15 @@
-import { Submit } from '../../../src/tags/submit/gb-submit';
+import { DEFAULT_CONFIG, Submit } from '../../../src/tags/submit/gb-submit';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-submit', Submit, { root: <any>{ addEventListener: () => null } }, ({ flux, tag }) => {
-  it('should have default values', () => {
+  it('should configure itself with defaults', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.eq(DEFAULT_CONFIG);
+      done();
+    };
+
     tag().init();
-
-    expect(tag().label).to.eq('Search');
-    expect(tag().staticSearch).to.be.false;
-  });
-
-  it('should allow override from opts', () => {
-    const label = 'Submit query';
-    tag().opts = { label, staticSearch: true };
-    tag().init();
-
-    expect(tag().label).to.eq(label);
-    expect(tag().staticSearch).to.be.true;
   });
 
   it('should set label for input tag', () => {
@@ -69,7 +62,7 @@ suite('gb-submit', Submit, { root: <any>{ addEventListener: () => null } }, ({ f
       }
     };
     tag().init();
-    tag().staticSearch = true;
+    tag()._config.staticSearch = true;
 
     tag().submitQuery();
   });

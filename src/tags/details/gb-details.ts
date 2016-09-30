@@ -24,6 +24,7 @@ export class Details {
 
   init() {
     this.configure(DEFAULT_CONFIG);
+
     this.query = getParam(this._config.idParam);
     this.struct = this.config.structure || {};
     this.transformer = new ProductTransformer(this.struct);

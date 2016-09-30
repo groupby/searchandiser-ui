@@ -60,7 +60,6 @@ export class Sayt {
     this.sayt.configure(this.generateSaytConfig());
 
     this.on('mount', () => this.autocomplete = new Autocomplete(this));
-
     this.flux.on('autocomplete:hide', this.reset);
   }
 

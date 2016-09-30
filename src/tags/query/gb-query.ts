@@ -33,11 +33,7 @@ export class Query {
 
     this.enterKeyHandlers = [];
 
-    this.on('mount', () => {
-      this.searchBox = this.findSearchBox();
-      this.searchBox.addEventListener('keydown', this.keydownListener);
-      if (this._config.sayt) this.tags['gb-sayt'].listenForInput(this);
-    });
+    this.on('mount', this.attachListeners);
 
     if (this._config.autoSearch) {
       this.on('mount', this.listenForInput);
@@ -48,6 +44,12 @@ export class Query {
     }
 
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
+  }
+
+  attachListeners() {
+    this.searchBox = this.findSearchBox();
+    this.searchBox.addEventListener('keydown', this.keydownListener);
+    if (this._config.sayt) this.tags['gb-sayt'].listenForInput(this);
   }
 
   rewriteQuery(query: string) {

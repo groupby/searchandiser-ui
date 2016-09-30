@@ -64,7 +64,9 @@ export class FluxTag<T> {
       this.opts.__proto__,
       this.opts);
     for (let key of Object.keys(rawConfig)) {
-      if (typeof defaultConfig[key] === 'boolean') {
+      if (typeof defaultConfig[key] === 'boolean'
+        || rawConfig[key] == true
+        || rawConfig[key] == false) {
         rawConfig[key] = checkBooleanAttr(key, rawConfig);
       }
     }

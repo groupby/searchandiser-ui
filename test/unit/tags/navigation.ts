@@ -1,22 +1,16 @@
-import { Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { DEFAULT_CONFIG, Navigation } from '../../../src/tags/navigation/gb-navigation';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-navigation', Navigation, ({ flux, tag }) => {
-  it('should have default values', () => {
+  it('should configure itself with defaults', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.eq(DEFAULT_CONFIG);
+      done();
+    };
+
     tag().init();
-
-    expect(tag().badge).to.be.true;
-    expect(tag().showSelected).to.be.true;
-  });
-
-  it('should allow override from opts', () => {
-    tag().opts = { badge: false, showSelected: false };
-    tag().init();
-
-    expect(tag().badge).to.be.false;
-    expect(tag().showSelected).to.be.false;
   });
 
   it('should listen for flux events', () => {

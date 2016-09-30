@@ -2,9 +2,9 @@ import { FluxTag } from '../../../src/tags/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 
-function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
-function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);
-function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) {
+function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
+function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);
+function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) {
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
   const tests = hasMixin ? cb : mixinOrCb;
@@ -29,20 +29,26 @@ function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixinOr
       tag: () => _tag,
       sandbox: () => _sandbox,
       tagName,
-      mount
+      // mount
     });
   });
-
-  function mount(opts: any = {}) {
-    return <T>riot.mount(tagName, opts)[0];
-  }
+  //
+  // function mount(opts: any = {}) {
+  //   return <T>riot.mount(tagName, opts)[0];
+  // }
 }
 
 export default suite;
 
-export function fluxTag<T extends FluxTag>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
+export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
   const flux = new FluxCapacitor('');
-  Object.assign(tag, { flux, opts: {}, config: {}, on: () => null }, obj);
+  Object.assign(tag, {
+    flux,
+    opts: {},
+    config: {},
+    configure: (cfg = {}) => tag._config = cfg,
+    on: () => null
+  }, obj);
   return { flux, tag };
 }
 

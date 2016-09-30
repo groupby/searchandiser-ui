@@ -3,9 +3,9 @@ import { FluxTag, MixinFlux } from '../../src/tags/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 
-function suite<T extends FluxTag>(tagName: string, mixin: any, cb: (suite: FunctionalSuite<T>) => void);
-function suite<T extends FluxTag>(tagName: string, cb: (suite: FunctionalSuite<T>) => void);
-function suite<T extends FluxTag>(tagName: string, mixinOrCb: any, cb?: Function) {
+function suite<T extends FluxTag<any>>(tagName: string, mixin: any, cb: (suite: FunctionalSuite<T>) => void);
+function suite<T extends FluxTag<any>>(tagName: string, cb: (suite: FunctionalSuite<T>) => void);
+function suite<T extends FluxTag<any>>(tagName: string, mixinOrCb: any, cb?: Function) {
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
   const tests = hasMixin ? cb : mixinOrCb;
@@ -43,7 +43,11 @@ export default suite;
 
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
-  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), obj));
+  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), {
+    configure(cfg: any) {
+      this._config = cfg;
+    }
+  }, obj));
   return flux;
 }
 

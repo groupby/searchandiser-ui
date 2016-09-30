@@ -1,19 +1,15 @@
-import { Snippet } from '../../../src/tags/snippet/gb-snippet';
+import { DEFAULT_CONFIG, Snippet } from '../../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-snippet', Snippet, ({ tag }) => {
-  it('should have default values', () => {
+  it('should configure itself with defaults', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.eq(DEFAULT_CONFIG);
+      done();
+    };
+
     tag().init();
-
-    expect(tag().isRaw).to.be.false;
-  });
-
-  it('should accept override from opts', () => {
-    Object.assign(tag().opts, { raw: true });
-    tag().init();
-
-    expect(tag().isRaw).to.be.true;
   });
 
   it('should listen for mount event', () => {

@@ -1,38 +1,42 @@
-import { checkBooleanAttr, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface Select extends FluxTag { }
+export interface SelectConfig {
+  label?: string;
+  clear?: string;
+  hover?: boolean;
+  native?: boolean;
+}
 
-export class Select {
+export interface SelectTag<T extends SelectConfig> extends FluxTag<T> {
+  options: any[];
+  onselect: Function;
+}
+
+export interface Select<T extends SelectConfig> extends FluxTag<T> {
+  _scope: SelectTag<T>;
+}
+
+export class Select<T extends SelectConfig> {
 
   iconUrl: string;
   label: string;
   clearOption: { label: string, clear: boolean };
   options: any[];
-  hover: boolean;
-  native: boolean;
   callback: Function;
   selectedOption: any;
+  default: boolean;
   selected: any;
   focused: boolean;
-  default: boolean;
 
   init(): void {
+    this._config = this._scope._config;
+
     this.iconUrl = require('./arrow-down.png');
-
-    const _scope = this._scope;
-    this.clearOption = {
-      label: _scope.clear || 'Unselect',
-      clear: true
-    };
-    this.options = unless(_scope.options, []);
-
-    this.callback = _scope.onselect;
-    this.default = _scope.clear === undefined;
-    this.label = _scope.label || 'Select';
-
-    this.hover = checkBooleanAttr('hover', _scope._config);
-    this.native = checkBooleanAttr('native', _scope._config);
+    this.label = this._config.label || 'Select';
+    this.clearOption = { label: this._config.clear || 'Unselect', clear: true };
+    this.options = this._scope.options || [];
+    this.callback = this._scope.onselect;
+    this.default = !('clear' in this._config);
 
     if (this.default) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
@@ -64,7 +68,7 @@ export class Select {
   }
 
   unfocus() {
-    this.focused = this.hover || !this.focused;
+    this.focused = this._config.hover || !this.focused;
     if (!this.focused) this.selectButton().blur();
   }
 
@@ -103,13 +107,4 @@ export class Select {
   static optionLabel(option: any) {
     return typeof option === 'object' ? option.label : option;
   }
-}
-
-export interface SelectTag extends FluxTag {
-  options: any[];
-  onselect: Function;
-
-  label?: string;
-  hover?: boolean;
-  clear?: string;
 }

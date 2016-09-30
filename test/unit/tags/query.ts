@@ -1,39 +1,17 @@
 import { Url } from '../../../src/services/url';
-import { Query } from '../../../src/tags/query/gb-query';
+import { DEFAULT_CONFIG, Query } from '../../../src/tags/query/gb-query';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events, Query as QueryModel } from 'groupby-api';
 
-suite('gb-query', Query, ({ tag, flux }) => {
-  it('should have default values', () => {
-    tag().init();
-
-    expect(tag().parentOpts).to.eql({});
-    expect(tag().staticSearch).to.be.false;
-    expect(tag().saytEnabled).to.be.true;
-    expect(tag().autoSearch).to.be.true;
-  });
-
-  it('should allow override from opts', () => {
-    tag().opts = {
-      staticSearch: true,
-      sayt: false,
-      autoSearch: false
+suite('gb-query', Query, ({ tag, flux, sandbox }) => {
+  it('should configure itself with defaults', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.eq(DEFAULT_CONFIG);
+      done();
     };
+
     tag().init();
-
-    expect(tag().staticSearch).to.be.true;
-    expect(tag().saytEnabled).to.be.false;
-    expect(tag().autoSearch).to.be.false;
-  });
-
-  it('should accept passthrough from parents', () => {
-    const passthrough = { a: 'b' };
-
-    tag().opts = { passthrough };
-    tag().init();
-
-    expect(tag().parentOpts).to.eq(passthrough);
   });
 
   it('should listen for flux events', () => {
@@ -45,16 +23,16 @@ suite('gb-query', Query, ({ tag, flux }) => {
     tag().init();
   });
 
-  it('should listen for input event', (done) => {
-    let callback;
-    tag().on = (event: string, cb: Function): any => {
-      if (event === 'mount') callback = cb;
-    };
-    tag().listenForInput = () => done();
+  it.only('should listen for input event', () => {
+    // tag().on = () => console.log('on');
+    const mock = sandbox().mock(tag());
+    mock.expects('on')
+      .twice();
+    // .withArgs('mount', tag().listenForInput)
+    // .onSecondCall();
 
     tag().init();
-
-    callback();
+    mock.verify();
   });
 
   it('should listen for enter keypress event', () => {
@@ -68,16 +46,13 @@ suite('gb-query', Query, ({ tag, flux }) => {
   });
 
   it('should listen for submit event', (done) => {
-    let callback;
     tag().opts = { autoSearch: false };
     tag().on = (event: string, cb: Function): any => {
-      if (event === 'mount') callback = cb;
+      if (event === 'mount') cb();
     };
     tag().listenForSubmit = () => done();
 
     tag().init();
-
-    callback();
   });
 
   it('should do a search from the parsed url', () => {
@@ -119,7 +94,7 @@ suite('gb-query', Query, ({ tag, flux }) => {
     //
     //   tag().listenForSubmit();
     // });
-    // 
+    //
     // it('should add enter key listener', (done) => {
     //   tag().searchBox = <any>{
     //     addEventListener(event: string, cb: Function) {

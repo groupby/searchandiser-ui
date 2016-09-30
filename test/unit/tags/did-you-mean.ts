@@ -15,7 +15,10 @@ suite('gb-did-you-mean', DidYouMean, ({ flux, tag }) => {
   });
 
   it('should listen for events', () => {
-    flux().on = (event: string): any => expect(event).to.eq(Events.RESULTS);
+    flux().on = (event, cb): any => {
+      expect(event).to.eq(Events.RESULTS);
+      expect(cb).to.eq(tag().updateDidYouMean);
+    };
 
     tag().init();
   });
@@ -23,12 +26,9 @@ suite('gb-did-you-mean', DidYouMean, ({ flux, tag }) => {
   it('should update didYouMean on RESULTS', () => {
     const dym = ['a', 'b', 'c'];
 
-    let callback;
-    flux().on = (event: string, cb: Function): any => callback = cb;
+    flux().on = (event: string, cb: Function): any => cb({ didYouMean: dym });
+    tag().updateDidYouMean = (obj: any) => expect(obj.didYouMean).to.eq(dym);
 
-    tag().update = (obj: any) => expect(obj.didYouMean).to.eq(dym);
     tag().init();
-
-    callback({ didYouMean: dym });
   });
 });

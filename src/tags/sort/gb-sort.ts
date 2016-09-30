@@ -1,19 +1,21 @@
-import { getPath, unless } from '../../utils/common';
-import { SelectTag } from '../select/gb-select';
+import { SelectConfig, SelectTag } from '../select/gb-select';
 import { Results, Sort as SortModel } from 'groupby-api';
 
-export interface Sort extends SelectTag { }
+export interface SortConfig extends SelectConfig { }
+
+export interface Sort extends SelectTag<SortConfig> { }
 
 export class Sort {
 
   _config: any;
 
   init() {
-    this._config = getPath(this.config, 'tags.sort') || this.opts;
-    this.options = unless(this._config.options, [
+    this.configure();
+
+    this.options = this._config.options || [
       { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
       { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
-    ]);
+    ];
   }
 
   sortValues() {

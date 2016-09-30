@@ -6,20 +6,21 @@ import { Events } from 'groupby-api';
 suite('gb-template', Template, ({ flux, tag }) => {
   const target = 'My Spotlight Template';
 
+  it('should configure itself', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.be.undefined;
+      done();
+    };
+
+    tag().init();
+  });
+
   it('should have default values', () => {
     tag().init();
 
-    expect(tag().target).to.not.be.ok;
     expect(tag().isActive).to.not.be.ok;
     expect(tag().zones).to.not.be.ok;
     expect(tag().zoneMap).to.not.be.ok;
-  });
-
-  it('should get default from opts', () => {
-    tag().opts = { target };
-    tag().init();
-
-    expect(tag().target).to.eq(target);
   });
 
   it('should listen for events', () => {
@@ -53,7 +54,7 @@ suite('gb-template', Template, ({ flux, tag }) => {
       expect(obj.zoneMap).to.eq(zones);
     };
     tag().init();
-    tag().target = target;
+    tag()._config = { target };
 
     tag().updateActive(<any>{
       template: {

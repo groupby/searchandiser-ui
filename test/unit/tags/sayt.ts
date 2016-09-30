@@ -1,5 +1,5 @@
 import { Autocomplete } from '../../../src/tags/sayt/autocomplete';
-import { Sayt } from '../../../src/tags/sayt/gb-sayt';
+import { DEFAULT_CONFIG, Sayt } from '../../../src/tags/sayt/gb-sayt';
 import * as utils from '../../../src/utils/common';
 import suite, { fluxTag } from './_suite';
 import { expect } from 'chai';
@@ -16,63 +16,34 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   beforeEach(() => tag().sayt = sayt = { configure: () => null });
 
+  it('should configure itself with defaults', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.eq(DEFAULT_CONFIG);
+      done();
+    };
+
+    tag().init();
+  });
+
   it('should have default values', () => {
     tag().init();
 
-    expect(tag().saytConfig).to.eql({
-      products: 4,
-      queries: 5,
-      autoSearch: true,
-      staticSearch: false,
-      highlight: true,
-      navigationNames: {},
-      allowedNavigations: []
-    });
-    expect(tag().categoryField).to.not.be.ok;
     expect(tag().struct).to.eql(structure);
-    expect(tag().allCategoriesLabel).to.eq('All Departments');
     expect(tag().showProducts).to.be.true;
   });
 
   it('should take configuration overrides from global config', () => {
-    const categoryField = 'category.value';
-    const allCategoriesLabel = 'All Departments';
-    const navigationNames = { brand: 'Brand' };
     const saytStructure = {
       image: 'thumbnail',
       url: 'url'
     };
-    tag().config.tags = {
-      sayt: {
-        products: 0,
-        queries: 10,
-        categoryField,
-        structure: saytStructure,
-        autoSearch: false,
-        staticSearch: true,
-        highlight: false,
-        allowedNavigations: ['brand'],
-        navigationNames,
-        allCategoriesLabel
-      }
+    tag().configure = () => tag()._config = {
+      products: 0,
+      structure: saytStructure
     };
     tag().init();
 
-    expect(tag().saytConfig).to.eql({
-      products: 0,
-      queries: 10,
-      categoryField,
-      structure: saytStructure,
-      autoSearch: false,
-      staticSearch: true,
-      highlight: false,
-      allowedNavigations: ['brand'],
-      navigationNames,
-      allCategoriesLabel
-    });
-    expect(tag().categoryField).to.eq(categoryField);
     expect(tag().struct).to.eql(Object.assign({}, structure, saytStructure));
-    expect(tag().allCategoriesLabel).to.eq(allCategoriesLabel);
     expect(tag().showProducts).to.be.false;
   });
 
@@ -102,7 +73,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
   });
 
   it('should generate configuration with HTTPS', () => {
-    tag().saytConfig = { https: true };
+    tag()._config = { https: true };
 
     const config = tag().generateSaytConfig();
     expect(config.https).to.be.true;
@@ -218,7 +189,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   it('should fetch suggestions and rewrite query', () => {
     const newQuery = 'cool shoes';
-    tag().saytConfig = { autoSearch: true };
+    tag()._config = { autoSearch: true };
     tag().searchProducts = (query) => expect(query).to.eq(newQuery);
     tag().rewriteQuery = (query) => expect(query).to.eq(newQuery);
 
@@ -227,7 +198,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   it('should fetch rewrite query but not fetch suggestions', () => {
     const newQuery = 'cool shoes';
-    tag().saytConfig = { autoSearch: false };
+    tag()._config = { autoSearch: false };
     tag().searchProducts = () => expect.fail();
     tag().rewriteQuery = (query) => expect(query).to.eq(newQuery);
 
@@ -261,7 +232,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   it('should apply regex replacement with the current query', () => {
     tag().originalQuery = 'blue sneakers';
-    tag().saytConfig = { highlight: true };
+    tag()._config = { highlight: true };
 
     const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
     expect(highlighted).to.eq('hi-top <b>blue sneakers</b>');
@@ -269,7 +240,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   it('should apply regex replacement with slashes', () => {
     tag().originalQuery = 'blue sneakers\\';
-    tag().saytConfig = { highlight: true };
+    tag()._config = { highlight: true };
 
     const currentQuery = 'hi-top blue sneakers';
     const highlight = () => tag().highlightCurrentQuery(currentQuery, '<b>$&</b>');
@@ -279,14 +250,14 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   it('should not apply regex replacement', () => {
     tag().originalQuery = 'blue sneakers';
-    tag().saytConfig = { highlight: false };
+    tag()._config = { highlight: false };
 
     const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
     expect(highlighted).to.eq('hi-top blue sneakers');
   });
 
   it('should insert category query into template', () => {
-    tag().saytConfig = { categoryField: 'category.value' };
+    tag()._config = { categoryField: 'category.value' };
 
     const highlighted = tag().enhanceCategoryQuery({
       value: 'blue sneakers',
@@ -297,7 +268,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   it('should update results with suggestion as query', () => {
     const suggestion = 'red heels';
-    tag().saytConfig = {};
+    tag()._config = {};
     tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
     flux().reset = (query): any => expect(query).to.eq(suggestion);
 
@@ -311,7 +282,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   it('should search for the gb-sayt-link node', () => {
     const suggestion = 'red heels';
-    tag().saytConfig = {};
+    tag()._config = {};
     tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
     flux().reset = (query): any => expect(query).to.eq(suggestion);
 
@@ -333,7 +304,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       const field = 'size';
       const refinement = 8;
 
-      tag().saytConfig = {};
+      tag()._config = {};
       tag().flux.rewrite = (query, config): any => {
         expect(query).to.eq(suggestion);
         expect(config.skipSearch).to.be.true;
@@ -356,7 +327,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
-      tag().saytConfig = {};
+      tag()._config = {};
       flux().rewrite = (): any => expect.fail();
       flux().reset = (query): any => expect(query).to.eq(suggestion);
 
@@ -382,7 +353,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
     it('should extract and filter navigations', () => {
       const newNavigations = [{ name: 'brand' }, { name: 'colour' }];
-      tag().saytConfig = { allowedNavigations: ['colour'], navigationNames: {} };
+      tag()._config = { allowedNavigations: ['colour'], navigationNames: {} };
       tag().update = ({ navigations }) => expect(navigations).to.eql([{ name: 'colour', displayName: 'colour' }]);
 
       tag().processResults({ navigations: newNavigations });
@@ -390,7 +361,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
     it('should rename navigations', () => {
       const newNavigations = [{ name: 'colour' }];
-      tag().saytConfig = { allowedNavigations: ['colour'], navigationNames: { colour: 'Colour' } };
+      tag()._config = { allowedNavigations: ['colour'], navigationNames: { colour: 'Colour' } };
       tag().update = ({ navigations }) => expect(navigations).to.eql([{ name: 'colour', displayName: 'Colour' }]);
 
       tag().processResults({ navigations: newNavigations });
@@ -490,7 +461,7 @@ describe('gb-sayt logic', () => {
     };
 
     tag.init();
-    tag.saytConfig.staticSearch = true;
+    tag._config = { staticSearch: true };
 
     tag.search(<any>{
       target: {
@@ -514,11 +485,11 @@ describe('gb-sayt logic', () => {
           }
         }
       };
-      tag.saytConfig = {};
+      tag._config = {};
       tag.flux.rewrite = (): any => expect.fail();
 
       tag.init();
-      tag.saytConfig.staticSearch = true;
+      tag._config.staticSearch = true;
 
       tag.refine(<any>{
         tagName: 'GB-SAYT-LINK',
@@ -594,7 +565,7 @@ describe('gb-sayt logic', () => {
     });
 
     it('should have a delay >= 100 miliseconds', (done) => {
-      tag.saytConfig = { delay: 10 };
+      tag._config = { delay: 10 };
       sandbox.stub(utils, 'debounce', (callback, delay) => {
         expect(delay).to.eq(100);
         done();

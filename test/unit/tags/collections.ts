@@ -1,5 +1,5 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
-import { Collections } from '../../../src/tags/collections/gb-collections';
+import { Collections, DEFAULT_CONFIG } from '../../../src/tags/collections/gb-collections';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -8,6 +8,15 @@ const SERVICES = {
 };
 
 suite('gb-collections', Collections, { services: SERVICES }, ({ flux, tag }) => {
+  it('should configure itself with defaults', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.eq(DEFAULT_CONFIG);
+      done();
+    };
+
+    tag().init();
+  });
+
   it('should have default config', () => {
     const options = [{ a: 'b' }];
     tag().config = <any>{ tags: { collections: { options, counts: true } } };

@@ -3,20 +3,20 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-page-size', PageSize, ({ tag, flux }) => {
+  it('should configure itself', (done) => {
+    tag().configure = (defaults) => {
+      expect(defaults).to.be.undefined;
+      done();
+    };
+
+    tag().init();
+  });
+
   it('should have default values', () => {
     tag().init();
 
     expect(tag()._config).to.eql({});
     expect(tag().options).to.eql([10, 25, 50, 100]);
-  });
-
-  it('should allow override from global tag config', () => {
-    const pageSizeConfig = { a: 'b' };
-
-    tag().config = { tags: { pageSize: pageSizeConfig } };
-    tag().init();
-
-    expect(tag()._config).to.eq(pageSizeConfig);
   });
 
   it('should read global pageSizes', () => {
@@ -26,15 +26,6 @@ suite('gb-page-size', PageSize, ({ tag, flux }) => {
     tag().init();
 
     expect(tag().options).to.eq(pageSizes);
-  });
-
-  it('should default to opts', () => {
-    const pageSizeConfig = { a: 'b' };
-
-    tag().opts = pageSizeConfig;
-    tag().init();
-
-    expect(tag()._config).to.eq(pageSizeConfig);
   });
 
   it('should resize and keep offset', () => {

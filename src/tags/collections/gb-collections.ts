@@ -1,12 +1,12 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { FluxTag } from '../tag';
+import { SelectConfig, SelectTag } from '../select/gb-select';
 
 export interface CollectionOption {
   label: string;
   value: string;
 }
 
-export interface CollectionsConfig {
+export interface CollectionsConfig extends SelectConfig {
   options: string[] | CollectionOption[];
   counts?: boolean;
   dropdown?: boolean;
@@ -15,10 +15,10 @@ export interface CollectionsConfig {
 export const DEFAULT_CONFIG: CollectionsConfig = {
   options: [],
   counts: true,
-  dropdown: true
+  dropdown: false
 };
 
-export interface Collections extends FluxTag<CollectionsConfig> { }
+export interface Collections extends SelectTag<CollectionsConfig> { }
 
 export class Collections {
 
@@ -29,6 +29,8 @@ export class Collections {
 
   init() {
     this.configure(DEFAULT_CONFIG);
+
+    this.options = this._config.options;
     const collectionsService = this.services.collections;
     this.collections = collectionsService.collections;
     this.fetchCounts = collectionsService.fetchCounts;
