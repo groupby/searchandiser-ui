@@ -13,9 +13,10 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
     expect(tag).to.be.ok;
   });
 
-  it('renders as list by default', () => {
+  it.only('renders as list by default', () => {
     mount();
 
+    console.log(html());
     expect(html().querySelector('gb-list')).to.be.ok;
     expect(html().querySelector('gb-select')).to.not.be.ok;
   });
