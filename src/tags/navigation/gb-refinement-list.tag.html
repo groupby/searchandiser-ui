@@ -11,7 +11,10 @@
   </div>
 
   <script>
-    this.moreRefinements = () => this.flux.refinements(this.nav.name);
+    this.moreRefinements = () => {
+      this.flux.refinements(this.nav.name);
+      this.nav.moreRefinements = false;
+    };
   </script>
 
   <style scoped>
