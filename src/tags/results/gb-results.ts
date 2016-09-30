@@ -1,5 +1,5 @@
 import { ProductStructure } from '../../searchandiser';
-import { getPath, unless } from '../../utils';
+import { getPath, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 import { Events, Record } from 'groupby-api';
 

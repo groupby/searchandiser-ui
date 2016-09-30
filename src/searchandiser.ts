@@ -1,8 +1,8 @@
 import { initServices } from './services/init';
 import { FilterConfig } from './tags/filter/gb-filter';
 import { MixinFlux } from './tags/tag';
-import { BeautifierConfig } from './url-beautifier';
-import { checkNested } from './utils';
+import { checkNested } from './utils/common';
+import { BeautifierConfig } from './utils/url-beautifier';
 import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
 import * as riot from 'riot';
 

@@ -1,6 +1,6 @@
 import { Autocomplete } from '../../../src/tags/sayt/autocomplete';
 import { Sayt } from '../../../src/tags/sayt/gb-sayt';
-import * as utils from '../../../src/utils';
+import * as utils from '../../../src/utils/common';
 import suite, { fluxTag } from './_suite';
 import { expect } from 'chai';
 import { Events, FluxCapacitor } from 'groupby-api';

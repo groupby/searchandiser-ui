@@ -1,4 +1,4 @@
-import { findSearchBox } from '../../utils';
+import { findSearchBox } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface Reset extends FluxTag { }

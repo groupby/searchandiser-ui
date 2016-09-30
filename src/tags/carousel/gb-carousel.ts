@@ -1,4 +1,4 @@
-import { unless } from '../../utils';
+import { unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface Carousel extends FluxTag { }

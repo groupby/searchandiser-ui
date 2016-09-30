@@ -1,7 +1,7 @@
 import { Url } from '../../../src/services/url';
-import { SimpleBeautifier } from '../../../src/simple-beautifier';
-import { UrlBeautifier } from '../../../src/url-beautifier';
-import { LOCATION } from '../../../src/utils';
+import { LOCATION } from '../../../src/utils/common';
+import { SimpleBeautifier } from '../../../src/utils/simple-beautifier';
+import { UrlBeautifier } from '../../../src/utils/url-beautifier';
 import { expect } from 'chai';
 import { Query } from 'groupby-api';
 

@@ -1,4 +1,4 @@
-import { SimpleBeautifier } from '../../src/simple-beautifier';
+import { SimpleBeautifier } from '../../../src/utils/simple-beautifier';
 import { expect } from 'chai';
 import { Query } from 'groupby-api';
 

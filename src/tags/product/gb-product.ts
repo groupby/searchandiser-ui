@@ -1,5 +1,5 @@
 import { ProductStructure } from '../../searchandiser';
-import { getPath, remap, unless } from '../../utils';
+import { getPath, remap, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import filterObject = require('filter-object');

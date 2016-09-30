@@ -1,4 +1,4 @@
-import { toRefinement, unless } from '../../utils';
+import { toRefinement, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, Results } from 'groupby-api';
