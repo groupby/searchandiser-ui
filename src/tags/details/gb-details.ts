@@ -1,4 +1,4 @@
-import { getParam, getPath } from '../../utils/common';
+import { getParam } from '../../utils/common';
 import { ProductMeta, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
@@ -14,21 +14,19 @@ export class Details {
   allMeta: any;
   transformer: ProductTransformer;
   productMeta: ProductMeta;
-  getPath: typeof getPath;
 
   init() {
     this.idParam = this.opts.idParam || 'id';
     this.query = getParam(this.idParam);
-    this.struct = this.config.structure;
+    this.struct = this.config.structure || {};
     this.transformer = new ProductTransformer(this.struct);
-    this.getPath = getPath;
 
     this.flux.on(Events.DETAILS, this.updateRecord);
-    if (this.query) this.flux.details(this.query);
+    if (this.query) this.flux.details(this.query, this.transformer.idField);
   }
 
-  updateRecord({ allMeta: originalAllMeta }: Record) {
-    const productMeta = this.transformer.transform(clone(originalAllMeta, false));
+  updateRecord({ allMeta }: Record) {
+    const productMeta = this.transformer.transform(clone(allMeta, false));
     this.update({ productMeta, allMeta: productMeta() });
   }
 }

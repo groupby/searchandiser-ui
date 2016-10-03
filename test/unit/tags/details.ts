@@ -9,7 +9,6 @@ suite('gb-details', Details, ({ flux, tag }) => {
 
     expect(tag().idParam).to.eq('id');
     expect(tag().query).to.not.be.ok;
-    expect(tag().getPath).to.be.a('function');
   });
 
   it('should allow override from opts', () => {
@@ -19,21 +18,27 @@ suite('gb-details', Details, ({ flux, tag }) => {
     expect(tag().idParam).to.eq('productId');
   });
 
-  it('should listen for events', () => {
-    flux().on = (event: string): any => expect(event).to.eq(Events.DETAILS);
+  it('should call updateRecord() on details event', () => {
+    flux().on = (event, cb): any => {
+      expect(event).to.eq(Events.DETAILS);
+      expect(cb).to.eq(tag().updateRecord);
+    };
 
     tag().init();
   });
 
-  it('should update selected on DETAILS', () => {
-    const record = { a: 'b', c: 'd' };
+  describe('updateRecord()', () => {
+    it('should update record', () => {
+      const record = { a: 'b', c: 'd' };
 
-    let callback;
-    flux().on = (event: string, cb: Function): any => callback = cb;
+      tag().transformer = <any>{ transform: (allMeta) => () => allMeta };
+      tag().update = (obj: any) => {
+        expect(obj.allMeta).to.eql(record);
+        expect(obj.productMeta).to.be.a('function');
+      };
 
-    tag().update = (obj: any) => expect(obj.record).to.eq(record);
-    tag().init();
-
-    callback(record);
+      tag().updateRecord(<any>{ allMeta: record });
+    });
   });
+
 });
