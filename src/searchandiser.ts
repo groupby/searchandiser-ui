@@ -1,7 +1,9 @@
 import { initServices } from './services/init';
+import { CollectionsConfig } from './tags/collections/gb-collections';
 import { FilterConfig } from './tags/filter/gb-filter';
 import { MixinFlux } from './tags/tag';
 import { checkNested } from './utils/common';
+import { ProductStructure } from './utils/product-transformer';
 import { BeautifierConfig } from './utils/url-beautifier';
 import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
 import * as riot from 'riot';
@@ -99,16 +101,6 @@ export class Searchandiser {
   }
 }
 
-export interface ProductStructure {
-  title?: string;
-  image?: string;
-  description?: string;
-  url?: string;
-  variants?: string;
-  _transform?: (original: any) => any;
-  _variantStructure?: ProductStructure;
-}
-
 export interface BridgeConfig {
   https?: boolean;
   headers?: any;
@@ -152,9 +144,7 @@ export interface SearchandiserConfig {
       delay?: number;
       https?: boolean;
     };
-    collections?: {
-      options?: string[];
-    };
+    collections?: CollectionsConfig;
     filter?: FilterConfig;
   };
   stylish?: boolean;

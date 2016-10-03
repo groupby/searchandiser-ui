@@ -6,6 +6,8 @@ const DEFAULT_STRUCTURE = {
 };
 
 export interface BaseStructure {
+  id?: string;
+  url?: string;
   variants?: string;
   _variantStructure?: any;
   _transform?: (allMeta: any) => any;
