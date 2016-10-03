@@ -1,6 +1,7 @@
 import { ProductMeta, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
+import * as oget from 'oget';
 
 export interface Product extends FluxTag { }
 
@@ -8,6 +9,7 @@ export class Product {
 
   variantIndex: number;
   variants: any[];
+  detailsUrl: string;
   allMeta: any;
   struct: any;
   productMeta: ProductMeta;
@@ -15,6 +17,7 @@ export class Product {
 
   init() {
     this.variantIndex = 0;
+    this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
     this.struct = this._scope.struct || this.config.structure || {};
     this.transformer = new ProductTransformer(this.struct);
 
@@ -31,7 +34,7 @@ export class Product {
   }
 
   link() {
-    return this.productMeta().url || `details.html?id=${this.productMeta().id}`;
+    return this.productMeta().url || `${this.detailsUrl}?id=${this.productMeta().id}`;
   }
 
   image(imageObj: string | string[]) {

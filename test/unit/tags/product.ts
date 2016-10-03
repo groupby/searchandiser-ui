@@ -23,7 +23,17 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
       tag().init();
 
       expect(tag().variantIndex).to.eq(0);
+      expect(tag().detailsUrl).to.eq('details.html');
       expect(tag().transformer).to.be.an.instanceof(ProductTransformer);
+    });
+
+    it('should set detailsUrl from url service config', () => {
+      const detailsUrl = 'mydetails.php';
+      tag().services = <any>{ url: { urlConfig: { detailsUrl } } };
+
+      tag().init();
+
+      expect(tag().detailsUrl).to.eq(detailsUrl);
     });
 
     it('should call transformRecord()', () => {
@@ -89,10 +99,12 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
 
     it('should return url built from id', () => {
       const id = 1423;
+      const detailsUrl = 'productDetails.html';
 
       tag().productMeta = () => ({ id });
+      tag().detailsUrl = detailsUrl;
 
-      expect(tag().link()).to.eq(`details.html?id=${id}`);
+      expect(tag().link()).to.eq(`${detailsUrl}?id=${id}`);
     });
   });
 

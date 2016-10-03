@@ -112,6 +112,7 @@ export interface UrlConfig {
   beautifier?: boolean | BeautifierConfig;
   queryParam?: string;
   searchUrl?: string;
+  detailsUrl?: string;
 }
 
 export interface SearchandiserConfig {
