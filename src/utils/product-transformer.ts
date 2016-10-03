@@ -35,10 +35,7 @@ export class ProductTransformer {
     this.setTransform();
     this.hasVariants = 'variants' in struct;
     this.variantStruct = this.struct._variantStructure || this.struct;
-    this.idField = this.hasVariants
-      && this.struct._variantStructure
-      && `${this.struct.variants}.${this.variantStruct.id}`
-      || this.struct.id;
+    this.idField = this.extractIdField();
   }
 
   transform(allMeta: any): ProductMeta {
@@ -78,6 +75,15 @@ export class ProductTransformer {
       const remappedVariant = remap(variant, variantStruct);
       return filterObject(Object.assign({}, remappedMeta, remappedVariant), '!variants');
     };
+  }
+
+  extractIdField() {
+    // ensure we actually want the nested id
+    if (this.hasVariants && this.struct._variantStructure && this.variantStruct.id) {
+      return `${this.struct.variants}.${this.variantStruct.id}`;
+    } else {
+      return this.struct.id;
+    }
   }
 
   private setTransform() {

@@ -648,4 +648,26 @@ describe('ProductTransformer', () => {
       sinon.restore(utils);
     });
   });
+
+  describe('extractIdField()', () => {
+    it('should return root id', () => {
+      expect(transformer.extractIdField()).to.eq('id');
+
+      transformer.hasVariants = true;
+      expect(transformer.extractIdField()).to.eq('id');
+
+      transformer.struct = { id: 'id', _variantStructure: {} };
+      transformer.variantStruct = {};
+      expect(transformer.extractIdField()).to.eq('id');
+    });
+
+    it('should return variant id', () => {
+      const _variantStructure = { id: 'childId' };
+      transformer.hasVariants = true;
+      transformer.struct = { id: 'baseId', variants: 'child', _variantStructure };
+      transformer.variantStruct = _variantStructure;
+
+      expect(transformer.extractIdField()).to.eq('child.childId');
+    });
+  });
 });
