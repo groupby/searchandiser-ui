@@ -59,12 +59,13 @@ export class ProductTransformer {
     const struct = filterObject(this.struct, '!_*');
     const variantStruct = filterObject(this.variantStruct, '!_*');
     const remappedMeta = remap(allMeta, struct);
+    const variantMapping = this.remapVariant(remappedMeta, variantStruct);
 
     if (this.hasVariants && Array.isArray(getPath(allMeta, struct.variants))) {
       const variantsArray: any[] = getPath(allMeta, struct.variants)
         .filter((variant) => variant);
       if (variantsArray.length > 0) {
-        return variantsArray.map(this.remapVariant(remappedMeta, variantStruct));
+        return variantsArray.map(variantMapping);
       }
     }
     return [filterObject(remappedMeta, '!variants')];

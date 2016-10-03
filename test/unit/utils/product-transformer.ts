@@ -1,3 +1,4 @@
+import * as utils from '../../../src/utils/common';
 import { ProductTransformer } from '../../../src/utils/product-transformer';
 import { expect } from 'chai';
 
@@ -615,6 +616,36 @@ describe('ProductTransformer', () => {
         image: 'image.tiff',
         url: 'about:preferences'
       });
+    });
+  });
+
+  describe('remapVariant()', () => {
+    it('should return a mapping function', () => {
+      const mapping = transformer.remapVariant({}, {});
+
+      expect(mapping).to.be.a('function');
+    });
+
+    it('should return a remapped variant when called', () => {
+      const originalVariant = { mainColour: 'blue', size: '12.5' };
+      const remappedVariant = { a: 'b', c: 'd' };
+      sinon.stub(utils, 'remap', (meta) => {
+        expect(meta).to.eq(originalVariant);
+        return remappedVariant;
+      });
+
+      const mapping = transformer.remapVariant({ price: '$14', brand: 'nike' },
+        { colour: 'mainColour', size: 'usSize' });
+
+      const variant = mapping(originalVariant);
+      expect(variant).to.eql({
+        price: '$14',
+        brand: 'nike',
+        a: 'b',
+        c: 'd'
+      });
+
+      sinon.restore(utils);
     });
   });
 });
