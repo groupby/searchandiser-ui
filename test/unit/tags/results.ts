@@ -6,33 +6,39 @@ import { Events } from 'groupby-api';
 const structure = { title: 'title', price: 'price', image: 'image' };
 
 suite('gb-results', Results, { config: { structure } }, ({ flux, tag }) => {
-  it('should have default values', () => {
-    tag().init();
 
-    expect(tag().getPath).to.be.a('function');
+  describe('init()', () => {
+    it('should have default values', () => {
+      tag().init();
+
+      expect(tag().getPath).to.be.a('function');
+    });
+
+    it('should listen for events', () => {
+      flux().on = (event, cb): any => {
+        expect(event).to.eq(Events.RESULTS);
+        expect(cb).to.eq(tag().updateRecords);
+      };
+
+      tag().init();
+    });
   });
 
-  it('should listen for events', () => {
-    flux().on = (event: string): any => expect(event).to.eq(Events.RESULTS);
+  describe('updateRecords()', () => {
+    it('should update selected on RESULTS', () => {
+      const records = [{ a: 'b' }, { c: 'd' }];
+      const collection = 'mycollection';
 
-    tag().init();
-  });
+      flux().query.withConfiguration({ collection });
 
-  it('should update selected on RESULTS', () => {
-    const records = [{ a: 'b' }, { c: 'd' }];
-    const collection = 'mycollection';
-    let callback;
+      tag().update = (obj: any) => {
+        expect(obj.records).to.eq(records);
+        expect(obj.collection).to.eq(collection);
+      };
+      tag().init();
 
-    flux().query.withConfiguration({ collection });
-    flux().on = (event: string, cb: Function): any => callback = cb;
-
-    tag().update = (obj: any) => {
-      expect(obj.records).to.eq(records);
-      expect(obj.collection).to.eq(collection);
-    };
-    tag().init();
-
-    callback({ records });
+      tag().updateRecords(<any>{ records });
+    });
   });
 
   it('should return the correct user style', () => {

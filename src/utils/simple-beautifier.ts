@@ -1,4 +1,4 @@
-import { CONFIGURATION_MASK, SearchandiserConfig, UrlConfig } from './searchandiser';
+import { CONFIGURATION_MASK, SearchandiserConfig, UrlConfig } from '../searchandiser';
 import { Query } from 'groupby-api';
 import * as parseUri from 'parseuri';
 import * as queryString from 'query-string';

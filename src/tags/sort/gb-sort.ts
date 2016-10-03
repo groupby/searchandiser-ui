@@ -1,4 +1,4 @@
-import { getPath, unless } from '../../utils';
+import { getPath, unless } from '../../utils/common';
 import { SelectTag } from '../select/gb-select';
 import { Results, Sort as SortModel } from 'groupby-api';
 

@@ -1,5 +1,5 @@
 import { Query } from '../../src/tags/query/gb-query';
-import { LOCATION } from '../../src/utils';
+import { LOCATION } from '../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 

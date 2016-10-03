@@ -1,4 +1,4 @@
-import { findSearchBox } from '../../utils';
+import { findSearchBox } from '../../utils/common';
 import { Sayt } from './gb-sayt';
 
 const KEY_UP = 38;

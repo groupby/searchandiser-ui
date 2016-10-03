@@ -1,4 +1,4 @@
-import { findSearchBox, unless } from '../../utils';
+import { findSearchBox, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface Submit extends FluxTag {

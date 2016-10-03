@@ -1,7 +1,7 @@
 import { SearchandiserConfig, UrlConfig } from '../searchandiser';
-import { SimpleBeautifier } from '../simple-beautifier';
-import { UrlBeautifier } from '../url-beautifier';
-import { LOCATION } from '../utils';
+import { LOCATION } from '../utils/common';
+import { SimpleBeautifier } from '../utils/simple-beautifier';
+import { UrlBeautifier } from '../utils/url-beautifier';
 import { FluxCapacitor, Query } from 'groupby-api';
 import * as parseUri from 'parseuri';
 

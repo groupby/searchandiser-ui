@@ -1,4 +1,4 @@
-import { checkBooleanAttr, displayRefinement, toRefinement } from '../../utils';
+import { checkBooleanAttr, displayRefinement, toRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 import { Events, Results } from 'groupby-api';
 

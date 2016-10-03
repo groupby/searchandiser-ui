@@ -1,7 +1,7 @@
-import { ProductStructure } from '../../searchandiser';
-import { getPath, unless } from '../../utils';
+import { getPath, unless } from '../../utils/common';
+import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
-import { Events, Record } from 'groupby-api';
+import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
 export interface Results extends FluxTag {
   parent: Riot.Tag.Instance;
@@ -19,10 +19,11 @@ export class Results {
     this.struct = this.config.structure;
     this.variantStruct = unless(this.struct._variantStructure, this.struct);
     this.getPath = getPath;
-    this.flux.on(Events.RESULTS, ({ records }) => this.updateRecords(records));
+
+    this.flux.on(Events.RESULTS, this.updateRecords);
   }
 
-  updateRecords(records: Record[]) {
+  updateRecords({ records }: ResultsModel) {
     this.update({ records, collection: this.flux.query.raw.collection });
   }
 

@@ -3,7 +3,7 @@ import {
   Refinement,
   SelectedRefinement
 } from '../../../src/tags/navigation/gb-refinement';
-import { displayRefinement } from '../../../src/utils';
+import { displayRefinement } from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 

@@ -1,4 +1,4 @@
-import { debounce, getPath } from '../../utils';
+import { debounce, getPath } from '../../utils/common';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete } from './autocomplete';

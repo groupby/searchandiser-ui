@@ -1,4 +1,4 @@
-import { checkBooleanAttr, unless } from '../../utils';
+import { checkBooleanAttr, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface Select extends FluxTag { }

@@ -1,5 +1,5 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { getPath, unless } from '../../utils';
+import { getPath, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface CollectionOption {

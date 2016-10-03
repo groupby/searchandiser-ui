@@ -1,5 +1,5 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
-import { getPath, toRefinement } from '../../utils';
+import { getPath, toRefinement } from '../../utils/common';
 import { SelectTag } from '../select/gb-select';
 import { Results } from 'groupby-api';
 

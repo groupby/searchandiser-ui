@@ -1,4 +1,4 @@
-import * as utils from '../../src/utils';
+import * as utils from '../../src/utils/common';
 import { expect } from 'chai';
 import { Navigation } from 'groupby-api';
 

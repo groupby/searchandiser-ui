@@ -1,4 +1,4 @@
-import { displayRefinement } from '../../utils';
+import { displayRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface Refinement extends FluxTag { }

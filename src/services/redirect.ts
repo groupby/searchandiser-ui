@@ -1,4 +1,4 @@
-import { LOCATION } from '../utils';
+import { LOCATION } from '../utils/common';
 import { Events, FluxCapacitor } from 'groupby-api';
 
 export class Redirect {

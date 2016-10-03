@@ -1,4 +1,4 @@
-import { UrlBeautifier, UrlGenerator, UrlParser } from '../../src/url-beautifier';
+import { UrlBeautifier, UrlGenerator, UrlParser } from '../../../src/utils/url-beautifier';
 import { expect } from 'chai';
 import { Query, SelectedRangeRefinement, SelectedValueRefinement } from 'groupby-api';
 

@@ -1,4 +1,4 @@
-import { getPath, unless } from '../../utils';
+import { getPath, unless } from '../../utils/common';
 import { SelectTag } from '../select/gb-select';
 
 export interface PageSize extends SelectTag { }

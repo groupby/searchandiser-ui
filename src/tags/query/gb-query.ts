@@ -1,4 +1,4 @@
-import { findTag, unless } from '../../utils';
+import { findTag, unless } from '../../utils/common';
 import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';

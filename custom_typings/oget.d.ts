@@ -1,10 +1,10 @@
 declare interface ObjectGet {
-  (obj: any, path: string): any;
+  (obj: any, path: string, defaultVal?: any): any;
 }
 
 declare module 'oget' {
 
-  var oget: ObjectGet;
+  const oget: ObjectGet;
 
   export = oget;
 }

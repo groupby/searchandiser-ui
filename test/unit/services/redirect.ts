@@ -1,5 +1,5 @@
 import { Redirect } from '../../../src/services/redirect';
-import { LOCATION } from '../../../src/utils';
+import { LOCATION } from '../../../src/utils/common';
 import { expect } from 'chai';
 
 describe('redirect service', () => {

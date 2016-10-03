@@ -1,6 +1,6 @@
 import { SearchandiserConfig } from '../searchandiser';
 import { CollectionsConfig, CollectionOption } from '../tags/collections/gb-collections';
-import { getPath, unless } from '../utils';
+import { getPath, unless } from '../utils/common';
 import { Events, FluxCapacitor, Results } from 'groupby-api';
 
 export const COLLECTIONS_UPDATED_EVENT = 'collections_updated';
