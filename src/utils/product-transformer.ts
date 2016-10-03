@@ -74,7 +74,7 @@ export class ProductTransformer {
   remapVariant(remappedMeta: any, variantStruct: any) {
     return (variant) => {
       const remappedVariant = remap(variant, variantStruct);
-      return filterObject(Object.assign(remappedMeta, remappedVariant), '!variants');
+      return filterObject(Object.assign({}, remappedMeta, remappedVariant), '!variants');
     };
   }
 

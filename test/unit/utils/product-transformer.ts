@@ -525,7 +525,7 @@ describe('ProductTransformer', () => {
 
     });
 
-    it.skip('should restore original field when a variant happens to lack it', () => {
+    it('should restore original field when a variant happens to lack it', () => {
       transformer = new ProductTransformer({
         title: 'a[2].b',
         price: 'prix',
