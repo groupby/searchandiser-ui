@@ -1,5 +1,6 @@
 GroupBy Searchandiser UI
 ========
+[![CircleCI](https://circleci.com/gh/groupby/searchandiser-ui.svg?style=svg)](https://circleci.com/gh/groupby/searchandiser-ui)
 
 
 The following instructions assume that you are creating a search & merch single page app using the
