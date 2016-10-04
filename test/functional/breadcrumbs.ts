@@ -20,6 +20,15 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ tagName, flux, html, mount }) => {
       tag.updateQuery(originalQuery);
       expect(queryCrumb().textContent).to.eq(originalQuery);
     });
+
+    it('should not render query', () => {
+      const tag = mount();
+      tag.hideQuery = true;
+
+      tag.updateQuery(originalQuery);
+
+      expect(queryCrumb()).to.not.be.ok;
+    });
   });
 
   describe('with refinements', () => {
@@ -32,6 +41,15 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ tagName, flux, html, mount }) => {
           { type: 'Value', value: 'B' },
           { type: 'Value', value: 'C' }
         ]
+      },
+      {
+        name: 'second',
+        displayName: 'Second',
+        refinements: [
+          { type: 'Value', value: 'D' },
+          { type: 'Value', value: 'E' },
+          { type: 'Value', value: 'F' }
+        ]
       }
     ];
 
@@ -39,9 +57,34 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ tagName, flux, html, mount }) => {
       const tag = mount();
 
       tag.updateRefinements(selected);
-      expect(html().querySelectorAll('.gb-navigation-crumb').length).to.eq(1);
-      expect(crumbs().length).to.eq(3);
+      expect(html().querySelectorAll('.gb-navigation-crumb').length).to.eq(2);
+      expect(crumbs().length).to.eq(6);
       expect(crumbs()[1].querySelector('b').textContent).to.eq('First: B');
+    });
+
+    it('renders as a list of navigations', () => {
+      const tag = mount();
+
+      tag.updateRefinements(selected);
+
+      expect(html().querySelector('.gb-breadcrumbs > gb-list > ul')).to.be.ok;
+    });
+
+    it('renders as a list of refinements within each navigation', () => {
+      const tag = mount();
+
+      tag.updateRefinements(selected);
+
+      expect(html().querySelector('.gb-navigation-crumb > ul')).to.be.ok;
+    });
+
+    it('should not render refinements', () => {
+      const tag = mount();
+
+      tag.hideRefinements = true;
+      tag.updateRefinements(selected);
+
+      expect(crumbs().length).to.eq(0);
     });
 
     it('renders from reset', () => {
