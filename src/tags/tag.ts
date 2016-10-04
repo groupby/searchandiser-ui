@@ -3,13 +3,13 @@ import { Filter } from '../services/filter';
 import { Redirect } from '../services/redirect';
 import { Url } from '../services/url';
 import { FluxCapacitor } from 'groupby-api';
+import * as riot from 'riot';
 import { Sayt } from 'sayt';
 
 const sayt = new Sayt();
 
-export interface FluxTag extends Riot.Tag.Instance {
-  root: HTMLElement;
-  parent: Riot.Tag.Instance & FluxTag & any;
+export interface FluxTag extends riot.Tag.Instance {
+  parent: riot.Tag.Instance & FluxTag & any;
 
   flux: FluxCapacitor;
   config: any;
@@ -45,8 +45,8 @@ export class FluxTag {
     this._scope = this._parents[scope];
   }
 
-  findParent(tag: Riot.Tag.Instance, name: string) {
-    let parentTag: Riot.Tag.Instance = tag;
+  findParent(tag: riot.Tag.Instance, name: string) {
+    let parentTag: riot.Tag.Instance = tag;
     while (parentTag.root.localName !== name && parentTag.parent) parentTag = parentTag.parent;
     return parentTag;
   }

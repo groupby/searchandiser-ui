@@ -1,6 +1,7 @@
 import { Product } from '../../src/tags/product/gb-product';
 import { createTag, mixinFlux, removeTag } from './_suite';
 import { expect } from 'chai';
+import * as riot from 'riot';
 
 const TAG = 'gb-product';
 

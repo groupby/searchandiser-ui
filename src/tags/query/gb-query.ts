@@ -3,11 +3,12 @@ import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
+import * as riot from 'riot';
 
 const KEY_ENTER = 13;
 
 export interface Query extends FluxTag {
-  root: HTMLInputElement;
+  root: riot.TagElement & HTMLInputElement;
 }
 
 export class Query {

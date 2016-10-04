@@ -14,7 +14,7 @@ suite('gb-raw', Raw, { opts: { content } }, ({ tag }) => {
   });
 
   it('should update innerHTML', () => {
-    tag().root = <HTMLElement>{ innerHTML: '' };
+    tag().root = <any>{ innerHTML: '' };
     tag().init();
 
     tag().updateContent();

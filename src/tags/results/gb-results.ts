@@ -3,9 +3,7 @@ import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
-export interface Results extends FluxTag {
-  parent: Riot.Tag.Instance;
-}
+export interface Results extends FluxTag { }
 
 export class Results {
 

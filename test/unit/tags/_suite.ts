@@ -1,5 +1,6 @@
 import { FluxTag } from '../../../src/tags/tag';
 import { FluxCapacitor } from 'groupby-api';
+import * as riot from 'riot';
 
 function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
 function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);

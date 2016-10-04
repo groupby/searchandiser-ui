@@ -3,6 +3,7 @@ import { Sayt } from '../../src/tags/sayt/gb-sayt';
 import { createTag, mixinFlux, removeTag } from './_suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
+import * as riot from 'riot';
 
 const TAG = 'gb-query';
 const KEY_UP = 38;

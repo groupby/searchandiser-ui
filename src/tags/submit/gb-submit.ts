@@ -1,8 +1,9 @@
 import { findSearchBox, unless } from '../../utils/common';
 import { FluxTag } from '../tag';
+import * as riot from 'riot';
 
 export interface Submit extends FluxTag {
-  root: HTMLElement & { value: any };
+  root: riot.TagElement & { value: any };
 }
 
 export class Submit {

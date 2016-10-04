@@ -1,6 +1,7 @@
 import '../../src/tags/index';
 import { FluxTag, MixinFlux } from '../../src/tags/tag';
 import { FluxCapacitor } from 'groupby-api';
+import * as riot from 'riot';
 
 function suite<T extends FluxTag>(tagName: string, mixin: any, cb: (suite: FunctionalSuite<T>) => void);
 function suite<T extends FluxTag>(tagName: string, cb: (suite: FunctionalSuite<T>) => void);
