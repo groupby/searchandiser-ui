@@ -54,6 +54,7 @@ export class Navigation {
   }
 
   remove(ref: any, nav: any) {
+    console.log('remove??');
     return this.flux.unrefine(toRefinement(ref, nav));
   }
 }

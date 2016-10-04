@@ -119,48 +119,41 @@ suite<Navigation>('gb-navigation', ({ flux, html, mount, sandbox }) => {
     (<HTMLAnchorElement>html().querySelector('.gb-ref__link')).click();
   });
 
-  // it.only('should remove unselected refinement from display', () => {
-  //   const tag = mount();
-  //   sandbox().stub(utils, 'toRefinement', (refinement) => {
-  //     console.log(refinement);
-  //     return refinement;
-  //     // expect(refinement).to.eql({ value: 'Grocery', type: 'Value', count: 52 });
-  //   });
-  //
-  //   flux().unrefine = (refinement): any => {
-  //     console.log(refinement);
-  //     console.log('???????????????');
-  //     flux().emit(Events.RESULTS, {
-  //       availableNavigation: [refinement],
-  //       selectedNavigation: []
-  //       // [{
-  //       //   displayName: 'Main',
-  //       //   refinements: [refinement]
-  //       // }]
-  //     });
-  //   };
-  //
-  //   tag.processed = <any>[{
-  //     displayName: 'Main',
-  //     refinements: [
-  //       { value: 'Pick up', type: 'Value', count: 12345 },
-  //       { value: 'Deliver', type: 'Value', count: 123 }]
-  //   }, {
-  //     displayName: 'Other',
-  //     refinements: [],
-  //     selected: [
-  //       { value: 'Random', type: 'Value', count: 888 }]
-  //   }];
-  //   tag.update();
-  //
-  //   // console.log(html());
-  //
-  //   expect(html().querySelector('gb-selected-refinement')).to.be.ok;
-  //   (<HTMLAnchorElement>html().querySelector('.gb-ref__link')).click();
-  //
-  //   // expect(html().querySelector('gb-selected-refinement')).to.not.be.ok;
-  //   // console.log(html());
-  // });
+  it('should remove unselected refinement from display', () => {
+    const tag = mount();
+    const navigation = {
+      displayName: 'Main',
+      name: 'main',
+      refinements: [
+        { value: 'Pick up', type: 'Value', count: 12345 },
+        { value: 'Deliver', type: 'Value', count: 123 }]
+    };
+
+    flux().unrefine = (refinements): any => {
+      flux().emit(Events.RESULTS, {
+        availableNavigation: [navigation, { displayName: 'Other', name: 'other', refinements: [refinements] }],
+        selectedNavigation: []
+      });
+    };
+
+    tag.processed = <any>[
+      navigation,
+      {
+        displayName: 'Other',
+        name: 'other',
+        selected: [
+          { value: 'Random', type: 'Value', count: 888 }]
+      }];
+    tag.update();
+
+    expect(html().querySelector('gb-selected-refinement')).to.be.ok;
+    expect(html().querySelector('gb-selected-refinement .gb-ref__value').textContent).to.eq('Random');
+
+    (<HTMLAnchorElement>html().querySelector('gb-selected-refinement .gb-ref__link')).click();
+
+    expect(html().querySelector('gb-selected-refinement')).to.not.be.ok;
+    expect(html().querySelectorAll('gb-available-refinement .gb-ref__title')[2].textContent).to.eq('Random');
+  });
 
   it('should have more refinements link present', () => {
     const tag = mount();
