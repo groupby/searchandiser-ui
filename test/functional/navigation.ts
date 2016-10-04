@@ -1,5 +1,5 @@
 import { Navigation } from '../../src/tags/navigation/gb-navigation';
-import * as utils from '../../src/utils';
+import * as utils from '../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
