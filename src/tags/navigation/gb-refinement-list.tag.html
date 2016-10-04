@@ -4,8 +4,18 @@
     <ul>
       <gb-selected-refinement if={ showSelected } each={ ref in nav.selected }></gb-selected-refinement>
       <gb-available-refinement each={ ref in nav.refinements }></gb-available-refinement>
+      <li class="gb-more-refinements" if={ nav.moreRefinements }>
+        <a href="#" onclick={ moreRefinements }>More</a>
+      </li>
     </ul>
   </div>
+
+  <script>
+    this.moreRefinements = () => {
+      this.flux.refinements(this.nav.name);
+      this.nav.moreRefinements = false;
+    };
+  </script>
 
   <style scoped>
     .gb-stylish.gb-refinement-list .gb-navigation-title {
