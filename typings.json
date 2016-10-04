@@ -16,6 +16,7 @@
   "globalDependencies": {
     "clone": "registry:dt/clone#0.1.11+20160317120654",
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
-    "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524"
+    "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
+    "query-string": "registry:dt/query-string#3.0.0+20160331065456"
   }
 }
