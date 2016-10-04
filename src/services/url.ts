@@ -3,7 +3,7 @@ import { LOCATION } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
 import { UrlBeautifier } from '../utils/url-beautifier';
 import { FluxCapacitor, Query } from 'groupby-api';
-import * as parseUri from 'parseuri';
+import * as parseUri from 'parseUri';
 
 export class Url {
 

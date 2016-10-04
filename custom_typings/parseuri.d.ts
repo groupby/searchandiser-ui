@@ -35,7 +35,7 @@ declare namespace ParseUri {
   }
 }
 
-declare module 'parseuri' {
+declare module 'parseUri' {
 
   var parseUri: ParseUri.Parse;
 
