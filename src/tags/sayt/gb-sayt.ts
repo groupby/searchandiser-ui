@@ -119,7 +119,7 @@ export class Sayt {
 
   extractCategoryResults({ additionalInfo, value }: any) {
     let categoryResults = [];
-    if (this.categoryField && this.categoryField in additionalInfo) {
+    if (additionalInfo && this.categoryField && this.categoryField in additionalInfo) {
       categoryResults = additionalInfo[this.categoryField]
         .map((category) => ({ category, value }))
         .slice(0, 3);
