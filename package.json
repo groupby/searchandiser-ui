@@ -21,10 +21,12 @@
     "prod": "NODE_ENV=production webpack",
     "watch": "webpack --watch",
     "ci": "NODE_ENV=ci karma start --singleRun=false",
-    "docs": "rimraf docs && typedoc --options ./typedoc.json ./src"
+    "docs": "rimraf docs && typedoc --options ./typedoc.json ./src",
+    "license": "node licenseChecker.js"
   },
   "pre-commit": [
-    "test"
+    "test",
+    "license"
   ],
   "repository": {
     "type": "git",
@@ -51,6 +53,7 @@
     "css-loader": "^0.23.1",
     "expose-loader": "^0.7.1",
     "file-loader": "^0.9.0",
+    "gb-license-check": "^1.0.1",
     "istanbul": "^0.4.5",
     "karma": "^1.2.0",
     "karma-chai": "^0.1.0",
