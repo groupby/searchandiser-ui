@@ -14,6 +14,7 @@ describe('collections service', () => {
     expect(collectionsService.fetchCounts).to.be.true;
     expect(collectionsService.isLabeled).to.be.false;
     expect(collectionsService.collections).to.eql([]);
+    expect(collectionsService.options).to.eql([]);
   });
 
   it('should take overrides for properties', () => {
@@ -27,6 +28,7 @@ describe('collections service', () => {
     expect(collectionsService.fetchCounts).to.be.false;
     expect(collectionsService.isLabeled).to.be.true;
     expect(collectionsService.collections).to.eql(['b']);
+    expect(collectionsService.options).to.eq(options);
   });
 
   describe('init()', () => {
