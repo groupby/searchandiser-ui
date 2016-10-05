@@ -1,7 +1,7 @@
 import { ProductMeta, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
-import * as oget from 'oget';
+import oget = require('oget');
 
 export interface Product extends FluxTag { }
 
