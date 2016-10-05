@@ -96,8 +96,8 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
   it('switches collection on click', () => {
     const collections = ['a', 'b', 'c'];
     const tag = mount();
-    tag.collections = collections;
     const spy = sandbox().spy(tag, 'onselect');
+    tag.collections = collections;
 
     flux().switchCollection = (collection): any => expect(collection).to.eq(collections[1]);
 
@@ -106,18 +106,16 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
     expect(spy.calledWith(collections[1])).to.be.true;
   });
 
-  it('switches dropdown collection on click', () => {
-    const collections = ['a', 'b', 'c'];
-    const options = [{ label: 'a', value: 'b' }, { label: 'c', value: 'd' }];
-    const tag = mount();
-
-    flux().switchCollection = (collection): any => {
-      expect(collection).to.eq(options[1].value);
-    };
-
-    tag.update({ options, collections, dropdown: true });
-    (<HTMLAnchorElement>html().querySelectorAll('gb-collection-dropdown-item a')[1]).click();
-  });
+  // it('switches collection on dropdown', () => {
+  //   const collections = ['a', 'b', 'c'];
+  //   const tag = mount();
+  //   tag.collections = collections;
+  //
+  //   tag.onselect = (collection): any => expect(collection).to.eq(collections[1]);
+  //
+  //   tag.update();
+  //   (<HTMLAnchorElement>html().querySelectorAll('.gb-collection')[1]).click();
+  // });
 
   function labels() {
     return <NodeListOf<HTMLSpanElement>>html().querySelectorAll('.gb-collection__name');
