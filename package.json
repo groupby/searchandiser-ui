@@ -25,8 +25,7 @@
     "license": "node licenseChecker.js"
   },
   "pre-commit": [
-    "test",
-    "license"
+    "test"
   ],
   "repository": {
     "type": "git",
