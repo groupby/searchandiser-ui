@@ -23,6 +23,7 @@ export class Collections {
   labels: any;
   fetchCounts: boolean;
   dropdown: boolean;
+  options: string[] | CollectionOption[];
 
   init() {
     this._config = Object.assign({ options: [] }, getPath(this.config, 'tags.collections'), this.opts);
@@ -33,6 +34,7 @@ export class Collections {
       ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
       : {};
     this.dropdown = unless(this._config.dropdown, false);
+    this.options = collectionsService.options;
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, (counts) => this.update({ counts }));
   }
