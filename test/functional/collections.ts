@@ -6,7 +6,7 @@ const SERVICES = {
   collections: {}
 };
 
-suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, mount }) => {
+suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, mount, sandbox }) => {
   it('mounts tag', () => {
     const tag = mount();
 
@@ -26,6 +26,8 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
 
     expect(html().querySelector('gb-list')).to.not.be.ok;
     expect(html().querySelector('gb-select')).to.be.ok;
+    expect(html().querySelector('gb-custom-select')).to.be.ok;
+    expect(html().querySelector('gb-option-list')).to.be.ok;
   });
 
   it('renders without collections', () => {
@@ -65,26 +67,56 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
     expect(counts().length).to.eq(0);
   });
 
+  it('renders as list with collection', () => {
+    const collections = ['a', 'b', 'c'];
+    const tag = mount();
+
+    tag.update({ collections });
+
+    expect(html().querySelector('gb-list')).to.be.ok;
+    expect(html().querySelector('gb-select')).to.not.be.ok;
+    expect(html().querySelector('gb-collection-item')).to.be.ok;
+    expect(html().querySelector('a.gb-collection')).to.be.ok;
+  });
+
+  it('renders as dropdown with collection', () => {
+    const collections = ['a', 'b', 'c'];
+    const options = [{ label: 'a', value: 'b' }, { label: 'c', value: 'd' }];
+    const tag = mount();
+
+    tag.update({ collections, options, dropdown: true });
+
+    expect(html().querySelector('gb-list')).to.not.be.ok;
+    expect(html().querySelector('gb-select')).to.be.ok;
+    expect(html().querySelector('gb-custom-select')).to.be.ok;
+    expect(html().querySelector('gb-option-list')).to.be.ok;
+    expect(html().querySelector('gb-collection-dropdown-item a')).to.be.ok;
+  });
+
   it('switches collection on click', () => {
     const collections = ['a', 'b', 'c'];
     const tag = mount();
     tag.collections = collections;
+    const spy = sandbox().spy(tag, 'onselect');
 
     flux().switchCollection = (collection): any => expect(collection).to.eq(collections[1]);
 
     tag.update();
     (<HTMLAnchorElement>html().querySelectorAll('.gb-collection')[1]).click();
+    expect(spy.calledWith(collections[1])).to.be.true;
   });
 
-  it('switches collection on dropdown', () => {
+  it('switches dropdown collection on click', () => {
     const collections = ['a', 'b', 'c'];
+    const options = [{ label: 'a', value: 'b' }, { label: 'c', value: 'd' }];
     const tag = mount();
-    tag.collections = collections;
 
-    tag.onselect = (collection): any => expect(collection).to.eq(collections[1]);
+    flux().switchCollection = (collection): any => {
+      expect(collection).to.eq(options[1].value);
+    };
 
-    tag.update();
-    (<HTMLAnchorElement>html().querySelectorAll('.gb-collection')[1]).click();
+    tag.update({ options, collections, dropdown: true });
+    (<HTMLAnchorElement>html().querySelectorAll('gb-collection-dropdown-item a')[1]).click();
   });
 
   function labels() {
