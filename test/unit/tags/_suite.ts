@@ -1,6 +1,5 @@
 import { FluxTag } from '../../../src/tags/tag';
 import { FluxCapacitor } from 'groupby-api';
-import * as riot from 'riot';
 
 function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
 function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);
@@ -28,14 +27,9 @@ function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mi
       flux: () => _flux,
       tag: () => _tag,
       sandbox: () => _sandbox,
-      tagName,
-      // mount
+      tagName
     });
   });
-  //
-  // function mount(opts: any = {}) {
-  //   return <T>riot.mount(tagName, opts)[0];
-  // }
 }
 
 export default suite;
@@ -46,7 +40,7 @@ export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: 
     flux,
     opts: {},
     config: {},
-    configure: (cfg = {}) => tag._config = cfg,
+    configure: (cfg = {}) => tag._config = Object.assign({}, cfg, tag.opts),
     on: () => null
   }, obj);
   return { flux, tag };

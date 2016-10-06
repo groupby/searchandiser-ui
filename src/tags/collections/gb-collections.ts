@@ -25,7 +25,6 @@ export class Collections {
   collections: string[];
   counts: any;
   labels: any;
-  fetchCounts: boolean;
 
   init() {
     this.configure(DEFAULT_CONFIG);
@@ -33,7 +32,6 @@ export class Collections {
     this.options = this._config.options;
     const collectionsService = this.services.collections;
     this.collections = collectionsService.collections;
-    this.fetchCounts = collectionsService.fetchCounts;
     this.labels = collectionsService.isLabeled
       ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
       : {};

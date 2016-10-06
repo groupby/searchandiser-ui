@@ -44,8 +44,8 @@ export default suite;
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
   riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), {
-    configure(cfg: any) {
-      this._config = cfg;
+    configure(cfg: any = {}) {
+      this._config = Object.assign({}, cfg, this.opts);
     }
   }, obj));
   return flux;

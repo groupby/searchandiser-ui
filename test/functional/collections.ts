@@ -22,7 +22,7 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
 
   it('renders as dropdown when configured', () => {
     const tag = mount();
-    tag.update({ dropdown: true });
+    tag.update({ _config: { dropdown: true } });
 
     expect(html().querySelector('gb-list')).to.not.be.ok;
     expect(html().querySelector('gb-select')).to.be.ok;
@@ -39,7 +39,6 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
     const tag = mount();
     tag.collections = ['first', 'second', 'third'];
     tag.counts = { first: 344, second: 453, third: 314 };
-    tag.fetchCounts = true;
 
     tag.update();
 
@@ -60,7 +59,7 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
 
   it('renders without collection counts', () => {
     const tag = mount();
-    tag.fetchCounts = false;
+    tag._config = <any>{ counts: false };
     tag.collections = ['first', 'second', 'third'];
 
     tag.update();
@@ -80,11 +79,13 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
   });
 
   it('renders as dropdown with collection', () => {
-    const collections = ['a', 'b', 'c'];
     const options = [{ label: 'a', value: 'b' }, { label: 'c', value: 'd' }];
+    const collections = ['b', 'd'];
+    const labels = ['a', 'c'];
     const tag = mount();
+    tag._config = <any>{ dropdown: true };
 
-    tag.update({ collections, options, dropdown: true });
+    tag.update({ options, collections, labels });
 
     expect(html().querySelector('gb-list')).to.not.be.ok;
     expect(html().querySelector('gb-select')).to.be.ok;
@@ -107,15 +108,16 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, moun
   });
 
   it('switches dropdown collection on click', () => {
-    const collections = ['a', 'b', 'c'];
+    const collections = ['b', 'd'];
     const options = [{ label: 'a', value: 'b' }, { label: 'c', value: 'd' }];
     const tag = mount();
+    tag._config = <any>{ dropdown: true };
 
     flux().switchCollection = (collection): any => {
       expect(collection).to.eq(options[1].value);
     };
 
-    tag.update({ options, collections, dropdown: true });
+    tag.update({ options, collections });
     (<HTMLAnchorElement>html().querySelectorAll('gb-collection-dropdown-item a')[1]).click();
   });
 

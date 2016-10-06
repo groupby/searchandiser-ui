@@ -57,6 +57,9 @@ export class FluxTag<T> {
   }
 
   configure(defaultConfig: any = {}) {
+    console.log('wtf')
+    console.log(defaultConfig);
+    console.log(this._camelTagName);
     const rawConfig = Object.assign(
       {},
       defaultConfig,
@@ -65,8 +68,8 @@ export class FluxTag<T> {
       this.opts);
     for (let key of Object.keys(rawConfig)) {
       if (typeof defaultConfig[key] === 'boolean'
-        || rawConfig[key] == true
-        || rawConfig[key] == false) {
+        || rawConfig[key] == true // tslint:disable-line:triple-equals
+        || rawConfig[key] == false) { // tslint:disable-line:triple-equals
         rawConfig[key] = checkBooleanAttr(key, rawConfig);
       }
     }

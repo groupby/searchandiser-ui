@@ -1,7 +1,7 @@
 <gb-collection-item>
   <a class="gb-collection" data-collection={ item } onclick={ _scope.switchCollection }>
     <span class="gb-collection__name">{ _scope.labels[item] || item }</span>
-    <gb-badge if={ _scope._config.fetchCounts }>{ _scope.counts[item] }</gb-badge>
+    <gb-badge if={ _scope._config.counts }>{ _scope.counts[item] }</gb-badge>
   </a>
 
   <script>

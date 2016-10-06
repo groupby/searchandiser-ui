@@ -16,285 +16,309 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   beforeEach(() => tag().sayt = sayt = { configure: () => null });
 
-  it('should configure itself with defaults', (done) => {
-    tag().configure = (defaults) => {
-      expect(defaults).to.eq(DEFAULT_CONFIG);
-      done();
-    };
+  describe('init()', () => {
+    it('should configure itself with defaults', (done) => {
+      tag().configure = (defaults) => {
+        expect(defaults).to.eq(DEFAULT_CONFIG);
+        done();
+      };
 
-    tag().init();
-  });
-
-  it('should have default values', () => {
-    tag().init();
-
-    expect(tag().struct).to.eql(structure);
-    expect(tag().showProducts).to.be.true;
-  });
-
-  it('should take configuration overrides from global config', () => {
-    const saytStructure = {
-      image: 'thumbnail',
-      url: 'url'
-    };
-    tag().configure = () => tag()._config = {
-      products: 0,
-      structure: saytStructure
-    };
-    tag().init();
-
-    expect(tag().struct).to.eql(Object.assign({}, structure, saytStructure));
-    expect(tag().showProducts).to.be.false;
-  });
-
-  it('should configure sayt', () => {
-    const generated = { a: 'b', c: 'd' };
-    tag().generateSaytConfig = (): any => generated;
-    sayt.configure = (config) => expect(config).to.eql(generated);
-
-    tag().init();
-  });
-
-  it('should generate configuration', () => {
-    const customerId = 'mycustomer';
-    const collection = 'mycollection';
-    const area = 'MyArea';
-    tag().config = { customerId, collection, area };
-    tag().init();
-
-    const config = tag().generateSaytConfig();
-    expect(config).to.eql({
-      subdomain: customerId,
-      collection,
-      autocomplete: { numSearchTerms: 5 },
-      productSearch: { area, numProducts: 4 },
-      https: undefined
+      tag().init();
     });
-  });
 
-  it('should generate configuration with HTTPS', () => {
-    tag()._config = { https: true };
+    it('should have default values', () => {
+      tag().init();
 
-    const config = tag().generateSaytConfig();
-    expect(config.https).to.be.true;
-  });
+      expect(tag().struct).to.eql(structure);
+      expect(tag().showProducts).to.be.true;
+    });
 
-  it('should initialise autocomplete on mount', () => {
-    tag().init();
-    tag().on = (event: string, cb: Function) => {
-      expect(event).to.eq('mount');
-      cb();
-      expect(tag().autocomplete).to.be.instanceof(Autocomplete);
-    };
-  });
+    it('should take configuration overrides from global config', () => {
+      const saytStructure = {
+        image: 'thumbnail',
+        url: 'url'
+      };
+      tag().configure = () => tag()._config = {
+        products: 0,
+        structure: saytStructure
+      };
+      tag().init();
 
-  it('should listen for events', () => {
-    flux().on = (event: string, cb: Function): any => {
-      switch (event) {
-        case 'autocomplete':
-          expect(cb).to.eq(tag().fetchSuggestions);
-          break;
-        case 'autocomplete:hide':
-          expect(cb).to.eq(tag().reset);
-          break;
-        default: expect.fail();
-      }
-    };
+      expect(tag().struct).to.eql(Object.assign({}, structure, saytStructure));
+      expect(tag().showProducts).to.be.false;
+    });
 
-    tag().init();
-  });
+    it('should configure sayt', () => {
+      const generated = { a: 'b', c: 'd' };
+      tag().generateSaytConfig = (): any => generated;
+      sayt.configure = (config) => expect(config).to.eql(generated);
 
-  it('should reset autocomplete', () => {
-    let autocompleteReset = false;
-    tag().autocomplete = <any>{
-      reset: () => autocompleteReset = true
-    };
-    tag().update = (data) => {
-      expect(autocompleteReset).to.be.true;
-      expect(data.queries).to.be.null;
-      expect(data.navigations).to.be.null;
-      expect(data.products).to.be.null;
-    };
+      tag().init();
+    });
 
-    tag().reset();
-  });
-
-  it('should fetch suggestions not products', (done) => {
-    const originalQuery = 'red sneakers';
-    const result = { a: 'b', c: 'd' };
-    sayt.autocomplete = (query) => {
-      expect(query).to.eq(originalQuery);
-      return {
-        then: (cb) => {
-          cb({ result });
-          done();
+    it('should listen for events', () => {
+      flux().on = (event: string, cb: Function): any => {
+        switch (event) {
+          case 'autocomplete':
+            expect(cb).to.eq(tag().fetchSuggestions);
+            break;
+          case 'autocomplete:hide':
+            expect(cb).to.eq(tag().reset);
+            break;
+          default: expect.fail();
         }
       };
-    };
-    tag().update = (data) => expect(data.originalQuery).to.eq(originalQuery);
-    tag().processResults = (res) => expect(res).to.eql(result);
-    tag().searchProducts = () => expect.fail();
 
-    tag().fetchSuggestions(originalQuery);
-  });
-
-  it('should fetch product suggestions', (done) => {
-    const query = 'red sneakers';
-    sayt.autocomplete = () => {
-      return { then: (cb) => cb({ result: {} }) };
-    };
-    tag().showProducts = true;
-    tag().queries = [{ value: query }];
-    tag().processResults = () => null;
-    tag().update = () => null;
-    tag().searchProducts = (productQuery) => {
-      expect(productQuery).to.eq(query);
-      done();
-    };
-
-    tag().fetchSuggestions(undefined);
-  });
-
-  it('should search products', () => {
-    const suggestion = 'red sneakers';
-    const products = [{ a: 'b' }, { c: 'd' }];
-    sayt.productSearch = (query) => {
-      expect(query).to.eq(suggestion);
-      return { then: (cb) => cb({ result: { products } }) };
-    };
-    tag().update = (data) => expect(data.products).to.eq(products);
-    tag().showProducts = true;
-
-    tag().searchProducts(suggestion);
-  });
-
-  it('should not search products', () => {
-    sayt.productSearch = () => expect.fail();
-    tag().showProducts = false;
-
-    tag().searchProducts(undefined);
-  });
-
-  it('should emit rewrite_query', () => {
-    const newQuery = 'slippers';
-
-    flux().query.withQuery(newQuery);
-    flux().emit = (event: string, query: string): any => {
-      expect(event).to.eq(Events.REWRITE_QUERY);
-      expect(query).to.eq(newQuery);
-    };
-
-    tag().rewriteQuery(newQuery);
-  });
-
-  it('should fetch suggestions and rewrite query', () => {
-    const newQuery = 'cool shoes';
-    tag()._config = { autoSearch: true };
-    tag().searchProducts = (query) => expect(query).to.eq(newQuery);
-    tag().rewriteQuery = (query) => expect(query).to.eq(newQuery);
-
-    tag().notifier(newQuery);
-  });
-
-  it('should fetch rewrite query but not fetch suggestions', () => {
-    const newQuery = 'cool shoes';
-    tag()._config = { autoSearch: false };
-    tag().searchProducts = () => expect.fail();
-    tag().rewriteQuery = (query) => expect(query).to.eq(newQuery);
-
-    tag().notifier(newQuery);
-  });
-
-  it('should refine', () => {
-    const target = { a: 'b' };
-    const mock = sandbox().stub(flux(), 'resetRecall');
-    tag().refine = (targetElement, query) => {
-      expect(targetElement).to.eq(target);
-      expect(query).to.eq('');
-    };
-
-    tag().searchRefinement(<any>{ target });
-    expect(mock.called).to.be.true;
-  });
-
-  it('should refine with query', () => {
-    const target = { a: 'b' };
-    const mock = sandbox().stub(flux(), 'resetRecall');
-    tag().refine = (targetElement, query) => {
-      expect(targetElement).to.eq(target);
-      expect(query).to.eq('boots');
-    };
-    tag().originalQuery = 'boots';
-
-    tag().searchCategory(<any>{ target });
-    expect(mock.called).to.be.true;
-  });
-
-  it('should apply regex replacement with the current query', () => {
-    tag().originalQuery = 'blue sneakers';
-    tag()._config = { highlight: true };
-
-    const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
-    expect(highlighted).to.eq('hi-top <b>blue sneakers</b>');
-  });
-
-  it('should apply regex replacement with slashes', () => {
-    tag().originalQuery = 'blue sneakers\\';
-    tag()._config = { highlight: true };
-
-    const currentQuery = 'hi-top blue sneakers';
-    const highlight = () => tag().highlightCurrentQuery(currentQuery, '<b>$&</b>');
-    expect(highlight).to.not.throw();
-    expect(highlight()).to.eq('hi-top blue sneakers');
-  });
-
-  it('should not apply regex replacement', () => {
-    tag().originalQuery = 'blue sneakers';
-    tag()._config = { highlight: false };
-
-    const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
-    expect(highlighted).to.eq('hi-top blue sneakers');
-  });
-
-  it('should insert category query into template', () => {
-    tag()._config = { categoryField: 'category.value' };
-
-    const highlighted = tag().enhanceCategoryQuery({
-      value: 'blue sneakers',
-      category: 'Footwear'
+      tag().init();
     });
-    expect(highlighted).to.eq('<b>blue sneakers</b> in <span class="gb-category-query">Footwear</span>');
-  });
 
-  it('should update results with suggestion as query', () => {
-    const suggestion = 'red heels';
-    tag()._config = {};
-    tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
-    flux().reset = (query): any => expect(query).to.eq(suggestion);
-
-    tag().search(<any>{
-      target: {
-        tagName: 'GB-SAYT-LINK',
-        dataset: { value: suggestion }
-      }
+    it('should initialise autocomplete on mount', () => {
+      tag().init();
+      tag().on = (event: string, cb: Function) => {
+        expect(event).to.eq('mount');
+        cb();
+        expect(tag().autocomplete).to.be.instanceof(Autocomplete);
+      };
     });
   });
 
-  it('should search for the gb-sayt-link node', () => {
-    const suggestion = 'red heels';
-    tag()._config = {};
-    tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
-    flux().reset = (query): any => expect(query).to.eq(suggestion);
+  describe('generateSaytConfig()', () => {
+    it('should generate configuration', () => {
+      const customerId = 'mycustomer';
+      const collection = 'mycollection';
+      const area = 'MyArea';
+      tag().config = { customerId, collection, area };
+      tag().init();
 
-    tag().search(<any>{
-      target: {
-        parentElement: {
+      const config = tag().generateSaytConfig();
+      expect(config).to.eql({
+        subdomain: customerId,
+        collection,
+        autocomplete: { numSearchTerms: 5 },
+        productSearch: { area, numProducts: 4 },
+        https: false
+      });
+    });
+
+    it('should generate configuration with HTTPS', () => {
+      tag()._config = { https: true };
+
+      const config = tag().generateSaytConfig();
+      expect(config.https).to.be.true;
+    });
+  });
+
+  describe('reset()', () => {
+    it('should reset autocomplete', () => {
+      let autocompleteReset = false;
+      tag().autocomplete = <any>{
+        reset: () => autocompleteReset = true
+      };
+      tag().update = (data) => {
+        expect(autocompleteReset).to.be.true;
+        expect(data.queries).to.be.null;
+        expect(data.navigations).to.be.null;
+        expect(data.products).to.be.null;
+      };
+
+      tag().reset();
+    });
+  });
+
+  describe('fetchSuggestions()', () => {
+    it('should fetch suggestions not products', (done) => {
+      const originalQuery = 'red sneakers';
+      const result = { a: 'b', c: 'd' };
+      sayt.autocomplete = (query) => {
+        expect(query).to.eq(originalQuery);
+        return {
+          then: (cb) => {
+            cb({ result });
+            done();
+          }
+        };
+      };
+      tag().update = (data) => expect(data.originalQuery).to.eq(originalQuery);
+      tag().processResults = (res) => expect(res).to.eql(result);
+      tag().searchProducts = () => expect.fail();
+
+      tag().fetchSuggestions(originalQuery);
+    });
+
+    it('should fetch product suggestions', (done) => {
+      const query = 'red sneakers';
+      sayt.autocomplete = () => {
+        return { then: (cb) => cb({ result: {} }) };
+      };
+      tag().showProducts = true;
+      tag().queries = [{ value: query }];
+      tag().processResults = () => null;
+      tag().update = () => null;
+      tag().searchProducts = (productQuery) => {
+        expect(productQuery).to.eq(query);
+        done();
+      };
+
+      tag().fetchSuggestions(undefined);
+    });
+  });
+
+  describe('searchProducts()', () => {
+    it('should search products', () => {
+      const suggestion = 'red sneakers';
+      const products = [{ a: 'b' }, { c: 'd' }];
+      sayt.productSearch = (query) => {
+        expect(query).to.eq(suggestion);
+        return { then: (cb) => cb({ result: { products } }) };
+      };
+      tag().update = (data) => expect(data.products).to.eq(products);
+      tag().showProducts = true;
+
+      tag().searchProducts(suggestion);
+    });
+
+    it('should not search products', () => {
+      sayt.productSearch = () => expect.fail();
+      tag().showProducts = false;
+
+      tag().searchProducts(undefined);
+    });
+  });
+
+  describe('rewriteQuery()', () => {
+    it('should emit rewrite_query', () => {
+      const newQuery = 'slippers';
+
+      flux().query.withQuery(newQuery);
+      flux().emit = (event: string, query: string): any => {
+        expect(event).to.eq(Events.REWRITE_QUERY);
+        expect(query).to.eq(newQuery);
+      };
+
+      tag().rewriteQuery(newQuery);
+    });
+  });
+
+  describe('notifier()', () => {
+    it('should fetch suggestions and rewrite query', () => {
+      const newQuery = 'cool shoes';
+      tag()._config = { autoSearch: true };
+      tag().searchProducts = (query) => expect(query).to.eq(newQuery);
+      tag().rewriteQuery = (query) => expect(query).to.eq(newQuery);
+
+      tag().notifier(newQuery);
+    });
+
+    it('should fetch rewrite query but not fetch suggestions', () => {
+      const newQuery = 'cool shoes';
+      tag()._config = { autoSearch: false };
+      tag().searchProducts = () => expect.fail();
+      tag().rewriteQuery = (query) => expect(query).to.eq(newQuery);
+
+      tag().notifier(newQuery);
+    });
+  });
+
+  describe('searchRefinement()', () => {
+    it('should refine', () => {
+      const target = { a: 'b' };
+      const mock = sandbox().stub(flux(), 'resetRecall');
+      tag().refine = (targetElement, query) => {
+        expect(targetElement).to.eq(target);
+        expect(query).to.eq('');
+      };
+
+      tag().searchRefinement(<any>{ target });
+      expect(mock.called).to.be.true;
+    });
+  });
+
+  describe('searchCategory()', () => {
+    it('should refine with query', () => {
+      const target = { a: 'b' };
+      const mock = sandbox().stub(flux(), 'resetRecall');
+      tag().refine = (targetElement, query) => {
+        expect(targetElement).to.eq(target);
+        expect(query).to.eq('boots');
+      };
+      tag().originalQuery = 'boots';
+
+      tag().searchCategory(<any>{ target });
+      expect(mock.called).to.be.true;
+    });
+  });
+
+  describe('highlightCurrentQuery()', () => {
+    it('should apply regex replacement with the current query', () => {
+      tag().originalQuery = 'blue sneakers';
+      tag()._config = { highlight: true };
+
+      const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
+      expect(highlighted).to.eq('hi-top <b>blue sneakers</b>');
+    });
+
+    it('should apply regex replacement with slashes', () => {
+      tag().originalQuery = 'blue sneakers\\';
+      tag()._config = { highlight: true };
+
+      const currentQuery = 'hi-top blue sneakers';
+      const highlight = () => tag().highlightCurrentQuery(currentQuery, '<b>$&</b>');
+      expect(highlight).to.not.throw();
+      expect(highlight()).to.eq('hi-top blue sneakers');
+    });
+
+    it('should not apply regex replacement', () => {
+      tag().originalQuery = 'blue sneakers';
+      tag()._config = { highlight: false };
+
+      const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
+      expect(highlighted).to.eq('hi-top blue sneakers');
+    });
+  });
+
+  describe('enhanceCategoryQuery()', () => {
+    it('should insert category query into template', () => {
+      tag()._config = { categoryField: 'category.value' };
+
+      const highlighted = tag().enhanceCategoryQuery({
+        value: 'blue sneakers',
+        category: 'Footwear'
+      });
+      expect(highlighted).to.eq('<b>blue sneakers</b> in <span class="gb-category-query">Footwear</span>');
+    });
+  });
+
+  describe('search()', () => {
+    it('should update results with suggestion as query', () => {
+      const suggestion = 'red heels';
+      tag()._config = {};
+      tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
+      flux().reset = (query): any => expect(query).to.eq(suggestion);
+
+      tag().search(<any>{
+        target: {
+          tagName: 'GB-SAYT-LINK',
+          dataset: { value: suggestion }
+        }
+      });
+    });
+
+    it('should search for the gb-sayt-link node', () => {
+      const suggestion = 'red heels';
+      tag()._config = {};
+      tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
+      flux().reset = (query): any => expect(query).to.eq(suggestion);
+
+      tag().search(<any>{
+        target: {
           parentElement: {
-            tagName: 'GB-SAYT-LINK',
-            dataset: { value: suggestion }
+            parentElement: {
+              tagName: 'GB-SAYT-LINK',
+              dataset: { value: suggestion }
+            }
           }
         }
-      }
+      });
     });
   });
 
@@ -396,13 +420,13 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       expect(searchTerms.length).to.eq(2);
     });
 
-    it('should match case-insensitive input', () => {
+    it('should match case-insensitive input', (done) => {
       const query = 'Red Boots';
       const value = 'red boots';
       const additionalInfo = { a: 'b' };
       const searchTerms = [{ value, additionalInfo }, { value: 'other' }];
       tag().originalQuery = query;
-      tag().update = () => null;
+      tag().extractCategoryResults = () => done();
 
       tag().processResults({ searchTerms });
       expect(tag().matchesInput).to.be.true;
@@ -411,20 +435,23 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
 
   describe('extractCategoryResults()', () => {
     it('should return empty array if not configured', () => {
+      tag()._config = {};
+
       expect(tag().extractCategoryResults({})).to.eql([]);
     });
 
     it('should extract categories for configured field', () => {
-      tag().allCategoriesLabel = 'All Categories';
-      tag().categoryField = 'department';
+      const allCategoriesLabel = 'All Categories';
+      const categoryField = 'department';
+      tag()._config = { allCategoriesLabel, categoryField };
       tag().originalQuery = 'tool';
       const categories = tag().extractCategoryResults({
         value: 'tool',
-        additionalInfo: { [tag().categoryField]: ['Power Tools', 'Patio Furniture', 'Camping'] }
+        additionalInfo: { [categoryField]: ['Power Tools', 'Patio Furniture', 'Camping'] }
       });
 
       expect(categories).to.eql([
-        { category: tag().allCategoriesLabel, value: 'tool', noRefine: true },
+        { category: allCategoriesLabel, value: 'tool', noRefine: true },
         { category: 'Power Tools', value: 'tool' },
         { category: 'Patio Furniture', value: 'tool' },
         { category: 'Camping', value: 'tool' }
