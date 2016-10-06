@@ -57,9 +57,6 @@ export class FluxTag<T> {
   }
 
   configure(defaultConfig: any = {}) {
-    console.log('wtf')
-    console.log(defaultConfig);
-    console.log(this._camelTagName);
     const rawConfig = Object.assign(
       {},
       defaultConfig,
