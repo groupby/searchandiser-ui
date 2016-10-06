@@ -12,10 +12,8 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
     expect(html().querySelector('gb-pages')).to.be.ok;
   });
 
-  it.only('should render labels and icons', () => {
-    const tag = mount();
-    // console.log(tag._config);
-    console.log(html().querySelector('.gb-terminal__link.first').innerHTML);
+  it('should render labels and icons', () => {
+    mount();
 
     expect(html().querySelector('.gb-terminal__link.first span').textContent).to.eq('First');
     expect((<HTMLImageElement>html().querySelector('.gb-terminal__link.first img')).src).to.contain('data:image/png');
@@ -33,7 +31,7 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
   it('should not render terminal pager', () => {
     const tag = mount();
 
-    tag.update({ terminals: false });
+    tag.update({ _config: { terminals: false } });
     expect(html().querySelector('gb-terminal-pager')).to.be.ok;
     expect(html().querySelectorAll('.gb-terminal__link').length).to.eq(0);
   });
@@ -41,15 +39,16 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
   it('should not render labels', () => {
     const tag = mount();
 
-    tag.update({ labels: false });
+    tag.update({ _config: { labels: false } });
     expect(html().querySelectorAll('.gb-terminal__link span').length).to.eq(0);
     expect(html().querySelectorAll('.gb-pager__link span').length).to.eq(0);
   });
 
-  it('should render alternate labels', () => {
+  it.only('should render alternate labels', () => {
     const next_label = 'next page!';
     const first_label = 'first page!';
-    mount({ next_label, first_label });
+    const tag = mount();
+    tag.update({ _config: { next_label, first_label } })
 
     expect(html().querySelector('.gb-terminal__link.first span').textContent).to.eq(first_label);
     expect(html().querySelector('.gb-pager__link.next span').textContent).to.eq(next_label);
