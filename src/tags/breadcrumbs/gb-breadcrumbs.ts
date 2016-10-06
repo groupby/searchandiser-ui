@@ -28,11 +28,16 @@ export class Breadcrumbs {
       this.updateQuery(originalQuery);
       this.updateRefinements(selectedNavigation);
     });
-    this.flux.on(Events.RESET, () => this.clearRefinements());
+    this.flux.on(Events.RESET, this.clearRefinements);
   }
 
   clearRefinements() {
     this.updateRefinements([]);
+  }
+
+  updateQueryState({ originalQuery, selectedNavigation }: Results) {
+    this.updateQuery(originalQuery);
+    this.updateRefinements(selectedNavigation);
   }
 
   updateRefinements(selected: any[]) {
