@@ -36,7 +36,11 @@ export class Collections {
       ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
       : {};
 
-    this.flux.on(COLLECTIONS_UPDATED_EVENT, (counts) => this.update({ counts }));
+    this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
+  }
+
+  updateCounts(counts: any) {
+    this.update({ counts });
   }
 
   switchCollection(event: MouseEvent) {

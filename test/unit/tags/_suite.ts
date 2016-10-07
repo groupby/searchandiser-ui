@@ -1,4 +1,5 @@
 import { FluxTag } from '../../../src/tags/tag';
+import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
 function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
@@ -27,8 +28,39 @@ function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mi
       flux: () => _flux,
       tag: () => _tag,
       sandbox: () => _sandbox,
+      expectSubscriptions,
+      itShouldConfigure,
       tagName
     });
+
+    function expectSubscriptions(func: Function, subscriptions: any) {
+      const events = Object.keys(subscriptions);
+      const listeners = {};
+
+      _flux.on = (event, handler): any => {
+        if (events.includes(event)) {
+          listeners[event] = expect(handler).to.eq(subscriptions[event]);
+        } else {
+          expect.fail();
+        }
+      };
+
+      func();
+
+      const subscribedEvents = Object.keys(listeners);
+      expect(subscribedEvents).to.have.length(events.length);
+    }
+
+    function itShouldConfigure(defaultConfig?: any) {
+      it(`should configure itself ${defaultConfig ? 'with defaults' : ''}`, (done) => {
+        _tag.configure = (config) => {
+          if (defaultConfig) expect(config).to.eq(defaultConfig);
+          done();
+        };
+
+        _tag.init();
+      });
+    }
   });
 }
 
@@ -51,5 +83,7 @@ export interface UnitSuite<T> {
   tag: () => T;
   sandbox: () => Sinon.SinonSandbox;
   mount: (opts?: any) => T;
+  expectSubscriptions: (func: Function, subscriptions: any) => void;
+  itShouldConfigure: (defaultConfig?: any) => void;
   tagName: string;
 }

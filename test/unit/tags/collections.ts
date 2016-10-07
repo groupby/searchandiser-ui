@@ -7,21 +7,19 @@ const SERVICES = {
   collections: {}
 };
 
-suite('gb-collections', Collections, { services: SERVICES }, ({ flux, tag }) => {
-  describe('init()', () => {
-    it('should configure itself with defaults', (done) => {
-      tag().configure = (defaults) => {
-        expect(defaults).to.eq(DEFAULT_CONFIG);
-        done();
-      };
+suite('gb-collections', Collections, { services: SERVICES }, ({
+  flux, tag,
+  expectSubscriptions,
+  itShouldConfigure
+}) => {
 
-      tag().init();
-    });
+  describe('init()', () => {
+    itShouldConfigure(DEFAULT_CONFIG);
 
     it('should set options from calculated config', () => {
       const options = [{ a: 'b' }];
-      tag()._config = <any>{ options };
-      tag().configure = () => null;
+      tag().configure = () => tag()._config = <any>{ options };
+
       tag().init();
 
       expect(tag().options).to.eql(options);
@@ -29,6 +27,7 @@ suite('gb-collections', Collections, { services: SERVICES }, ({ flux, tag }) => 
 
     it('should get values from collections service', () => {
       tag().services = <any>{ collections: { collections: [] } };
+
       tag().init();
 
       expect(tag().collections).to.eql([]);
@@ -46,6 +45,7 @@ suite('gb-collections', Collections, { services: SERVICES }, ({ flux, tag }) => 
           isLabeled: true
         }
       };
+
       tag().init();
 
       expect(tag().collections).to.eql(options.map((collection) => collection.value));
@@ -57,40 +57,55 @@ suite('gb-collections', Collections, { services: SERVICES }, ({ flux, tag }) => 
     });
 
     it('should listen for collections_updated event', () => {
-      flux().on = (event: string, cb: Function): any => {
-        expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
-        expect(cb).to.be.a('function');
-      };
-
-      tag().init();
+      expectSubscriptions(() => tag().init(), {
+        [COLLECTIONS_UPDATED_EVENT]: tag().updateCounts
+      });
     });
   });
 
-  it('should switch collection using value on anchor tag', () => {
-    const collection = 'my collection';
+  describe('switchCollection()', () => {
+    it('should switch collection using value on anchor tag', () => {
+      const collection = 'my collection';
 
-    tag().init();
-    tag().onselect = (coll) => expect(coll).to.eq(collection);
+      tag().onselect = (coll) => expect(coll).to.eq(collection);
 
-    tag().switchCollection(<any>{
-      target: {
-        tagName: 'SPAN',
-        parentElement: {
-          tagName: 'A',
-          dataset: {
-            collection
+      tag().switchCollection(<any>{
+        target: {
+          tagName: 'SPAN',
+          parentElement: {
+            tagName: 'A',
+            dataset: {
+              collection
+            }
           }
         }
-      }
+      });
+    });
+
+    it('should switch collection', () => {
+      const collection = 'my collection';
+
+      tag().onselect = (coll) => expect(coll).to.eq(collection);
+
+      tag().onselect(collection);
     });
   });
 
-  it('should switch collection', () => {
-    const collection = 'my collection';
+  describe('updateCounts', () => {
+    it('should call update() with counts', () => {
+      const newCounts = [{ a: 'b' }];
+      tag().update = ({counts}) => expect(counts).to.eq(newCounts);
 
-    flux().switchCollection = (coll): any => expect(coll).to.eq(collection);
-    tag().init();
+      tag().updateCounts(newCounts);
+    });
+  });
 
-    tag().onselect(collection);
+  describe('onselect()', () => {
+    it('should call flux.switchCollection()', () => {
+      const collection = 'onsale';
+      flux().switchCollection = (coll): any => expect(coll).to.eq(collection);
+
+      tag().onselect(collection);
+    });
   });
 });

@@ -24,10 +24,7 @@ export class Breadcrumbs {
     this.configure(DEFAULT_CONFIG);
     this.toView = displayRefinement;
 
-    this.flux.on(Events.RESULTS, ({ originalQuery, selectedNavigation }: Results) => {
-      this.updateQuery(originalQuery);
-      this.updateRefinements(selectedNavigation);
-    });
+    this.flux.on(Events.RESULTS, this.updateQueryState);
     this.flux.on(Events.RESET, this.clearRefinements);
   }
 
