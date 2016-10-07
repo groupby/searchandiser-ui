@@ -4,30 +4,27 @@ import { expect } from 'chai';
 
 const content = '<div>red sneakers</div>';
 
-suite('gb-raw', Raw, { opts: { content } }, ({ tag }) => {
-  it('should configure itself', (done) => {
-    tag().configure = (defaults) => {
-      expect(defaults).to.be.undefined;
-      done();
-    };
+suite('gb-raw', Raw, { opts: { content } }, ({
+  tag,
+  expectSubscriptions,
+  itShouldConfigure
+}) => {
 
-    tag().init();
+  describe('init()', () => {
+    itShouldConfigure();
   });
 
-  describe('configured', () => {
-    beforeEach(() => tag().configure = () => tag()._config = { content });
+  it('should listen for events', () => {
+    expectSubscriptions(() => tag().init(), {
+      update: tag().updateContent,
+      mount: tag().updateContent
+    }, tag());
+  });
 
-    it('should listen for update event', () => {
-      tag().on = (event: string, cb) => {
-        expect(event).to.be.oneOf(['update', 'mount']);
-        expect(cb).to.eq(tag().updateContent);
-      };
-      tag().init();
-    });
-
+  describe('updateContent()', () => {
     it('should update innerHTML', () => {
       tag().root = <any>{ innerHTML: '' };
-      tag().init();
+      tag()._config = { content };
 
       tag().updateContent();
 

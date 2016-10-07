@@ -1,5 +1,5 @@
 import { FluxTag } from '../tag';
-import { Events } from 'groupby-api';
+import { Events, Results } from 'groupby-api';
 
 export interface RelatedQueries extends FluxTag<any> { }
 
@@ -8,10 +8,10 @@ export class RelatedQueries {
   relatedQueries: string[];
 
   init() {
-    this.flux.on(Events.RESULTS, ({ relatedQueries }) => this.updatedRelatedQueries(relatedQueries));
+    this.flux.on(Events.RESULTS, this.updatedRelatedQueries);
   }
 
-  updatedRelatedQueries(relatedQueries: string[]) {
+  updatedRelatedQueries({ relatedQueries }: Results) {
     this.update({ relatedQueries });
   }
 

@@ -13,49 +13,46 @@ describe(`${TAG} logic`, () => {
   const mixin = { _scopeTo: () => null };
 
   suite('gb-refinement', Refinement, mixin, ({ tag }) => {
-    it('should have default values', () => {
-      tag().init();
+    describe('init()', () => {
+      it('should have default values', () => {
+        tag().init();
 
-      expect(tag().toView).to.eq(displayRefinement);
+        expect(tag().toView).to.eq(displayRefinement);
+      });
     });
   });
 
   suite('gb-available-refinement', AvailableRefinement, mixin, ({ tag }) => {
-    it('should make refinement', () => {
-      tag().ref = { type: 'Range', low: 4, high: 6 };
-      tag().nav = { name: 'price' };
-      tag()._scope = {
-        send(ref: any, nav: any) {
-          expect(ref).to.eq(tag().ref);
-          expect(nav).to.eq(tag().nav);
-        }
-      };
-      tag().init();
+    describe('send()', () => {
+      it('should make refinement', () => {
+        tag().ref = { type: 'Range', low: 4, high: 6 };
+        tag().nav = { name: 'price' };
+        tag()._scope = {
+          send(ref: any, nav: any) {
+            expect(ref).to.eq(tag().ref);
+            expect(nav).to.eq(tag().nav);
+          }
+        };
 
-      tag().send();
+        tag().send();
+      });
     });
   });
 
-  suite('gb-selected-refinement', SelectedRefinement, mixin, ({ flux, tag }) => {
-    it('should remove refinement', () => {
-      flux().unrefine = (ref): any => expect(ref).to.eql({
-        navigationName: 'price',
-        type: 'Range',
-        low: 4,
-        high: 6
+  suite('gb-selected-refinement', SelectedRefinement, mixin, ({ tag }) => {
+    describe('remove()', () => {
+      it('should remove refinement', () => {
+        tag().ref = { type: 'Range', low: 4, high: 6 };
+        tag().nav = { name: 'price' };
+        tag()._scope = {
+          remove(ref: any, nav: any) {
+            expect(ref).to.eq(tag().ref);
+            expect(nav).to.eq(tag().nav);
+          }
+        };
+
+        tag().remove();
       });
-
-      tag().ref = { type: 'Range', low: 4, high: 6 };
-      tag().nav = { name: 'price' };
-      tag()._scope = {
-        remove(ref: any, nav: any) {
-          expect(ref).to.eq(tag().ref);
-          expect(nav).to.eq(tag().nav);
-        }
-      };
-      tag().init();
-
-      tag().remove();
     });
   });
 });

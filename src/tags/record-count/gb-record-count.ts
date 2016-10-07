@@ -10,7 +10,7 @@ export class RecordCount {
   total: number;
 
   init() {
-    this.flux.on(Events.RESULTS, (res) => this.updatePageInfo(res));
+    this.flux.on(Events.RESULTS, this.updatePageInfo);
   }
 
   updatePageInfo({ pageInfo, totalRecordCount }: { pageInfo: PageInfo, totalRecordCount: number }) {
