@@ -121,7 +121,7 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
     });
   });
 
-  describe('prepFocus', () => {
+  describe('prepFocus()', () => {
     it('should set focused to false', () => {
       tag().focused = true;
 
@@ -201,6 +201,43 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
 
       expect(tag().focused).to.be.false;
       expect(blur.called).to.be.true;
+    });
+  });
+
+  describe('selectOption()', () => {
+    it('should update selectedOption', () => {
+      const opts = 'a';
+      const spy = tag().update = sinon.spy(({selectedOption}) => expect(selectedOption).to.eq(opts));
+
+      tag().selectOption(opts, {});
+
+      expect(spy.called).to.be.true;
+    });
+
+    it('should return JSON parsed value', () => {
+      const opts = { a: 'b' };
+      const spy = tag().callback = sinon.spy((value) => expect(value).to.eql(opts));
+      tag().update = () => null;
+
+      tag().selectOption('', JSON.stringify(opts));
+      expect(spy.called).to.be.true;
+    });
+
+    it('should return value', () => {
+      const opts = { a: 'b' };
+      const spy = tag().callback = sinon.spy((value) => expect(value).to.eql(opts));
+      tag().update = () => null;
+
+      tag().selectOption('', opts);
+      expect(spy.called).to.be.true;
+    });
+
+    it('should return \'*\'', () => {
+      const spy = tag().callback = sinon.spy((value) => expect(value).to.eql('*'));
+      tag().update = () => null;
+
+      tag().selectOption('', undefined);
+      expect(spy.called).to.be.true;
     });
   });
 });
