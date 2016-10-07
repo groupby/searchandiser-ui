@@ -95,11 +95,112 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
   });
 
   describe('selectLabel()', () => {
-    it('should return selectedOption if set', () => {
-      const selectedOption = tag().selectedOption = 'option';
+    it('should return selectedOption', () => {
+      const selectedOption = tag().selectedOption = { a: 'b' };
 
-      tag().selectLabel();
-      expect(tag().selectedOption).to.eq(selectedOption);
+      const option = tag().selectLabel();
+
+      expect(option).to.eq(selectedOption);
+    });
+
+    it('should return clearOption', () => {
+      const clearOption = tag().clearOption = <any>{ a: 'b' };
+      tag().selected = true;
+
+      const option = tag().selectLabel();
+
+      expect(option).to.eq(clearOption);
+    });
+
+    it('should return label', () => {
+      const label = tag().label = <any>{ a: 'b' };
+
+      const option = tag().selectLabel();
+
+      expect(option).to.eq(label);
+    });
+  });
+
+  describe('prepFocus', () => {
+    it('should set focused to false', () => {
+      tag().focused = true;
+
+      tag().prepFocus();
+
+      expect(tag().focused).to.be.false;
+    });
+  });
+
+  describe('selectButton()', () => {
+    it('should return the select button', () => {
+      const root = { a: 'b' };
+      tag().tags = <any>{
+        'gb-custom-select': {
+          tags: {
+            'gb-select-button': { root }
+          }
+        }
+      };
+
+      const button = tag().selectButton();
+
+      expect(button).to.eq(root);
+    });
+  });
+
+  describe('nativeSelect()', () => {
+    it('should return selector', () => {
+      const selector = { a: 'b' };
+      tag().tags = <any>{ 'gb-native-select': { selector } };
+
+      const select = tag().nativeSelect();
+
+      expect(select).to.eq(selector);
+    });
+
+    it('should select element', () => {
+      const selector = { a: 'b' };
+      tag().tags = <any>{};
+      tag().root = <any>{
+        querySelector: (cssSelector) => {
+          expect(cssSelector).to.eq('select');
+          return selector;
+        }
+      };
+
+      const select = tag().nativeSelect();
+
+      expect(select).to.eq(selector);
+    });
+  });
+
+  describe('unfocus()', () => {
+    it('should set focused true', () => {
+      tag()._config = { hover: true };
+
+      tag().unfocus();
+
+      expect(tag().focused).to.be.true;
+    });
+
+    it('should set switch focused to true', () => {
+      tag()._config = {};
+
+      tag().unfocus();
+
+      expect(tag().focused).to.be.true;
+    });
+
+    it('should set switch focused to false and blur button', () => {
+      tag()._config = {};
+      tag().focused = true;
+      const blur = sinon.spy();
+      tag().selectButton = () => ({ blur });
+
+      tag().unfocus();
+
+      expect(tag().focused).to.be.false;
+      expect(blur.called).to.be.true;
     });
   });
 });
