@@ -1,11 +1,12 @@
 import { DEFAULT_CONFIG, Submit } from '../../../src/tags/submit/gb-submit';
+import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 
 const ROOT: any = { addEventListener: () => null };
 
 suite('gb-submit', Submit, { root: ROOT }, ({
-  flux, tag,
+  flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure
 }) => {
@@ -43,6 +44,17 @@ suite('gb-submit', Submit, { root: ROOT }, ({
       tag().init();
 
       expect(addEventListener.called).to.be.true;
+    });
+  });
+
+  describe('setSearchBox()', () => {
+    it('should set the searchBox', () => {
+      const searchBox = { a: 'b' };
+      sandbox().stub(utils, 'findSearchBox', () => searchBox);
+
+      tag().setSearchBox();
+
+      expect(tag().searchBox).to.eq(searchBox);
     });
   });
 
