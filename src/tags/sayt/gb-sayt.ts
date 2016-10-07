@@ -1,4 +1,5 @@
 import { debounce } from '../../utils/common';
+
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
@@ -59,8 +60,12 @@ export class Sayt {
 
     this.sayt.configure(this.generateSaytConfig());
 
-    this.on('mount', () => this.autocomplete = new Autocomplete(this));
+    this.on('mount', this.initializeAutocomplete);
     this.flux.on(AUTOCOMPLETE_HIDE_EVENT, this.reset);
+  }
+
+  initializeAutocomplete() {
+    this.autocomplete = new Autocomplete(this);
   }
 
   generateSaytConfig() {

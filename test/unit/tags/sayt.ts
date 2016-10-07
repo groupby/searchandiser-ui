@@ -5,80 +5,72 @@ import suite, { fluxTag } from './_suite';
 import { expect } from 'chai';
 import { Events, FluxCapacitor } from 'groupby-api';
 
-const structure = {
+const STRUCTURE = {
   title: 'title',
   price: 'price',
   image: 'image'
 };
 
-suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
+suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
+  flux, tag, sandbox,
+  expectSubscriptions,
+  itShouldConfigure
+}) => {
   let sayt;
 
   beforeEach(() => tag().sayt = sayt = { configure: () => null });
 
   describe('init()', () => {
-    it('should configure itself with defaults', (done) => {
-      tag().configure = (defaults) => {
-        expect(defaults).to.eq(DEFAULT_CONFIG);
-        done();
-      };
-
-      tag().init();
-    });
+    itShouldConfigure(DEFAULT_CONFIG);
 
     it('should have default values', () => {
       tag().init();
 
-      expect(tag().struct).to.eql(structure);
+      expect(tag().struct).to.eql(STRUCTURE);
       expect(tag().showProducts).to.be.true;
     });
 
     it('should take configuration overrides from global config', () => {
-      const saytStructure = {
-        image: 'thumbnail',
-        url: 'url'
-      };
+      const saytStructure = { image: 'thumbnail', url: 'url' };
       tag().configure = () => tag()._config = {
         products: 0,
         structure: saytStructure
       };
+
       tag().init();
 
-      expect(tag().struct).to.eql(Object.assign({}, structure, saytStructure));
+      expect(tag().struct).to.eql(Object.assign({}, STRUCTURE, saytStructure));
       expect(tag().showProducts).to.be.false;
     });
 
     it('should configure sayt', () => {
       const generated = { a: 'b', c: 'd' };
       tag().generateSaytConfig = (): any => generated;
-      sayt.configure = (config) => expect(config).to.eql(generated);
+      const spy = sayt.configure = sinon.spy((config) => expect(config).to.eql(generated));
 
       tag().init();
+
+      expect(spy.called).to.be.true;
     });
 
-    it('should listen for events', () => {
-      flux().on = (event: string, cb: Function): any => {
-        switch (event) {
-          case 'autocomplete':
-            expect(cb).to.eq(tag().fetchSuggestions);
-            break;
-          case AUTOCOMPLETE_HIDE_EVENT:
-            expect(cb).to.eq(tag().reset);
-            break;
-          default: expect.fail();
-        }
-      };
-
-      tag().init();
+    it('should listen for mount event', () => {
+      expectSubscriptions(() => tag().init(), {
+        mount: tag().initializeAutocomplete
+      }, tag());
     });
 
-    it('should initialise autocomplete on mount', () => {
-      tag().init();
-      tag().on = (event: string, cb: Function) => {
-        expect(event).to.eq('mount');
-        cb();
-        expect(tag().autocomplete).to.be.instanceof(Autocomplete);
-      };
+    it('should listen for autocomplete:hide event', () => {
+      expectSubscriptions(() => tag().init(), {
+        [AUTOCOMPLETE_HIDE_EVENT]: tag().reset
+      });
+    });
+  });
+
+  describe('initializeAutocomplete()', () => {
+    it('should create a new instance of Autocomplete', () => {
+      tag().initializeAutocomplete();
+
+      expect(tag().autocomplete).to.be.an.instanceof(Autocomplete);
     });
   });
 
@@ -88,9 +80,12 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       const collection = 'mycollection';
       const area = 'MyArea';
       tag().config = { customerId, collection, area };
+
+      // TODO: get rid of this
       tag().init();
 
       const config = tag().generateSaytConfig();
+
       expect(config).to.eql({
         subdomain: customerId,
         collection,
@@ -104,6 +99,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       tag()._config = { https: true };
 
       const config = tag().generateSaytConfig();
+
       expect(config.https).to.be.true;
     });
   });
@@ -114,14 +110,16 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
       tag().autocomplete = <any>{
         reset: () => autocompleteReset = true
       };
-      tag().update = (data) => {
+      const spy = tag().update = sinon.spy((data) => {
         expect(autocompleteReset).to.be.true;
         expect(data.queries).to.be.null;
         expect(data.navigations).to.be.null;
         expect(data.products).to.be.null;
-      };
+      });
 
       tag().reset();
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -139,10 +137,12 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
         };
       };
       tag().update = (data) => expect(data.originalQuery).to.eq(originalQuery);
-      tag().processResults = (res) => expect(res).to.eql(result);
+      const spy = tag().processResults = sinon.spy((res) => expect(res).to.eql(result));
       tag().searchProducts = () => expect.fail();
 
       tag().fetchSuggestions(originalQuery);
+
+      expect(spy.called).to.be.true;
     });
 
     it('should fetch product suggestions', (done) => {
@@ -171,10 +171,12 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
         expect(query).to.eq(suggestion);
         return { then: (cb) => cb({ result: { products } }) };
       };
-      tag().update = (data) => expect(data.products).to.eq(products);
+      const spy = tag().update = sinon.spy((data) => expect(data.products).to.eq(products));
       tag().showProducts = true;
 
       tag().searchProducts(suggestion);
+
+      expect(spy.called).to.be.true;
     });
 
     it('should not search products', () => {
@@ -188,14 +190,15 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
   describe('rewriteQuery()', () => {
     it('should emit rewrite_query', () => {
       const newQuery = 'slippers';
-
       flux().query.withQuery(newQuery);
-      flux().emit = (event: string, query: string): any => {
+      const spy = flux().emit = sinon.spy((event: string, query: string): any => {
         expect(event).to.eq(Events.REWRITE_QUERY);
         expect(query).to.eq(newQuery);
-      };
+      });
 
       tag().rewriteQuery(newQuery);
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -203,33 +206,39 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
     it('should fetch suggestions and rewrite query', () => {
       const newQuery = 'cool shoes';
       tag()._config = { autoSearch: true };
-      tag().searchProducts = (query) => expect(query).to.eq(newQuery);
-      tag().rewriteQuery = (query) => expect(query).to.eq(newQuery);
+      const searchSpy = tag().searchProducts = sinon.spy((query) => expect(query).to.eq(newQuery));
+      const rewriteSpy = tag().rewriteQuery = sinon.spy((query) => expect(query).to.eq(newQuery));
 
       tag().notifier(newQuery);
+
+      expect(searchSpy.called).to.be.true;
+      expect(rewriteSpy.called).to.be.true;
     });
 
     it('should fetch rewrite query but not fetch suggestions', () => {
       const newQuery = 'cool shoes';
       tag()._config = { autoSearch: false };
       tag().searchProducts = () => expect.fail();
-      tag().rewriteQuery = (query) => expect(query).to.eq(newQuery);
+      const spy = tag().rewriteQuery = sinon.spy((query) => expect(query).to.eq(newQuery));
 
       tag().notifier(newQuery);
+
+      expect(spy.called).to.be.true;
     });
   });
 
   describe('searchRefinement()', () => {
     it('should refine', () => {
       const target = { a: 'b' };
-      const mock = sandbox().stub(flux(), 'resetRecall');
+      const spy = flux().resetRecall = sinon.spy();
       tag().refine = (targetElement, query) => {
         expect(targetElement).to.eq(target);
         expect(query).to.eq('');
       };
 
       tag().searchRefinement(<any>{ target });
-      expect(mock.called).to.be.true;
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -468,7 +477,7 @@ describe('gb-sayt logic', () => {
 
   beforeEach(() => {
     sayt = { configure: () => null };
-    ({ tag, flux } = fluxTag(new Sayt(), { config: { structure }, sayt }));
+    ({ tag, flux } = fluxTag(new Sayt(), { config: { STRUCTURE }, sayt }));
     sandbox = sinon.sandbox.create();
   });
 
