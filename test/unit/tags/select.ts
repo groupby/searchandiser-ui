@@ -240,4 +240,68 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
       expect(spy.called).to.be.true;
     });
   });
+
+  describe('selectNative()', () => {
+    it('should call update() with selected', () => {
+      const option = { value: 'hat', text: 'Hat' };
+      const options = [{ disabled: true }];
+      tag().nativeSelect = () => ({ options });
+      tag().update = ({ selected }) => expect(selected).to.eq(option.value);
+      tag().selectOption = (text, selected) => {
+        expect(text).to.eq(option.text);
+        expect(selected).to.eq(option.value);
+      };
+
+      tag().selectNative(<any>{
+        target: {
+          selectedOptions: [option]
+        }
+      });
+
+      expect(options[0].disabled).to.be.false;
+    });
+
+    it('should set first option enabled', () => {
+      const option = { text: 'Hat' };
+      const options = [{ disabled: true }];
+      tag().nativeSelect = () => ({ options });
+      tag().update = () => null;
+      tag().selectOption = () => null;
+
+      tag().selectNative(<any>{
+        target: {
+          selectedOptions: [option]
+        }
+      });
+
+      expect(options[0].disabled).to.be.true;
+    });
+  });
+
+  describe('selectCustom()', () => {
+    it('should select option', () => {
+      const option = { value: 'hat', label: 'Hat' };
+      const blur = sinon.spy();
+      tag().selectButton = () => ({ blur });
+      tag().selectOption = (label, value) => {
+        expect(label).to.eq(option.label);
+        expect(value).to.eq(option.value);
+      };
+
+      tag().selectCustom(option);
+
+      expect(blur.called).to.be.true;
+    });
+  });
+
+  describe('clearSelection()', () => {
+    it('should call selectOption()', () => {
+      tag().selectOption = (label, value) => {
+        expect(label).to.be.undefined;
+        expect(value).to.eq('*');
+      };
+
+      tag().clearSelection();
+    });
+  });
 });
