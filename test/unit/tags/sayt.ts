@@ -245,7 +245,7 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
   describe('searchCategory()', () => {
     it('should refine with query', () => {
       const target = { a: 'b' };
-      const mock = sandbox().stub(flux(), 'resetRecall');
+      const spy = flux().resetRecall = sinon.spy();
       tag().refine = (targetElement, query) => {
         expect(targetElement).to.eq(target);
         expect(query).to.eq('boots');
@@ -253,7 +253,8 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       tag().originalQuery = 'boots';
 
       tag().searchCategory(<any>{ target });
-      expect(mock.called).to.be.true;
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -263,15 +264,17 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       tag()._config = { highlight: true };
 
       const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
+
       expect(highlighted).to.eq('hi-top <b>blue sneakers</b>');
     });
 
     it('should apply regex replacement with slashes', () => {
+      const currentQuery = 'hi-top blue sneakers';
       tag().originalQuery = 'blue sneakers\\';
       tag()._config = { highlight: true };
 
-      const currentQuery = 'hi-top blue sneakers';
       const highlight = () => tag().highlightCurrentQuery(currentQuery, '<b>$&</b>');
+
       expect(highlight).to.not.throw();
       expect(highlight()).to.eq('hi-top blue sneakers');
     });
@@ -281,6 +284,7 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       tag()._config = { highlight: false };
 
       const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
+
       expect(highlighted).to.eq('hi-top blue sneakers');
     });
   });
@@ -293,6 +297,7 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
         value: 'blue sneakers',
         category: 'Footwear'
       });
+
       expect(highlighted).to.eq('<b>blue sneakers</b> in <span class="gb-category-query">Footwear</span>');
     });
   });
@@ -302,7 +307,7 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       const suggestion = 'red heels';
       tag()._config = {};
       tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
-      flux().reset = (query): any => expect(query).to.eq(suggestion);
+      const spy = flux().reset = sinon.spy((query): any => expect(query).to.eq(suggestion));
 
       tag().search(<any>{
         target: {
@@ -310,13 +315,15 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
           dataset: { value: suggestion }
         }
       });
+
+      expect(spy.called).to.be.true;
     });
 
     it('should search for the gb-sayt-link node', () => {
       const suggestion = 'red heels';
       tag()._config = {};
       tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
-      flux().reset = (query): any => expect(query).to.eq(suggestion);
+      const spy = flux().reset = sinon.spy((query): any => expect(query).to.eq(suggestion));
 
       tag().search(<any>{
         target: {
@@ -328,6 +335,8 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
           }
         }
       });
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -336,24 +345,25 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
-
       tag()._config = {};
       tag().flux.rewrite = (query, config): any => {
         expect(query).to.eq(suggestion);
         expect(config.skipSearch).to.be.true;
       };
-      flux().refine = (selectedRefinement): any => {
+      const spy = flux().refine = sinon.spy((selectedRefinement): any => {
         expect(selectedRefinement).to.eql({
           navigationName: field,
           value: refinement,
           type: 'Value'
         });
-      };
+      });
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement }
       }, suggestion);
+
+      expect(spy.called).to.be.true;
     });
 
     it('should skip refinement and do query', () => {
@@ -362,17 +372,20 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       const refinement = 8;
       tag()._config = {};
       flux().rewrite = (): any => expect.fail();
-      flux().reset = (query): any => expect(query).to.eq(suggestion);
+      const spy = flux().reset = sinon.spy((query): any => expect(query).to.eq(suggestion));
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement, norefine: true }
       }, suggestion);
+
+      expect(spy.called).to.be.true;
     });
   });
 
   describe('processResults()', () => {
-    it('should update with defaults', () => {
+    it.only('should update with defaults', () => {
+      // TODO: add spy and check for called
       tag().update = ({ results, queries, navigations, categoryResults }) => {
         expect(results).to.eql({});
         expect(queries).to.be.undefined;
