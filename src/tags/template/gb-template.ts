@@ -23,15 +23,19 @@ export class Template {
     this.update({
       isActive: template.name === this._config.target,
       zoneMap: template.zones,
-      zones: Object.keys(template.zones).map((key) => template.zones[key])
-        .reduce((list, zone) => {
-          if (zone.type === 'Record') {
-            list.push(zone);
-          } else {
-            list.unshift(zone);
-          }
-          return list;
-        }, [])
+      zones: this.sortZones(template.zones)
     });
+  }
+
+  sortZones(zones: any) {
+    return Object.keys(zones).map((key) => zones[key])
+      .reduce((list, zone) => {
+        if (zone.type === 'Record') {
+          list.push(zone);
+        } else {
+          list.unshift(zone);
+        }
+        return list;
+      }, []);
   }
 }
