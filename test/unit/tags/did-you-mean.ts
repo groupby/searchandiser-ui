@@ -3,32 +3,34 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-did-you-mean', DidYouMean, ({ flux, tag }) => {
-  it('should rewrite on send', () => {
-    const newQuery = 'red sneakers';
+suite('gb-did-you-mean', DidYouMean, ({ flux, tag, expectSubscriptions }) => {
 
-    flux().rewrite = (query: string): any => expect(query).to.eq(newQuery);
-
-    tag().init();
-
-    tag().send(<any>{ target: { text: newQuery } });
+  describe('init()', () => {
+    it('should listen for events', () => {
+      expectSubscriptions(() => tag().init(), {
+        [Events.RESULTS]: tag().updateDidYouMean
+      });
+    });
   });
 
-  it('should listen for events', () => {
-    flux().on = (event, cb): any => {
-      expect(event).to.eq(Events.RESULTS);
-      expect(cb).to.eq(tag().updateDidYouMean);
-    };
+  describe('send()', () => {
+    it('should rewrite on send', () => {
+      const newQuery = 'red sneakers';
 
-    tag().init();
+      flux().rewrite = (query: string): any => expect(query).to.eq(newQuery);
+
+      tag().init();
+
+      tag().send(<any>{ target: { text: newQuery } });
+    });
   });
 
-  it('should update didYouMean on RESULTS', () => {
-    const dym = ['a', 'b', 'c'];
+  describe('updateDidYouMean()', () => {
+    it('should call update() with didYouMean', () => {
+      const dym = ['a', 'b', 'c'];
+      tag().update = ({ didYouMean }) => expect(didYouMean).to.eq(dym);
 
-    flux().on = (event: string, cb: Function): any => cb({ didYouMean: dym });
-    tag().updateDidYouMean = (obj: any) => expect(obj.didYouMean).to.eq(dym);
-
-    tag().init();
+      tag().updateDidYouMean(<any>{ didYouMean: dym });
+    });
   });
 });
