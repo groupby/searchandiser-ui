@@ -2,9 +2,10 @@ import { FluxTag } from '../tag';
 
 export interface SnippetConfig {
   raw?: boolean;
+  url: string;
 }
 
-export const DEFAULT_CONFIG: SnippetConfig = {
+export const DEFAULT_CONFIG: SnippetConfig & any = {
   raw: false
 };
 
@@ -30,7 +31,7 @@ export class Snippet {
         this.update({ responseText });
       }
     };
-    req.open('get', this.opts.url, true);
+    req.open('get', this._config.url, true);
     req.send();
   }
 }

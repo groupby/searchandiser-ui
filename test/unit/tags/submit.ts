@@ -2,68 +2,76 @@ import { DEFAULT_CONFIG, Submit } from '../../../src/tags/submit/gb-submit';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-submit', Submit, { root: <any>{ addEventListener: () => null } }, ({ flux, tag }) => {
-  it('should configure itself with defaults', (done) => {
-    tag().configure = (defaults) => {
-      expect(defaults).to.eq(DEFAULT_CONFIG);
-      done();
-    };
+const ROOT: any = { addEventListener: () => null };
 
-    tag().init();
-  });
+suite('gb-submit', Submit, { root: ROOT }, ({
+  flux, tag,
+  expectSubscriptions,
+  itShouldConfigure
+}) => {
 
-  it('should set label for input tag', () => {
-    Object.assign(tag().root, { tagName: 'INPUT' });
-    tag().init();
+  describe('init()', () => {
+    itShouldConfigure(DEFAULT_CONFIG);
 
-    expect(tag().root.value).to.eq('Search');
-  });
+    it('should set label for input tag', () => {
+      tag().root = Object.assign({}, ROOT, { tagName: 'INPUT' });
 
-  it('should listen for mount event', () => {
-    tag().on = (event, cb) => {
-      expect(event).to.eq('mount');
-      expect(cb).to.eq(tag().setSearchBox);
-    };
-    tag().init();
-  });
+      tag().init();
 
-  it('should register click listener', () => {
-    tag().root = <any>{
-      addEventListener: (event, cb): any => {
+      expect(tag().root.value).to.eq('Search');
+    });
+
+    it('should not set label for input tag', () => {
+      tag().init();
+
+      expect(tag().root.value).to.be.undefined;
+    });
+
+    it('should listen for mount event', () => {
+      expectSubscriptions(() => tag().init(), {
+        mount: tag().setSearchBox
+      }, tag());
+    });
+
+    it('should register click listener', () => {
+      const addEventListener = sinon.spy((event, cb): any => {
         expect(event).to.eq('click');
         expect(cb).to.eq(tag().submitQuery);
-      }
-    };
-    tag().init();
+      });
+      tag().root = <any>{ addEventListener };
+
+      tag().init();
+
+      expect(addEventListener.called).to.be.true;
+    });
   });
 
-  it('should submit query', () => {
-    const query = 'something';
-    flux().reset = (value): any => expect(value).to.eq(query);
+  describe('submitQuery()', () => {
+    it('should submit query', () => {
+      const query = 'something';
+      flux().reset = (value): any => expect(value).to.eq(query);
+      tag().searchBox = <HTMLInputElement>{ value: query };
 
-    tag().searchBox = <HTMLInputElement>{ value: query };
-    tag().init();
+      tag().submitQuery();
 
-    tag().submitQuery();
-    expect(tag().searchBox.value).to.eq(query);
-  });
+      expect(tag().searchBox.value).to.eq(query);
+    });
 
-  it('should submit static query', () => {
-    const newQuery = 'something';
-
-    tag().searchBox = <HTMLInputElement>{ value: newQuery };
-    tag().services = <any>{
-      url: {
-        active: () => true,
-        update: (query, refinements) => {
-          expect(query).to.eq(newQuery);
-          expect(refinements.length).to.eq(0);
+    it('should submit static query', () => {
+      const newQuery = 'something';
+      tag()._config.staticSearch = true;
+      tag().searchBox = <HTMLInputElement>{ value: newQuery };
+      tag().services = <any>{
+        url: {
+          active: () => true,
+          update: (query, refinements) => {
+            expect(query).to.eq(newQuery);
+            expect(refinements.length).to.eq(0);
+          }
         }
-      }
-    };
-    tag().init();
-    tag()._config.staticSearch = true;
+      };
 
-    tag().submitQuery();
+      tag().submitQuery();
+    });
   });
 });

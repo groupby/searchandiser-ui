@@ -49,6 +49,7 @@ function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mi
 
       const subscribedEvents = Object.keys(listeners);
       expect(subscribedEvents).to.have.length(events.length);
+      // TODO: add test that keys are the same
     }
 
     function itShouldConfigure(defaultConfig?: any) {
