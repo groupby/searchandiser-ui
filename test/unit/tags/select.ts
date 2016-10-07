@@ -70,4 +70,36 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
       expect(tag().selectedOption).to.eq(options[0]);
     });
   });
+
+  describe('updateOptions()', () => {
+    it('should update options', () => {
+      const opts = ['first', 'second'];
+      tag().default = true;
+      const spy = tag().update = sinon.spy(({options}) => expect(options).to.eq(opts));
+
+      tag().updateOptions(opts);
+
+      expect(spy.called).to.be.true;
+    });
+
+    it('should update options with clearOption', () => {
+      const opts = ['first', 'second'];
+      tag().default = false;
+      const clearOption = tag().clearOption = { label: 'a', clear: true };
+      const spy = tag().update = sinon.spy(({options}) => expect(options).to.eql([clearOption, ...opts]));
+
+      tag().updateOptions(opts);
+
+      expect(spy.called).to.be.true;
+    });
+  });
+
+  describe('selectLabel()', () => {
+    it('should return selectedOption if set', () => {
+      const selectedOption = tag().selectedOption = 'option';
+
+      tag().selectLabel();
+      expect(tag().selectedOption).to.eq(selectedOption);
+    });
+  });
 });
