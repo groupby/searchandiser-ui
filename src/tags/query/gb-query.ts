@@ -1,4 +1,5 @@
 import { findTag } from '../../utils/common';
+import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
@@ -34,15 +35,6 @@ export class Query {
     this.enterKeyHandlers = [];
 
     this.on('mount', this.attachListeners);
-
-    if (this._config.autoSearch) {
-      this.on('mount', this.listenForInput);
-    } else if (this._config.staticSearch) {
-      this.on('mount', this.listenForStaticSearch);
-    } else {
-      this.on('mount', this.listenForSubmit);
-    }
-
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
   }
 
@@ -50,6 +42,14 @@ export class Query {
     this.searchBox = this.findSearchBox();
     this.searchBox.addEventListener('keydown', this.keydownListener);
     if (this._config.sayt) this.tags['gb-sayt'].listenForInput(this);
+
+    if (this._config.autoSearch) {
+      this.listenForInput();
+    } else if (this._config.staticSearch) {
+      this.listenForStaticSearch();
+    } else {
+      this.listenForSubmit();
+    }
   }
 
   rewriteQuery(query: string) {
@@ -57,11 +57,15 @@ export class Query {
   }
 
   listenForInput() {
-    this.searchBox.addEventListener('input', () => this.flux.reset(this.inputValue()));
+    this.searchBox.addEventListener('input', this.resetToInputValue);
   }
 
   listenForSubmit() {
-    this.enterKeyHandlers.push(() => this.flux.reset(this.inputValue()));
+    this.enterKeyHandlers.push(this.resetToInputValue);
+  }
+
+  resetToInputValue() {
+    this.flux.reset(this.inputValue());
   }
 
   listenForStaticSearch() {
@@ -69,9 +73,9 @@ export class Query {
   }
 
   keydownListener(event: KeyboardEvent) {
-    let sayt = findTag('gb-sayt');
+    const sayt = findTag('gb-sayt');
     if (sayt) {
-      let autocomplete = (<Sayt>sayt['_tag']).autocomplete;
+      const autocomplete = (<Sayt>sayt['_tag']).autocomplete;
       autocomplete.keyboardListener(event, this.onSubmit);
     } else if (event.keyCode === KEY_ENTER) {
       this.onSubmit();
@@ -80,10 +84,10 @@ export class Query {
 
   onSubmit() {
     this.enterKeyHandlers.forEach((f) => f());
-    this.flux.emit('autocomplete:hide');
+    this.flux.emit(AUTOCOMPLETE_HIDE_EVENT);
   }
 
-  private findSearchBox() {
+  findSearchBox() {
     if (this.tags['gb-search-box']) {
       return this.tags['gb-search-box'].searchBox;
     } else {
@@ -91,16 +95,16 @@ export class Query {
     }
   }
 
-  private inputValue() {
-    return this.searchBox.value;
-  }
-
-  private setLocation() {
+  setLocation() {
     // TODO better way to do this is with browser history rewrites
     if (this.services.url.active()) {
       this.services.url.update(this.inputValue());
     } else {
       this.flux.reset(this.inputValue());
     }
+  }
+
+  private inputValue() {
+    return this.searchBox.value;
   }
 }

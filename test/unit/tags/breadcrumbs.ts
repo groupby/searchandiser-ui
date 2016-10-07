@@ -30,13 +30,10 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
   });
 
   describe('updateQueryState()', () => {
-    it('should call updateQuery()', (done) => {
+    it('should call updateQuery()', () => {
       const originalQuery = 'red sneakers';
-
-      tag().updateQuery = (newQuery) => {
-        expect(newQuery).to.eq(originalQuery);
-        done();
-      };
+      tag().updateRefinements = () => null;
+      tag().updateQuery = (newQuery) => expect(newQuery).to.eq(originalQuery);
 
       tag().updateQueryState(<any>{ originalQuery });
     });

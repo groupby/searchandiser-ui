@@ -33,11 +33,11 @@ function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mi
       tagName
     });
 
-    function expectSubscriptions(func: Function, subscriptions: any) {
+    function expectSubscriptions(func: Function, subscriptions: any, emitter: any = _flux) {
       const events = Object.keys(subscriptions);
       const listeners = {};
 
-      _flux.on = (event, handler): any => {
+      emitter.on = (event, handler): any => {
         if (events.includes(event)) {
           listeners[event] = expect(handler).to.eq(subscriptions[event]);
         } else {
@@ -54,7 +54,11 @@ function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mi
     function itShouldConfigure(defaultConfig?: any) {
       it(`should configure itself ${defaultConfig ? 'with defaults' : ''}`, (done) => {
         _tag.configure = (config) => {
-          if (defaultConfig) expect(config).to.eq(defaultConfig);
+          if (defaultConfig) {
+            expect(config).to.eq(defaultConfig);
+          } else {
+            expect(config).to.be.undefined;
+          }
           done();
         };
 
@@ -72,6 +76,7 @@ export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: 
     flux,
     opts: {},
     config: {},
+    _config: {},
     configure: (cfg = {}) => tag._config = Object.assign({}, cfg, tag.opts),
     on: () => null
   }, obj);
@@ -83,7 +88,7 @@ export interface UnitSuite<T> {
   tag: () => T;
   sandbox: () => Sinon.SinonSandbox;
   mount: (opts?: any) => T;
-  expectSubscriptions: (func: Function, subscriptions: any) => void;
+  expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
   itShouldConfigure: (defaultConfig?: any) => void;
   tagName: string;
 }

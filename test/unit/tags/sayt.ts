@@ -1,4 +1,4 @@
-import { Autocomplete } from '../../../src/tags/sayt/autocomplete';
+import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import { DEFAULT_CONFIG, Sayt } from '../../../src/tags/sayt/gb-sayt';
 import * as utils from '../../../src/utils/common';
 import suite, { fluxTag } from './_suite';
@@ -62,7 +62,7 @@ suite('gb-sayt', Sayt, { config: { structure } }, ({ flux, tag, sandbox }) => {
           case 'autocomplete':
             expect(cb).to.eq(tag().fetchSuggestions);
             break;
-          case 'autocomplete:hide':
+          case AUTOCOMPLETE_HIDE_EVENT:
             expect(cb).to.eq(tag().reset);
             break;
           default: expect.fail();

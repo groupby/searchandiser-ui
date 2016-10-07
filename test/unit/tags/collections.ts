@@ -66,7 +66,6 @@ suite('gb-collections', Collections, { services: SERVICES }, ({
   describe('switchCollection()', () => {
     it('should switch collection using value on anchor tag', () => {
       const collection = 'my collection';
-
       tag().onselect = (coll) => expect(coll).to.eq(collection);
 
       tag().switchCollection(<any>{
@@ -84,7 +83,6 @@ suite('gb-collections', Collections, { services: SERVICES }, ({
 
     it('should switch collection', () => {
       const collection = 'my collection';
-
       tag().onselect = (coll) => expect(coll).to.eq(collection);
 
       tag().onselect(collection);

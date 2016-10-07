@@ -1,5 +1,5 @@
 import { FluxTag } from '../tag';
-import { Events } from 'groupby-api';
+import { Events, Pager } from 'groupby-api';
 
 export interface PagingConfig {
   limit?: number;
@@ -67,13 +67,7 @@ export class Paging {
     this.backDisabled = true;
     this.currentPage = 1;
 
-    this.pager = {
-      first: () => !this.backDisabled && this.flux.page.reset(),
-      prev: () => !this.backDisabled && this.flux.page.prev(),
-      next: () => !this.forwardDisabled && this.flux.page.next(),
-      last: () => !this.forwardDisabled && this.flux.page.last(),
-      switchPage: (page) => this.flux.page.switchPage(page)
-    };
+    this.pager = this.wrapPager(this.flux.page);
 
     this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
     this.flux.on(Events.RESULTS, this.pageInfo);
@@ -100,5 +94,15 @@ export class Paging {
 
   updateCurrentPage({ pageNumber }: { pageNumber: number }) {
     this.update({ currentPage: pageNumber });
+  }
+
+  wrapPager(pager: Pager): any {
+    return {
+      first: () => !this.backDisabled && pager.reset(),
+      prev: () => !this.backDisabled && pager.prev(),
+      next: () => !this.forwardDisabled && pager.next(),
+      last: () => !this.forwardDisabled && pager.last(),
+      switchPage: (page) => pager.switchPage(page)
+    };
   }
 }

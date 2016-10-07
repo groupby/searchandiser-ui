@@ -16,10 +16,7 @@ suite('gb-did-you-mean', DidYouMean, ({ flux, tag, expectSubscriptions }) => {
   describe('send()', () => {
     it('should rewrite on send', () => {
       const newQuery = 'red sneakers';
-
       flux().rewrite = (query: string): any => expect(query).to.eq(newQuery);
-
-      tag().init();
 
       tag().send(<any>{ target: { text: newQuery } });
     });

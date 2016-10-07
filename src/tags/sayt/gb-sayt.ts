@@ -1,7 +1,7 @@
 import { debounce } from '../../utils/common';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
-import { Autocomplete } from './autocomplete';
+import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
 import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
 import escapeStringRegexp = require('escape-string-regexp');
 
@@ -60,7 +60,7 @@ export class Sayt {
     this.sayt.configure(this.generateSaytConfig());
 
     this.on('mount', () => this.autocomplete = new Autocomplete(this));
-    this.flux.on('autocomplete:hide', this.reset);
+    this.flux.on(AUTOCOMPLETE_HIDE_EVENT, this.reset);
   }
 
   generateSaytConfig() {
