@@ -1,5 +1,4 @@
 import { debounce } from '../../utils/common';
-
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
@@ -37,6 +36,7 @@ export const DEFAULT_CONFIG: SaytConfig = {
   navigationNames: {},
   allowedNavigations: []
 };
+export const MIN_DELAY = 100;
 
 export interface Sayt extends SaytTag<SaytConfig> { }
 
@@ -206,14 +206,18 @@ export class Sayt {
   listenForInput(tag: Query) {
     const input = <HTMLInputElement>tag.searchBox;
     input.autocomplete = 'off';
-    const debouncedSearch = debounce(() => {
+    const debouncedSearch = debounce(this.debouncedSearch(input), Math.max(this._config.delay, MIN_DELAY));
+    input.addEventListener('input', debouncedSearch);
+    document.addEventListener('click', this.reset);
+  }
+
+  debouncedSearch(input: HTMLInputElement) {
+    return () => {
       if (input.value.length >= this._config.minimumCharacters) {
         this.fetchSuggestions(input.value);
       } else {
         this.reset();
       }
-    }, Math.max(this._config.delay, 100));
-    document.addEventListener('click', this.reset);
-    input.addEventListener('input', debouncedSearch);
+    };
   }
 }
