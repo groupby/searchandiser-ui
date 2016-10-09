@@ -14,6 +14,6 @@ suite('gb-snippet', Snippet, ({ tag, expectSubscriptions, itShouldConfigure }) =
   });
 
   describe('loadFile()', () => {
-
+    // TODO: add tests
   });
 });

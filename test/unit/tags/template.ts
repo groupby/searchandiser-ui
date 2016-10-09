@@ -3,7 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-template', Template, ({ flux, tag, itShouldConfigure, expectSubscriptions }) => {
+suite('gb-template', Template, ({ tag, itShouldConfigure, expectSubscriptions }) => {
   const target = 'My Spotlight Template';
 
   describe('init()', () => {

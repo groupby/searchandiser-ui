@@ -1,9 +1,9 @@
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import { DEFAULT_CONFIG, MIN_DELAY, Sayt } from '../../../src/tags/sayt/gb-sayt';
 import * as utils from '../../../src/utils/common';
-import suite, { fluxTag } from './_suite';
+import suite from './_suite';
 import { expect } from 'chai';
-import { Events, FluxCapacitor } from 'groupby-api';
+import { Events } from 'groupby-api';
 
 const STRUCTURE = {
   title: 'title',

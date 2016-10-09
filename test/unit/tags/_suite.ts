@@ -2,9 +2,11 @@ import { FluxTag } from '../../../src/tags/tag';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
+/* tslint:disable:max-line-length */
 function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
 function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);
 function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) {
+  /* tslint:enable:max-line-length */
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
   const tests = hasMixin ? cb : mixinOrCb;
