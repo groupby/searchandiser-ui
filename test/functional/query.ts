@@ -5,7 +5,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
-  it.only('mounts tag', () => {
+  it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
@@ -61,26 +61,26 @@ suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
     //     tag.listenForStaticSearch();
     //     tag.onSubmit();
     //   });
-    // });
+  });
 
-    function searchBox() {
-      return html().querySelector('input');
-    }
+  function searchBox() {
+    return html().querySelector('input');
+  }
 
-    function mount(autoSearch: boolean = true) {
-      return _mount({ sayt: false, autoSearch });
-    }
+  function mount(autoSearch: boolean = true) {
+    return _mount({ sayt: false, autoSearch });
+  }
 
-    function setUserAgent(window, userAgent) {
-      if (window.navigator.userAgent != userAgent) {
-        var userAgentProp = { get: function() { return userAgent; } };
-        try {
-          Object.defineProperty(window.navigator, 'userAgent', userAgentProp);
-        } catch (e) {
-          window.navigator = Object.create(navigator, {
-            userAgent: userAgentProp
-          });
-        }
+  function setUserAgent(window, userAgent) {
+    if (window.navigator.userAgent != userAgent) {
+      var userAgentProp = { get: function() { return userAgent; } };
+      try {
+        Object.defineProperty(window.navigator, 'userAgent', userAgentProp);
+      } catch (e) {
+        window.navigator = Object.create(navigator, {
+          userAgent: userAgentProp
+        });
       }
     }
-  });
+  }
+});
