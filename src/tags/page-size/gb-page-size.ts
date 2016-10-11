@@ -1,18 +1,24 @@
-import { getPath, unless } from '../../utils/common';
-import { SelectTag } from '../select/gb-select';
+import { SelectConfig, SelectTag } from '../select/gb-select';
 
-export interface PageSize extends SelectTag { }
+export interface PageSizeConfig extends SelectConfig {
+  resetOffset?: boolean;
+}
+
+export const DEFAULT_CONFIG = {
+  resetOffset: false
+};
+
+export interface PageSize extends SelectTag<PageSizeConfig> { }
 
 export class PageSize {
 
-  _config: any;
-
   init() {
-    this.options = unless(this.config.pageSizes, [10, 25, 50, 100]);
-    this._config = getPath(this.config, 'tags.pageSize') || this.opts;
+    this.configure(DEFAULT_CONFIG);
+
+    this.options = this.config.pageSizes || [10, 25, 50, 100];
   }
 
   onselect(value: number) {
-    this.flux.resize(value, this.opts.resetOffset);
+    this.flux.resize(value, this._config.resetOffset);
   }
 }

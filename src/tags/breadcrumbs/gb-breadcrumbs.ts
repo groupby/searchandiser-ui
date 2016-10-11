@@ -1,31 +1,40 @@
-import { checkBooleanAttr, displayRefinement, toRefinement } from '../../utils/common';
+import { displayRefinement, toRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 import { Events, Results } from 'groupby-api';
 
-export interface Breadcrumbs extends FluxTag { }
+export interface BreadcrumbsConfig {
+  hideQuery?: boolean;
+  hideRefinements?: boolean;
+}
+
+export const DEFAULT_CONFIG: BreadcrumbsConfig = {
+  hideQuery: false,
+  hideRefinements: false
+};
+
+export interface Breadcrumbs extends FluxTag<BreadcrumbsConfig> { }
 
 export class Breadcrumbs {
 
   selected: any[];
   originalQuery: string;
-  hideQuery: boolean;
-  hideRefinements: boolean;
   toView: typeof displayRefinement;
 
   init() {
+    this.configure(DEFAULT_CONFIG);
     this.toView = displayRefinement;
-    this.hideQuery = checkBooleanAttr('hideQuery', this.opts);
-    this.hideRefinements = checkBooleanAttr('hideRefinements', this.opts);
 
-    this.flux.on(Events.RESULTS, ({ originalQuery, selectedNavigation }: Results) => {
-      this.updateQuery(originalQuery);
-      this.updateRefinements(selectedNavigation);
-    });
-    this.flux.on(Events.RESET, () => this.clearRefinements());
+    this.flux.on(Events.RESULTS, this.updateQueryState);
+    this.flux.on(Events.RESET, this.clearRefinements);
   }
 
   clearRefinements() {
     this.updateRefinements([]);
+  }
+
+  updateQueryState({ originalQuery, selectedNavigation }: Results) {
+    this.updateQuery(originalQuery);
+    this.updateRefinements(selectedNavigation);
   }
 
   updateRefinements(selected: any[]) {

@@ -4,31 +4,34 @@ import { Events, Request } from 'groupby-api';
 
 describe('collections service', () => {
   let sandbox: Sinon.SinonSandbox;
+
   beforeEach(() => sandbox = sinon.sandbox.create());
   afterEach(() => sandbox.restore());
 
-  it('should set properties', () => {
-    const collectionsService = new Collections(<any>{}, <any>{});
+  describe('on construction', () => {
+    it('should set properties', () => {
+      const collectionsService = new Collections(<any>{}, <any>{});
 
-    expect(collectionsService.collectionsConfig).to.eql({});
-    expect(collectionsService.fetchCounts).to.be.true;
-    expect(collectionsService.isLabeled).to.be.false;
-    expect(collectionsService.collections).to.eql([]);
-    expect(collectionsService.options).to.eql([]);
-  });
+      expect(collectionsService.collectionsConfig).to.eql({});
+      expect(collectionsService.fetchCounts).to.be.true;
+      expect(collectionsService.isLabeled).to.be.false;
+      expect(collectionsService.collections).to.eql([]);
+      expect(collectionsService.options).to.eql([]);
+    });
 
-  it('should take overrides for properties', () => {
-    const options = [{ value: 'b' }];
-    const collections = { collections: 'my collection', counts: false, options };
-    const config: any = { tags: { collections } };
-    const collectionsService = new Collections(<any>{}, config);
-    collectionsService.counts = false;
+    it('should take overrides for properties', () => {
+      const options = [{ value: 'b' }];
+      const collections = { collections: 'my collection', counts: false, options };
+      const config: any = { tags: { collections } };
+      const collectionsService = new Collections(<any>{}, config);
+      collectionsService.counts = false;
 
-    expect(collectionsService.collectionsConfig).to.eq(collections);
-    expect(collectionsService.fetchCounts).to.be.false;
-    expect(collectionsService.isLabeled).to.be.true;
-    expect(collectionsService.collections).to.eql(['b']);
-    expect(collectionsService.options).to.eq(options);
+      expect(collectionsService.collectionsConfig).to.eq(collections);
+      expect(collectionsService.fetchCounts).to.be.false;
+      expect(collectionsService.isLabeled).to.be.true;
+      expect(collectionsService.collections).to.eql(['b']);
+      expect(collectionsService.options).to.eq(options);
+    });
   });
 
   describe('init()', () => {

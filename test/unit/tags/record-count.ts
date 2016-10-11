@@ -3,32 +3,32 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-record-count', RecordCount, ({ flux, tag }) => {
-  it('should listen for events', () => {
-    flux().on = (event: string): any => expect(event).to.eq(Events.RESULTS);
+suite('gb-record-count', RecordCount, ({ tag, expectSubscriptions }) => {
 
-    tag().init();
+  describe('init()', () => {
+    it('should listen for events', () => {
+      expectSubscriptions(() => tag().init(), {
+        [Events.RESULTS]: tag().updatePageInfo
+      });
+    });
   });
 
-  it('should update page info on RESULTS', () => {
-    const results = {
-      pageInfo: {
-        recordStart: 20,
-        recordEnd: 40
-      },
-      totalRecordCount: 300
-    };
-    let callback;
+  describe('updatePageInfo()', () => {
+    it('should call update with first, last, total', () => {
+      const results = {
+        pageInfo: {
+          recordStart: 20,
+          recordEnd: 40
+        },
+        totalRecordCount: 300
+      };
+      tag().update = (obj) => {
+        expect(obj.first).to.eq(results.pageInfo.recordStart);
+        expect(obj.last).to.eq(results.pageInfo.recordEnd);
+        expect(obj.total).to.eq(results.totalRecordCount);
+      };
 
-    flux().on = (event: string, cb: Function): any => callback = cb;
-
-    tag().update = (obj: any) => {
-      expect(obj.first).to.eq(results.pageInfo.recordStart);
-      expect(obj.last).to.eq(results.pageInfo.recordEnd);
-      expect(obj.total).to.eq(results.totalRecordCount);
-    };
-    tag().init();
-
-    callback(results);
+      tag().updatePageInfo(results);
+    });
   });
 });

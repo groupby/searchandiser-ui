@@ -2,8 +2,11 @@ import { Raw } from '../../src/tags/raw/gb-raw';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<Raw>('gb-raw', ({ html, mount: _mount }) => {
-  const content = '<div>red sneakers</div>';
+function configure() {
+  this._config = { content: '<div>red sneakers</div>' };
+}
+
+suite<Raw>('gb-raw', { configure }, ({ html, mount }) => {
 
   it('mounts tag', () => {
     const tag = mount();
@@ -19,8 +22,4 @@ suite<Raw>('gb-raw', ({ html, mount: _mount }) => {
       expect(html().querySelector('div').textContent).to.eq('red sneakers');
     });
   });
-
-  function mount() {
-    return _mount({ content });
-  }
 });

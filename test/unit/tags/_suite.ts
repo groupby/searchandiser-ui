@@ -1,10 +1,12 @@
 import { FluxTag } from '../../../src/tags/tag';
+import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
-import * as riot from 'riot';
 
-function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
-function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);
-function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) {
+/* tslint:disable:max-line-length */
+function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
+function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);
+function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) {
+  /* tslint:enable:max-line-length */
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
   const tests = hasMixin ? cb : mixinOrCb;
@@ -28,21 +30,58 @@ function suite<T extends FluxTag>(tagName: string, clazz: { new (): T }, mixinOr
       flux: () => _flux,
       tag: () => _tag,
       sandbox: () => _sandbox,
-      tagName,
-      mount
+      expectSubscriptions,
+      itShouldConfigure,
+      tagName
     });
-  });
 
-  function mount(opts: any = {}) {
-    return <T>riot.mount(tagName, opts)[0];
-  }
+    function expectSubscriptions(func: Function, subscriptions: any, emitter: any = _flux) {
+      const events = Object.keys(subscriptions);
+      const listeners = {};
+
+      emitter.on = (event, handler): any => {
+        if (events.includes(event)) {
+          listeners[event] = expect(handler).to.eq(subscriptions[event]);
+        } else {
+          expect.fail();
+        }
+      };
+
+      func();
+
+      const subscribedEvents = Object.keys(listeners);
+      expect(subscribedEvents).to.have.members(events);
+    }
+
+    function itShouldConfigure(defaultConfig?: any) {
+      it(`should configure itself ${defaultConfig ? 'with defaults' : ''}`, (done) => {
+        _tag.configure = (config) => {
+          if (defaultConfig) {
+            expect(config).to.eq(defaultConfig);
+          } else {
+            expect(config).to.be.undefined;
+          }
+          done();
+        };
+
+        _tag.init();
+      });
+    }
+  });
 }
 
 export default suite;
 
-export function fluxTag<T extends FluxTag>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
+export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
   const flux = new FluxCapacitor('');
-  Object.assign(tag, { flux, opts: {}, config: {}, on: () => null }, obj);
+  Object.assign(tag, {
+    flux,
+    opts: {},
+    config: {},
+    _config: {},
+    configure: (cfg = {}) => tag._config = Object.assign({}, cfg, tag.opts),
+    on: () => null
+  }, obj);
   return { flux, tag };
 }
 
@@ -51,5 +90,7 @@ export interface UnitSuite<T> {
   tag: () => T;
   sandbox: () => Sinon.SinonSandbox;
   mount: (opts?: any) => T;
+  expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
+  itShouldConfigure: (defaultConfig?: any) => void;
   tagName: string;
 }

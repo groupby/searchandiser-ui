@@ -1,5 +1,5 @@
 <gb-pages>
-  <ul class="gb-pages { _style }" if={ _scope.pages }>
+  <ul class="gb-pages { _style }" if={ _config.pages }>
     <span class="gb-pages__ellipsis" if={ _scope.lowOverflow }>&hellip;</span>
     <li each={ pageNumber in _scope.pageNumbers }>
       <a class="gb-pages__page { selected: _scope.currentPage === pageNumber }" onclick={ jumpTo }>{ pageNumber }</a>
@@ -8,8 +8,8 @@
   </ul>
 
   <script>
-    this._scopeTo('gb-paging');
-    this.jumpTo = ({ target }) => this._scope.pager.switchPage(Number(target.text));
+    import { Pages } from './gb-pages';
+    this._mixin(Pages);
   </script>
 
   <style scoped>

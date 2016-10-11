@@ -1,26 +1,19 @@
-import { Snippet } from '../../../src/tags/snippet/gb-snippet';
+import { DEFAULT_CONFIG, Snippet } from '../../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
-import { expect } from 'chai';
 
-suite('gb-snippet', Snippet, ({ tag }) => {
-  it('should have default values', () => {
-    tag().init();
+suite('gb-snippet', Snippet, ({ tag, expectSubscriptions, itShouldConfigure }) => {
 
-    expect(tag().isRaw).to.be.false;
+  describe('init()', () => {
+    itShouldConfigure(DEFAULT_CONFIG);
+
+    it('should listen for mount', () => {
+      expectSubscriptions(() => tag().init(), {
+        mount: tag().loadFile
+      }, tag());
+    });
   });
 
-  it('should accept override from opts', () => {
-    Object.assign(tag().opts, { raw: true });
-    tag().init();
-
-    expect(tag().isRaw).to.be.true;
-  });
-
-  it('should listen for mount event', () => {
-    tag().on = (event: string, cb) => {
-      expect(event).to.eq('mount');
-      expect(cb).to.eq(tag().loadFile);
-    };
-    tag().init();
+  describe('loadFile()', () => {
+    // TODO: add tests
   });
 });

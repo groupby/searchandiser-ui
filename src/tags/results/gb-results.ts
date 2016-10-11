@@ -3,7 +3,7 @@ import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
-export interface Results extends FluxTag { }
+export interface Results extends FluxTag<any> { }
 
 export class Results {
 

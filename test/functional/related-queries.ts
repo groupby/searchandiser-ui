@@ -16,7 +16,7 @@ suite<RelatedQueries>('gb-related-queries', ({ flux, html, mount }) => {
     it('renders from results', () => {
       const tag = mount();
 
-      tag.updatedRelatedQueries(relatedQueries);
+      tag.updatedRelatedQueries(<any>{ relatedQueries });
       expect(relatedLinks().length).to.eq(3);
       expect(relatedLinks()[0].textContent).to.eq(relatedQueries[0]);
     });
@@ -26,7 +26,7 @@ suite<RelatedQueries>('gb-related-queries', ({ flux, html, mount }) => {
 
       flux().rewrite = (query): any => expect(query).to.eq(relatedQueries[1]);
 
-      tag.updatedRelatedQueries(relatedQueries);
+      tag.updatedRelatedQueries(<any>{ relatedQueries });
       tag.on('updated', () => relatedLinks()[1].click());
     });
   });

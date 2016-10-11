@@ -3,9 +3,9 @@ import { FluxTag, MixinFlux } from '../../src/tags/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 
-function suite<T extends FluxTag>(tagName: string, mixin: any, cb: (suite: FunctionalSuite<T>) => void);
-function suite<T extends FluxTag>(tagName: string, cb: (suite: FunctionalSuite<T>) => void);
-function suite<T extends FluxTag>(tagName: string, mixinOrCb: any, cb?: Function) {
+function suite<T extends FluxTag<any>>(tagName: string, mixin: any, cb: (suite: FunctionalSuite<T>) => void);
+function suite<T extends FluxTag<any>>(tagName: string, cb: (suite: FunctionalSuite<T>) => void);
+function suite<T extends FluxTag<any>>(tagName: string, mixinOrCb: any, cb?: Function) {
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
   const tests = hasMixin ? cb : mixinOrCb;
@@ -43,7 +43,11 @@ export default suite;
 
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
-  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), obj));
+  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), {
+    configure(cfg: any = {}) {
+      this._config = Object.assign({}, cfg, this.opts['__proto__'], this.opts);
+    }
+  }, obj));
   return flux;
 }
 
@@ -63,4 +67,20 @@ export interface FunctionalSuite<T> {
   sandbox: () => Sinon.SinonSandbox;
   mount: (opts?: any) => T;
   tagName: string;
+}
+
+export abstract class BaseModel<T extends FluxTag<any>> {
+  constructor(protected tag: T) { }
+
+  protected get html() {
+    return this.tag.root;
+  }
+
+  protected element<T extends HTMLElement>(tag: HTMLElement, selector: string) {
+    return <T & HTMLElement>tag.querySelector(selector);
+  }
+
+  protected list<T extends HTMLElement>(tag: HTMLElement, selector: string) {
+    return <NodeListOf<T & HTMLElement>>tag.querySelectorAll(selector);
+  }
 }

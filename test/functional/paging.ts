@@ -29,17 +29,15 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
   });
 
   it('should not render terminal pager', () => {
-    const tag = mount();
+    mount({ terminals: false });
 
-    tag.update({ terminals: false });
     expect(html().querySelector('gb-terminal-pager')).to.be.ok;
     expect(html().querySelectorAll('.gb-terminal__link').length).to.eq(0);
   });
 
   it('should not render labels', () => {
-    const tag = mount();
+    mount({ labels: false });
 
-    tag.update({ labels: false });
     expect(html().querySelectorAll('.gb-terminal__link span').length).to.eq(0);
     expect(html().querySelectorAll('.gb-pager__link span').length).to.eq(0);
   });
@@ -54,9 +52,8 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
   });
 
   it('should not render icons', () => {
-    const tag = mount();
+    mount({ icons: false });
 
-    tag.update({ icons: false });
     expect(html().querySelectorAll('gb-icon').length).to.eq(0);
   });
 

@@ -3,7 +3,7 @@ import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import oget = require('oget');
 
-export interface Product extends FluxTag { }
+export interface Product extends FluxTag<any> { }
 
 export class Product {
 

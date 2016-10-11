@@ -11,22 +11,22 @@ suite<DidYouMean>('gb-did-you-mean', ({ flux, html, mount }) => {
   });
 
   describe('render behaviour', () => {
-    const didYouMeans = ['first', 'second', 'third'];
+    const didYouMean = ['first', 'second', 'third'];
 
     it('renders from results', () => {
       const tag = mount();
 
-      tag.updateDidYouMean(didYouMeans);
+      tag.updateDidYouMean(<any>{ didYouMean });
       expect(dymLinks().length).to.eq(3);
-      expect(dymLinks()[0].textContent).to.eq(didYouMeans[0]);
+      expect(dymLinks()[0].textContent).to.eq(didYouMean[0]);
     });
 
     it('rewrites on option selected', () => {
       const tag = mount();
 
-      flux().rewrite = (query): any => expect(query).to.eq(didYouMeans[1]);
+      flux().rewrite = (query): any => expect(query).to.eq(didYouMean[1]);
 
-      tag.updateDidYouMean(didYouMeans);
+      tag.updateDidYouMean(<any>{ didYouMean });
       tag.on('updated', () => dymLinks()[1].click());
     });
   });

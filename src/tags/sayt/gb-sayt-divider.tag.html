@@ -2,8 +2,10 @@
   <div if={ isVisible() }></div>
 
   <script>
-  this.isVisible = () => ((this.root.nextElementSibling && this.root.nextElementSibling.querySelector('li'))
-    && (this.root.previousElementSibling && this.root.previousElementSibling.querySelector('li')));
+    this.isVisible = () => this.root.nextElementSibling &&
+      this.root.nextElementSibling.querySelector('li') &&
+      this.root.previousElementSibling &&
+      this.root.previousElementSibling.querySelector('li');
   </script>
 
   <style scoped>

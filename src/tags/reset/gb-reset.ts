@@ -1,7 +1,7 @@
 import { findSearchBox } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface Reset extends FluxTag { }
+export interface Reset extends FluxTag<any> { }
 
 export class Reset {
 

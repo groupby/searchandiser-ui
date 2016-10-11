@@ -1,6 +1,13 @@
 import { FluxTag } from '../tag';
 
-export interface Icon extends FluxTag { }
+export const IMAGE_PATTERN = /.*\..*/;
+export const DATA_URL_PREFIX = 'data:image/';
+
+export interface IconConfig {
+  value: string;
+}
+
+export interface Icon extends FluxTag<IconConfig> { }
 
 export class Icon {
 
@@ -8,15 +15,16 @@ export class Icon {
   classes: string;
 
   init() {
-    if (this.isImage(this.opts.value)) {
-      this.url = this.opts.value;
+    this.configure();
+    if (this.isImage(this._config.value)) {
+      this.url = this._config.value;
     } else {
-      this.classes = this.opts.value;
+      this.classes = this._config.value;
     }
   }
 
   private isImage(value: string) {
-    const matches = value.match(/.*\..*/);
-    return (matches && matches.length > 0) || value.startsWith('data:image/');
+    const matches = value.match(IMAGE_PATTERN);
+    return (matches && matches.length > 0) || value.startsWith(DATA_URL_PREFIX);
   }
 }

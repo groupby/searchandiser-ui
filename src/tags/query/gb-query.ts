@@ -1,4 +1,5 @@
-import { findTag, unless } from '../../utils/common';
+import { findTag } from '../../utils/common';
+import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
@@ -7,42 +8,48 @@ import * as riot from 'riot';
 
 const KEY_ENTER = 13;
 
-export interface Query extends FluxTag {
+export interface QueryConfig {
+  sayt?: boolean;
+  autoSearch?: boolean;
+  staticSearch?: boolean;
+}
+
+export const DEFAULT_CONFIG: QueryConfig = {
+  sayt: true,
+  autoSearch: true,
+  staticSearch: false
+};
+
+export interface Query extends FluxTag<QueryConfig> {
   root: riot.TagElement & HTMLInputElement;
 }
 
 export class Query {
 
-  parentOpts: any;
-  staticSearch: string;
-  saytEnabled: boolean;
-  autoSearch: boolean;
   searchBox: HTMLInputElement;
   enterKeyHandlers: Function[];
 
   init() {
-    this.parentOpts = this.opts.passthrough || this.opts;
-    this.saytEnabled = unless(this.parentOpts.sayt, true);
-    this.autoSearch = unless(this.parentOpts.autoSearch, true);
-    this.staticSearch = unless(this.parentOpts.staticSearch, false);
+    this.configure(DEFAULT_CONFIG);
 
     this.enterKeyHandlers = [];
 
-    this.on('mount', () => {
-      this.searchBox = this.findSearchBox();
-      this.searchBox.addEventListener('keydown', this.keydownListener);
-      if (this.saytEnabled) this.tags['gb-sayt'].listenForInput(this);
-    });
-
-    if (this.autoSearch) {
-      this.on('mount', this.listenForInput);
-    } else if (this.staticSearch) {
-      this.on('mount', this.listenForStaticSearch);
-    } else {
-      this.on('mount', this.listenForSubmit);
-    }
-
+    this.on('mount', this.attachListeners);
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
+  }
+
+  attachListeners() {
+    this.searchBox = this.findSearchBox();
+    this.searchBox.addEventListener('keydown', this.keydownListener);
+    if (this._config.sayt) this.tags['gb-sayt'].listenForInput(this);
+
+    if (this._config.autoSearch) {
+      this.listenForInput();
+    } else if (this._config.staticSearch) {
+      this.listenForStaticSearch();
+    } else {
+      this.listenForSubmit();
+    }
   }
 
   rewriteQuery(query: string) {
@@ -50,11 +57,15 @@ export class Query {
   }
 
   listenForInput() {
-    this.searchBox.addEventListener('input', () => this.flux.reset(this.inputValue()));
+    this.searchBox.addEventListener('input', this.resetToInputValue);
   }
 
   listenForSubmit() {
-    this.enterKeyHandlers.push(() => this.flux.reset(this.inputValue()));
+    this.enterKeyHandlers.push(this.resetToInputValue);
+  }
+
+  resetToInputValue() {
+    this.flux.reset(this.inputValue());
   }
 
   listenForStaticSearch() {
@@ -62,9 +73,9 @@ export class Query {
   }
 
   keydownListener(event: KeyboardEvent) {
-    let sayt = findTag('gb-sayt');
+    const sayt = findTag('gb-sayt');
     if (sayt) {
-      let autocomplete = (<Sayt>sayt['_tag']).autocomplete;
+      const autocomplete = (<Sayt>sayt['_tag']).autocomplete;
       autocomplete.keyboardListener(event, this.onSubmit);
     } else if (event.keyCode === KEY_ENTER) {
       this.onSubmit();
@@ -73,10 +84,10 @@ export class Query {
 
   onSubmit() {
     this.enterKeyHandlers.forEach((f) => f());
-    this.flux.emit('autocomplete:hide');
+    this.flux.emit(AUTOCOMPLETE_HIDE_EVENT);
   }
 
-  private findSearchBox() {
+  findSearchBox() {
     if (this.tags['gb-search-box']) {
       return this.tags['gb-search-box'].searchBox;
     } else {
@@ -84,16 +95,16 @@ export class Query {
     }
   }
 
-  private inputValue() {
-    return this.searchBox.value;
-  }
-
-  private setLocation() {
+  setLocation() {
     // TODO better way to do this is with browser history rewrites
     if (this.services.url.active()) {
       this.services.url.update(this.inputValue());
     } else {
       this.flux.reset(this.inputValue());
     }
+  }
+
+  private inputValue() {
+    return this.searchBox.value;
   }
 }

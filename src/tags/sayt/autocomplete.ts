@@ -7,6 +7,8 @@ const KEY_ENTER = 13;
 const KEY_ESCAPE = 27;
 const ACTIVE = 'active';
 
+export const AUTOCOMPLETE_HIDE_EVENT = 'autocomplete:hide';
+
 export class Autocomplete {
 
   selected: HTMLElement;
@@ -75,7 +77,7 @@ export class Autocomplete {
             this.reset();
           }
         } else {
-          this.tag.flux.emit('autocomplete:hide');
+          this.tag.flux.emit(AUTOCOMPLETE_HIDE_EVENT);
         }
         break;
       case KEY_DOWN:
@@ -95,7 +97,7 @@ export class Autocomplete {
         }
         break;
       case KEY_ESCAPE:
-        this.tag.flux.emit('autocomplete:hide');
+        this.tag.flux.emit(AUTOCOMPLETE_HIDE_EVENT);
         break;
     }
   }

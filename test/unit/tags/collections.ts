@@ -1,5 +1,5 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
-import { Collections } from '../../../src/tags/collections/gb-collections';
+import { Collections, DEFAULT_CONFIG } from '../../../src/tags/collections/gb-collections';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -7,98 +7,103 @@ const SERVICES = {
   collections: {}
 };
 
-suite('gb-collections', Collections, { services: SERVICES }, ({ flux, tag }) => {
-  it('should have default config', () => {
-    const options = [{ a: 'b' }];
-    tag().config = <any>{ tags: { collections: { options, counts: true } } };
-    tag().init();
+suite('gb-collections', Collections, { services: SERVICES }, ({
+  flux, tag,
+  expectSubscriptions,
+  itShouldConfigure
+}) => {
 
-    expect(tag()._config).to.eql({ options, counts: true });
-  });
+  describe('init()', () => {
+    itShouldConfigure(DEFAULT_CONFIG);
 
-  it('should allow override from global tag config', () => {
-    const options = ['a', 'b', 'c'];
-    const collectionsConfig = { counts: false, options };
+    it('should set options from calculated config', () => {
+      const options = [{ a: 'b' }];
+      tag().configure = () => tag()._config = <any>{ options };
 
-    tag().config = { tags: { collections: collectionsConfig } };
-    tag().init();
+      tag().init();
 
-    expect(tag()._config).to.eql(collectionsConfig);
-  });
+      expect(tag().options).to.eql(options);
+    });
 
-  it('should allow override from opts', () => {
-    tag().opts = { a: 'b' };
-    tag().init();
+    it('should get values from collections service', () => {
+      tag().services = <any>{ collections: { collections: [] } };
 
-    expect(tag()._config).to.eql({ options: [], a: 'b' });
-  });
+      tag().init();
 
-  it('should get values from collections service', () => {
-    tag().services = <any>{ collections: { collections: [], fetchCounts: true } };
-    tag().init();
+      expect(tag().collections).to.eql([]);
+    });
 
-    expect(tag().fetchCounts).to.be.true;
-    expect(tag().collections).to.eql([]);
-  });
+    it('should accept collections with labels', () => {
+      const options = [
+        { value: 'a', label: 'A' },
+        { value: 'b', label: 'B' },
+        { value: 'c', label: 'C' }];
+      tag().configure = () => tag()._config = { options };
+      tag().services = <any>{
+        collections: {
+          collections: ['a', 'b', 'c'],
+          isLabeled: true
+        }
+      };
 
-  it('should accept collections with labels', () => {
-    const options = [
-      { value: 'a', label: 'A' },
-      { value: 'b', label: 'B' },
-      { value: 'c', label: 'C' }];
-    tag().config = { tags: { collections: { options } } };
-    tag().services = <any>{
-      collections: {
-        collections: ['a', 'b', 'c'],
-        fetchCounts: false,
-        isLabeled: true
-      }
-    };
-    tag().init();
+      tag().init();
 
-    expect(tag().fetchCounts).to.be.false;
-    expect(tag().collections).to.eql(options.map((collection) => collection.value));
-    expect(tag().labels).to.eql({
-      a: 'A',
-      b: 'B',
-      c: 'C'
+      expect(tag().collections).to.eql(options.map((collection) => collection.value));
+      expect(tag().labels).to.eql({
+        a: 'A',
+        b: 'B',
+        c: 'C'
+      });
+    });
+
+    it('should listen for collections_updated event', () => {
+      expectSubscriptions(() => tag().init(), {
+        [COLLECTIONS_UPDATED_EVENT]: tag().updateCounts
+      });
     });
   });
 
-  it('should listen for collections_updated event', () => {
-    flux().on = (event: string, cb: Function): any => {
-      expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
-      expect(cb).to.be.a('function');
-    };
+  describe('switchCollection()', () => {
+    it('should switch collection using value on anchor tag', () => {
+      const collection = 'my collection';
+      tag().onselect = (coll) => expect(coll).to.eq(collection);
 
-    tag().init();
-  });
-
-  it('should switch collection using value on anchor tag', () => {
-    const collection = 'my collection';
-
-    tag().init();
-    tag().onselect = (coll) => expect(coll).to.eq(collection);
-
-    tag().switchCollection(<any>{
-      target: {
-        tagName: 'SPAN',
-        parentElement: {
-          tagName: 'A',
-          dataset: {
-            collection
+      tag().switchCollection(<any>{
+        target: {
+          tagName: 'SPAN',
+          parentElement: {
+            tagName: 'A',
+            dataset: {
+              collection
+            }
           }
         }
-      }
+      });
+    });
+
+    it('should switch collection', () => {
+      const collection = 'my collection';
+      tag().onselect = (coll) => expect(coll).to.eq(collection);
+
+      tag().onselect(collection);
     });
   });
 
-  it('should switch collection', () => {
-    const collection = 'my collection';
+  describe('updateCounts', () => {
+    it('should call update() with counts', () => {
+      const newCounts = [{ a: 'b' }];
+      tag().update = ({counts}) => expect(counts).to.eq(newCounts);
 
-    flux().switchCollection = (coll): any => expect(coll).to.eq(collection);
-    tag().init();
+      tag().updateCounts(newCounts);
+    });
+  });
 
-    tag().onselect(collection);
+  describe('onselect()', () => {
+    it('should call flux.switchCollection()', () => {
+      const collection = 'onsale';
+      flux().switchCollection = (coll): any => expect(coll).to.eq(collection);
+
+      tag().onselect(collection);
+    });
   });
 });

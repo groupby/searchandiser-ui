@@ -1,79 +1,83 @@
-import { Breadcrumbs } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
+import { Breadcrumbs, DEFAULT_CONFIG } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
+import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-breadcrumbs', Breadcrumbs, ({ flux, tag }) => {
-  it('should have default values', () => {
-    tag().init();
+suite('gb-breadcrumbs', Breadcrumbs, ({
+  flux, tag, sandbox,
+  expectSubscriptions,
+  itShouldConfigure
+}) => {
 
-    expect(tag().hideQuery).to.be.false;
-    expect(tag().hideRefinements).to.be.false;
+  describe('init()', () => {
+    itShouldConfigure(DEFAULT_CONFIG);
+
+    it('should listen for events', () => {
+      expectSubscriptions(() => tag().init(), {
+        [Events.RESULTS]: tag().updateQueryState,
+        [Events.RESET]: tag().clearRefinements
+      });
+    });
   });
 
-  it('should allow override from opts', () => {
-    tag().opts = { hideQuery: true, hideRefinements: true };
-    tag().init();
+  describe('clearRefinements()', () => {
+    it('should update refinements with empty array', () => {
+      tag().updateRefinements = (refinements) => expect(refinements).to.eql([]);
 
-    expect(tag().hideQuery).to.be.true;
-    expect(tag().hideRefinements).to.be.true;
-    tag().opts = { hideQuery: 'true', hideRefinements: 'true' };
-    tag().init();
-
-    expect(tag().hideQuery).to.be.true;
-    expect(tag().hideRefinements).to.be.true;
-    tag().opts = { hideQuery: 'false', hideRefinements: 'false' };
-    tag().init();
-
-    expect(tag().hideQuery).to.be.false;
-    expect(tag().hideRefinements).to.be.false;
+      tag().clearRefinements();
+    });
   });
 
-  it('should listen for events', () => {
-    flux().on = (event: string): any => {
-      switch (event) {
-        case Events.RESULTS:
-        case Events.RESET:
-          break;
-        default: expect.fail();
-      }
-    };
+  describe('updateQueryState()', () => {
+    it('should call updateQuery()', () => {
+      const originalQuery = 'red sneakers';
+      tag().updateRefinements = () => null;
+      tag().updateQuery = (newQuery) => expect(newQuery).to.eq(originalQuery);
 
-    tag().init();
+      tag().updateQueryState(<any>{ originalQuery });
+    });
+
+    it('should call updateRefinements', () => {
+      const selectedNavigation = ['a', 'b', 'c'];
+      tag().updateQuery = () => null;
+      tag().updateRefinements = (selected) => expect(selected).to.eql(selectedNavigation);
+
+      tag().updateQueryState(<any>{ selectedNavigation });
+    });
   });
 
-  it('should empty selected on RESET', () => {
-    flux().on = (event: string, cb: Function): any => {
-      if (event === Events.RESET) cb();
-    };
+  describe('updateRefinements()', () => {
+    it('should call update with selected', () => {
+      const refinements = [{ a: 'b' }];
+      tag().update = ({ selected }) => expect(selected).to.eq(refinements);
 
-    tag().update = (obj: any) => expect(obj.selected.length).to.eq(0);
-    tag().init();
+      tag().updateRefinements(refinements);
+    });
   });
 
-  it('should update originalQuery on RESULTS', (done) => {
-    const originalQuery = 'red sneakers';
+  describe('updateQuery()', () => {
+    it('should call update() with originalQuery', () => {
+      const query = 'leather belt';
+      tag().update = ({ originalQuery }) => expect(originalQuery).to.eq(query);
 
-    flux().on = (event: string, cb: Function): any => {
-      if (event === Events.RESULTS) cb({ originalQuery });
-    };
-
-    tag().update = (obj: any) => {
-      expect(obj.originalQuery).to.eq(originalQuery);
-      done();
-    };
-    tag().init();
+      tag().updateQuery(query);
+    });
   });
 
-  it('should update selected on RESULTS', () => {
-    const selectedNavigation = ['a', 'b', 'c'];
+  describe('remove()', () => {
+    it('should call flux.unrefine() with a converted refinement', () => {
+      const refinement = { a: 'b' };
+      const navigation = { c: 'd' };
+      const constructedRefinement = { e: 'f' };
+      sandbox().stub(utils, 'toRefinement', (ref, nav) => {
+        expect(ref).to.eq(refinement);
+        expect(nav).to.eq(navigation);
+        return constructedRefinement;
+      });
+      flux().unrefine = (ref): any => expect(ref).to.eq(constructedRefinement);
 
-    flux().on = (event: string, cb: Function): any => {
-      if (event === Events.RESULTS) cb({ selectedNavigation });
-    };
-
-    tag().updateQuery = () => null;
-    tag().update = (obj: any) => expect(obj.selected).to.eql(selectedNavigation);
-    tag().init();
+      tag().remove(refinement, navigation);
+    });
   });
 });

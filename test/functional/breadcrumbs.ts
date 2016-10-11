@@ -1,29 +1,51 @@
 import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
-import suite from './_suite';
+import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Breadcrumbs>('gb-breadcrumbs', ({ tagName, flux, html, mount }) => {
+suite<Breadcrumbs>('gb-breadcrumbs', ({ tagName, flux, mount }) => {
   it('mounts tag', () => {
     const tag = mount();
 
     expect(tag).to.be.ok;
-    expect(html().querySelector(`div.${tagName}`)).to.be.ok;
+    expect(tag.root.querySelector(`div.${tagName}`)).to.be.ok;
   });
 
   describe('with query', () => {
-    const originalQuery = 'red sneakers';
+    const ORIGINAL_QUERY = 'red sneakers';
 
-    it('renders from query changing', () => {
+    it('should set the textContent of query-crumb', () => {
       const tag = mount();
+      const model = new Model(tag);
 
-      expect(queryCrumb()).to.not.be.ok;
-      tag.updateQuery(originalQuery);
-      expect(queryCrumb().textContent).to.eq(originalQuery);
+      tag.updateQuery(ORIGINAL_QUERY);
+
+      expect(model.queryCrumb).to.be.ok;
+      expect(model.queryCrumb.textContent).to.eq(ORIGINAL_QUERY);
+    });
+
+    it('should not render query-crumb if configured', () => {
+      const tag = mount({ hideQuery: true });
+      const model = new Model(tag);
+
+      tag.updateQuery(ORIGINAL_QUERY);
+
+      expect(model.queryCrumb).to.not.be.ok;
+    });
+
+    it('should not render query-crumb if empty query', () => {
+      const tag = mount();
+      const model = new Model(tag);
+
+      expect(model.queryCrumb).to.not.be.ok;
+
+      tag.updateQuery('');
+
+      expect(model.queryCrumb).to.not.be.ok;
     });
   });
 
   describe('with refinements', () => {
-    const selected = [
+    const SELECTED = [
       {
         name: 'first',
         displayName: 'First',
@@ -32,42 +54,116 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ tagName, flux, html, mount }) => {
           { type: 'Value', value: 'B' },
           { type: 'Value', value: 'C' }
         ]
+      }, {
+        name: 'second',
+        displayName: 'Second',
+        refinements: [
+          { type: 'Value', value: 'D' },
+          { type: 'Range', low: 20, high: 54 },
+          { type: 'Value', value: 'F' }
+        ]
       }
     ];
 
-    it('renders from refinements changing', () => {
-      const tag = mount();
+    it('renders list', () => {
+      const model = new Model(mount());
 
-      tag.updateRefinements(selected);
-      expect(html().querySelectorAll('.gb-navigation-crumb').length).to.eq(1);
-      expect(crumbs().length).to.eq(3);
-      expect(crumbs()[1].querySelector('b').textContent).to.eq('First: B');
+      expect(model.navigationList).to.be.ok;
+    });
+
+    it('renders as a list of navigations', () => {
+      const tag = mount();
+      const model = new Model(tag);
+
+      tag.updateRefinements(SELECTED);
+
+      expect(model.navigationList).to.be.ok;
+      expect(model.navigationCrumbs).to.have.length(2);
+    });
+
+    it('renders each navigation as a list of refinements', () => {
+      const tag = mount();
+      const model = new Model(tag);
+
+      tag.updateRefinements(SELECTED);
+
+      const navigations = model.navigationCrumbs;
+      expect(model.refinementCrumbs()).to.have.length(6);
+      expect(model.refinementCrumbs(navigations[0])).to.have.length(3);
+      expect(model.refinementCrumbs(navigations[1])).to.have.length(3);
+    });
+
+    it('should not render refinements if configured', () => {
+      const tag = mount({ hideRefinements: true });
+      const model = new Model(tag);
+
+      tag.updateRefinements(SELECTED);
+
+      expect(model.navigationList).to.not.be.ok;
     });
 
     it('renders from reset', () => {
       const tag = mount();
+      const model = new Model(tag);
+      tag.updateRefinements(SELECTED);
+
+      expect(model.navigationCrumbs).not.to.have.length(0);
 
       tag.clearRefinements();
-      expect(tag['selected'].length).to.eq(0);
-      expect(html().querySelectorAll('.gb-nav-crumb').length).to.eq(0);
+
+      expect(model.navigationCrumbs).to.have.length(0);
     });
 
-    it('unrefines on click', () => {
-      const tag = mount();
+    describe('gb-refinement-crumb', () => {
+      it('should set a label for the link', () => {
+        const tag = mount();
+        const model = new Model(tag);
 
-      flux().unrefine = (refinement): any =>
-        expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' });
+        tag.updateRefinements(SELECTED);
 
-      tag.updateRefinements(selected);
-      (<HTMLAnchorElement>crumbs()[1].querySelector('a')).click();
+        expect(model.refinementLinks()[0]).to.be.ok;
+        expect(model.refinementLabels()[0].textContent).to.eq('First: A');
+        expect(model.refinementLabels()[4].textContent).to.eq('Second: 20 - 54');
+      });
+
+      it('should unrefine on click', () => {
+        const tag = mount();
+        const model = new Model(tag);
+        const spy = flux().unrefine = sinon.spy((refinement): any =>
+          expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' }));
+        tag.updateRefinements(SELECTED);
+
+        model.refinementLinks()[1].click();
+
+        expect(spy.called).to.be.true;
+      });
     });
   });
-
-  function queryCrumb() {
-    return <HTMLLIElement>html().querySelector('.gb-query-crumb');
-  }
-
-  function crumbs() {
-    return <NodeListOf<HTMLLIElement>>html().querySelectorAll('.gb-navigation-crumb gb-refinement-crumb');
-  }
 });
+
+export class Model extends BaseModel<Breadcrumbs> {
+
+  get queryCrumb() {
+    return this.element(this.html, 'div > .gb-query-crumb');
+  }
+
+  get navigationList() {
+    return this.element(this.html, 'div > gb-list > ul');
+  }
+
+  get navigationCrumbs() {
+    return this.list(this.html, 'div > gb-list gb-list.gb-navigation-crumb');
+  }
+
+  refinementCrumbs(parent: HTMLElement = this.html) {
+    return this.list(parent, 'gb-refinement-crumb');
+  }
+
+  refinementLinks(parent: HTMLElement = this.html) {
+    return this.list<HTMLAnchorElement>(parent, 'gb-refinement-crumb > a');
+  }
+
+  refinementLabels(parent: HTMLElement = this.html) {
+    return this.list(parent, 'gb-refinement-crumb > b');
+  }
+}

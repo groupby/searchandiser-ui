@@ -1,4 +1,5 @@
 import { Query } from '../../src/tags/query/gb-query';
+import { AUTOCOMPLETE_HIDE_EVENT } from '../../src/tags/sayt/autocomplete';
 import { LOCATION } from '../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -32,7 +33,7 @@ suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
     it('should hide autocomplete and modify URL on static search', () => {
       sandbox().stub(LOCATION, 'replace', (url) => expect(url).to.eq('search?q='));
       flux().search = (): any => null;
-      flux().emit = (event): any => expect(event).to.eq('autocomplete:hide');
+      flux().emit = (event): any => expect(event).to.eq(AUTOCOMPLETE_HIDE_EVENT);
 
       const tag = mount(false);
 

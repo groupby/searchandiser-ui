@@ -1,9 +1,19 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
-import { getPath, toRefinement } from '../../utils/common';
-import { SelectTag } from '../select/gb-select';
+import { toRefinement } from '../../utils/common';
+import { SelectConfig, SelectTag } from '../select/gb-select';
 import { Results } from 'groupby-api';
 
-export interface Filter extends SelectTag { }
+export interface FilterConfig extends SelectConfig {
+  field: string;
+}
+
+export const DEFAULT_CONFIG: FilterConfig = {
+  field: undefined,
+  label: 'Filter',
+  clear: 'Unfiltered'
+};
+
+export interface Filter extends SelectTag<FilterConfig> { }
 
 export class Filter {
 
@@ -11,9 +21,7 @@ export class Filter {
   selected: any;
 
   init() {
-    this._config = getPath(this.config, 'tags.filter') || this.opts;
-    this.label = this._config.label || 'Filter';
-    this.clear = this._config.clear || 'Unfiltered';
+    this.configure(DEFAULT_CONFIG);
 
     this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
   }
@@ -40,10 +48,4 @@ export class Filter {
       this.flux.refine(this.selected = toRefinement(value, <any>{ name: this._config.field }));
     }
   }
-}
-
-export interface FilterConfig {
-  field: string;
-  label?: string;
-  clear?: string;
 }

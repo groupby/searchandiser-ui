@@ -43,32 +43,34 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
       tag().init();
     });
 
-    it('should inherit values from _scope', () => {
-      tag()._scope = { struct };
+    describe('struct', () => {
+      it('should inherit from _scope', () => {
+        tag()._scope = { struct };
 
-      tag().init();
+        tag().init();
 
-      expect(tag().struct).to.eq(struct);
-    });
+        expect(tag().struct).to.eq(struct);
+      });
 
-    it('should default to config', () => {
-      const structure = { b: 'e', d: 'f' };
+      it('should default to config', () => {
+        const structure = { b: 'e', d: 'f' };
 
-      tag()._scope = {};
-      tag().config = <any>{ structure };
+        tag()._scope = {};
+        tag().config = <any>{ structure };
 
-      tag().init();
+        tag().init();
 
-      expect(tag().struct).to.eq(structure);
-    });
+        expect(tag().struct).to.eq(structure);
+      });
 
-    it('should fallback to empty object', () => {
-      tag()._scope = {};
-      tag().config = <any>{};
+      it('should fallback to empty object', () => {
+        tag()._scope = {};
+        tag().config = <any>{};
 
-      tag().init();
+        tag().init();
 
-      expect(tag().struct).to.eql({});
+        expect(tag().struct).to.eql({});
+      });
     });
   });
 
@@ -76,7 +78,6 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
     it('should perform transformation', () => {
       const remappedMeta = { e: 'f', g: 'h' };
       const variants = ['a', 'b', 'c'];
-
       tag().transformer = <any>new MockTransformer(all_meta, remappedMeta, variants);
       tag().update = (obj) => {
         expect(obj.allMeta).to.eq(all_meta);
@@ -91,7 +92,6 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
   describe('link()', () => {
     it('should return url from data', () => {
       const url = 'some/url/for/product';
-
       tag().productMeta = () => ({ url });
 
       expect(tag().link()).to.eq(url);
@@ -100,7 +100,6 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
     it('should return url built from id', () => {
       const id = 1423;
       const detailsUrl = 'productDetails.html';
-
       tag().productMeta = () => ({ id });
       tag().detailsUrl = detailsUrl;
 

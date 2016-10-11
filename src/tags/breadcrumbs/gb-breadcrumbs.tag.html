@@ -1,8 +1,8 @@
 <gb-breadcrumbs>
   <yield>
     <div class="gb-breadcrumbs { _style }">
-      <div class="gb-query-crumb" if={ !hideQuery && originalQuery }>{ originalQuery }</div>
-      <gb-list items={ selected } if={ !hideRefinements } scope="gb-breadcrumbs">
+      <div class="gb-query-crumb" if={ !_config.hideQuery && originalQuery }>{ originalQuery }</div>
+      <gb-list items={ selected } if={ !_config.hideRefinements } scope="gb-breadcrumbs">
         <gb-list class="gb-navigation-crumb" items={ item.refinements } inline>
           <gb-refinement-crumb nav={ parent.item } ref={ item }></gb-refinement-crumb>
         </gb-list>

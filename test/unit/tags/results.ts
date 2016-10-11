@@ -3,24 +3,34 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-const structure = { title: 'title', price: 'price', image: 'image' };
+const STRUCTURE = { title: 'title', price: 'price', image: 'image' };
 
-suite('gb-results', Results, { config: { structure } }, ({ flux, tag }) => {
+suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag, expectSubscriptions }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
+      const structure = { a: 'b' };
+      tag().config = { structure };
       tag().init();
 
+      expect(tag().struct).to.eq(structure);
+      expect(tag().variantStruct).to.eq(structure);
       expect(tag().getPath).to.be.a('function');
     });
 
-    it('should listen for events', () => {
-      flux().on = (event, cb): any => {
-        expect(event).to.eq(Events.RESULTS);
-        expect(cb).to.eq(tag().updateRecords);
-      };
-
+    it('should set variantStruct from _variantStructure', () => {
+      const varStruct = { c: 'd' };
+      const structure = { _variantStructure: varStruct };
+      tag().config = { structure };
       tag().init();
+
+      expect(tag().variantStruct).to.eq(varStruct);
+    });
+
+    it('should listen for events', () => {
+      expectSubscriptions(() => tag().init(), {
+        [Events.RESULTS]: tag().updateRecords
+      });
     });
   });
 
@@ -28,26 +38,25 @@ suite('gb-results', Results, { config: { structure } }, ({ flux, tag }) => {
     it('should update selected on RESULTS', () => {
       const records = [{ a: 'b' }, { c: 'd' }];
       const collection = 'mycollection';
-
       flux().query.withConfiguration({ collection });
-
       tag().update = (obj: any) => {
         expect(obj.records).to.eq(records);
         expect(obj.collection).to.eq(collection);
       };
-      tag().init();
 
       tag().updateRecords(<any>{ records });
     });
   });
 
-  it('should return the correct user style', () => {
-    const name = 'record-label';
-    tag().opts.css = { label: name };
-    expect(tag().userStyle('label')).to.eq(name);
-  });
+  describe('userStyle()', () => {
+    it('should return the correct user style', () => {
+      const name = 'record-label';
+      tag().opts.css = { label: name };
+      expect(tag().userStyle('label')).to.eq(name);
+    });
 
-  it('should return no user style', () => {
-    expect(tag().userStyle('label')).to.eq('');
+    it('should return no user style', () => {
+      expect(tag().userStyle('label')).to.eq('');
+    });
   });
 });
