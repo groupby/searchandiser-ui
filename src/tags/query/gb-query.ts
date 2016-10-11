@@ -1,4 +1,4 @@
-import { findTag, unless } from '../../utils/common';
+import { findTag, isMobile, unless } from '../../utils/common';
 import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
@@ -30,7 +30,9 @@ export class Query {
 
     this.on('mount', () => {
       this.searchBox = this.findSearchBox();
-      this.searchBox.addEventListener('keydown', this.keydownListener);
+      this.listenForKeydown();
+      this.listenForClick();
+      // this.searchBox.addEventListener('click', this.scrollTop);
       if (this.saytEnabled) this.tags['gb-sayt'].listenForInput(this);
     });
 
@@ -47,6 +49,23 @@ export class Query {
 
   rewriteQuery(query: string) {
     this.searchBox.value = query;
+  }
+
+  scrollToTop() {
+    const y = this.searchBox.getBoundingClientRect().top;
+    const x = this.searchBox.getBoundingClientRect().left;
+
+    window.scrollTo(x, y);
+  }
+
+  listenForKeydown() {
+    this.searchBox.addEventListener('keydown', this.keydownListener);
+  }
+
+  listenForClick() {
+    if (isMobile()) {
+      this.searchBox.addEventListener('click', this.scrollToTop);
+    }
   }
 
   listenForInput() {
@@ -72,6 +91,7 @@ export class Query {
   }
 
   onSubmit() {
+    console.log(this.staticSearch);
     this.enterKeyHandlers.forEach((f) => f());
     this.flux.emit('autocomplete:hide');
   }
@@ -89,6 +109,8 @@ export class Query {
   }
 
   private setLocation() {
+    console.log('hihi');
+    console.log(this.services);
     // TODO better way to do this is with browser history rewrites
     if (this.services.url.active()) {
       this.services.url.update(this.inputValue());
