@@ -8,7 +8,7 @@ import { BeautifierConfig } from './utils/url-beautifier';
 import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
-export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields}';
+export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,queryParams}';
 export const DEFAULT_CONFIG = { initialSearch: true };
 export const DEFAULT_URL_CONFIG = { queryParam: 'q', searchUrl: 'search' };
 
@@ -106,6 +106,7 @@ export interface BridgeConfig {
   headers?: any;
   skipCache?: boolean;
   skipSemantish?: boolean;
+  queryParams?: any;
 }
 
 export interface UrlConfig {
