@@ -97,7 +97,7 @@ suite('gb-query', Query, ({ tag, flux, sandbox }) => {
   });
 
   describe('event listeners', () => {
-    it('should add click listener on mobile devices', (done) => {
+    it('should add click listener and scroll to the top on mobile devices', (done) => {
       sandbox().stub(utils, 'isMobile', () => true);
       tag().searchBox = document.createElement('input');
       tag().init();
@@ -114,7 +114,7 @@ suite('gb-query', Query, ({ tag, flux, sandbox }) => {
       tag().listenForClick();
     });
 
-    it('should not add click listener on non-mobile devices', () => {
+    it('should not add click listener or scroll to the top on non-mobile devices', () => {
       sandbox().stub(utils, 'isMobile', () => false);
       const spy = sinon.spy(tag(), 'scrollToTop');
       tag().searchBox = document.createElement('input');
