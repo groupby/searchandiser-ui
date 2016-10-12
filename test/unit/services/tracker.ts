@@ -55,7 +55,7 @@ describe('tracker service', () => {
     it('should use configured ids', () => {
       const visitorId = '1faslkdj';
       const sessionId = 'lk15k3j4';
-      const spy = trackerService.setVisitor = sinon.spy((visId, sessId) => {
+      const stub = sandbox.stub(trackerService, 'setVisitor', (visId, sessId) => {
         expect(visId).to.eq(visitorId);
         expect(sessId).to.eq(sessionId);
       });
@@ -63,13 +63,13 @@ describe('tracker service', () => {
 
       trackerService.setVisitorInfo();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should use cookies', () => {
       const visitorId = '1faslkdj';
       const sessionId = 'lk15k3j4';
-      const spy = trackerService.setVisitor = sinon.spy((visId, sessId) => {
+      const stub = sandbox.stub(trackerService, 'setVisitor', (visId, sessId) => {
         expect(visId).to.eq(visitorId);
         expect(sessId).to.eq(sessionId);
       });
@@ -78,11 +78,11 @@ describe('tracker service', () => {
 
       trackerService.setVisitorInfo();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should generate ids', () => {
-      const spy = trackerService.setVisitor = sinon.spy((visId, sessId) => {
+      const stub = sandbox.stub(trackerService, 'setVisitor', (visId, sessId) => {
         expect(visId).to.be.ok;
         expect(visId).to.length.to.be.greaterThan(1);
         expect(sessId).to.be.ok;
@@ -91,7 +91,7 @@ describe('tracker service', () => {
 
       trackerService.setVisitorInfo();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should set cookies', () => {
