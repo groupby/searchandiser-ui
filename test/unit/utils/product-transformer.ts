@@ -101,6 +101,7 @@ describe('ProductTransformer', () => {
         price: '$12',
         image: 'thumbnail.png'
       };
+
       const productMeta = transformer.transform(allMeta);
 
       expect(productMeta).to.be.a('function');
@@ -634,7 +635,7 @@ describe('ProductTransformer', () => {
     it('should return a remapped variant when called', () => {
       const originalVariant = { mainColour: 'blue', size: '12.5' };
       const remappedVariant = { a: 'b', c: 'd' };
-      sandbox.stub(utils, 'remap', (meta) => {
+      const stub = sandbox.stub(utils, 'remap', (meta) => {
         expect(meta).to.eq(originalVariant);
         return remappedVariant;
       });
@@ -650,7 +651,7 @@ describe('ProductTransformer', () => {
         c: 'd'
       });
 
-      sinon.restore(utils);
+      expect(stub.called).to.be.true;
     });
   });
 
@@ -659,10 +660,12 @@ describe('ProductTransformer', () => {
       expect(transformer.extractIdField()).to.eq('id');
 
       transformer.hasVariants = true;
+
       expect(transformer.extractIdField()).to.eq('id');
 
       transformer.struct = { id: 'id', _variantStructure: {} };
       transformer.variantStruct = {};
+
       expect(transformer.extractIdField()).to.eq('id');
     });
 

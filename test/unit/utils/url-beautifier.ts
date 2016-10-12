@@ -103,10 +103,10 @@ describe('URL beautifier', () => {
       const ref3 = refinement('category', 'Drills');
 
       it('should create canonical URLs', () => {
-        beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' }, { h: 'category' });
-        query.withSelectedRefinements(ref1, ref2, ref3);
         const otherQuery = new Query()
           .withSelectedRefinements(ref3, ref1, ref2);
+        beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' }, { h: 'category' });
+        query.withSelectedRefinements(ref1, ref2, ref3);
 
         expect(generator.build(query)).to.eq(generator.build(otherQuery));
       });
@@ -119,24 +119,25 @@ describe('URL beautifier', () => {
       });
 
       it('should create canonical query parameters', () => {
-        query.withSelectedRefinements(ref1, ref2, ref3);
         const otherQuery = new Query()
           .withSelectedRefinements(ref3, ref1, ref2);
+        query.withSelectedRefinements(ref1, ref2, ref3);
 
         expect(generator.build(query)).to.eq(generator.build(otherQuery));
       });
 
       it('should combine mapped and unmapped refinements with query and suffix', () => {
+        const otherQuery = new Query('power drill')
+          .withSelectedRefinements(ref2, ref1, ref3);
+        query.withQuery('power drill')
+          .withSelectedRefinements(ref1, ref3, ref2);
         beautifier.config.refinementMapping.push({ b: 'brand' }, { c: 'category' });
         beautifier.config.queryToken = 's';
         beautifier.config.extraRefinementsParam = 'refs';
         beautifier.config.suffix = 'index.php';
-        query.withQuery('power drill')
-          .withSelectedRefinements(ref1, ref3, ref2);
-        const otherQuery = new Query('power drill')
-          .withSelectedRefinements(ref2, ref1, ref3);
 
         const url = generator.build(query);
+
         expect(url).to.eq('/power+drill/DeWalt/Drills/sbc/index.php?refs=colour%3Dorange');
         expect(url).to.eq(generator.build(otherQuery));
       });
@@ -230,19 +231,21 @@ describe('URL beautifier', () => {
     });
 
     it('should extract mapped and unmapped refinements with query and suffix', () => {
+      const refs = [refinement('category', 'Drills'), refinement('brand', 'DeWalt'), refinement('colour', 'orange')];
       beautifier.config.refinementMapping.push({ s: 'colour' }, { c: 'category' });
       beautifier.config.extraRefinementsParam = 'nav';
       beautifier.config.queryToken = 'n';
       beautifier.config.suffix = 'index.html';
-      const refs = [refinement('category', 'Drills'), refinement('brand', 'DeWalt'), refinement('colour', 'orange')];
 
       const request = parser.parse('/power+drill/orange/Drills/nsc/index.html?nav=brand%3DDeWalt').build();
+
       expect(request.query).to.eql('power drill');
       expect(request.refinements).to.have.deep.members(refs);
     });
 
     it('should extract deeply nested URL', () => {
       const request = parser.parse('http://example.com/my/nested/path/power+drill/q').build();
+
       expect(request.query).to.eql('power drill');
     });
 
@@ -292,6 +295,7 @@ describe('URL beautifier', () => {
 
       const origRequest = query.build();
       const convertedRequest = beautifier.parse(beautifier.build(query)).build();
+
       expect(convertedRequest.query).to.eql(origRequest.query);
       expect(convertedRequest.refinements).to.have.deep.members(origRequest.refinements);
     });
@@ -300,6 +304,7 @@ describe('URL beautifier', () => {
       const url = '/duvet+cover/Duvet+King/linen/kbf/index.html?refs=price%3A10..40';
 
       const convertedUrl = beautifier.build(beautifier.parse(url));
+
       expect(convertedUrl).to.eq(url);
     });
   });
