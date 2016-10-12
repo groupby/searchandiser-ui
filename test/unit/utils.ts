@@ -1,6 +1,5 @@
 import * as utils from '../../src/utils/common';
 import { expect } from 'chai';
-import { Navigation } from 'groupby-api';
 
 describe('utils', () => {
   let sandbox;
@@ -39,37 +38,45 @@ describe('utils', () => {
 
   describe('toRefinement()', () => {
     it('should return refinement', () => {
-      let ref: utils.SelectedRefinement = Object.assign({}, { type: 'Value', value: 'High' });
-      let nav: Navigation = Object.assign({}, { name: 'Type' });
-      let ref2: utils.SelectedRefinement = Object.assign({}, { type: 'Range', high: '5', low: '4' });
-
-      const refinement = utils.toRefinement(ref, nav);
+      const ref1: any = { type: 'Value', value: 'High' };
+      const ref2: any = { type: 'Range', high: '5', low: '4' };
+      const nav: any = { name: 'Type' };
+      const refinement = utils.toRefinement(ref1, nav);
       const refinement2 = utils.toRefinement(ref2, nav);
 
-      expect(refinement).to.eql({ type: ref.type, value: ref.value, navigationName: nav.name });
-      expect(refinement2).to.eql({ type: ref2.type, high: ref2.high, low: ref2.low, navigationName: nav.name });
+      expect(refinement).to.eql({
+        type: ref1.type,
+        value: ref1.value,
+        navigationName: nav.name
+      });
+      expect(refinement2).to.eql({
+        type: ref2.type,
+        high: ref2.high,
+        low: ref2.low,
+        navigationName: nav.name
+      });
     });
   });
 
   describe('displayRefinement()', () => {
     it('should return string to display for refinement', () => {
-      let ref: utils.SelectedRefinement = Object.assign({}, { type: 'Value', value: 'Rugs' });
-      let ref2: utils.SelectedRefinement = Object.assign({}, { type: 'Range', high: '5', low: '4' });
+      const ref1: any = { type: 'Value', value: 'Rugs' };
+      const ref2: any = { type: 'Range', high: '5', low: '4' };
 
-      expect(utils.displayRefinement(ref)).to.eq(ref.value);
+      expect(utils.displayRefinement(ref1)).to.eq(ref1.value);
       expect(utils.displayRefinement(ref2)).to.eq('4 - 5');
     });
   });
 
   describe('checkNested()', () => {
-    const obj = { tags: { sort: { options: {} } } };
-    const obj2 = {};
     it('should return true if has nested objects', () => {
+      const obj = { tags: { sort: { options: {} } } };
+
       expect(utils.checkNested(obj, 'tags', 'sort', 'options')).to.be.true;
     });
 
     it('should return false if does not have nested objects', () => {
-      expect(utils.checkNested(obj2, 'tags', 'sort', 'options')).to.be.false;
+      expect(utils.checkNested({}, 'tags', 'sort', 'options')).to.be.false;
     });
   });
 
@@ -77,6 +84,7 @@ describe('utils', () => {
     it('should return next param if first is undefined', () => {
       let empty;
       const notEmpty = 'Existence';
+
       expect(utils.unless(notEmpty, [])).to.eq(notEmpty);
       expect(utils.unless(empty, notEmpty)).to.eq(notEmpty);
       expect(utils.unless(empty, empty, empty, notEmpty)).to.eq(notEmpty);
@@ -87,6 +95,7 @@ describe('utils', () => {
     it('should return object at path given', () => {
       const obj = { tags: { collections: { options: { a: 'b', c: 'd' } } } };
       const path = 'tags.collections';
+
       expect(utils.getPath(obj, path)).to.eq(obj.tags.collections);
     });
   });
