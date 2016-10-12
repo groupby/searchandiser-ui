@@ -11,21 +11,27 @@ describe('service initializer', () => {
   beforeEach(() => sandbox = sinon.sandbox.create());
   afterEach(() => sandbox.restore());
 
-  it('should initialize all services', () => {
-    const flux: any = { on: () => null, search: () => null };
+  describe('initServices()', () => {
+    it('should initialize all services', () => {
+      const flux: any = { on: () => null, search: () => Promise.resolve() };
 
-    const services = initServices(flux, <any>{ customerId: 'test', area: 'other' });
-    expect(services.filter).to.be.an.instanceof(Filter);
-    expect(services.redirect).to.be.an.instanceof(Redirect);
-    expect(services.url).to.be.an.instanceof(Url);
-    expect(services.collections).to.be.an.instanceof(Collections);
+      const services = initServices(flux, <any>{ customerId: 'test', area: 'other' });
+
+      expect(services.filter).to.be.an.instanceof(Filter);
+      expect(services.redirect).to.be.an.instanceof(Redirect);
+      expect(services.url).to.be.an.instanceof(Url);
+      expect(services.collections).to.be.an.instanceof(Collections);
+    });
   });
 
-  it('should start services in map', () => {
-    const spy = sinon.spy();
-    const services = { a: { init: spy }, b: { init: spy }, c: { init: spy } };
+  describe('startServices()', () => {
+    it('should start services in map', () => {
+      const init = sinon.spy();
+      const services = { a: { init }, b: { init }, c: { init } };
 
-    startServices(services);
-    expect(spy.callCount).to.eq(3);
+      startServices(services);
+
+      expect(init.callCount).to.eq(3);
+    });
   });
 });

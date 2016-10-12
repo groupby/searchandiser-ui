@@ -2,6 +2,7 @@ import { SearchandiserConfig, UrlConfig } from '../searchandiser';
 import { LOCATION } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
 import { UrlBeautifier } from '../utils/url-beautifier';
+import { Services } from './init';
 import { FluxCapacitor, Query } from 'groupby-api';
 import * as parseUri from 'parseUri';
 
@@ -12,7 +13,7 @@ export class Url {
   simple: SimpleBeautifier;
   beautify: boolean;
 
-  constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
+  constructor(private flux: FluxCapacitor, private config: SearchandiserConfig, private services: Services) {
     this.urlConfig = this.config.url || {};
     this.beautify = !!this.urlConfig.beautifier;
   }
@@ -32,8 +33,8 @@ export class Url {
 
       if (query) {
         this.flux.query = query;
-        this.flux.search(query.raw.query);
-        // TODO: need to beacon here
+        this.flux.search(query.raw.query)
+          .then(() => this.services.tracker.search());
       }
     }
   }

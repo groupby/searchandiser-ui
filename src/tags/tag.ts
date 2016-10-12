@@ -1,8 +1,5 @@
-import { Collections } from '../services/collections';
-import { Filter } from '../services/filter';
-import { Redirect } from '../services/redirect';
-import { Tracker } from '../services/tracker';
-import { Url } from '../services/url';
+
+import { Services } from '../services/init';
 import { checkBooleanAttr, getPath } from '../utils/common';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
@@ -14,14 +11,8 @@ export interface FluxTag<T> extends riot.Tag.Instance {
   parent: riot.Tag.Instance & FluxTag<any> & any;
 
   flux: FluxCapacitor;
+  services: Services;
   config: any;
-  services: {
-    collections: Collections;
-    filter: Filter;
-    redirect: Redirect;
-    tracker: Tracker;
-    url: Url;
-  };
 }
 
 export class FluxTag<T> {
