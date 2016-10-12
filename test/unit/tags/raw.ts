@@ -2,9 +2,7 @@ import { Raw } from '../../../src/tags/raw/gb-raw';
 import suite from './_suite';
 import { expect } from 'chai';
 
-const content = '<div>red sneakers</div>';
-
-suite('gb-raw', Raw, { opts: { content } }, ({
+suite('gb-raw', Raw, ({
   tag,
   expectSubscriptions,
   itShouldConfigure
@@ -12,17 +10,18 @@ suite('gb-raw', Raw, { opts: { content } }, ({
 
   describe('init()', () => {
     itShouldConfigure();
-  });
 
-  it('should listen for events', () => {
-    expectSubscriptions(() => tag().init(), {
-      update: tag().updateContent,
-      mount: tag().updateContent
-    }, tag());
+    it('should listen for events', () => {
+      expectSubscriptions(() => tag().init(), {
+        update: tag().updateContent,
+        mount: tag().updateContent
+      }, tag());
+    });
   });
 
   describe('updateContent()', () => {
     it('should update innerHTML', () => {
+      const content = '<div>red sneakers</div>';
       tag().root = <any>{ innerHTML: '' };
       tag()._config = { content };
 

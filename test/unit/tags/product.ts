@@ -3,21 +3,13 @@ import { ProductMeta, ProductTransformer } from '../../../src/utils/product-tran
 import suite from './_suite';
 import { expect } from 'chai';
 
-const struct = { title: 'title', price: 'price', image: 'image', url: 'url' };
-const all_meta = {
-  title: 'Red Sneakers',
-  price: '$12.45',
-  image: 'image.png',
-  id: '1340',
-  nested: {
-    value: '6532'
-  }
-};
-
-suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
+suite('gb-product', Product, ({ tag, sandbox }) => {
 
   describe('init()', () => {
-    beforeEach(() => tag().transformRecord = () => null);
+    beforeEach(() => {
+      tag()._scope = {};
+      tag().transformRecord = () => null;
+    });
 
     it('should set default values', () => {
       tag().init();
@@ -37,14 +29,18 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
     });
 
     it('should call transformRecord()', () => {
-      tag().transformRecord = (allMeta) => expect(allMeta).to.eq(all_meta);
+      const all_meta = { a: 'b' };
+      const stub = sandbox().stub(tag(), 'transformRecord', (allMeta) => expect(allMeta).to.eq(all_meta));
       tag().opts = { all_meta };
 
       tag().init();
+
+      expect(stub.called).to.be.true;
     });
 
     describe('struct', () => {
       it('should inherit from _scope', () => {
+        const struct = { a: 'b' };
         tag()._scope = { struct };
 
         tag().init();
@@ -75,17 +71,31 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
   });
 
   describe('transformRecord()', () => {
+    const ALL_META = {
+      title: 'Red Sneakers',
+      price: '$12.45',
+      image: 'image.png',
+      id: '1340',
+      nested: {
+        value: '6532'
+      }
+    };
+
     it('should perform transformation', () => {
       const remappedMeta = { e: 'f', g: 'h' };
       const variants = ['a', 'b', 'c'];
-      tag().transformer = <any>new MockTransformer(all_meta, remappedMeta, variants);
-      tag().update = (obj) => {
-        expect(obj.allMeta).to.eq(all_meta);
-        expect(obj.productMeta()).to.eq(remappedMeta);
-        expect(obj.variants).to.eq(variants);
-      };
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.allMeta).to.eq(ALL_META);
+          expect(obj.productMeta()).to.eq(remappedMeta);
+          expect(obj.variants).to.eq(variants);
+        });
+      tag().transformer = <any>new MockTransformer(ALL_META, remappedMeta, variants);
 
-      tag().transformRecord(all_meta);
+      tag().transformRecord(ALL_META);
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -108,20 +118,27 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
   });
 
   describe('image()', () => {
-    it('should return image value', () => {
-      const images = ['image1.png', 'image2.png'];
+    const IMAGES = ['image1.png', 'image2.png'];
 
-      expect(tag().image(images[1])).to.eq(images[1]);
-      expect(tag().image(images)).to.eq(images[0]);
+    it('should return image value', () => {
+      expect(tag().image(IMAGES[1])).to.eq(IMAGES[1]);
+    });
+
+    it('should return image value from array', () => {
+      expect(tag().image(IMAGES)).to.eq(IMAGES[0]);
     });
   });
 
   describe('switchVariant()', () => {
     it('should update variantIndex', () => {
       const index = 12;
-      tag().update = (obj) => expect(obj.variantIndex).to.eq(index);
+      const spy =
+        tag().update =
+        sinon.spy((obj) => expect(obj.variantIndex).to.eq(index));
 
       tag().switchVariant(<any>{ target: { dataset: { index } } });
+
+      expect(spy.called).to.be.true;
     });
   });
 });

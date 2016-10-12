@@ -17,7 +17,7 @@ suite<DidYouMean>('gb-did-you-mean', ({ flux, html, mount }) => {
       const tag = mount();
 
       tag.updateDidYouMean(<any>{ didYouMean });
-      expect(dymLinks().length).to.eq(3);
+      expect(dymLinks()).to.have.length(3);
       expect(dymLinks()[0].textContent).to.eq(didYouMean[0]);
     });
 

@@ -2,12 +2,12 @@ import { Select } from '../../../src/tags/select/gb-select';
 import suite from './_suite';
 import { expect } from 'chai';
 
-const SCOPE = { _config: {} };
-
-suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
+suite('gb-select', Select, ({ tag, sandbox }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
+      const scope = tag()._scope = <any>{ _config: {} };
+
       tag().init();
 
       expect(tag().iconUrl).to.eql(tag().iconUrl);
@@ -19,7 +19,7 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
       expect(tag().selected).to.be.undefined;
       expect(tag().focused).to.be.undefined;
       expect(tag().default).to.be.true;
-      expect(tag()._scope).to.eq(SCOPE);
+      expect(tag()._scope).to.eq(scope);
       expect(tag()._config).to.eql({});
     });
 
@@ -74,8 +74,10 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
   describe('updateOptions()', () => {
     it('should update options', () => {
       const opts = ['first', 'second'];
+      const spy =
+        tag().update =
+        sinon.spy(({options}) => expect(options).to.eq(opts));
       tag().default = true;
-      const spy = tag().update = sinon.spy(({options}) => expect(options).to.eq(opts));
 
       tag().updateOptions(opts);
 
@@ -84,9 +86,11 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
 
     it('should update options with clearOption', () => {
       const opts = ['first', 'second'];
-      tag().default = false;
       const clearOption = tag().clearOption = { label: 'a', clear: true };
-      const spy = tag().update = sinon.spy(({options}) => expect(options).to.eql([clearOption, ...opts]));
+      const spy =
+        tag().update =
+        sinon.spy(({options}) => expect(options).to.eql([clearOption, ...opts]));
+      tag().default = false;
 
       tag().updateOptions(opts);
 
@@ -192,9 +196,9 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
     });
 
     it('should set switch focused to false and blur button', () => {
+      const blur = sinon.spy();
       tag()._config = {};
       tag().focused = true;
-      const blur = sinon.spy();
       tag().selectButton = () => ({ blur });
 
       tag().unfocus();
@@ -207,7 +211,9 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
   describe('selectOption()', () => {
     it('should update selectedOption', () => {
       const opts = 'a';
-      const spy = tag().update = sinon.spy(({selectedOption}) => expect(selectedOption).to.eq(opts));
+      const spy =
+        tag().update =
+        sinon.spy(({selectedOption}) => expect(selectedOption).to.eq(opts));
 
       tag().selectOption(opts, {});
 
@@ -216,27 +222,36 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
 
     it('should return JSON parsed value', () => {
       const opts = { a: 'b' };
-      const spy = tag().callback = sinon.spy((value) => expect(value).to.eql(opts));
+      const spy =
+        tag().callback =
+        sinon.spy((value) => expect(value).to.eql(opts));
       tag().update = () => null;
 
       tag().selectOption('', JSON.stringify(opts));
+
       expect(spy.called).to.be.true;
     });
 
     it('should return value', () => {
       const opts = { a: 'b' };
-      const spy = tag().callback = sinon.spy((value) => expect(value).to.eql(opts));
+      const spy =
+        tag().callback =
+        sinon.spy((value) => expect(value).to.eql(opts));
       tag().update = () => null;
 
       tag().selectOption('', opts);
+
       expect(spy.called).to.be.true;
     });
 
     it('should return \'*\'', () => {
-      const spy = tag().callback = sinon.spy((value) => expect(value).to.eql('*'));
+      const spy =
+        tag().callback =
+        sinon.spy((value) => expect(value).to.eql('*'));
       tag().update = () => null;
 
       tag().selectOption('', undefined);
+
       expect(spy.called).to.be.true;
     });
   });
@@ -245,12 +260,14 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
     it('should call update() with selected', () => {
       const option = { value: 'hat', text: 'Hat' };
       const options = [{ disabled: true }];
-      tag().nativeSelect = () => ({ options });
-      tag().update = ({ selected }) => expect(selected).to.eq(option.value);
-      tag().selectOption = (text, selected) => {
+      const spy =
+        tag().update =
+        sinon.spy(({ selected }) => expect(selected).to.eq(option.value));
+      const stub = sandbox().stub(tag(), 'selectOption', (text, selected) => {
         expect(text).to.eq(option.text);
         expect(selected).to.eq(option.value);
-      };
+      });
+      tag().nativeSelect = () => ({ options });
 
       tag().selectNative(<any>{
         target: {
@@ -259,22 +276,21 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
       });
 
       expect(options[0].disabled).to.be.false;
+      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should set first option enabled', () => {
       const option = { text: 'Hat' };
       const options = [{ disabled: true }];
-      tag().nativeSelect = () => ({ options });
+      const stub = sandbox().stub(tag(), 'nativeSelect', () => ({ options }));
       tag().update = () => null;
       tag().selectOption = () => null;
 
-      tag().selectNative(<any>{
-        target: {
-          selectedOptions: [option]
-        }
-      });
+      tag().selectNative(<any>{ target: { selectedOptions: [option] } });
 
       expect(options[0].disabled).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 
@@ -282,26 +298,29 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag }) => {
     it('should select option', () => {
       const option = { value: 'hat', label: 'Hat' };
       const blur = sinon.spy();
-      tag().selectButton = () => ({ blur });
-      tag().selectOption = (label, value) => {
+      const stub = sandbox().stub(tag(), 'selectOption', (label, value) => {
         expect(label).to.eq(option.label);
         expect(value).to.eq(option.value);
-      };
+      });
+      tag().selectButton = () => ({ blur });
 
       tag().selectCustom(option);
 
       expect(blur.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 
   describe('clearSelection()', () => {
     it('should call selectOption()', () => {
-      tag().selectOption = (label, value) => {
+      const stub = sandbox().stub(tag(), 'selectOption', (label, value) => {
         expect(label).to.be.undefined;
         expect(value).to.eq('*');
-      };
+      });
 
       tag().clearSelection();
+
+      expect(stub.called).to.be.true;
     });
   });
 });

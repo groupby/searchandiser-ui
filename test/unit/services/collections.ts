@@ -1,154 +1,168 @@
 import { Collections, COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
+import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
 import { Events, Request } from 'groupby-api';
 
 describe('collections service', () => {
   let sandbox: Sinon.SinonSandbox;
+  let service: Collections;
 
-  beforeEach(() => sandbox = sinon.sandbox.create());
+  beforeEach(() => {
+    service = new Collections(<any>{}, <any>{});
+    sandbox = sinon.sandbox.create();
+  });
   afterEach(() => sandbox.restore());
 
   describe('on construction', () => {
     it('should set properties', () => {
-      const collectionsService = new Collections(<any>{}, <any>{});
-
-      expect(collectionsService.collectionsConfig).to.eql({});
-      expect(collectionsService.fetchCounts).to.be.true;
-      expect(collectionsService.isLabeled).to.be.false;
-      expect(collectionsService.collections).to.eql([]);
-      expect(collectionsService.options).to.eql([]);
+      expect(service.collectionsConfig).to.eql({});
+      expect(service.fetchCounts).to.be.true;
+      expect(service.isLabeled).to.be.false;
+      expect(service.collections).to.eql([]);
+      expect(service.options).to.eql([]);
     });
 
     it('should take overrides for properties', () => {
       const options = [{ value: 'b' }];
       const collections = { collections: 'my collection', counts: false, options };
       const config: any = { tags: { collections } };
-      const collectionsService = new Collections(<any>{}, config);
-      collectionsService.counts = false;
 
-      expect(collectionsService.collectionsConfig).to.eq(collections);
-      expect(collectionsService.fetchCounts).to.be.false;
-      expect(collectionsService.isLabeled).to.be.true;
-      expect(collectionsService.collections).to.eql(['b']);
-      expect(collectionsService.options).to.eq(options);
+      service = new Collections(<any>{}, config);
+
+      expect(service.collectionsConfig).to.eq(collections);
+      expect(service.fetchCounts).to.be.false;
+      expect(service.isLabeled).to.be.true;
+      expect(service.collections).to.eql(['b']);
+      expect(service.options).to.eq(options);
     });
   });
 
   describe('init()', () => {
     it('should update itself', (done) => {
-      const collectionsService = new Collections(<any>{ on: () => null }, <any>{});
+      service = new Collections(<any>{ on: () => null }, <any>{});
+      service.updateCollectionCounts = () => done();
 
-      collectionsService.updateCollectionCounts = () => done();
-      collectionsService.init();
+      service.init();
     });
 
     it('should listen events', () => {
-      const flux: any = {
-        on: (event, cb) => {
-          switch (event) {
-            case Events.QUERY_CHANGED:
-              return expect(cb).to.be.a('function');
-            case Events.RESULTS:
-              return expect(cb).to.be.a('function');
-            default:
-              expect.fail();
-          }
-        }
-      };
-      const collectionsService = new Collections(flux, <any>{});
+      const flux: any = {};
+      service = new Collections(flux, <any>{});
 
-      collectionsService.init();
+      expectSubscriptions(() => service.init(), {
+        [Events.QUERY_CHANGED]: null,
+        [Events.RESULTS]: null
+      }, flux);
     });
   });
 
   describe('updateCollectionCounts()', () => {
-    it('should update collection counts', () => {
+    it('should update collection counts', (done) => {
       const collections = ['a', 'b', 'c'];
-      const counts = {
-        a: 10,
-        b: 30,
-        c: 50
-      };
+      const counts = { a: 10, b: 30, c: 50 };
+      const emit = sinon.spy((event, newCounts) => {
+        expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
+        expect(newCounts).to.eql(counts);
+        expect(service.inProgress).to.be.an.instanceof(Promise);
+        done();
+      });
       const flux: any = {
-        query: {
-          raw: {
-            pageSize: 50,
-            fields: ['brand', 'size']
-          }
-        },
+        emit,
+        query: { raw: { pageSize: 50, fields: ['brand', 'size'] } },
         bridge: {
           search: (request: Request) => {
             expect(request.collection).to.be.oneOf(collections);
             expect(request.pageSize).to.eq(0);
-            expect(request.fields).to.be.empty;
-            expect(request.refinements).to.be.empty;
+            expect(request.fields).to.eq('');
+            expect(request.refinements).to.eql([]);
             return Promise.resolve({ totalRecordCount: counts[request.collection] });
           }
-        },
-        emit: (event, newCounts) => {
-          expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
-          expect(newCounts).to.eql(counts);
         }
       };
-      const collectionsService = new Collections(flux, <any>{});
+      service = new Collections(flux, <any>{});
+      service.collections = collections;
+      service.extractCounts = (res) => {
+        expect(res).to.have.deep.members([
+          { results: { totalRecordCount: counts.a }, collection: 'a' },
+          { results: { totalRecordCount: counts.b }, collection: 'b' },
+          { results: { totalRecordCount: counts.c }, collection: 'c' }
+        ]);
+        return counts;
+      };
 
-      collectionsService.collections = collections;
-
-      collectionsService.updateCollectionCounts();
-      expect(collectionsService.inProgress).to.be.an.instanceof(Promise);
+      service.updateCollectionCounts();
     });
 
     it('should not update collection counts if fetchCounts is false', () => {
-      const flux: any = {
-        bridge: {
-          search: () => expect.fail()
-        }
-      };
-      const collectionsService = new Collections(flux, <any>{});
+      const flux: any = { bridge: { search: () => expect.fail() } };
+      service = new Collections(flux, <any>{});
+      service.collections = ['a', 'b', 'c'];
+      service.fetchCounts = false;
 
-      collectionsService.collections = ['a', 'b', 'c'];
-      collectionsService.fetchCounts = false;
-
-      collectionsService.updateCollectionCounts();
+      service.updateCollectionCounts();
     });
 
     it('should cancel existing search', (done) => {
       const flux: any = {
         bridge: {},
         emit: () => done(),
-        query: {
-          raw: {}
-        }
+        query: { raw: {} }
       };
-      const collectionsService = new Collections(flux, <any>{});
+      const spy =
+        flux.bridge.search =
+        sinon.spy(() => {
+          expect(service.inProgress.cancelled).to.be.true;
+          return new Promise((resolve) => setTimeout(() => resolve({}), 100));
+        });
+      service = new Collections(flux, <any>{});
+      service.inProgress = <any>{};
+      service.collections = ['a'];
 
-      flux.bridge.search = () => {
-        expect(collectionsService.inProgress.cancelled).to.be.true;
-        return new Promise((resolve) => setTimeout(() => resolve({}), 100));
-      };
-      collectionsService.inProgress = <any>{};
-      collectionsService.collections = ['a'];
+      service.updateCollectionCounts();
 
-      collectionsService.updateCollectionCounts();
-
-      expect(collectionsService.inProgress).to.be.an.instanceof(Promise);
-      expect(collectionsService.inProgress.cancelled).to.be.undefined;
+      expect(service.inProgress).to.be.an.instanceof(Promise);
+      expect(service.inProgress.cancelled).to.be.undefined;
+      expect(spy.called).to.be.true;
     });
 
     it('should not update results if cancelled', (done) => {
-      const flux: any = {
-        bridge: {},
-        query: { raw: {} }
-      };
-      const collectionsService = new Collections(flux, <any>{});
+      const flux: any = { bridge: {}, query: { raw: {} } };
+      const spy =
+        flux.bridge.search =
+        sinon.spy(() => new Promise((resolve) => setTimeout(() => resolve({}), 50)));
+      service = new Collections(flux, <any>{});
+      const stub = sandbox.stub(service, 'extractCounts', () => {
+        service.inProgress.cancelled = true;
+        flux.emit = sinon.spy();
+      });
+      service.collections = ['a'];
 
-      flux.bridge.search = (): any => new Promise((resolve) => setTimeout(() => resolve({}), 100));
-      collectionsService.collections = ['a'];
+      service.updateCollectionCounts();
 
-      collectionsService.updateCollectionCounts();
+      setTimeout(() => {
+        expect(spy.called).to.be.true;
+        expect(stub.called).to.be.true;
+        expect(flux.emit.called).to.be.false;
+        done();
+      }, 100);
+    });
+  });
 
-      setTimeout(() => collectionsService.inProgress.cancelled = false, 50);
-      setTimeout(() => done(), 150);
+  describe('extractCounts()', () => {
+    it('should reduce results with collection to count map', () => {
+      const results = [
+        { results: { totalRecordCount: 11 }, collection: 'a' },
+        { results: { totalRecordCount: 1412 }, collection: 'b' },
+        { results: { totalRecordCount: 409 }, collection: 'c' }
+      ];
+
+      const counts = service.extractCounts(results);
+
+      expect(counts).to.eql({
+        a: 11,
+        b: 1412,
+        c: 409
+      });
     });
   });
 
@@ -156,37 +170,36 @@ describe('collections service', () => {
     it('should update selected collection count', () => {
       const collection = 'mycollection';
       const totalRecordCount = 450;
-      const flux: any = {
-        emit: (event, counts) => {
-          expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
-          expect(counts).to.eql({ [collection]: totalRecordCount });
-        },
-        query: { raw: { collection } }
-      };
-      const collectionsService = new Collections(flux, <any>{});
+      const emit = sinon.spy((event, counts) => {
+        expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
+        expect(counts).to.eql({ [collection]: totalRecordCount });
+      });
+      const flux: any = { emit, query: { raw: { collection } } };
+      service = new Collections(flux, <any>{});
 
-      collectionsService.updateSelectedCollectionCount(<any>{ totalRecordCount });
+      service.updateSelectedCollectionCount(<any>{ totalRecordCount });
+
+      expect(emit.called).to.be.true;
     });
 
     it('should update selected collection count with existing counts', () => {
       const collection = 'mycollection';
       const totalRecordCount = 450;
-      const flux: any = {
-        query: { raw: { collection } },
-        emit: (event, counts) => {
-          expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
-          expect(counts).to.eql({
-            [collection]: totalRecordCount,
-            prod: 403,
-            test: 330
-          });
-        }
-      };
-      const collectionsService = new Collections(flux, <any>{});
+      const emit = sinon.spy((event, counts) => {
+        expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
+        expect(counts).to.eql({
+          [collection]: totalRecordCount,
+          prod: 403,
+          test: 330
+        });
+      });
+      const flux: any = { emit, query: { raw: { collection } } };
+      service = new Collections(flux, <any>{});
+      service.counts = { prod: 403, test: 330 };
 
-      collectionsService.counts = { prod: 403, test: 330 };
+      service.updateSelectedCollectionCount(<any>{ totalRecordCount });
 
-      collectionsService.updateSelectedCollectionCount(<any>{ totalRecordCount });
+      expect(emit.called).to.be.true;
     });
   });
 
@@ -194,10 +207,10 @@ describe('collections service', () => {
     it('should determine if collection is currently selected', () => {
       const collection = 'my collection';
       const flux: any = { query: { raw: { collection } } };
-      const collectionsService = new Collections(flux, <any>{});
+      service = new Collections(flux, <any>{});
 
-      expect(collectionsService.isSelected(collection)).to.be.true;
-      expect(collectionsService.isSelected('some collection')).to.be.false;
+      expect(service.isSelected(collection)).to.be.true;
+      expect(service.isSelected('some collection')).to.be.false;
     });
   });
 
@@ -205,17 +218,17 @@ describe('collections service', () => {
     it('should return the currently configured collection', () => {
       const collection = 'my collection';
       const flux: any = { query: { raw: { collection } } };
-      const collectionsService = new Collections(flux, <any>{});
+      service = new Collections(flux, <any>{});
 
-      expect(collectionsService.selectedCollection).to.eq(collection);
+      expect(service.selectedCollection).to.eq(collection);
     });
 
     it('should default to originally configured collection', () => {
       const collection = 'other collection';
       const config: any = { collection };
-      const collectionsService = new Collections(<any>{}, config);
+      service = new Collections(<any>{}, config);
 
-      expect(collectionsService.selectedCollection).to.eq(collection);
+      expect(service.selectedCollection).to.eq(collection);
     });
   });
 });

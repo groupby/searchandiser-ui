@@ -114,14 +114,13 @@ describe('searchandiser', () => {
 
   describe('search()', () => {
     it('should perform a blank search', (done) => {
+      const stub = sandbox.stub(flux, 'search', (query) =>
+        Promise.resolve(expect(query).to.be.undefined));
       flux.emit = (event, data) => {
         expect(event).to.eq('page_changed');
         expect(data).to.eql({ pageNumber: 1, finalPage: 1 });
+        expect(stub.called).to.be.true;
         done();
-      };
-      flux.search = (query) => {
-        expect(query).to.be.undefined;
-        return { then: (cb) => cb() };
       };
 
       searchandiser.search();

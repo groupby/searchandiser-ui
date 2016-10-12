@@ -4,12 +4,13 @@ import { expect } from 'chai';
 
 describe('redirect service', () => {
   let sandbox: Sinon.SinonSandbox;
+
   beforeEach(() => sandbox = sinon.sandbox.create());
   afterEach(() => sandbox.restore());
 
   it('should attach a handler for redirect events', () => {
     const redirect = 'my-page.html';
-    sandbox.stub(LOCATION, 'assign', (url) => expect(url).to.eq(redirect));
+    const stub = sandbox.stub(LOCATION, 'assign', (url) => expect(url).to.eq(redirect));
     const flux: any = {
       on: (event, cb) => {
         expect(event).to.eq('redirect');
@@ -18,5 +19,7 @@ describe('redirect service', () => {
     };
 
     new Redirect(flux).init();
+
+    expect(stub.called).to.be.true;
   });
 });

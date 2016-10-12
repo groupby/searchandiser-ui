@@ -208,13 +208,6 @@ describe(`${TAG} tag with sayt:true`, () => {
     });
 
     it('does a search of a suggested query when you click', (done) => {
-
-      // TODO: Move into unit tests
-      // flux.reset = (query): any => {
-      //   expect(query).to.eq('five');
-      //   done();
-      // };
-
       const tag = mount();
       const saytTag = sayt();
       saytTag.search = () => done();

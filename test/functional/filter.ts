@@ -28,7 +28,7 @@ suite<Filter>('gb-filter', ({ flux, html, mount }) => {
 
       expect(html().querySelector('gb-option-list')).to.be.ok;
       expect(label().textContent).to.eq('Filter');
-      expect(selectOptions().length).to.eq(1);
+      expect(selectOptions()).to.have.length(1);
       expect(selectOptions()[0].textContent).to.eq('DeWalt');
     });
 

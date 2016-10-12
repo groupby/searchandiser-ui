@@ -16,8 +16,8 @@ suite<Results>('gb-results', { config: { structure: STRUCT } }, ({ html, mount }
     const tag = mount();
 
     tag.updateRecords(<any>{ records: [{}, {}, {}] });
-    expect(products().length).to.eq(3);
-    expect(html().querySelectorAll('gb-list li').length).to.eq(3);
+    expect(products()).to.have.length(3);
+    expect(html().querySelectorAll('gb-list li')).to.have.length(3);
   });
 
   it('renders product info', () => {

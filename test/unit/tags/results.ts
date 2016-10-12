@@ -3,9 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-const STRUCTURE = { title: 'title', price: 'price', image: 'image' };
-
-suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag, expectSubscriptions }) => {
+suite('gb-results', Results, ({ flux, tag, expectSubscriptions }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
@@ -28,6 +26,8 @@ suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag,
     });
 
     it('should listen for events', () => {
+      tag().config = { structure: {} };
+
       expectSubscriptions(() => tag().init(), {
         [Events.RESULTS]: tag().updateRecords
       });
@@ -39,12 +39,16 @@ suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag,
       const records = [{ a: 'b' }, { c: 'd' }];
       const collection = 'mycollection';
       flux().query.withConfiguration({ collection });
-      tag().update = (obj: any) => {
-        expect(obj.records).to.eq(records);
-        expect(obj.collection).to.eq(collection);
-      };
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.records).to.eq(records);
+          expect(obj.collection).to.eq(collection);
+        });
 
       tag().updateRecords(<any>{ records });
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -52,6 +56,7 @@ suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag,
     it('should return the correct user style', () => {
       const name = 'record-label';
       tag().opts.css = { label: name };
+
       expect(tag().userStyle('label')).to.eq(name);
     });
 

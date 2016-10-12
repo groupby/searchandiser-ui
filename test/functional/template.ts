@@ -51,14 +51,14 @@ suite<Template>('gb-template', ({ html, mount }) => {
       }
     });
 
-    expect(contentZones().length).to.eq(1);
+    expect(contentZones()).to.have.length(1);
     expect(contentZones()[0].textContent).to.eq(content);
 
-    expect(richContentZones().length).to.eq(1);
+    expect(richContentZones()).to.have.length(1);
     expect(richContentZones()[0].firstElementChild.innerHTML).to.eq(richContent);
 
-    expect(recordZones().length).to.eq(1);
-    expect(recordZones()[0].querySelectorAll('gb-product').length).to.eq(1);
+    expect(recordZones()).to.have.length(1);
+    expect(recordZones()[0].querySelectorAll('gb-product')).to.have.length(1);
   });
 
   function contentZones() {

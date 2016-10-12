@@ -3,15 +3,17 @@ import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 
-const ROOT: any = { addEventListener: () => null };
-
-suite('gb-submit', Submit, { root: ROOT }, ({
+suite('gb-submit', Submit, ({
   flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure
 }) => {
 
   describe('init()', () => {
+    const ROOT: any = { addEventListener: () => null };
+
+    beforeEach(() => tag().root = ROOT);
+
     itShouldConfigure(DEFAULT_CONFIG);
 
     it('should set label for input tag', () => {
@@ -35,7 +37,7 @@ suite('gb-submit', Submit, { root: ROOT }, ({
     });
 
     it('should register click listener', () => {
-      const addEventListener = sinon.spy((event, cb): any => {
+      const addEventListener = sinon.spy((event, cb) => {
         expect(event).to.eq('click');
         expect(cb).to.eq(tag().submitQuery);
       });
@@ -71,19 +73,17 @@ suite('gb-submit', Submit, { root: ROOT }, ({
 
     it('should submit static query', () => {
       const newQuery = 'something';
+      const update = sinon.spy((query, refinements) => {
+        expect(query).to.eq(newQuery);
+        expect(refinements).to.eql([]);
+      });
       tag()._config.staticSearch = true;
       tag().searchBox = <HTMLInputElement>{ value: newQuery };
-      tag().services = <any>{
-        url: {
-          active: () => true,
-          update: (query, refinements) => {
-            expect(query).to.eq(newQuery);
-            expect(refinements.length).to.eq(0);
-          }
-        }
-      };
+      tag().services = <any>{ url: { update, active: () => true } };
 
       tag().submitQuery();
+
+      expect(update.called).to.be.true;
     });
   });
 });

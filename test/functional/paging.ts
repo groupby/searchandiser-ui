@@ -32,14 +32,14 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
     mount({ terminals: false });
 
     expect(html().querySelector('gb-terminal-pager')).to.be.ok;
-    expect(html().querySelectorAll('.gb-terminal__link').length).to.eq(0);
+    expect(html().querySelectorAll('.gb-terminal__link')).to.have.length(0);
   });
 
   it('should not render labels', () => {
     mount({ labels: false });
 
-    expect(html().querySelectorAll('.gb-terminal__link span').length).to.eq(0);
-    expect(html().querySelectorAll('.gb-pager__link span').length).to.eq(0);
+    expect(html().querySelectorAll('.gb-terminal__link span')).to.have.length(0);
+    expect(html().querySelectorAll('.gb-pager__link span')).to.have.length(0);
   });
 
   it('should render alternate labels', () => {
@@ -54,7 +54,7 @@ suite<Paging>('gb-paging', ({ html, mount }) => {
   it('should not render icons', () => {
     mount({ icons: false });
 
-    expect(html().querySelectorAll('gb-icon').length).to.eq(0);
+    expect(html().querySelectorAll('gb-icon')).to.have.length(0);
   });
 
   it('should render icons with classes', () => {

@@ -5,22 +5,25 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-const STRUCTURE = {
-  title: 'title',
-  price: 'price',
-  image: 'image'
-};
-
-suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
+suite('gb-sayt', Sayt, ({
   flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure
 }) => {
-  let sayt;
-
-  beforeEach(() => tag().sayt = sayt = { configure: () => null });
 
   describe('init()', () => {
+    const STRUCTURE = {
+      title: 'title',
+      price: 'price',
+      image: 'image'
+    };
+    let sayt;
+
+    beforeEach(() => {
+      tag().config = { structure: STRUCTURE };
+      sayt = tag().sayt = { configure: () => null };
+    });
+
     itShouldConfigure(DEFAULT_CONFIG);
 
     it('should have default values', () => {
@@ -31,22 +34,19 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     });
 
     it('should take configuration overrides from global config', () => {
-      const saytStructure = { image: 'thumbnail', url: 'url' };
-      tag().configure = () => tag()._config = {
-        products: 0,
-        structure: saytStructure
-      };
+      const structure = { image: 'thumbnail', url: 'url' };
+      tag().configure = () => tag()._config = { structure, products: 0 };
 
       tag().init();
 
-      expect(tag().struct).to.eql(Object.assign({}, STRUCTURE, saytStructure));
+      expect(tag().struct).to.eql(Object.assign({}, STRUCTURE, structure));
       expect(tag().showProducts).to.be.false;
     });
 
     it('should configure sayt', () => {
-      const generated = { a: 'b', c: 'd' };
-      tag().generateSaytConfig = (): any => generated;
+      const generated: any = { a: 'b', c: 'd' };
       const spy = sayt.configure = sinon.spy((config) => expect(config).to.eql(generated));
+      tag().generateSaytConfig = () => generated;
 
       tag().init();
 
@@ -80,18 +80,16 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       const collection = 'mycollection';
       const area = 'MyArea';
       tag().config = { customerId, collection, area };
-
-      // TODO: get rid of this
-      tag().init();
+      tag()._config = { queries: 2, products: 3, https: true };
 
       const config = tag().generateSaytConfig();
 
       expect(config).to.eql({
         subdomain: customerId,
         collection,
-        autocomplete: { numSearchTerms: 5 },
-        productSearch: { area, numProducts: 4 },
-        https: false
+        autocomplete: { numSearchTerms: 2 },
+        productSearch: { area, numProducts: 3 },
+        https: true
       });
     });
 
@@ -106,50 +104,59 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
 
   describe('reset()', () => {
     it('should reset autocomplete', () => {
-      let autocompleteReset = false;
-      tag().autocomplete = <any>{
-        reset: () => autocompleteReset = true
-      };
+      const reset = sinon.spy();
       const spy = tag().update = sinon.spy((data) => {
-        expect(autocompleteReset).to.be.true;
         expect(data.queries).to.be.null;
         expect(data.navigations).to.be.null;
         expect(data.products).to.be.null;
       });
+      tag().autocomplete = <any>{ reset };
 
       tag().reset();
 
+      expect(reset.called).to.be.true;
       expect(spy.called).to.be.true;
     });
   });
 
   describe('fetchSuggestions()', () => {
-    it('should fetch suggestions not products', (done) => {
-      const originalQuery = 'red sneakers';
-      const result = { a: 'b', c: 'd' };
-      sayt.autocomplete = (query) => {
-        expect(query).to.eq(originalQuery);
-        return {
-          then: (cb) => {
-            cb({ result });
-            done();
-          }
-        };
+    it('should fetch suggestions and process them', (done) => {
+      const newQuery = 'red sneakers';
+      const suggestions = { a: 'b', c: 'd' };
+      tag().sayt = {
+        autocomplete: (query) => {
+          expect(query).to.eq(newQuery);
+          return Promise.resolve({ result: suggestions });
+        }
       };
-      tag().update = (data) => expect(data.originalQuery).to.eq(originalQuery);
-      const spy = tag().processResults = sinon.spy((res) => expect(res).to.eql(result));
+      tag().handleSuggestions = ({ result, originalQuery }) => {
+        expect(result).to.eq(suggestions);
+        expect(originalQuery).to.eq(newQuery);
+        done();
+      };
+
+      tag().fetchSuggestions(newQuery);
+    });
+  });
+
+  describe('handleSuggestions()', () => {
+    it('should update with originalQuery', () => {
+      const newQuery = 'red sneakers';
+      const result = { a: 'b', c: 'd' };
+      const stub = sandbox().stub(tag(), 'processResults', (res) => expect(res).to.eql(result));
+      const spy =
+        tag().update =
+        sinon.spy((data) => expect(data.originalQuery).to.eq(newQuery));
       tag().searchProducts = () => expect.fail();
 
-      tag().fetchSuggestions(originalQuery);
+      tag().handleSuggestions({ result, originalQuery: newQuery });
 
+      expect(stub.called).to.be.true;
       expect(spy.called).to.be.true;
     });
 
-    it('should fetch product suggestions', (done) => {
+    it('should call searchProducts()', (done) => {
       const query = 'red sneakers';
-      sayt.autocomplete = () => {
-        return { then: (cb) => cb({ result: {} }) };
-      };
       tag().showProducts = true;
       tag().queries = [{ value: query }];
       tag().processResults = () => null;
@@ -159,28 +166,31 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
         done();
       };
 
-      tag().fetchSuggestions(undefined);
+      tag().handleSuggestions({ result: {}, originalQuery: undefined });
     });
   });
 
   describe('searchProducts()', () => {
-    it('should search products', () => {
+    it('should search products', (done) => {
       const suggestion = 'red sneakers';
       const products = [{ a: 'b' }, { c: 'd' }];
-      sayt.productSearch = (query) => {
+      const productSearch = sinon.spy((query) => {
         expect(query).to.eq(suggestion);
-        return { then: (cb) => cb({ result: { products } }) };
+        return Promise.resolve({ result: { products } });
+      });
+      tag().sayt = { productSearch };
+      tag().update = (data) => {
+        expect(data.products).to.eq(products);
+        expect(productSearch.called).to.be.true;
+        done();
       };
-      const spy = tag().update = sinon.spy((data) => expect(data.products).to.eq(products));
       tag().showProducts = true;
 
       tag().searchProducts(suggestion);
-
-      expect(spy.called).to.be.true;
     });
 
     it('should not search products', () => {
-      sayt.productSearch = () => expect.fail();
+      tag().sayt = { productSearch: () => expect.fail() };
       tag().showProducts = false;
 
       tag().searchProducts(undefined);
@@ -190,71 +200,73 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
   describe('rewriteQuery()', () => {
     it('should emit rewrite_query', () => {
       const newQuery = 'slippers';
-      flux().query.withQuery(newQuery);
-      const spy = flux().emit = sinon.spy((event: string, query: string): any => {
+      const stub = sandbox().stub(flux(), 'emit', (event, query) => {
         expect(event).to.eq(Events.REWRITE_QUERY);
         expect(query).to.eq(newQuery);
       });
+      flux().query.withQuery(newQuery);
 
       tag().rewriteQuery(newQuery);
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 
   describe('notifier()', () => {
     it('should fetch suggestions and rewrite query', () => {
       const newQuery = 'cool shoes';
+      const searchProducts = sandbox().stub(tag(), 'searchProducts', (query) => expect(query).to.eq(newQuery));
+      const rewriteQuery = sandbox().stub(tag(), 'rewriteQuery', (query) => expect(query).to.eq(newQuery));
       tag()._config = { autoSearch: true };
-      const searchSpy = tag().searchProducts = sinon.spy((query) => expect(query).to.eq(newQuery));
-      const rewriteSpy = tag().rewriteQuery = sinon.spy((query) => expect(query).to.eq(newQuery));
 
       tag().notifier(newQuery);
 
-      expect(searchSpy.called).to.be.true;
-      expect(rewriteSpy.called).to.be.true;
+      expect(searchProducts.called).to.be.true;
+      expect(rewriteQuery.called).to.be.true;
     });
 
     it('should fetch rewrite query but not fetch suggestions', () => {
       const newQuery = 'cool shoes';
+      const stub = sandbox().stub(tag(), 'rewriteQuery', (query) => expect(query).to.eq(newQuery));
       tag()._config = { autoSearch: false };
       tag().searchProducts = () => expect.fail();
-      const spy = tag().rewriteQuery = sinon.spy((query) => expect(query).to.eq(newQuery));
 
       tag().notifier(newQuery);
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 
   describe('searchRefinement()', () => {
     it('should refine', () => {
       const target = { a: 'b' };
-      const spy = flux().resetRecall = sinon.spy();
-      tag().refine = (targetElement, query) => {
+      const resetRecall = sandbox().stub(flux(), 'resetRecall');
+      const refine = sandbox().stub(tag(), 'refine', (targetElement, query) => {
         expect(targetElement).to.eq(target);
         expect(query).to.eq('');
-      };
+      });
 
       tag().searchRefinement(<any>{ target });
 
-      expect(spy.called).to.be.true;
+      expect(resetRecall.called).to.be.true;
+      expect(refine.called).to.be.true;
     });
   });
 
   describe('searchCategory()', () => {
     it('should refine with query', () => {
       const target = { a: 'b' };
-      const spy = flux().resetRecall = sinon.spy();
-      tag().refine = (targetElement, query) => {
+      const resetRecall = sandbox().stub(flux(), 'resetRecall');
+      const refine = sandbox().stub(tag(), 'refine', (targetElement, query) => {
         expect(targetElement).to.eq(target);
         expect(query).to.eq('boots');
-      };
+      });
       tag().originalQuery = 'boots';
 
       tag().searchCategory(<any>{ target });
 
-      expect(spy.called).to.be.true;
+      expect(resetRecall.called).to.be.true;
+      expect(refine.called).to.be.true;
     });
   });
 
@@ -306,8 +318,8 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     it('should update results with suggestion as query', () => {
       const suggestion = 'red heels';
       tag()._config = {};
-      tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
-      const spy = flux().reset = sinon.spy((query): any => expect(query).to.eq(suggestion));
+      const rewriteQuery = sandbox().stub(tag(), 'rewriteQuery', (query) => expect(query).to.eq(suggestion));
+      const reset = sandbox().stub(flux(), 'reset', (query) => expect(query).to.eq(suggestion));
 
       tag().search(<any>{
         target: {
@@ -316,14 +328,15 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
         }
       });
 
-      expect(spy.called).to.be.true;
+      expect(rewriteQuery.called).to.be.true;
+      expect(reset.called).to.be.true;
     });
 
     it('should search for the gb-sayt-link node', () => {
       const suggestion = 'red heels';
       tag()._config = {};
-      tag().rewriteQuery = (query) => expect(query).to.eq(suggestion);
-      const spy = flux().reset = sinon.spy((query): any => expect(query).to.eq(suggestion));
+      const rewriteQuery = sandbox().stub(tag(), 'rewriteQuery', (query) => expect(query).to.eq(suggestion));
+      const reset = sandbox().stub(flux(), 'reset', (query) => expect(query).to.eq(suggestion));
 
       tag().search(<any>{
         target: {
@@ -336,7 +349,8 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
         }
       });
 
-      expect(spy.called).to.be.true;
+      expect(rewriteQuery.called).to.be.true;
+      expect(reset.called).to.be.true;
     });
 
     it('should perform a static search', () => {
@@ -365,32 +379,33 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
-      tag()._config = {};
-      tag().flux.rewrite = (query, config): any => {
+      const rewrite = sandbox().stub(flux(), 'rewrite', (query, config) => {
         expect(query).to.eq(suggestion);
         expect(config.skipSearch).to.be.true;
-      };
-      const spy = flux().refine = sinon.spy((selectedRefinement): any => {
+      });
+      const refine = sandbox().stub(flux(), 'refine', (selectedRefinement) =>
         expect(selectedRefinement).to.eql({
           navigationName: field,
           value: refinement,
           type: 'Value'
-        });
-      });
+        }));
+      tag()._config = {};
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement }
       }, suggestion);
 
-      expect(spy.called).to.be.true;
+      expect(rewrite.called).to.be.true;
+      expect(refine.called).to.be.true;
     });
 
     it('should skip refinement and do query', () => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
-      const spy = flux().reset = sinon.spy((query): any => expect(query).to.eq(suggestion));
+      const stub = sandbox().stub(flux(), 'reset', (query): any =>
+        expect(query).to.eq(suggestion));
       flux().rewrite = (): any => expect.fail();
       tag()._config = {};
 
@@ -399,7 +414,7 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
         dataset: { field, refinement, norefine: true }
       }, suggestion);
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should perform a static refinement', () => {
@@ -425,14 +440,15 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
 
   describe('processResults()', () => {
     it('should update with defaults', () => {
-      // TODO: add spy and check for called
-      const spy = tag().update = sinon.spy(({ results, queries, navigations, categoryResults }) => {
-        expect(results).to.eql({});
-        expect(queries).to.be.undefined;
-        expect(navigations).to.eql([]);
-        expect(categoryResults).to.eql([]);
-        expect(tag().matchesInput).to.not.be.ok;
-      });
+      const spy =
+        tag().update =
+        sinon.spy(({ results, queries, navigations, categoryResults }) => {
+          expect(results).to.eql({});
+          expect(queries).to.be.undefined;
+          expect(navigations).to.eql([]);
+          expect(categoryResults).to.eql([]);
+          expect(tag().matchesInput).to.not.be.ok;
+        });
 
       tag().processResults({});
 
@@ -441,9 +457,11 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
 
     it('should extract and filter navigations', () => {
       const newNavigations = [{ name: 'brand' }, { name: 'colour' }];
+      const spy =
+        tag().update =
+        sinon.spy(({ navigations }) =>
+          expect(navigations).to.eql([{ name: 'colour', displayName: 'colour' }]));
       tag()._config = { allowedNavigations: ['colour'], navigationNames: {} };
-      const spy = tag().update = sinon.spy(({ navigations }) =>
-        expect(navigations).to.eql([{ name: 'colour', displayName: 'colour' }]));
 
       tag().processResults({ navigations: newNavigations });
 
@@ -452,9 +470,11 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
 
     it('should rename navigations', () => {
       const newNavigations = [{ name: 'colour' }];
+      const spy =
+        tag().update =
+        sinon.spy(({ navigations }) =>
+          expect(navigations).to.eql([{ name: 'colour', displayName: 'Colour' }]));
       tag()._config = { allowedNavigations: ['colour'], navigationNames: { colour: 'Colour' } };
-      const spy = tag().update = sinon.spy(({ navigations }) =>
-        expect(navigations).to.eql([{ name: 'colour', displayName: 'Colour' }]));
 
       tag().processResults({ navigations: newNavigations });
 
@@ -462,19 +482,18 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     });
 
     it('should match input', () => {
-      const query = 'red boots';
-      const value = 'red boots';
+      const value = tag().originalQuery = 'red boots';
       const additionalInfo = { a: 'b' };
       const categories = ['a', 'b'];
       const searchTerms = [{ value, additionalInfo }, { value: 'other' }];
+      const spy =
+        tag().update =
+        sinon.spy(({ categoryResults }) => expect(categoryResults).to.eq(categories));
       tag().extractCategoryResults = (categoryQuery) => {
         expect(categoryQuery.additionalInfo).to.eq(additionalInfo);
         expect(categoryQuery.value).to.eq(value);
         return categories;
       };
-      tag().originalQuery = query;
-      const spy = tag().update = sinon.spy(({ categoryResults }) =>
-        expect(categoryResults).to.eq(categories));
 
       tag().processResults({ searchTerms });
 
@@ -485,9 +504,10 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
 
     it('should not match input', () => {
       const searchTerms = [{ value: 'red boots' }, { value: 'other' }];
+      const spy =
+        tag().update =
+        sinon.spy(({ categoryResults }) => expect(categoryResults).to.eql([]));
       tag().originalQuery = 'blue socks';
-      const spy = tag().update = sinon.spy(({ categoryResults }) =>
-        expect(categoryResults).to.eql([]));
 
       tag().processResults({ searchTerms });
 
@@ -497,15 +517,15 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     });
 
     it('should match case-insensitive input', () => {
-      const query = 'Red Boots';
       const value = 'red boots';
       const additionalInfo = { a: 'b' };
       const searchTerms = [{ value, additionalInfo }, { value: 'other' }];
       const categoryRes: any = { c: 'd' };
-      tag().originalQuery = query;
+      const spy =
+        tag().update =
+        sinon.spy(({ categoryResults }) => expect(categoryResults).to.eq(categoryRes));
+      tag().originalQuery = 'Red Boots';
       tag().extractCategoryResults = () => categoryRes;
-      const spy = tag().update = sinon.spy(({ categoryResults }) =>
-        expect(categoryResults).to.eq(categoryRes));
 
       tag().processResults({ searchTerms });
 
@@ -547,16 +567,16 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     it('should disable autocomplete and add input listener', () => {
       const searchFunc = () => null;
       const debouncedSearchFunc = () => null;
-      sandbox().stub(utils, 'debounce', (func) => {
-        expect(func).to.eq(searchFunc);
-        return debouncedSearchFunc;
-      });
       const addEventListener = sinon.spy((event, cb) => {
         expect(event).to.eq('input');
         expect(cb).to.eq(debouncedSearchFunc);
       });
       const searchBox = { autocomplete: 'on', addEventListener };
       const queryTag: any = { searchBox };
+      sandbox().stub(utils, 'debounce', (func) => {
+        expect(func).to.eq(searchFunc);
+        return debouncedSearchFunc;
+      });
       tag().debouncedSearch = (input) => {
         expect(input).to.eq(searchBox);
         return searchFunc;
@@ -570,10 +590,9 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
 
     it('should debounce with the configured delay', () => {
       const saytDelay = 1423;
+      const stub = sandbox().stub(utils, 'debounce', (func, delay) =>
+        expect(delay).to.eq(saytDelay));
       tag()._config = { delay: saytDelay };
-      const stub = sandbox().stub(utils, 'debounce', (func, delay) => {
-        expect(delay).to.eq(saytDelay);
-      });
 
       tag().listenForInput(MOCK_QUERY);
 
@@ -581,10 +600,9 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     });
 
     it('should debounce with minimum delay of 100', () => {
+      const stub = sandbox().stub(utils, 'debounce', (func, delay) =>
+        expect(delay).to.eq(MIN_DELAY));
       tag()._config = { delay: 12 };
-      const stub = sandbox().stub(utils, 'debounce', (func, delay) => {
-        expect(delay).to.eq(MIN_DELAY);
-      });
 
       tag().listenForInput(MOCK_QUERY);
 
@@ -609,24 +627,24 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     });
 
     it('should return a function that calls reset()', () => {
-      tag()._config = { minimumCharacters: 3 };
       const func = tag().debouncedSearch(<any>{ value: '' });
-      const spy = tag().reset = sinon.spy();
+      const stub = sandbox().stub(tag(), 'reset');
+      tag()._config = { minimumCharacters: 3 };
 
       func();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should return a function that calls fetchSuggestions()', () => {
       const value = 'nike snea';
-      tag()._config = { minimumCharacters: 3 };
       const func = tag().debouncedSearch(<any>{ value });
-      const spy = tag().fetchSuggestions = sinon.spy((val) => expect(val).to.eq(value));
+      const stub = sandbox().stub(tag(), 'fetchSuggestions', (val) => expect(val).to.eq(value));
+      tag()._config = { minimumCharacters: 3 };
 
       func();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 });

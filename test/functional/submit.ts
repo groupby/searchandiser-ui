@@ -2,7 +2,7 @@ import { Submit } from '../../src/tags/submit/gb-submit';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<Submit>('gb-submit', ({ flux, html, mount }) => {
+suite<Submit>('gb-submit', ({ flux, html, mount, sandbox }) => {
   it('mounts tag', () => {
     const tag = mount();
 
@@ -13,10 +13,11 @@ suite<Submit>('gb-submit', ({ flux, html, mount }) => {
 
   it('should reset query', () => {
     const tag = mount();
+    const stub = sandbox().stub(flux(), 'reset', (value): any => expect(value).to.eq('old'));
     tag.searchBox = <any>{ value: 'old' };
 
-    flux().reset = (value): any => expect(value).to.eq('old');
-
     tag.root.click();
+
+    expect(stub.called).to.be.true;
   });
 });
