@@ -222,12 +222,12 @@ suite('gb-paging', Paging, ({
 
     it('should switch to the given page', () => {
       const newPage = 7;
-
-      const pager = tag().wrapPager(<any>{
-        switchPage: (page) => expect(page).to.eq(newPage)
-      });
+      const switchPage = sinon.spy((page) => expect(page).to.eq(newPage));
+      const pager = tag().wrapPager(<any>{ switchPage });
 
       pager.switchPage(newPage);
+
+      expect(switchPage.called).to.be.true;
     });
   });
 });
