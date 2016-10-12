@@ -38,11 +38,11 @@ export function validateConfig(config: SearchandiserConfig) {
   if (!config.structure) {
     throw new Error('must provide a record structure');
   }
-  const hasVariants = !!config.structure._variantStructure;
-  if (!(config.structure.title || (hasVariants && config.structure._variantStructure.title))) {
+  const struct = Object.assign(config.structure, config.structure._variantStructure);
+  if (!(struct.title && struct.title.trim())) {
     throw new Error('structure.title must be the path to the title field');
   }
-  if (!(config.structure.price || (hasVariants && config.structure._variantStructure.price))) {
+  if (!(struct.price && struct.price.trim())) {
     throw new Error('structure.price must be the path to the price field');
   }
 }

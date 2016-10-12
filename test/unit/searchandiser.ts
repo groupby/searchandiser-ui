@@ -307,8 +307,20 @@ describe('searchandiser', () => {
       expect(() => validateConfig(config)).to.throw('structure.title must be the path to the title field');
     });
 
+    it('should require non-blank structure.title', () => {
+      const config: any = { structure: { title: '  ' } };
+
+      expect(() => validateConfig(config)).to.throw('structure.title must be the path to the title field');
+    });
+
     it('should require structure.price', () => {
       const config: any = { structure: { title: 'title' } };
+
+      expect(() => validateConfig(config)).to.throw('structure.price must be the path to the price field');
+    });
+
+    it('should require non-blank structure.price', () => {
+      const config: any = { structure: { title: 'title', price: '  ' } };
 
       expect(() => validateConfig(config)).to.throw('structure.price must be the path to the price field');
     });
