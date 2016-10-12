@@ -1,67 +1,67 @@
 import { Filter } from '../../../src/services/filter';
+import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
 import { Events, FluxCapacitor, Query } from 'groupby-api';
 
 describe('filter service', () => {
   let sandbox: Sinon.SinonSandbox;
-  let filterService: Filter;
+  let service: Filter;
 
   beforeEach(() => {
-    filterService = new Filter(<any>{}, <any>{});
+    service = new Filter(<any>{}, <any>{});
     sandbox = sinon.sandbox.create();
   });
   afterEach(() => sandbox.restore());
 
   it('should initialize flux clone', () => {
-    expect(filterService.fluxClone).to.be.an.instanceof(FluxCapacitor);
+    expect(service.fluxClone).to.be.an.instanceof(FluxCapacitor);
   });
 
   it('should extract configuration', () => {
     const filterConfig = { a: 'b' };
-    filterService = new Filter(<any>{}, <any>{ tags: { filter: filterConfig } });
+    service = new Filter(<any>{}, <any>{ tags: { filter: filterConfig } });
 
-    expect(filterService.filterConfig).to.eq(filterConfig);
+    expect(service.filterConfig).to.eq(filterConfig);
   });
 
   it('should default to empty configuration', () => {
-    expect(filterService.filterConfig).to.eql({});
+    expect(service.filterConfig).to.eql({});
   });
 
   describe('init()', () => {
     it('should listen for results', () => {
-      const flux: any = {
-        on: (event, cb) => {
-          expect(event).to.eq(Events.RESULTS);
-          expect(cb).to.be.a('function');
-        }
-      };
-      filterService = new Filter(flux, <any>{});
+      const flux: any = {};
+      service = new Filter(flux, <any>{});
 
-      filterService.init();
+      expectSubscriptions(() => service.init(), {
+        [Events.RESULTS]: null
+      }, flux);
     });
   });
 
   describe('isTargetNav()', () => {
     it('should match navigation', () => {
       const navName = 'Brand';
-      filterService = new Filter(<any>{}, <any>{ tags: { filter: { field: navName } } });
+      const config: any = { tags: { filter: { field: navName } } };
+      service = new Filter(<any>{}, config);
 
-      expect(filterService.isTargetNav(navName)).to.be.true;
+      expect(service.isTargetNav(navName)).to.be.true;
     });
 
     it('should not match navigation', () => {
-      filterService = new Filter(<any>{}, <any>{ tags: { filter: { field: 'Brand' } } });
+      const config: any = { tags: { filter: { field: 'Brand' } } };
+      service = new Filter(<any>{}, config);
 
-      expect(filterService.isTargetNav('Price')).to.be.false;
+      expect(service.isTargetNav('Price')).to.be.false;
     });
   });
 
   describe('clone()', () => {
     it('should return a FluxCapacitor', () => {
       const collection = 'otherProducts';
-      filterService = new Filter(<any>{}, <any>{ collection });
+      service = new Filter(<any>{}, <any>{ collection });
 
-      const fluxClone = filterService.clone();
+      const fluxClone = service.clone();
 
       expect(fluxClone).to.be.an.instanceof(FluxCapacitor);
       expect(fluxClone.query.raw.collection).to.eq(collection);
@@ -71,34 +71,34 @@ describe('filter service', () => {
   describe('updateFluxClone()', () => {
     it('should update fluxClone state', () => {
       const parentQuery = 'red sneakers';
-      filterService = new Filter(<any>{ query: new Query(parentQuery) }, <any>{});
+      service = new Filter(<any>{ query: new Query(parentQuery) }, <any>{});
 
-      filterService.fluxClone.search = (query: string): any => {
+      service.fluxClone.search = (query: string): any => {
         expect(query).to.eq(parentQuery);
         return { then: (cb: Function) => expect(cb).to.be.a('function') };
       };
 
-      filterService.updateFluxClone();
-      expect(filterService.fluxClone.query.raw.refinements).to.eql([]);
+      service.updateFluxClone();
+      expect(service.fluxClone.query.raw.refinements).to.eql([]);
     });
 
     it('should update fluxClone state with refinements', () => {
       const parentQuery = 'red sneakers';
       const refinements: any = { a: 'b', c: 'd' };
-      filterService = new Filter(<any>{
+      service = new Filter(<any>{
         query: new Query(parentQuery)
           .withSelectedRefinements(refinements)
       }, <any>{});
 
-      filterService.fluxClone.search = (query: string): any => {
+      service.fluxClone.search = (query: string): any => {
         expect(query).to.eq(parentQuery);
         return { then: (cb: Function) => expect(cb).to.be.a('function') };
       };
 
-      filterService.isTargetNav = () => false;
+      service.isTargetNav = () => false;
 
-      filterService.updateFluxClone();
-      expect(filterService.fluxClone.query.raw.refinements).to.eql([refinements]);
+      service.updateFluxClone();
+      expect(service.fluxClone.query.raw.refinements).to.eql([refinements]);
     });
   });
 });
