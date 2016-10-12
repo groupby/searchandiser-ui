@@ -61,14 +61,32 @@ suite('gb-submit', Submit, ({
   });
 
   describe('submitQuery()', () => {
-    it('should submit query', () => {
+    it('should submit query', (done) => {
       const query = 'something';
-      flux().reset = (value): any => expect(value).to.eq(query);
+      flux().reset = (value): any => {
+        expect(value).to.eq(query);
+        done();
+      };
       tag().searchBox = <HTMLInputElement>{ value: query };
 
       tag().submitQuery();
+    });
 
-      expect(tag().searchBox.value).to.eq(query);
+    it('should emit tracker event', (done) => {
+      const query = 'something';
+      const stub = sandbox().stub(flux(), 'reset', () => Promise.resolve());
+      tag().searchBox = <HTMLInputElement>{ value: query };
+      tag().services = <any>{
+        tracker: {
+          search: () => {
+            expect(tag().searchBox.value).to.eq(query);
+            expect(stub.called).to.be.true;
+            done();
+          }
+        }
+      };
+
+      tag().submitQuery();
     });
 
     it('should submit static query', () => {

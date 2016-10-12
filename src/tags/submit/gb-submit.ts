@@ -41,7 +41,8 @@ export class Submit {
     if (this._config.staticSearch && this.services.url.active()) {
       this.services.url.update(inputValue, []);
     } else {
-      this.flux.reset(inputValue);
+      this.flux.reset(inputValue)
+        .then(() => this.services.tracker.search());
     }
   }
 }

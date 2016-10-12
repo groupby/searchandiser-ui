@@ -4,7 +4,7 @@ declare interface Debounce {
 
 declare module 'debounce' {
 
-  var debounce: Debounce;
+  const debounce: Debounce;
 
   export = debounce;
 }

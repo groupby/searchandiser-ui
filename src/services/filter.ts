@@ -21,7 +21,7 @@ export class Filter {
 
   updateFluxClone() {
     const searchRequest = this.flux.query.raw;
-    // TODO this is probably broken in terms of state propagation
+    // TODO: this is probably broken in terms of state propagation
     this.fluxClone.query.withConfiguration(<any>{ refinements: [] });
     if (searchRequest.refinements) {
       const filteredRefinements: any[] = searchRequest.refinements

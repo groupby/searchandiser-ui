@@ -11,9 +11,12 @@ suite<Submit>('gb-submit', ({ flux, html, mount, sandbox }) => {
     expect(html().querySelector('.gb-submit').textContent).to.eq('🔍');
   });
 
-  it('should reset query', () => {
+  it('should reset query', (done) => {
     const tag = mount();
-    const stub = sandbox().stub(flux(), 'reset', (value): any => expect(value).to.eq('old'));
+    const stub = sandbox().stub(flux(), 'reset', (value): any => {
+      expect(value).to.eq('old');
+      done();
+    });
     tag.searchBox = <any>{ value: 'old' };
 
     tag.root.click();

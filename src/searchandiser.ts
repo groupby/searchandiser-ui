@@ -15,10 +15,11 @@ export const DEFAULT_URL_CONFIG = { queryParam: 'q', searchUrl: 'search' };
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig & any = {}) {
     const config: SearchandiserConfig = applyDefaultConfig(rawConfig);
+    validateConfig(config);
     const flux = Object.assign(initCapacitor(config), Events);
     const services = initServices(flux, config);
     riot.mixin(MixinFlux(flux, config, services));
-    Object.assign(configure, { flux, config }, new Searchandiser()['__proto__']);
+    Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
   };
 }
 
@@ -31,6 +32,19 @@ export function applyDefaultConfig(rawConfig: SearchandiserConfig): Searchandise
   const config = Object.assign({}, DEFAULT_CONFIG, rawConfig);
   config.url = Object.assign(DEFAULT_URL_CONFIG, config.url);
   return config;
+}
+
+export function validateConfig(config: SearchandiserConfig) {
+  if (!config.structure) {
+    throw new Error('must provide a record structure');
+  }
+  const struct = Object.assign(config.structure, config.structure._variantStructure);
+  if (!(struct.title && struct.title.trim())) {
+    throw new Error('structure.title must be the path to the title field');
+  }
+  if (!(struct.price && struct.price.trim())) {
+    throw new Error('structure.price must be the path to the price field');
+  }
 }
 
 export function transformConfig(config: SearchandiserConfig): SearchandiserConfig & any {
@@ -57,6 +71,7 @@ export function transformConfig(config: SearchandiserConfig): SearchandiserConfi
 export class Searchandiser {
 
   flux: FluxCapacitor;
+  services: any;
   config: SearchandiserConfig;
 
   init() {
@@ -115,10 +130,17 @@ export interface UrlConfig {
   detailsUrl?: string;
 }
 
+export interface TrackerConfig {
+  sessionId?: string;
+  visitorId?: string;
+}
+
 export interface SearchandiserConfig {
   bridge?: BridgeConfig;
 
   url?: UrlConfig;
+
+  tracker?: TrackerConfig;
 
   customerId: string;
   area?: string;

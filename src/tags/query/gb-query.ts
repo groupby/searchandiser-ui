@@ -65,7 +65,8 @@ export class Query {
   }
 
   resetToInputValue() {
-    this.flux.reset(this.inputValue());
+    this.flux.reset(this.inputValue())
+      .then(() => this.services.tracker.search());
   }
 
   listenForStaticSearch() {
@@ -96,7 +97,6 @@ export class Query {
   }
 
   setLocation() {
-    // TODO better way to do this is with browser history rewrites
     if (this.services.url.active()) {
       this.services.url.update(this.inputValue());
     } else {

@@ -140,6 +140,27 @@ suite('gb-query', Query, ({
     });
   });
 
+  describe('resetToInputValue()', () => {
+    it('should call flux.reset()', (done) => {
+      const inputValue = { a: 'b' };
+      sandbox().stub(tag(), 'inputValue', () => inputValue);
+      flux().reset = (input): any => {
+        expect(input).to.eq(inputValue);
+        done();
+      };
+
+      tag().resetToInputValue();
+    });
+
+    it('should call emit tracker event', (done) => {
+      sandbox().stub(tag(), 'inputValue');
+      flux().reset = (): any => Promise.resolve();
+      tag().services = <any>{ tracker: { search: () => done() } };
+
+      tag().resetToInputValue();
+    });
+  });
+
   describe('keydownListener()', () => {
     it('should not call onSubmit()', () => {
       const stub = sandbox().stub(utils, 'findTag', () => false);

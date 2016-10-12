@@ -186,9 +186,11 @@ export class Sayt {
       this.services.url.update(query, doRefinement ? [refinement] : []);
     } else if (doRefinement) {
       this.flux.rewrite(query, { skipSearch: true });
-      this.flux.refine(refinement);
+      this.flux.refine(refinement)
+        .then(() => this.services.tracker.sayt());
     } else {
-      this.flux.reset(query);
+      this.flux.reset(query)
+        .then(() => this.services.tracker.sayt());
     }
   }
 
@@ -202,7 +204,8 @@ export class Sayt {
       this.services.url.update(query, []);
     } else {
       this.rewriteQuery(query);
-      this.flux.reset(query);
+      this.flux.reset(query)
+        .then(() => this.services.tracker.sayt());
     }
   }
 
