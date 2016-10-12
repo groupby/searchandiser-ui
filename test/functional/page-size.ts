@@ -16,7 +16,7 @@ suite<PageSize>('gb-page-size', ({ flux, html, mount }) => {
 
     expect(html().querySelector('gb-option-list')).to.be.ok;
     expect(label().textContent).to.eq('10');
-    expect(selectOptions().length).to.eq(4);
+    expect(selectOptions()).to.have.length(4);
     expect(selectOptions()[2].textContent).to.eq('50');
   });
 

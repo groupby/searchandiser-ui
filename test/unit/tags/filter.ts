@@ -2,7 +2,6 @@ import { FILTER_UPDATED_EVENT } from '../../../src/services/filter';
 import { DEFAULT_CONFIG, Filter } from '../../../src/tags/filter/gb-filter';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Results } from 'groupby-api';
 
 suite('gb-filter', Filter, ({
   flux, tag, sandbox,
@@ -35,7 +34,7 @@ suite('gb-filter', Filter, ({
 
       const converted = tag().convertRefinements([{ refinements: [{ a: 'b' }] }]);
 
-      expect(converted).to.be.empty;
+      expect(converted).to.eql([]);
     });
   });
 

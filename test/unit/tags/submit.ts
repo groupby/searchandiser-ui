@@ -3,15 +3,17 @@ import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 
-const ROOT: any = { addEventListener: () => null };
-
-suite('gb-submit', Submit, { root: ROOT }, ({
+suite('gb-submit', Submit, ({
   flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure
 }) => {
 
   describe('init()', () => {
+    const ROOT: any = { addEventListener: () => null };
+
+    beforeEach(() => tag().root = ROOT);
+
     itShouldConfigure(DEFAULT_CONFIG);
 
     it('should set label for input tag', () => {
@@ -73,7 +75,7 @@ suite('gb-submit', Submit, { root: ROOT }, ({
       const newQuery = 'something';
       const update = sinon.spy((query, refinements) => {
         expect(query).to.eq(newQuery);
-        expect(refinements.length).to.eq(0);
+        expect(refinements).to.eql([]);
       });
       tag()._config.staticSearch = true;
       tag().searchBox = <HTMLInputElement>{ value: newQuery };

@@ -80,8 +80,8 @@ describe('collections service', () => {
           search: (request: Request) => {
             expect(request.collection).to.be.oneOf(collections);
             expect(request.pageSize).to.eq(0);
-            expect(request.fields).to.be.empty;
-            expect(request.refinements).to.be.empty;
+            expect(request.fields).to.eq('');
+            expect(request.refinements).to.eql([]);
             return Promise.resolve({ totalRecordCount: counts[request.collection] });
           }
         },
@@ -91,10 +91,10 @@ describe('collections service', () => {
         }
       };
       const collectionsService = new Collections(flux, <any>{});
-
       collectionsService.collections = collections;
 
       collectionsService.updateCollectionCounts();
+
       expect(collectionsService.inProgress).to.be.an.instanceof(Promise);
     });
 

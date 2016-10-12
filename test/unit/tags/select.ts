@@ -2,12 +2,12 @@ import { Select } from '../../../src/tags/select/gb-select';
 import suite from './_suite';
 import { expect } from 'chai';
 
-const SCOPE = { _config: {} };
-
-suite('gb-select', Select, { _scope: SCOPE }, ({ tag, sandbox }) => {
+suite('gb-select', Select, ({ tag, sandbox }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
+      const scope = tag()._scope = <any>{ _config: {} };
+
       tag().init();
 
       expect(tag().iconUrl).to.eql(tag().iconUrl);
@@ -19,7 +19,7 @@ suite('gb-select', Select, { _scope: SCOPE }, ({ tag, sandbox }) => {
       expect(tag().selected).to.be.undefined;
       expect(tag().focused).to.be.undefined;
       expect(tag().default).to.be.true;
-      expect(tag()._scope).to.eq(SCOPE);
+      expect(tag()._scope).to.eq(scope);
       expect(tag()._config).to.eql({});
     });
 

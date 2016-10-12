@@ -64,8 +64,8 @@ suite('gb-navigation', Navigation, ({
         }
       });
 
-      expect(processed.length).to.eq(3);
-      expect(processed[2].refinements.length).to.eq(2);
+      expect(processed).to.have.length(3);
+      expect(processed[2].refinements).to.have.length(2);
       expect((<any>processed[2].refinements[0]).value).to.eq('m');
       expect((<any>processed[2].refinements[1]).value).to.eq('n');
     });

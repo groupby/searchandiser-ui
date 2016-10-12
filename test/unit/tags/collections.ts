@@ -3,17 +3,15 @@ import { Collections, DEFAULT_CONFIG } from '../../../src/tags/collections/gb-co
 import suite from './_suite';
 import { expect } from 'chai';
 
-const SERVICES = {
-  collections: {}
-};
-
-suite('gb-collections', Collections, { services: SERVICES }, ({
+suite('gb-collections', Collections, ({
   flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure
 }) => {
 
   describe('init()', () => {
+    beforeEach(() => tag().services = <any>{ collections: {} });
+
     itShouldConfigure(DEFAULT_CONFIG);
 
     it('should set options from calculated config', () => {
@@ -30,7 +28,7 @@ suite('gb-collections', Collections, { services: SERVICES }, ({
 
       tag().init();
 
-      expect(tag().collections).to.be.empty;
+      expect(tag().collections).to.eql([]);
     });
 
     it('should accept collections with labels', () => {

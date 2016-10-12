@@ -24,7 +24,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
   describe('clearRefinements()', () => {
     it('should update refinements with empty array', () => {
       const stub = sandbox().stub(tag(), 'updateRefinements', (refinements) =>
-        expect(refinements).to.be.empty);
+        expect(refinements).to.eql([]));
 
       tag().clearRefinements();
 

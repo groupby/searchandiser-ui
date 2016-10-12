@@ -3,9 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-const STRUCTURE = { title: 'title', price: 'price', image: 'image' };
-
-suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag, expectSubscriptions }) => {
+suite('gb-results', Results, ({ flux, tag, expectSubscriptions }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
@@ -28,6 +26,8 @@ suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag,
     });
 
     it('should listen for events', () => {
+      tag().config = { structure: {} };
+
       expectSubscriptions(() => tag().init(), {
         [Events.RESULTS]: tag().updateRecords
       });

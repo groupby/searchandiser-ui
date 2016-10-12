@@ -8,11 +8,11 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 const TAG = 'gb-refinement';
+const MIXIN = { _scopeTo: () => null };
 
 describe(`${TAG} logic`, () => {
-  const mixin = { _scopeTo: () => null };
 
-  suite('gb-refinement', Refinement, mixin, ({ tag }) => {
+  suite('gb-refinement', Refinement, MIXIN, ({ tag }) => {
     describe('init()', () => {
       it('should have default values', () => {
         tag().init();
@@ -22,7 +22,7 @@ describe(`${TAG} logic`, () => {
     });
   });
 
-  suite('gb-available-refinement', AvailableRefinement, mixin, ({ tag }) => {
+  suite('gb-available-refinement', AvailableRefinement, MIXIN, ({ tag }) => {
     describe('send()', () => {
       it('should make refinement', () => {
         const refinement = tag().ref = { type: 'Range', low: 4, high: 6 };
@@ -40,7 +40,7 @@ describe(`${TAG} logic`, () => {
     });
   });
 
-  suite('gb-selected-refinement', SelectedRefinement, mixin, ({ tag }) => {
+  suite('gb-selected-refinement', SelectedRefinement, MIXIN, ({ tag }) => {
     describe('remove()', () => {
       it('should remove refinement', () => {
         const refinement = tag().ref = { type: 'Range', low: 4, high: 6 };

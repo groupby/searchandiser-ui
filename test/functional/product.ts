@@ -75,7 +75,7 @@ describe(`${TAG} tag`, () => {
       expect(variantHtml.querySelector('img').src).to.include('redsneaks.png');
       expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.1');
 
-      expect(variantLinks().length).to.eq(2);
+      expect(variantLinks()).to.have.length(2);
       expect((<DOMStringMap & any>(variantLinks()[0]).dataset).index).to.eq('0');
       expect((<DOMStringMap & any>(variantLinks()[1]).dataset).index).to.eq('1');
 

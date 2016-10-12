@@ -3,18 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-const struct = { title: 'title', price: 'price', image: 'image', url: 'url' };
-const allMeta = {
-  title: 'Red Sneakers',
-  price: '$12.45',
-  image: 'image.png',
-  id: '1340',
-  nested: {
-    value: '6532'
-  }
-};
-
-suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({
+suite('gb-paging', Paging, ({
   flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure

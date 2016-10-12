@@ -79,7 +79,7 @@ describe('filter service', () => {
       };
 
       filterService.updateFluxClone();
-      expect(filterService.fluxClone.query.raw.refinements).to.be.empty;
+      expect(filterService.fluxClone.query.raw.refinements).to.eql([]);
     });
 
     it('should update fluxClone state with refinements', () => {

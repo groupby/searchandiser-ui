@@ -4,7 +4,6 @@ import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-template', Template, ({ tag, itShouldConfigure, expectSubscriptions }) => {
-  const target = 'My Spotlight Template';
 
   describe('init()', () => {
     itShouldConfigure();
@@ -26,6 +25,7 @@ suite('gb-template', Template, ({ tag, itShouldConfigure, expectSubscriptions })
 
   describe('updateActive()', () => {
     it('should update active on RESULTS', () => {
+      const target = 'My Spotlight Template';
       const sortedZones = [{ a: 'b' }];
       const zones = { a: 'b' };
       const spy =
