@@ -5,22 +5,24 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-const STRUCTURE = {
-  title: 'title',
-  price: 'price',
-  image: 'image'
-};
-
-suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
+suite('gb-sayt', Sayt, ({
   flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure
 }) => {
 
   describe('init()', () => {
+    const STRUCTURE = {
+      title: 'title',
+      price: 'price',
+      image: 'image'
+    };
     let sayt;
 
-    beforeEach(() => sayt = tag().sayt = { configure: () => null });
+    beforeEach(() => {
+      tag().config = { structure: STRUCTURE };
+      sayt = tag().sayt = { configure: () => null };
+    });
 
     itShouldConfigure(DEFAULT_CONFIG);
 
