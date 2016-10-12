@@ -15,6 +15,7 @@ export const DEFAULT_URL_CONFIG = { queryParam: 'q', searchUrl: 'search' };
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig & any = {}) {
     const config: SearchandiserConfig = applyDefaultConfig(rawConfig);
+    validateConfig(config);
     const flux = Object.assign(initCapacitor(config), Events);
     const services = initServices(flux, config);
     riot.mixin(MixinFlux(flux, config, services));
@@ -31,6 +32,19 @@ export function applyDefaultConfig(rawConfig: SearchandiserConfig): Searchandise
   const config = Object.assign({}, DEFAULT_CONFIG, rawConfig);
   config.url = Object.assign(DEFAULT_URL_CONFIG, config.url);
   return config;
+}
+
+export function validateConfig(config: SearchandiserConfig) {
+  if (!config.structure) {
+    throw new Error('must provide a record structure');
+  }
+  const hasVariants = !!config.structure._variantStructure;
+  if (!(config.structure.title || (hasVariants && config.structure._variantStructure.title))) {
+    throw new Error('structure.title must be the path to the title field');
+  }
+  if (!(config.structure.price || (hasVariants && config.structure._variantStructure.price))) {
+    throw new Error('structure.price must be the path to the price field');
+  }
 }
 
 export function transformConfig(config: SearchandiserConfig): SearchandiserConfig & any {

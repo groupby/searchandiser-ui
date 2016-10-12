@@ -3,6 +3,7 @@ import {
   initCapacitor,
   initSearchandiser,
   transformConfig,
+  validateConfig,
   CONFIGURATION_MASK,
   DEFAULT_URL_CONFIG,
   Searchandiser
@@ -257,36 +258,83 @@ describe('searchandiser', () => {
     });
   });
 
-  it('should generate a configuration function', () => {
-    const fluxMixin = { a: 'b', c: 'd' };
-    const mixinStub = sandbox.stub(riot, 'mixin', (mixin) => expect(mixin).to.eq(fluxMixin));
-    const initServices = sandbox.stub(serviceInitialiser, 'initServices', (fluxInstance, config) => {
-      expect(fluxInstance).to.be.an.instanceof(FluxCapacitor);
-      expect(config).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG });
+  describe('initSearchandiser()', () => {
+    it('should generate a configuration function', () => {
+      const fluxMixin = { a: 'b', c: 'd' };
+      const structure = { title: 't', price: 'p' };
+      const mixinStub = sandbox.stub(riot, 'mixin', (mixin) => expect(mixin).to.eq(fluxMixin));
+      const initServices = sandbox.stub(serviceInitialiser, 'initServices', (fluxInstance, config) => {
+        expect(fluxInstance).to.be.an.instanceof(FluxCapacitor);
+        expect(config).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG, structure });
+      });
+      sandbox.stub(Tags, 'MixinFlux', () => fluxMixin);
+
+      const configure = initSearchandiser();
+      expect(configure).to.be.a('function');
+
+      configure({ structure });
+
+      expect(configure['flux']).to.be.an.instanceof(FluxCapacitor);
+      expect(configure['config']).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG, structure });
+      expect(mixinStub.called).to.be.true;
+      expect(initServices.called).to.be.true;
     });
-    sandbox.stub(Tags, 'MixinFlux', () => fluxMixin);
-
-    const configure = initSearchandiser();
-    expect(configure).to.be.a('function');
-
-    configure();
-
-    expect(configure['flux']).to.be.an.instanceof(FluxCapacitor);
-    expect(configure['config']).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG });
-    expect(mixinStub.called).to.be.true;
-    expect(initServices.called).to.be.true;
   });
 
-  it('should create a new flux capacitor', () => {
-    const config = { customerId: 123, a: 'b', c: 'd' };
-    const stub = sandbox.stub(groupby, 'FluxCapacitor', (customerId, configuration, mask) => {
-      expect(customerId).to.eq(123);
-      expect(configuration).to.eq(config);
-      expect(mask).to.eq(CONFIGURATION_MASK);
+  describe('initCapacitor()', () => {
+    it('should create a new flux capacitor', () => {
+      const config = { customerId: 123, a: 'b', c: 'd' };
+      const stub = sandbox.stub(groupby, 'FluxCapacitor', (customerId, configuration, mask) => {
+        expect(customerId).to.eq(123);
+        expect(configuration).to.eq(config);
+        expect(mask).to.eq(CONFIGURATION_MASK);
+      });
+
+      initCapacitor(<any>config);
+
+      expect(stub.called).to.be.true;
+    });
+  });
+
+  describe('validateConfig()', () => {
+    it('should require structure', () => {
+      expect(() => validateConfig(<any>{})).to.throw('must provide a record structure');
     });
 
-    initCapacitor(<any>config);
+    it('should require structure.title', () => {
+      const config: any = { structure: {} };
 
-    expect(stub.called).to.be.true;
+      expect(() => validateConfig(config)).to.throw('structure.title must be the path to the title field');
+    });
+
+    it('should require structure.price', () => {
+      const config: any = { structure: { title: 'title' } };
+
+      expect(() => validateConfig(config)).to.throw('structure.price must be the path to the price field');
+    });
+
+    it('should be valid', () => {
+      const config: any = { structure: { title: 'title', price: 'price' } };
+
+      expect(() => validateConfig(config)).not.to.throw();
+    });
+
+    it('should accept variant title', () => {
+      const config: any = { structure: { price: 'price', _variantStructure: { title: 'title' } } };
+
+      expect(() => validateConfig(config)).not.to.throw();
+    });
+
+    it('should accept variant price', () => {
+      const config: any = { structure: { title: 'title', _variantStructure: { price: 'price' } } };
+
+      expect(() => validateConfig(config)).not.to.throw();
+    });
+
+    it('should accept variant title and price', () => {
+      const config: any = { structure: { _variantStructure: { title: 'title', price: 'price' } } };
+
+      expect(() => validateConfig(config)).not.to.throw();
+    });
   });
 });
