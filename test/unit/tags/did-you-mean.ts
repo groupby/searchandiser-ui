@@ -19,20 +19,20 @@ suite('gb-did-you-mean', DidYouMean, ({
   describe('send()', () => {
     it('should rewrite on send', (done) => {
       const newQuery = 'red sneakers';
-      const stub = sandbox().stub(flux(), 'rewrite', (query) =>
-        Promise.resolve(expect(query).to.eq(newQuery)));
-      tag().services = <any>{
-        tracker: {
-          didYouMean: () => {
-            expect(stub.called).to.be.true;
-            done();
-          }
-        }
-      };
+      sandbox().stub(flux(), 'rewrite', (query) => {
+        expect(query).to.eq(newQuery);
+        done();
+      });
 
       tag().send(<any>{ target: { text: newQuery } });
+    });
 
-      expect(stub.called).to.be.true;
+    it('should emit tracker event', (done) => {
+      const newQuery = 'red sneakers';
+      sandbox().stub(flux(), 'rewrite', () => Promise.resolve());
+      tag().services = <any>{ tracker: { didYouMean: () => done() } };
+
+      tag().send(<any>{ target: { text: newQuery } });
     });
   });
 

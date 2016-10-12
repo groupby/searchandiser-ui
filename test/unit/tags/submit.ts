@@ -63,14 +63,24 @@ suite('gb-submit', Submit, ({
   describe('submitQuery()', () => {
     it('should submit query', (done) => {
       const query = 'something';
-      const spy = flux().reset = sinon.spy((value): any =>
-        Promise.resolve(expect(value).to.eq(query)));
+      flux().reset = (value): any => {
+        expect(value).to.eq(query);
+        done();
+      };
+      tag().searchBox = <HTMLInputElement>{ value: query };
+
+      tag().submitQuery();
+    });
+
+    it('should emit tracker event', (done) => {
+      const query = 'something';
+      const stub = sandbox().stub(flux(), 'reset', () => Promise.resolve());
       tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{
         tracker: {
           search: () => {
             expect(tag().searchBox.value).to.eq(query);
-            expect(spy.called).to.be.true;
+            expect(stub.called).to.be.true;
             done();
           }
         }

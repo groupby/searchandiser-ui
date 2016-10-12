@@ -150,40 +150,48 @@ suite('gb-paging', Paging, ({
   });
 
   describe('wrapPager()', () => {
-    it('first()', () => {
-      const reset = sinon.spy((page) => Promise.resolve());
+    it('first()', (done) => {
+      const reset = sinon.spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ reset });
+      tag().emitEvent = () => {
+        expect(reset.called).to.be.true;
+        done();
+      };
 
       pager.first();
-
-      expect(reset.called).to.be.true;
     });
 
-    it('prev()', () => {
-      const prev = sinon.spy((page) => Promise.resolve());
+    it('prev()', (done) => {
+      const prev = sinon.spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ prev });
+      tag().emitEvent = () => {
+        expect(prev.called).to.be.true;
+        done();
+      };
 
       pager.prev();
-
-      expect(prev.called).to.be.true;
     });
 
-    it('next()', () => {
-      const next = sinon.spy((page) => Promise.resolve());
+    it('next()', (done) => {
+      const next = sinon.spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ next });
+      tag().emitEvent = () => {
+        expect(next.called).to.be.true;
+        done();
+      };
 
       pager.next();
-
-      expect(next.called).to.be.true;
     });
 
-    it('last()', () => {
-      const last = sinon.spy((page) => Promise.resolve());
+    it('last()', (done) => {
+      const last = sinon.spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ last });
+      tag().emitEvent = () => {
+        expect(last.called).to.be.true;
+        done();
+      };
 
       pager.last();
-
-      expect(last.called).to.be.true;
     });
 
     it('switchPage()', (done) => {

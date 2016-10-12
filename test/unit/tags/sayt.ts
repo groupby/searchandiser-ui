@@ -318,7 +318,8 @@ suite('gb-sayt', Sayt, ({
     it('should update results with suggestion as query', (done) => {
       const suggestion = 'red heels';
       const rewriteQuery = sandbox().stub(tag(), 'rewriteQuery', (query) => expect(query).to.eq(suggestion));
-      const reset = sandbox().stub(flux(), 'reset', (query) => expect(query).to.eq(suggestion));
+      const reset = sandbox().stub(flux(), 'reset', (query) =>
+        Promise.resolve(expect(query).to.eq(suggestion)));
       tag()._config = {};
       tag().services = <any>{
         tracker: {
@@ -340,9 +341,9 @@ suite('gb-sayt', Sayt, ({
 
     it('should search for the gb-sayt-link node', () => {
       const suggestion = 'red heels';
-      tag()._config = {};
       const rewriteQuery = sandbox().stub(tag(), 'rewriteQuery', (query) => expect(query).to.eq(suggestion));
       const reset = sandbox().stub(flux(), 'reset', (query) => Promise.resolve(expect(query).to.eq(suggestion)));
+      tag()._config = {};
 
       tag().search(<any>{
         target: {
