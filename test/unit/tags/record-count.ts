@@ -22,13 +22,15 @@ suite('gb-record-count', RecordCount, ({ tag, expectSubscriptions }) => {
         },
         totalRecordCount: 300
       };
-      tag().update = (obj) => {
+      const spy = tag().update = sinon.spy((obj) => {
         expect(obj.first).to.eq(results.pageInfo.recordStart);
         expect(obj.last).to.eq(results.pageInfo.recordEnd);
         expect(obj.total).to.eq(results.totalRecordCount);
-      };
+      });
 
       tag().updatePageInfo(results);
+
+      expect(spy.called).to.be.true;
     });
   });
 });

@@ -14,7 +14,7 @@ const all_meta = {
   }
 };
 
-suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
+suite('gb-product', Product, { _scope: {} }, ({ tag, sandbox }) => {
 
   describe('init()', () => {
     beforeEach(() => tag().transformRecord = () => null);
@@ -37,10 +37,12 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
     });
 
     it('should call transformRecord()', () => {
-      tag().transformRecord = (allMeta) => expect(allMeta).to.eq(all_meta);
+      const stub = sandbox().stub(tag(), 'transformRecord', (allMeta) => expect(allMeta).to.eq(all_meta));
       tag().opts = { all_meta };
 
       tag().init();
+
+      expect(stub.called).to.be.true;
     });
 
     describe('struct', () => {
@@ -78,14 +80,18 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
     it('should perform transformation', () => {
       const remappedMeta = { e: 'f', g: 'h' };
       const variants = ['a', 'b', 'c'];
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.allMeta).to.eq(all_meta);
+          expect(obj.productMeta()).to.eq(remappedMeta);
+          expect(obj.variants).to.eq(variants);
+        });
       tag().transformer = <any>new MockTransformer(all_meta, remappedMeta, variants);
-      tag().update = (obj) => {
-        expect(obj.allMeta).to.eq(all_meta);
-        expect(obj.productMeta()).to.eq(remappedMeta);
-        expect(obj.variants).to.eq(variants);
-      };
 
       tag().transformRecord(all_meta);
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -108,20 +114,27 @@ suite('gb-product', Product, { _scope: {} }, ({ tag }) => {
   });
 
   describe('image()', () => {
-    it('should return image value', () => {
-      const images = ['image1.png', 'image2.png'];
+    const IMAGES = ['image1.png', 'image2.png'];
 
-      expect(tag().image(images[1])).to.eq(images[1]);
-      expect(tag().image(images)).to.eq(images[0]);
+    it('should return image value', () => {
+      expect(tag().image(IMAGES[1])).to.eq(IMAGES[1]);
+    });
+
+    it('should return image value from array', () => {
+      expect(tag().image(IMAGES)).to.eq(IMAGES[0]);
     });
   });
 
   describe('switchVariant()', () => {
     it('should update variantIndex', () => {
       const index = 12;
-      tag().update = (obj) => expect(obj.variantIndex).to.eq(index);
+      const spy =
+        tag().update =
+        sinon.spy((obj) => expect(obj.variantIndex).to.eq(index));
 
       tag().switchVariant(<any>{ target: { dataset: { index } } });
+
+      expect(spy.called).to.be.true;
     });
   });
 });

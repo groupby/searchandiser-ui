@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-related-queries', RelatedQueries, ({
-  flux, tag,
+  flux, tag, sandbox,
   expectSubscriptions
 }) => {
 
@@ -19,19 +19,25 @@ suite('gb-related-queries', RelatedQueries, ({
   describe('updatedRelatedQueries()', () => {
     it('should call update() with relatedQueries', () => {
       const relatedQueries = ['a', 'b', 'c'];
-      tag().update = (obj: any) => expect(obj.relatedQueries).to.eq(relatedQueries);
+      const spy =
+        tag().update =
+        sinon.spy((obj) => expect(obj.relatedQueries).to.eq(relatedQueries));
 
       tag().updatedRelatedQueries(<any>{ relatedQueries });
+
+      expect(spy.called).to.be.true;
     });
   });
 
   describe('send()', () => {
     it('should call flux.rewrite()', () => {
       const newQuery = 'red sneakers';
-
-      flux().rewrite = (query: string): any => expect(query).to.eq(newQuery);
+      const stub = sandbox().stub(flux(), 'rewrite', (query) =>
+        expect(query).to.eq(newQuery));
 
       tag().send(<any>{ target: { text: newQuery } });
+
+      expect(stub.called).to.be.true;
     });
   });
 });

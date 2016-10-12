@@ -10,8 +10,13 @@ const STRUCT = {
 
 describe('ProductTransformer', () => {
   let transformer: ProductTransformer;
+  let sandbox: Sinon.SinonSandbox;
 
-  beforeEach(() => transformer = new ProductTransformer(STRUCT));
+  beforeEach(() => {
+    transformer = new ProductTransformer(STRUCT);
+    sandbox = sinon.sandbox.create();
+  });
+  afterEach(() => sandbox.restore());
 
   describe('on construction', () => {
     it('should have default values', () => {
@@ -629,7 +634,7 @@ describe('ProductTransformer', () => {
     it('should return a remapped variant when called', () => {
       const originalVariant = { mainColour: 'blue', size: '12.5' };
       const remappedVariant = { a: 'b', c: 'd' };
-      sinon.stub(utils, 'remap', (meta) => {
+      sandbox.stub(utils, 'remap', (meta) => {
         expect(meta).to.eq(originalVariant);
         return remappedVariant;
       });

@@ -35,7 +35,7 @@ suite('gb-submit', Submit, { root: ROOT }, ({
     });
 
     it('should register click listener', () => {
-      const addEventListener = sinon.spy((event, cb): any => {
+      const addEventListener = sinon.spy((event, cb) => {
         expect(event).to.eq('click');
         expect(cb).to.eq(tag().submitQuery);
       });
@@ -71,19 +71,17 @@ suite('gb-submit', Submit, { root: ROOT }, ({
 
     it('should submit static query', () => {
       const newQuery = 'something';
+      const update = sinon.spy((query, refinements) => {
+        expect(query).to.eq(newQuery);
+        expect(refinements.length).to.eq(0);
+      });
       tag()._config.staticSearch = true;
       tag().searchBox = <HTMLInputElement>{ value: newQuery };
-      tag().services = <any>{
-        url: {
-          active: () => true,
-          update: (query, refinements) => {
-            expect(query).to.eq(newQuery);
-            expect(refinements.length).to.eq(0);
-          }
-        }
-      };
+      tag().services = <any>{ url: { update, active: () => true } };
 
       tag().submitQuery();
+
+      expect(update.called).to.be.true;
     });
   });
 });

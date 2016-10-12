@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-details', Details, ({
-  flux, tag,
+  flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure
 }) => {
@@ -40,31 +40,34 @@ suite('gb-details', Details, ({
     it('should call flux.details() if query is found', () => {
       const id = 1632;
       const idField = 'productId';
-      sinon.stub(utils, 'getParam', (idParam) => {
-        expect(idParam).to.eq('id');
-        return id;
-      });
-      sinon.stub(flux(), 'details', (productId, field) => {
+      const stub = sandbox().stub(flux(), 'details', (productId, field) => {
         expect(productId).to.eq(id);
         expect(field).to.eq(idField);
+      });
+      sandbox().stub(utils, 'getParam', (idParam) => {
+        expect(idParam).to.eq('id');
+        return id;
       });
       tag().config = { structure: { id: idField } };
 
       tag().init();
+
+      expect(stub.called).to.be.true;
     });
   });
 
   describe('updateRecord()', () => {
     it('should update record', () => {
-      const record = { a: 'b', c: 'd' };
-
-      tag().transformer = <any>{ transform: (allMeta) => () => allMeta };
-      tag().update = (obj: any) => {
-        expect(obj.allMeta).to.eql(record);
+      const allMeta = { a: 'b', c: 'd' };
+      const spy = tag().update = sinon.spy((obj) => {
+        expect(obj.allMeta).to.eql(allMeta);
         expect(obj.productMeta).to.be.a('function');
-      };
+      });
+      tag().transformer = <any>{ transform: (meta) => () => meta };
 
-      tag().updateRecord(<any>{ allMeta: record });
+      tag().updateRecord(<any>{ allMeta });
+
+      expect(spy.called).to.be.true;
     });
   });
 });

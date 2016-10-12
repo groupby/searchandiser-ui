@@ -34,23 +34,21 @@ suite('gb-query', Query, ({
   });
 
   describe('attachListeners()', () => {
-    beforeEach(() => tag().findSearchBox = (): any => ({
-      addEventListener: () => null
-    }));
+    beforeEach(() => tag().findSearchBox = () => ({ addEventListener: () => null }));
 
     it('should find the search box', () => {
-      const searchBox = {
-        addEventListener: (event, cb) => {
-          expect(event).to.eq('keydown');
-          expect(cb).to.eq(tag().keydownListener);
-        }
-      };
+      const addEventListener = sinon.spy((event, cb) => {
+        expect(event).to.eq('keydown');
+        expect(cb).to.eq(tag().keydownListener);
+      });
+      const searchBox = { addEventListener };
       tag().listenForSubmit = () => null;
       tag().findSearchBox = () => searchBox;
 
       tag().attachListeners();
 
       expect(tag().searchBox).to.eq(searchBox);
+      expect(addEventListener.called).to.be.true;
     });
 
     it('should attach sayt listeners', (done) => {
@@ -63,36 +61,35 @@ suite('gb-query', Query, ({
           }
         }
       };
-      tag().findSearchBox = () => ({ addEventListener: () => null });
 
       tag().attachListeners();
     });
 
     it('should listen for input event', () => {
-      const spy = tag().listenForInput = sandbox().spy();
+      const stub = sinon.stub(tag(), 'listenForInput');
       tag()._config = { autoSearch: true };
 
       tag().attachListeners();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should listen for enter keypress event', () => {
-      const spy = tag().listenForStaticSearch = sandbox().spy();
+      const stub = sandbox().stub(tag(), 'listenForStaticSearch');
       tag()._config = { autoSearch: false, staticSearch: true };
 
       tag().attachListeners();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should listen for submit event', () => {
-      const spy = tag().listenForSubmit = sandbox().spy();
+      const stub = sandbox().stub(tag(), 'listenForSubmit');
       tag()._config = { autoSearch: false, staticSearch: false };
 
       tag().attachListeners();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 
@@ -109,14 +106,15 @@ suite('gb-query', Query, ({
 
   describe('listenForInput()', () => {
     it('should add input listener', () => {
-      tag().searchBox = <any>{
-        addEventListener(event: string, cb: Function) {
-          expect(event).to.eq('input');
-          expect(cb).to.eq(tag().resetToInputValue);
-        }
-      };
+      const addEventListener = sinon.spy((event: string, cb: Function) => {
+        expect(event).to.eq('input');
+        expect(cb).to.eq(tag().resetToInputValue);
+      });
+      tag().searchBox = <any>{ addEventListener };
 
       tag().listenForInput();
+
+      expect(addEventListener.called).to.be.true;
     });
   });
 
@@ -144,10 +142,12 @@ suite('gb-query', Query, ({
 
   describe('keydownListener()', () => {
     it('should not call onSubmit()', () => {
-      sandbox().stub(utils, 'findTag', () => false);
+      const stub = sandbox().stub(utils, 'findTag', () => false);
       tag().onSubmit = () => expect.fail();
 
       tag().keydownListener(<any>{});
+
+      expect(stub.called).to.be.true;
     });
 
     it('should call sayt autocomplete.keyboardListener()', () => {
@@ -166,31 +166,34 @@ suite('gb-query', Query, ({
     });
 
     it('should call sayt onSubmit()', () => {
-      const spy = tag().onSubmit = sandbox().spy();
+      const stub = sandbox().stub(tag(), 'onSubmit');
       sandbox().stub(utils, 'findTag', () => false);
 
       tag().keydownListener(<any>{ keyCode: 13 });
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 
   describe('onSubmit()', () => {
     it('should execute enterKeyHandlers', () => {
-      tag().enterKeyHandlers = [sinon.spy(), sinon.spy(), sinon.spy()];
+      const handlers = [sinon.spy(), sinon.spy(), sinon.spy()];
+      tag().enterKeyHandlers = handlers;
 
       tag().onSubmit();
 
-      tag().enterKeyHandlers.forEach((spy: Sinon.SinonSpy) => expect(spy.called).to.be.true);
+      expect(handlers).to.have.length(3);
+      handlers.forEach((spy: Sinon.SinonSpy) => expect(spy.called).to.be.true);
     });
 
     it('should emit autocomplete:hide', () => {
+      const stub = sandbox().stub(flux(), 'emit', (event) =>
+        expect(event).to.eq(AUTOCOMPLETE_HIDE_EVENT));
       tag().enterKeyHandlers = [];
-      const spy = flux().emit = sinon.spy((event) => expect(event).to.eq(AUTOCOMPLETE_HIDE_EVENT));
 
       tag().onSubmit();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 
@@ -206,12 +209,13 @@ suite('gb-query', Query, ({
 
     it('should return first input field', () => {
       const searchBox = { a: 'b' };
-      const querySelector = sinon.spy((selector) => {
-        expect(selector).to.eq('input');
-        return searchBox;
-      });
       tag().tags = <any>{};
-      tag().root = <any>{ querySelector };
+      tag().root = <any>{
+        querySelector: (selector) => {
+          expect(selector).to.eq('input');
+          return searchBox;
+        }
+      };
 
       const input = tag().findSearchBox();
 
@@ -233,13 +237,13 @@ suite('gb-query', Query, ({
 
     it('should call flux.reset()', () => {
       const query = 'scarf';
-      const spy = flux().reset = sinon.spy((input): any => expect(input).to.eq(query));
+      const stub = sandbox().stub(flux(), 'reset', (input) => expect(input).to.eq(query));
       tag().searchBox = <any>{ value: query };
       tag().services = <any>{ url: { active: () => false } };
 
       tag().setLocation();
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
   });
 });

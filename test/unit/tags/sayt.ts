@@ -44,9 +44,9 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     });
 
     it('should configure sayt', () => {
-      const generated = { a: 'b', c: 'd' };
-      tag().generateSaytConfig = (): any => generated;
+      const generated: any = { a: 'b', c: 'd' };
       const spy = sayt.configure = sinon.spy((config) => expect(config).to.eql(generated));
+      tag().generateSaytConfig = () => generated;
 
       tag().init();
 

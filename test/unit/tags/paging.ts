@@ -15,7 +15,7 @@ const allMeta = {
 };
 
 suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({
-  flux, tag,
+  flux, tag, sandbox,
   expectSubscriptions,
   itShouldConfigure
 }) => {
@@ -31,9 +31,8 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({
     });
 
     it('should wrap flux.page as pager', () => {
-      const fluxPager: any = { a: 'b' };
-      const wrappedPager: any = { c: 'd' };
-      flux().page = fluxPager;
+      const fluxPager = flux().page = <any>{ a: 'b' };
+      const wrappedPager = { c: 'd' };
       tag().wrapPager = (pager) => {
         expect(pager).to.eq(fluxPager);
         return wrappedPager;
@@ -56,6 +55,11 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({
     it('should update page position', () => {
       const pageNumbers = [1, 2, 3, 4, 5];
       const limit = 7;
+      const stub = sandbox().stub(tag(), 'updatePageInfo', (pages, current, last) => {
+        expect(pages).to.eq(pageNumbers);
+        expect(current).to.eq(9);
+        expect(last).to.eq(16);
+      });
       tag()._config = { limit };
       flux().page = <any>{
         pageNumbers: (pages) => {
@@ -65,73 +69,94 @@ suite('gb-paging', Paging, { parent: { struct, allMeta } }, ({
         currentPage: 9,
         finalPage: 16
       };
-      tag().updatePageInfo = (pages, current, last): any => {
-        expect(pages).to.eq(pageNumbers);
-        expect(current).to.eq(9);
-        expect(last).to.eq(16);
-      };
 
       tag().pageInfo();
+
+      expect(stub.called).to.be.true;
     });
   });
 
   describe('updatePageInfo()', () => {
     it('should update page info', () => {
-      tag().update = (obj: any) => {
-        expect(obj.backDisabled).to.be.false;
-        expect(obj.forwardDisabled).to.be.true;
-        expect(obj.lowOverflow).to.be.false;
-        expect(obj.highOverflow).to.be.true;
-        expect(obj.pageNumbers).to.eql([1, 2, 3, 4, 5, 6]);
-        expect(obj.lastPage).to.eq(43);
-        expect(obj.currentPage).to.eq(43);
-      };
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.backDisabled).to.be.false;
+          expect(obj.forwardDisabled).to.be.true;
+          expect(obj.lowOverflow).to.be.false;
+          expect(obj.highOverflow).to.be.true;
+          expect(obj.pageNumbers).to.eql([1, 2, 3, 4, 5, 6]);
+          expect(obj.lastPage).to.eq(43);
+          expect(obj.currentPage).to.eq(43);
+        });
 
       tag().updatePageInfo([1, 2, 3, 4, 5, 6], 43, 43);
+
+      expect(spy.called).to.be.true;
     });
 
     it('should set lowOverflow and highOverflow true', () => {
-      tag().update = (obj: any) => {
-        expect(obj.lowOverflow).to.be.true;
-        expect(obj.highOverflow).to.be.true;
-      };
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.lowOverflow).to.be.true;
+          expect(obj.highOverflow).to.be.true;
+        });
 
       tag().updatePageInfo([2, 3, 4], 1, 6);
+
+      expect(spy.called).to.be.true;
     });
 
     it('should set lowOverflow and highOverflow to false', () => {
-      tag().update = (obj: any) => {
-        expect(obj.lowOverflow).to.be.false;
-        expect(obj.highOverflow).to.be.false;
-      };
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.lowOverflow).to.be.false;
+          expect(obj.highOverflow).to.be.false;
+        });
 
       tag().updatePageInfo([1, 2, 3, 4], 1, 4);
+
+      expect(spy.called).to.be.true;
     });
 
     it('should set backDisabled and forwardDisabled to true', () => {
-      tag().update = (obj: any) => {
-        expect(obj.backDisabled).to.be.true;
-        expect(obj.forwardDisabled).to.be.true;
-      };
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.backDisabled).to.be.true;
+          expect(obj.forwardDisabled).to.be.true;
+        });
 
       tag().updatePageInfo([1], 1, 1);
+
+      expect(spy.called).to.be.true;
     });
 
     it('should set backDisabled and forwardDisabled to false', () => {
-      tag().update = (obj: any) => {
-        expect(obj.backDisabled).to.be.false;
-        expect(obj.forwardDisabled).to.be.false;
-      };
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.backDisabled).to.be.false;
+          expect(obj.forwardDisabled).to.be.false;
+        });
 
       tag().updatePageInfo([1, 2, 3], 2, 3);
+
+      expect(spy.called).to.be.true;
     });
   });
 
   describe('updateCurrentPage()', () => {
     it('should update current page', () => {
-      tag().update = (obj) => expect(obj.currentPage).to.eq(10);
+      const spy =
+        tag().update =
+        sinon.spy((obj) => expect(obj.currentPage).to.eq(10));
 
       tag().updateCurrentPage({ pageNumber: 10 });
+
+      expect(spy.called).to.be.true;
     });
   });
 

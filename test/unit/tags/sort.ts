@@ -2,7 +2,10 @@ import { DEFAULT_SORTS, Sort } from '../../../src/tags/sort/gb-sort';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-sort', Sort, ({ flux, tag, itShouldConfigure }) => {
+suite('gb-sort', Sort, ({
+  flux, tag, sandbox,
+  itShouldConfigure
+}) => {
 
   describe('init()', () => {
     itShouldConfigure();
@@ -43,13 +46,15 @@ suite('gb-sort', Sort, ({ flux, tag, itShouldConfigure }) => {
     it('should sort on value', () => {
       const nextSort = { a: 'b', c: 'd' };
       const pastSorts = [{ e: 'f' }, { g: 'h' }];
-      tag().sortValues = () => pastSorts;
-      flux().sort = (newSort, oldSorts): any => {
+      const stub = sandbox().stub(flux(), 'sort', (newSort, oldSorts): any => {
         expect(newSort).to.eq(nextSort);
         expect(oldSorts).to.eq(pastSorts);
-      };
+      });
+      tag().sortValues = () => pastSorts;
 
       tag().onselect(<any>nextSort);
+
+      expect(stub.called).to.be.true;
     });
   });
 });

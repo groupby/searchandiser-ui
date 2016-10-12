@@ -39,12 +39,16 @@ suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag,
       const records = [{ a: 'b' }, { c: 'd' }];
       const collection = 'mycollection';
       flux().query.withConfiguration({ collection });
-      tag().update = (obj: any) => {
-        expect(obj.records).to.eq(records);
-        expect(obj.collection).to.eq(collection);
-      };
+      const spy =
+        tag().update =
+        sinon.spy((obj) => {
+          expect(obj.records).to.eq(records);
+          expect(obj.collection).to.eq(collection);
+        });
 
       tag().updateRecords(<any>{ records });
+
+      expect(spy.called).to.be.true;
     });
   });
 
@@ -52,6 +56,7 @@ suite('gb-results', Results, { config: { structure: STRUCTURE } }, ({ flux, tag,
     it('should return the correct user style', () => {
       const name = 'record-label';
       tag().opts.css = { label: name };
+
       expect(tag().userStyle('label')).to.eq(name);
     });
 
