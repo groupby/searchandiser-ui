@@ -32,15 +32,12 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
     });
 
     it('should take configuration overrides from global config', () => {
-      const saytStructure = { image: 'thumbnail', url: 'url' };
-      tag().configure = () => tag()._config = {
-        products: 0,
-        structure: saytStructure
-      };
+      const structure = { image: 'thumbnail', url: 'url' };
+      tag().configure = () => tag()._config = { structure, products: 0 };
 
       tag().init();
 
-      expect(tag().struct).to.eql(Object.assign({}, STRUCTURE, saytStructure));
+      expect(tag().struct).to.eql(Object.assign({}, STRUCTURE, structure));
       expect(tag().showProducts).to.be.false;
     });
 
@@ -375,32 +372,33 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
-      tag()._config = {};
-      tag().flux.rewrite = (query, config): any => {
+      const rewrite = sandbox().stub(flux(), 'rewrite', (query, config) => {
         expect(query).to.eq(suggestion);
         expect(config.skipSearch).to.be.true;
-      };
-      const spy = flux().refine = sinon.spy((selectedRefinement): any => {
+      });
+      const refine = sandbox().stub(flux(), 'refine', (selectedRefinement) =>
         expect(selectedRefinement).to.eql({
           navigationName: field,
           value: refinement,
           type: 'Value'
-        });
-      });
+        }));
+      tag()._config = {};
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement }
       }, suggestion);
 
-      expect(spy.called).to.be.true;
+      expect(rewrite.called).to.be.true;
+      expect(refine.called).to.be.true;
     });
 
     it('should skip refinement and do query', () => {
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
-      const spy = flux().reset = sinon.spy((query): any => expect(query).to.eq(suggestion));
+      const stub = sandbox().stub(flux(), 'reset', (query): any =>
+        expect(query).to.eq(suggestion));
       flux().rewrite = (): any => expect.fail();
       tag()._config = {};
 
@@ -409,7 +407,7 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
         dataset: { field, refinement, norefine: true }
       }, suggestion);
 
-      expect(spy.called).to.be.true;
+      expect(stub.called).to.be.true;
     });
 
     it('should perform a static refinement', () => {
@@ -435,14 +433,15 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
 
   describe('processResults()', () => {
     it('should update with defaults', () => {
-      // TODO: add spy and check for called
-      const spy = tag().update = sinon.spy(({ results, queries, navigations, categoryResults }) => {
-        expect(results).to.eql({});
-        expect(queries).to.be.undefined;
-        expect(navigations).to.eql([]);
-        expect(categoryResults).to.eql([]);
-        expect(tag().matchesInput).to.not.be.ok;
-      });
+      const spy =
+        tag().update =
+        sinon.spy(({ results, queries, navigations, categoryResults }) => {
+          expect(results).to.eql({});
+          expect(queries).to.be.undefined;
+          expect(navigations).to.eql([]);
+          expect(categoryResults).to.eql([]);
+          expect(tag().matchesInput).to.not.be.ok;
+        });
 
       tag().processResults({});
 
