@@ -1,4 +1,5 @@
 import { FluxTag } from '../../../src/tags/tag';
+import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
@@ -30,27 +31,13 @@ function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mi
       flux: () => _flux,
       tag: () => _tag,
       sandbox: () => _sandbox,
-      expectSubscriptions,
+      expectSubscriptions: _expectSubscriptions,
       itShouldConfigure,
       tagName
     });
 
-    function expectSubscriptions(func: Function, subscriptions: any, emitter: any = _flux) {
-      const events = Object.keys(subscriptions);
-      const listeners = {};
-
-      emitter.on = (event, handler): any => {
-        if (events.includes(event)) {
-          listeners[event] = expect(handler).to.eq(subscriptions[event]);
-        } else {
-          expect.fail();
-        }
-      };
-
-      func();
-
-      const subscribedEvents = Object.keys(listeners);
-      expect(subscribedEvents).to.have.members(events);
+    function _expectSubscriptions(func: Function, subscriptions: any, emitter: any = _flux) {
+      expectSubscriptions(func, subscriptions, emitter);
     }
 
     function itShouldConfigure(defaultConfig?: any) {

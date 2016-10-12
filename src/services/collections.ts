@@ -48,8 +48,7 @@ export class Collections {
 
       const promises = this.inProgress = <CancelablePromise<any>>Promise.all(searches);
 
-      promises
-        .then((res) => res.reduce(this.extractCounts, {}))
+      promises.then(this.extractCounts)
         .then((counts) => {
           if (!promises.cancelled) {
             Object.assign(this.counts, counts);
@@ -57,6 +56,11 @@ export class Collections {
           }
         });
     }
+  }
+
+  extractCounts(res: any[]) {
+    return res.reduce((counts, { results, collection }) =>
+      Object.assign(counts, { [collection]: results.totalRecordCount }), {});
   }
 
   updateSelectedCollectionCount(res: Results) {
@@ -72,7 +76,7 @@ export class Collections {
     return getPath(this.flux, 'query.raw.collection') || this.config.collection;
   }
 
-  private extractCounts(counts: any, { results, collection }: { results: Results, collection: string }) {
-    return Object.assign(counts, { [collection]: results.totalRecordCount });
-  }
+  // private extractCounts(counts: any, { results, collection }: { results: Results, collection: string }) {
+  //   return Object.assign(counts, { [collection]: results.totalRecordCount });
+  // }
 }
