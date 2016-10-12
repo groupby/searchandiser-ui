@@ -16,11 +16,12 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
   expectSubscriptions,
   itShouldConfigure
 }) => {
-  let sayt;
-
-  beforeEach(() => tag().sayt = sayt = { configure: () => null });
 
   describe('init()', () => {
+    let sayt;
+
+    beforeEach(() => sayt = tag().sayt = { configure: () => null });
+
     itShouldConfigure(DEFAULT_CONFIG);
 
     it('should have default values', () => {
@@ -80,18 +81,16 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
       const collection = 'mycollection';
       const area = 'MyArea';
       tag().config = { customerId, collection, area };
-
-      // TODO: get rid of this
-      tag().init();
+      tag()._config = { queries: 2, products: 3, https: true };
 
       const config = tag().generateSaytConfig();
 
       expect(config).to.eql({
         subdomain: customerId,
         collection,
-        autocomplete: { numSearchTerms: 5 },
-        productSearch: { area, numProducts: 4 },
-        https: false
+        autocomplete: { numSearchTerms: 2 },
+        productSearch: { area, numProducts: 3 },
+        https: true
       });
     });
 
@@ -124,32 +123,40 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
   });
 
   describe('fetchSuggestions()', () => {
-    it('should fetch suggestions not products', (done) => {
-      const originalQuery = 'red sneakers';
-      const result = { a: 'b', c: 'd' };
-      sayt.autocomplete = (query) => {
-        expect(query).to.eq(originalQuery);
-        return {
-          then: (cb) => {
-            cb({ result });
-            done();
-          }
-        };
+    it('should fetch suggestions and process them', (done) => {
+      const newQuery = 'red sneakers';
+      const suggestions = { a: 'b', c: 'd' };
+      tag().sayt = {
+        autocomplete: (query) => {
+          expect(query).to.eq(newQuery);
+          return Promise.resolve({ result: suggestions });
+        }
       };
-      tag().update = (data) => expect(data.originalQuery).to.eq(originalQuery);
+      tag().handleSuggestions = ({ result, originalQuery }) => {
+        expect(result).to.eq(suggestions);
+        expect(originalQuery).to.eq(newQuery);
+        done();
+      };
+
+      tag().fetchSuggestions(newQuery);
+    });
+  });
+
+  describe('handleSuggestions()', () => {
+    it('should update with originalQuery', () => {
+      const newQuery = 'red sneakers';
+      const result = { a: 'b', c: 'd' };
       const spy = tag().processResults = sinon.spy((res) => expect(res).to.eql(result));
+      tag().update = (data) => expect(data.originalQuery).to.eq(newQuery);
       tag().searchProducts = () => expect.fail();
 
-      tag().fetchSuggestions(originalQuery);
+      tag().handleSuggestions({ result, originalQuery: newQuery });
 
       expect(spy.called).to.be.true;
     });
 
-    it('should fetch product suggestions', (done) => {
+    it('should call searchProducts()', (done) => {
       const query = 'red sneakers';
-      sayt.autocomplete = () => {
-        return { then: (cb) => cb({ result: {} }) };
-      };
       tag().showProducts = true;
       tag().queries = [{ value: query }];
       tag().processResults = () => null;
@@ -159,28 +166,31 @@ suite('gb-sayt', Sayt, { config: { structure: STRUCTURE } }, ({
         done();
       };
 
-      tag().fetchSuggestions(undefined);
+      tag().handleSuggestions({ result: {}, originalQuery: undefined });
     });
   });
 
   describe('searchProducts()', () => {
-    it('should search products', () => {
+    it('should search products', (done) => {
       const suggestion = 'red sneakers';
       const products = [{ a: 'b' }, { c: 'd' }];
-      sayt.productSearch = (query) => {
+      const productSearch = sinon.spy((query) => {
         expect(query).to.eq(suggestion);
-        return { then: (cb) => cb({ result: { products } }) };
+        return Promise.resolve({ result: { products } });
+      });
+      tag().sayt = { productSearch };
+      tag().update = (data) => {
+        expect(data.products).to.eq(products);
+        expect(productSearch.called).to.be.true;
+        done();
       };
-      const spy = tag().update = sinon.spy((data) => expect(data.products).to.eq(products));
       tag().showProducts = true;
 
       tag().searchProducts(suggestion);
-
-      expect(spy.called).to.be.true;
     });
 
     it('should not search products', () => {
-      sayt.productSearch = () => expect.fail();
+      tag().sayt = { productSearch: () => expect.fail() };
       tag().showProducts = false;
 
       tag().searchProducts(undefined);

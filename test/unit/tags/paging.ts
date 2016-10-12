@@ -150,6 +150,52 @@ suite('gb-paging', Paging, ({
   });
 
   describe('wrapPager()', () => {
+    it('first()', () => {
+      const reset = sinon.spy((page) => Promise.resolve());
+      const pager = tag().wrapPager(<any>{ reset });
+
+      pager.first();
+
+      expect(reset.called).to.be.true;
+    });
+
+    it('prev()', () => {
+      const prev = sinon.spy((page) => Promise.resolve());
+      const pager = tag().wrapPager(<any>{ prev });
+
+      pager.prev();
+
+      expect(prev.called).to.be.true;
+    });
+
+    it('next()', () => {
+      const next = sinon.spy((page) => Promise.resolve());
+      const pager = tag().wrapPager(<any>{ next });
+
+      pager.next();
+
+      expect(next.called).to.be.true;
+    });
+
+    it('last()', () => {
+      const last = sinon.spy((page) => Promise.resolve());
+      const pager = tag().wrapPager(<any>{ last });
+
+      pager.last();
+
+      expect(last.called).to.be.true;
+    });
+
+    it('switchPage()', () => {
+      const newPage = 7;
+      const switchPage = sinon.spy((page) => Promise.resolve(expect(page).to.eq(newPage)));
+      const pager = tag().wrapPager(<any>{ switchPage });
+
+      pager.switchPage(newPage);
+
+      expect(switchPage.called).to.be.true;
+    });
+
     it('should not allow page forward', () => {
       tag().forwardDisabled = true;
 

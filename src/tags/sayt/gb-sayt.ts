@@ -88,15 +88,18 @@ export class Sayt {
 
   fetchSuggestions(originalQuery: string) {
     this.sayt.autocomplete(originalQuery)
-      .then(({ result }) => {
-        this.update({ originalQuery });
-        this.processResults(result);
-        if (this.queries && this.showProducts) {
-          const query = this.matchesInput ? originalQuery : this.queries[0].value;
-          this.searchProducts(query);
-        }
-      })
+      .then(({ result }) => ({ result, originalQuery }))
+      .then(this.handleSuggestions)
       .catch((err) => console.error(err));
+  }
+
+  handleSuggestions({ result, originalQuery }: { result: any, originalQuery: string }) {
+    this.update({ originalQuery });
+    this.processResults(result);
+    if (this.queries && this.showProducts) {
+      const query = this.matchesInput ? originalQuery : this.queries[0].value;
+      this.searchProducts(query);
+    }
   }
 
   searchProducts(query: string) {
