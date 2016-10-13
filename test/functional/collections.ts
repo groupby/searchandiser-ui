@@ -7,128 +7,140 @@ const SERVICES = {
 };
 
 suite<Collections>('gb-collections', { services: SERVICES }, ({
-  flux, html, mount, sandbox,
+  flux, mount, sandbox,
   itMountsTag
 }) => {
 
   itMountsTag();
 
-  it('renders as list by default', () => {
-    const model = new Model(mount());
+  describe('render', () => {
+    it('renders as list by default', () => {
+      const model = new Model(mount());
 
-    expect(model.collectionList).to.be.ok;
-    expect(model.collectionSelect).to.not.be.ok;
+      expect(model.collectionList).to.be.ok;
+      expect(model.collectionSelect).to.not.be.ok;
+    });
+
+    it('renders as dropdown when configured', () => {
+      const tag = mount({ dropdown: true });
+      const model = new Model(tag);
+
+      expect(model.collectionList).to.not.be.ok;
+      expect(model.collectionSelect).to.be.ok;
+      expect(model.customSelect).to.be.ok;
+      expect(model.optionList).to.be.ok;
+    });
+
+    it('does not render collections', () => {
+      const tag = mount();
+
+      expect(tag.root.querySelector('.gb-collection')).to.not.be.ok;
+    });
   });
 
-  it('renders as dropdown when configured', () => {
-    const tag = mount({ dropdown: true });
-    const model = new Model(tag);
+  describe('render with collections', () => {
+    const OPTIONS = [
+      { label: '1', value: 'first' },
+      { label: '2', value: 'second' },
+      { label: '3', value: 'third' }
+    ];
+    const COLLECTIONS = ['first', 'second', 'third'];
+    const COUNTS = { first: 344, second: 453, third: 314 };
+    const LABELS = { first: '1', second: '2', third: '3' };
+    let tag: Collections;
+    let model: Model;
 
-    expect(model.collectionList).to.not.be.ok;
-    expect(model.collectionSelect).to.be.ok;
-    expect(html().querySelector('gb-custom-select')).to.be.ok;
-    expect(html().querySelector('gb-option-list')).to.be.ok;
-  });
+    beforeEach(() => {
+      tag = mount();
+      model = new Model(tag);
+      tag.collections = COLLECTIONS;
+    });
 
-  it('renders without collections', () => {
-    mount();
+    it('renders collections as list', () => {
+      tag.update();
 
-    expect(html().querySelector('.gb-collection')).to.not.be.ok;
-  });
+      expect(tag.root.querySelector('gb-list')).to.be.ok;
+      expect(tag.root.querySelector('gb-select')).to.not.be.ok;
+      expect(tag.root.querySelector('gb-collection-item')).to.be.ok;
+      expect(tag.root.querySelector('a.gb-collection')).to.be.ok;
+    });
 
-  it('renders with collections', () => {
-    const tag = mount();
-    const model = new Model(tag);
-    tag.collections = ['first', 'second', 'third'];
-    tag.counts = { first: 344, second: 453, third: 314 };
+    it('renders collections as dropdown', () => {
+      tag._config = <any>{ dropdown: true };
+      tag.labels = LABELS;
 
-    tag.update();
+      tag.update({ options: OPTIONS });
 
-    expect(model.labels).to.have.length(3);
-    expect(model.labels[1].textContent).to.eq('second');
-    expect(model.counts[1].textContent).to.eq('453');
-  });
+      expect(tag.root.querySelector('gb-list')).to.not.be.ok;
+      expect(tag.root.querySelector('gb-select')).to.be.ok;
+      expect(model.customSelect).to.be.ok;
+      expect(model.optionList).to.be.ok;
+      expect(tag.root.querySelector('gb-collection-dropdown-item a')).to.be.ok;
+    });
 
-  it('renders with collection labels', () => {
-    const tag = mount();
-    const model = new Model(tag);
-    tag.collections = ['first', 'second', 'third'];
-    tag.labels = { first: '1', second: '2', third: '3' };
+    it('renders collection labels and counts', () => {
+      tag.counts = COUNTS;
 
-    tag.update();
+      tag.update();
 
-    expect(model.labels).to.have.length(3);
-    expect(model.labels[1].textContent).to.eq('2');
-  });
+      expect(model.labels).to.have.length(3);
+      expect(model.labels[1].textContent).to.eq('second');
+      expect(model.counts[1].textContent).to.eq('453');
+    });
 
-  it('renders without collection counts', () => {
-    const tag = mount();
-    const model = new Model(tag);
-    tag._config = <any>{ counts: false };
-    tag.collections = ['first', 'second', 'third'];
+    it('renders collection labels', () => {
+      tag.labels = LABELS;
 
-    tag.update();
+      tag.update();
 
-    expect(model.counts).to.have.length(0);
-  });
+      expect(model.labels).to.have.length(3);
+      expect(model.labels[1].textContent).to.eq('2');
+    });
 
-  it('renders as list with collection', () => {
-    const collections = ['a', 'b', 'c'];
-    const tag = mount();
+    it('renders without collection counts', () => {
+      tag._config = <any>{ counts: false };
 
-    tag.update({ collections });
+      tag.update();
 
-    expect(html().querySelector('gb-list')).to.be.ok;
-    expect(html().querySelector('gb-select')).to.not.be.ok;
-    expect(html().querySelector('gb-collection-item')).to.be.ok;
-    expect(html().querySelector('a.gb-collection')).to.be.ok;
-  });
+      expect(model.counts).to.have.length(0);
+    });
 
-  it('renders as dropdown with collection', () => {
-    const options = [{ label: 'a', value: 'b' }, { label: 'c', value: 'd' }];
-    const collections = ['b', 'd'];
-    const labels = ['a', 'c'];
-    const tag = mount();
-    tag._config = <any>{ dropdown: true };
+    describe('gb-collection-item', () => {
+      it('switches collection on click', () => {
+        const spy = sandbox().spy(tag, 'onselect');
+        const stub = sandbox().stub(flux(), 'switchCollection');
+        tag.update();
 
-    tag.update({ options, collections, labels });
+        (<HTMLAnchorElement>tag.root.querySelectorAll('.gb-collection')[1]).click();
 
-    expect(html().querySelector('gb-list')).to.not.be.ok;
-    expect(html().querySelector('gb-select')).to.be.ok;
-    expect(html().querySelector('gb-custom-select')).to.be.ok;
-    expect(html().querySelector('gb-option-list')).to.be.ok;
-    expect(html().querySelector('gb-collection-dropdown-item a')).to.be.ok;
-  });
+        expect(spy.calledWith(COLLECTIONS[1])).to.be.true;
+        expect(stub.calledWith(COLLECTIONS[1])).to.be.true;
+      });
+    });
 
-  it('switches collection on click', () => {
-    const collections = ['a', 'b', 'c'];
-    const tag = mount();
-    tag.collections = collections;
-    const spy = sandbox().spy(tag, 'onselect');
-    flux().switchCollection = (collection): any => expect(collection).to.eq(collections[1]);
+    describe('gb-collection-dropdown-item', () => {
+      it('switches dropdown collection on click', () => {
+        tag._config = <any>{ dropdown: true };
+        const stub = sandbox().stub(flux(), 'switchCollection');
+        tag.update({ options: OPTIONS });
 
-    tag.update();
+        (<HTMLAnchorElement>tag.root.querySelectorAll('gb-collection-dropdown-item a')[1]).click();
 
-    (<HTMLAnchorElement>html().querySelectorAll('.gb-collection')[1]).click();
-    expect(spy.calledWith(collections[1])).to.be.true;
-  });
-
-  it('switches dropdown collection on click', () => {
-    const collections = ['b', 'd'];
-    const options = [{ label: 'a', value: 'b' }, { label: 'c', value: 'd' }];
-    const tag = mount();
-    tag._config = <any>{ dropdown: true };
-    flux().switchCollection = (collection): any => {
-      expect(collection).to.eq(options[1].value);
-    };
-
-    tag.update({ options, collections });
-
-    (<HTMLAnchorElement>html().querySelectorAll('gb-collection-dropdown-item a')[1]).click();
+        expect(stub.calledWith(OPTIONS[1].value)).to.be.true;
+      });
+    });
   });
 });
 
 class Model extends BaseModel<Collections> {
+
+  get customSelect() {
+    return this.element(this.html, 'gb-custom-select');
+  }
+
+  get optionList() {
+    return this.element(this.html, 'gb-option-list');
+  }
 
   get collectionList() {
     return this.element(this.html, '.gb-collections');

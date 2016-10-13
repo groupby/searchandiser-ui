@@ -2,45 +2,60 @@ import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, itMountsTag }) => {
+suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => {
 
   itMountsTag();
 
-  describe('with query', () => {
-    const ORIGINAL_QUERY = 'red sneakers';
-
-    it('should set the textContent of query-crumb', () => {
+  describe('render', () => {
+    it('should not render query-crumb', () => {
       const tag = mount();
       const model = new Model(tag);
 
-      tag.updateQuery(ORIGINAL_QUERY);
+      expect(model.queryCrumb).to.not.be.ok;
+    });
 
+    it('should not render refinement crumbs', () => {
+      const tag = mount();
+      const model = new Model(tag);
+
+      expect(model.navigationList).to.be.ok;
+      expect(model.navigationCrumbs).to.have.length(0);
+      expect(model.refinementCrumbs()).to.have.length(0);
+    });
+  });
+
+  describe('render with query', () => {
+    const ORIGINAL_QUERY = 'red sneakers';
+    let tag: Breadcrumbs;
+    let model: Model;
+
+    beforeEach(() => {
+      tag = mount();
+      model = new Model(tag);
+      tag.updateQuery(ORIGINAL_QUERY);
+    });
+
+    it('should set the textContent of query-crumb', () => {
       expect(model.queryCrumb).to.be.ok;
       expect(model.queryCrumb.textContent).to.eq(ORIGINAL_QUERY);
     });
 
-    it('should not render query-crumb if configured', () => {
-      const tag = mount({ hideQuery: true });
-      const model = new Model(tag);
-
-      tag.updateQuery(ORIGINAL_QUERY);
+    it('should not render query-crumb if empty query', () => {
+      tag.updateQuery('');
 
       expect(model.queryCrumb).to.not.be.ok;
     });
 
-    it('should not render query-crumb if empty query', () => {
-      const tag = mount();
-      const model = new Model(tag);
+    it('should not render query-crumb if configured', () => {
+      tag._config.hideQuery = true;
 
-      expect(model.queryCrumb).to.not.be.ok;
-
-      tag.updateQuery('');
+      tag.update();
 
       expect(model.queryCrumb).to.not.be.ok;
     });
   });
 
-  describe('with refinements', () => {
+  describe('render with refinements', () => {
     const SELECTED = [
       {
         name: 'first',
@@ -60,78 +75,54 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, itMountsTag }) => {
         ]
       }
     ];
+    let tag: Breadcrumbs;
+    let model: Model;
 
-    it('renders list', () => {
-      const model = new Model(mount());
-
-      expect(model.navigationList).to.be.ok;
+    beforeEach(() => {
+      tag = mount();
+      model = new Model(tag);
+      tag.updateRefinements(SELECTED);
     });
 
-    it('renders as a list of navigations', () => {
-      const tag = mount();
-      const model = new Model(tag);
-
-      tag.updateRefinements(SELECTED);
-
-      expect(model.navigationList).to.be.ok;
+    it('renders a list of navigations', () => {
       expect(model.navigationCrumbs).to.have.length(2);
     });
 
     it('renders each navigation as a list of refinements', () => {
-      const tag = mount();
-      const model = new Model(tag);
-
-      tag.updateRefinements(SELECTED);
-
       const navigations = model.navigationCrumbs;
       expect(model.refinementCrumbs()).to.have.length(6);
       expect(model.refinementCrumbs(navigations[0])).to.have.length(3);
       expect(model.refinementCrumbs(navigations[1])).to.have.length(3);
     });
 
-    it('should not render refinements if configured', () => {
-      const tag = mount({ hideRefinements: true });
-      const model = new Model(tag);
-
-      tag.updateRefinements(SELECTED);
-
-      expect(model.navigationList).to.not.be.ok;
-    });
-
-    it('renders from reset', () => {
-      const tag = mount();
-      const model = new Model(tag);
-      tag.updateRefinements(SELECTED);
-
-      expect(model.navigationCrumbs).not.to.have.length(0);
-
+    it('should reset on clearRefinements()', () => {
       tag.clearRefinements();
 
       expect(model.navigationCrumbs).to.have.length(0);
     });
 
+    it('should not render refinements if configured', () => {
+      tag._config.hideRefinements = true;
+
+      tag.update();
+
+      expect(model.navigationList).to.not.be.ok;
+    });
+
     describe('gb-refinement-crumb', () => {
       it('should set a label for the link', () => {
-        const tag = mount();
-        const model = new Model(tag);
-
-        tag.updateRefinements(SELECTED);
-
         expect(model.refinementLinks()[0]).to.be.ok;
         expect(model.refinementLabels()[0].textContent).to.eq('First: A');
         expect(model.refinementLabels()[4].textContent).to.eq('Second: 20 - 54');
       });
 
       it('should unrefine on click', () => {
-        const tag = mount();
-        const model = new Model(tag);
-        const spy = flux().unrefine = sinon.spy((refinement): any =>
-          expect(refinement).to.eql({ type: 'Value', value: 'B', navigationName: 'first' }));
-        tag.updateRefinements(SELECTED);
+        const refinement = { type: 'Value', value: 'B', navigationName: 'first' };
+        const stub = sandbox().stub(flux(), 'unrefine');
 
         model.refinementLinks()[1].click();
 
-        expect(spy.called).to.be.true;
+        expect(stub.calledWith(refinement)).to.be.true;
       });
     });
   });

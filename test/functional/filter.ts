@@ -3,19 +3,21 @@ import suite, { SelectModel } from './_suite';
 import { expect } from 'chai';
 
 suite<Filter>('gb-filter', ({
-  flux, html, mount,
+  flux, html, mount, sandbox,
   itMountsTag
 }) => {
 
   itMountsTag();
 
-  it('renders as select', () => {
-    mount();
+  describe('render', () => {
+    it('renders as select', () => {
+      const tag = mount();
 
-    expect(html().querySelector('gb-select')).to.be.ok;
+      expect(tag.root.querySelector('gb-select')).to.be.ok;
+    });
   });
 
-  describe('render behaviour', () => {
+  describe('render with navigation', () => {
     const NAVIGATION = {
       name: 'brand',
       refinements: [{
@@ -23,14 +25,17 @@ suite<Filter>('gb-filter', ({
         value: 'DeWalt'
       }]
     };
+    let tag: Filter;
+    let model: Model;
 
-    it('renders from results', () => {
-      const tag = mount();
-      const model = new Model(tag);
+    beforeEach(() => {
+      tag = mount();
+      model = new Model(tag);
       tag.services.filter = <any>{ isTargetNav: () => true };
-
       tag.updateValues(<any>{ availableNavigation: [NAVIGATION] });
+    });
 
+    it('should render options', () => {
       expect(html().querySelector('gb-option-list')).to.be.ok;
       expect(model.label.textContent).to.eq('Filter');
       expect(model.options).to.have.length(1);
@@ -38,41 +43,28 @@ suite<Filter>('gb-filter', ({
     });
 
     describe('clear option', () => {
-      it('does not render clear option', () => {
-        const tag = mount();
-        const model = new Model(tag);
-        tag.services.filter = <any>{ isTargetNav: () => true };
-        flux().refine = () => null;
-
+      it('should not render clear option', () => {
         expect(model.clearOption).to.not.be.ok;
       });
 
-      it('renders clear option', () => {
-        const tag = mount();
-        const model = new Model(tag);
-        tag.services.filter = <any>{ isTargetNav: () => true };
-        flux().refine = () => null;
-        tag.updateValues(<any>{ availableNavigation: [NAVIGATION] });
-
+      it('should render clear option when selected', () => {
         model.options[0].click();
 
         expect(model.clearOption.textContent).to.eq('Unfiltered');
       });
-    });
 
-    it('navigates on clear selection', (done) => {
-      const tag = mount();
-      const model = new Model(tag);
-      tag.services.filter = <any>{ isTargetNav: () => true };
-      flux().refine = () => null;
-      flux().reset = () => done();
-      flux().results = <any>{ availableNavigation: [NAVIGATION] };
-      flux().unrefine = (selected): any => expect(selected).to.eq(tag.selected);
-      tag.updateValues(flux().results);
+      it('should call flux.unrefine() on click', (done) => {
+        const unrefineStub = sandbox().stub(flux(), 'unrefine');
+        const refineStub = sandbox().stub(flux(), 'refine');
+        flux().results = <any>{ availableNavigation: [NAVIGATION] };
+        flux().reset = () => done();
+        model.options[0].click();
 
-      model.options[0].click();
+        model.clearOption.click();
 
-      model.clearOption.click();
+        expect(refineStub.called).to.be.true;
+        expect(unrefineStub.calledWith(tag.selected)).to.be.true;
+      });
     });
   });
 });
