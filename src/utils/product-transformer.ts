@@ -6,6 +6,8 @@ const DEFAULT_STRUCTURE = {
 };
 
 export interface BaseStructure {
+  title: string;
+  price: string;
   id?: string;
   url?: string;
   variants?: string;

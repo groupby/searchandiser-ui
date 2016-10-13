@@ -23,55 +23,51 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
   describe('clearRefinements()', () => {
     it('should update refinements with empty array', () => {
-      const updateRefinements = stub(tag(), 'updateRefinements');
-
+      const update = tag().update = spy();
       tag().clearRefinements();
 
-      expect(updateRefinements.calledWith([])).to.be.true;
+      expect(update.calledWith({ selected: [] })).to.be.true;
     });
   });
 
   describe('updateQueryState()', () => {
-    it('should call updateQuery()', () => {
+    it('should update originalQuery', () => {
       const originalQuery = 'red sneakers';
-      const updateQuery = stub(tag(), 'updateQuery');
-      tag().updateRefinements = () => null;
+      const update = tag().update = spy();
 
       tag().updateQueryState(<any>{ originalQuery });
 
-      expect(updateQuery.calledWith(originalQuery)).to.be.true;
+      expect(update.calledWith({ originalQuery, selected: undefined, correctedQuery: undefined })).to.be.true;
     });
 
-    it('should call updateRefinements', () => {
+    it('should update refinements', () => {
       const selectedNavigation = ['a', 'b', 'c'];
-      const updateRefinements = stub(tag(), 'updateRefinements');
-      tag().updateQuery = () => null;
+      const update = tag().update = spy();
 
       tag().updateQueryState(<any>{ selectedNavigation });
 
-      expect(updateRefinements.calledWith(selectedNavigation)).to.be.true;
+      expect(update.calledWith({ originalQuery: undefined, selected: selectedNavigation, correctedQuery: undefined })).to.be.true;
     });
-  });
 
-  describe('updateRefinements()', () => {
-    it('should call update with selected', () => {
-      const selected = [{ a: 'b' }];
+    it('should update correctedQuery', () => {
+      const correctedQuery = 'tylenol';
       const update = tag().update = spy();
 
-      tag().updateRefinements(selected);
+      tag().updateQueryState(<any>{ correctedQuery });
 
-      expect(update.calledWith({ selected })).to.be.true;
+      expect(update.calledWith({ originalQuery: undefined, selected: undefined, correctedQuery })).to.be.true;
     });
-  });
 
-  describe('updateQuery()', () => {
-    it('should call update() with originalQuery', () => {
-      const originalQuery = 'leather belt';
+    it('should update the whole query state', () => {
+      const originalQuery = 'tylenolt';
+      const selected = ['a', 'b', 'c'];
+      const correctedQuery = 'tylenol';
+      const queryState: any = { originalQuery, correctedQuery, selectedNavigation: selected };
       const update = tag().update = spy();
 
-      tag().updateQuery(originalQuery);
+      tag().updateQueryState(<any>queryState);
 
-      expect(update.calledWith({ originalQuery })).to.be.true;
+      expect(update.calledWith({ originalQuery, correctedQuery, selected })).to.be.true;
     });
   });
 

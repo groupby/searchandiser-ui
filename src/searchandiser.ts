@@ -8,7 +8,7 @@ import { BeautifierConfig } from './utils/url-beautifier';
 import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
-export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements}';
+export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection}';
 export const DEFAULT_CONFIG = { initialSearch: true };
 export const DEFAULT_URL_CONFIG = { queryParam: 'q', searchUrl: 'search' };
 
@@ -146,6 +146,7 @@ export interface SearchandiserConfig {
   area?: string;
   collection?: string;
   customUrlParams?: any[];
+  disableAutocorrection?: boolean;
   language?: string;
   pageSize?: number;
   pageSizes?: number[];
@@ -173,5 +174,5 @@ export interface SearchandiserConfig {
   };
   stylish?: boolean;
   initialSearch?: boolean;
-  structure?: ProductStructure;
+  structure: ProductStructure;
 }

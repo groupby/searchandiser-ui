@@ -1,0 +1,15 @@
+<gb-query-crumb>
+  <div if={ originalQuery }>
+    <span if={ !_scope.correctedQuery && _scope._config.labels } class="gb-query-label">{ _scope._config.resultsLabel }</span>
+    <span if={ _scope.correctedQuery && _scope._config.labels } class="gb-query-label">{ _scope._config.noResultsLabel }</span>
+    <span class="gb-original-query">{originalQuery}</span>
+  </div>
+  <div if={ correctedQuery }>
+    <span if={ _scope._config.labels } class="gb-query-label">{ _scope._config.correctedResultsLabel }</span>
+    <span class="gb-corrected-query">{correctedQuery}</span>
+  </div>
+
+  <script>
+    this._scopeTo('gb-breadcrumbs');
+  </script>
+</gb-query-crumb>
