@@ -1,5 +1,7 @@
 import '../../src/tags/index';
+import { SelectTag } from '../../src/tags/select/gb-select';
 import { FluxTag, MixinFlux } from '../../src/tags/tag';
+import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 
@@ -30,12 +32,21 @@ function suite<T extends FluxTag<any>>(tagName: string, mixinOrCb: any, cb?: Fun
       html: () => _html,
       sandbox: () => _sandbox,
       tagName,
-      mount
+      mount,
+      itMountsTag
     });
   });
 
   function mount(opts: any = {}) {
     return <T>riot.mount(tagName, opts)[0];
+  }
+
+  function itMountsTag() {
+    it('mounts tag', () => {
+      const tag = mount();
+
+      expect(tag).to.be.ok;
+    });
   }
 }
 
@@ -66,6 +77,7 @@ export interface FunctionalSuite<T> {
   html: () => HTMLElement;
   sandbox: () => Sinon.SinonSandbox;
   mount: (opts?: any) => T;
+  itMountsTag: () => null;
   tagName: string;
 }
 
@@ -82,5 +94,20 @@ export abstract class BaseModel<T extends FluxTag<any>> {
 
   protected list<T extends HTMLElement>(tag: HTMLElement, selector: string) {
     return <NodeListOf<T & HTMLElement>>tag.querySelectorAll(selector);
+  }
+}
+
+export abstract class SelectModel<T extends SelectTag<any>> extends BaseModel<T> {
+
+  get label() {
+    return this.element(this.html, '.gb-button__label');
+  }
+
+  get options() {
+    return this.list(this.html, '.gb-select__option:not(.clear) gb-option a');
+  }
+
+  get clearOption() {
+    return this.element(this.html, '.gb-select__option.clear gb-option a');
   }
 }

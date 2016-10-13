@@ -4,11 +4,13 @@ import { LOCATION } from '../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount, itMountsTag }) => {
 
-    expect(tag).to.be.ok;
+  itMountsTag();
+
+  it('renders search box', () => {
+    mount();
+
     expect(document.querySelector('gb-search-box')).to.be.ok;
   });
 
@@ -17,13 +19,13 @@ suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount }) => {
     const query = 'rewritten';
 
     tag.rewriteQuery(query);
+
     expect(searchBox().value).to.eq(query);
   });
 
   describe('redirect when autoSearch off', () => {
     it('should register for input event', () => {
       const tag = mount(false);
-
       const input = tag.searchBox = document.createElement('input');
       input.addEventListener = (event) => expect(event).to.eq('input');
 

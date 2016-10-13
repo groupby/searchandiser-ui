@@ -13,10 +13,8 @@ suite<Reset>('gb-reset', ({ flux, html, mount }) => {
 
   it('should clear query', (done) => {
     const tag = mount();
-    tag.services = <any>{ tracker: { search: done } };
     tag.searchBox = <any>{ value: 'old' };
-
-    flux().reset = (): any => ({ then: (cb) => cb() });
+    flux().reset = (): any => done();
 
     tag.root.click();
   });

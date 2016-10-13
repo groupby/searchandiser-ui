@@ -6,12 +6,12 @@ const SERVICES = {
   collections: {}
 };
 
-suite<Collections>('gb-collections', { services: SERVICES }, ({ flux, html, mount, sandbox }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<Collections>('gb-collections', { services: SERVICES }, ({
+  flux, html, mount, sandbox,
+  itMountsTag
+}) => {
 
-    expect(tag).to.be.ok;
-  });
+  itMountsTag();
 
   it('renders as list by default', () => {
     const model = new Model(mount());

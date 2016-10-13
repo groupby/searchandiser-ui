@@ -2,13 +2,9 @@ import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Breadcrumbs>('gb-breadcrumbs', ({ tagName, flux, mount }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, itMountsTag }) => {
 
-    expect(tag).to.be.ok;
-    expect(tag.root.querySelector(`div.${tagName}`)).to.be.ok;
-  });
+  itMountsTag();
 
   describe('with query', () => {
     const ORIGINAL_QUERY = 'red sneakers';

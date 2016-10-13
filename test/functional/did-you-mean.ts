@@ -1,12 +1,14 @@
 import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
-import suite from './_suite';
+import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<DidYouMean>('gb-did-you-mean', ({ flux, html, mount }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<DidYouMean>('gb-did-you-mean', ({ flux, html, mount, itMountsTag }) => {
 
-    expect(tag).to.be.ok;
+  itMountsTag();
+
+  it('renders list', () => {
+    mount();
+
     expect(html().querySelector('gb-list')).to.be.ok;
   });
 
@@ -15,23 +17,33 @@ suite<DidYouMean>('gb-did-you-mean', ({ flux, html, mount }) => {
 
     it('renders from results', () => {
       const tag = mount();
+      const model = new Model(tag);
 
       tag.updateDidYouMean(<any>{ didYouMean });
-      expect(dymLinks()).to.have.length(3);
-      expect(dymLinks()[0].textContent).to.eq(didYouMean[0]);
+
+      expect(model.links).to.have.length(3);
+      expect(model.links[0].textContent).to.eq(didYouMean[0]);
     });
 
-    it('rewrites on option selected', () => {
+    it('rewrites on option selected', (done) => {
       const tag = mount();
-
-      flux().rewrite = (query): any => expect(query).to.eq(didYouMean[1]);
+      const model = new Model(tag);
+      flux().rewrite = (query): any => {
+        expect(query).to.eq(didYouMean[1]);
+        done();
+      };
 
       tag.updateDidYouMean(<any>{ didYouMean });
-      tag.on('updated', () => dymLinks()[1].click());
+
+      tag.on('updated', () => model.links[1].click());
     });
   });
-
-  function dymLinks(): NodeListOf<HTMLAnchorElement> {
-    return <NodeListOf<HTMLAnchorElement>>html().querySelectorAll('li > a');
-  }
 });
+
+class Model extends BaseModel<DidYouMean> {
+
+  get links() {
+    return this.list(this.html, 'li > a');
+  }
+
+}

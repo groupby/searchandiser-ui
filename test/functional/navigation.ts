@@ -4,31 +4,35 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite<Navigation>('gb-navigation', ({ flux, html, mount, sandbox }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<Navigation>('gb-navigation', ({
+  flux, html, mount, sandbox,
+  itMountsTag
+}) => {
 
-    expect(tag).to.be.ok;
+  itMountsTag();
+
+  it('renders side-nav', () => {
+    mount();
+
     expect(html().querySelector('.gb-side-nav')).to.be.ok;
   });
 
   it('renders with refinements', () => {
     const tag = mount();
-
-    tag.processed = <any>[{
+    const processed = <any>[{
       displayName: 'Main',
       refinements: [
         { value: 'Pick up', type: 'Value', count: 12345 },
         { value: 'Deliver', type: 'Value', count: 123 }]
-    },
-    {
+    }, {
       displayName: 'Category',
       refinements: [
         { value: 'Health', type: 'Value', count: 200 },
         { value: 'Items', type: 'Value', count: 59234 }],
       selected: [{ value: 'Grocery', type: 'Value', count: 52 }]
     }];
-    tag.update();
+
+    tag.update({ processed });
 
     expect(html().querySelector('gb-refinement-list')).to.be.ok;
     expect(html().querySelector('gb-available-refinement')).to.be.ok;
@@ -48,19 +52,19 @@ suite<Navigation>('gb-navigation', ({ flux, html, mount, sandbox }) => {
 
   it('should select refinement on click', () => {
     const tag = mount();
-    sandbox().stub(utils, 'toRefinement', (refinement) => {
-      expect(refinement).to.eql({ value: 'Deliver', type: 'Value', count: 123 });
-    });
-
-    tag.processed = <any>[{
+    const stub = sandbox().stub(utils, 'toRefinement', (refinement) =>
+      expect(refinement).to.eql({ value: 'Deliver', type: 'Value', count: 123 }));
+    const processed = <any>[{
       displayName: 'Main',
       refinements: [
         { value: 'Pick up', type: 'Value', count: 12345 },
         { value: 'Deliver', type: 'Value', count: 123 }]
     }];
-    tag.update();
+    tag.update({ processed });
 
     (<HTMLAnchorElement>html().querySelectorAll('.gb-ref__title')[1]).click();
+
+    expect(stub.called).to.be.true;
   });
 
   it('should display selected refinement', () => {
