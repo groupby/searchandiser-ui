@@ -3,7 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-page-size', PageSize, ({
-  tag, flux, sandbox,
+  tag, flux, stub,
   itShouldConfigure
 }) => {
 
@@ -28,22 +28,22 @@ suite('gb-page-size', PageSize, ({
 
   describe('onselect()', () => {
     it('should resize and keep offset', (done) => {
-      sandbox().stub(flux(), 'resize', (pageSize, reset) => {
+      flux().resize = (pageSize, reset): any => {
         expect(pageSize).to.eq(40);
         expect(reset).to.be.undefined;
         done();
-      });
+      };
       flux().query.skip(43);
 
       tag().onselect(40);
     });
 
     it('should resize and reset offset', (done) => {
-      sandbox().stub(flux(), 'resize', (pageSize, reset) => {
+      flux().resize = (pageSize, reset): any => {
         expect(pageSize).to.eq(20);
         expect(reset).to.be.true;
         done();
-      });
+      };
       flux().query.skip(43);
       tag()._config = { resetOffset: true };
 
@@ -51,11 +51,11 @@ suite('gb-page-size', PageSize, ({
     });
 
     it('should emit tracking event', (done) => {
-      const stub = sandbox().stub(flux(), 'resize', (pageSize, reset) => Promise.resolve());
+      const resize = stub(flux(), 'resize', () => Promise.resolve());
       tag().services = <any>{
         tracker: {
           search: () => {
-            expect(stub.called).to.be.true;
+            expect(resize.called).to.be.true;
             done();
           }
         }

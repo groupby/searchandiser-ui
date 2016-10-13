@@ -3,7 +3,7 @@ import { ProductMeta, ProductTransformer } from '../../../src/utils/product-tran
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-product', Product, ({ tag, sandbox }) => {
+suite('gb-product', Product, ({ tag, spy, stub }) => {
 
   describe('init()', () => {
     beforeEach(() => {
@@ -30,12 +30,12 @@ suite('gb-product', Product, ({ tag, sandbox }) => {
 
     it('should call transformRecord()', () => {
       const all_meta = { a: 'b' };
-      const stub = sandbox().stub(tag(), 'transformRecord', (allMeta) => expect(allMeta).to.eq(all_meta));
+      const transformRecord = stub(tag(), 'transformRecord');
       tag().opts = { all_meta };
 
       tag().init();
 
-      expect(stub.called).to.be.true;
+      expect(transformRecord.calledWith(all_meta)).to.be.true;
     });
 
     describe('struct', () => {
@@ -84,9 +84,9 @@ suite('gb-product', Product, ({ tag, sandbox }) => {
     it('should perform transformation', () => {
       const remappedMeta = { e: 'f', g: 'h' };
       const variants = ['a', 'b', 'c'];
-      const spy =
+      const update =
         tag().update =
-        sinon.spy((obj) => {
+        spy((obj) => {
           expect(obj.allMeta).to.eq(ALL_META);
           expect(obj.productMeta()).to.eq(remappedMeta);
           expect(obj.variants).to.eq(variants);
@@ -95,7 +95,7 @@ suite('gb-product', Product, ({ tag, sandbox }) => {
 
       tag().transformRecord(ALL_META);
 
-      expect(spy.called).to.be.true;
+      expect(update.called).to.be.true;
     });
   });
 
@@ -132,13 +132,11 @@ suite('gb-product', Product, ({ tag, sandbox }) => {
   describe('switchVariant()', () => {
     it('should update variantIndex', () => {
       const index = 12;
-      const spy =
-        tag().update =
-        sinon.spy((obj) => expect(obj.variantIndex).to.eq(index));
+      const update = tag().update = spy();
 
       tag().switchVariant(<any>{ target: { dataset: { index } } });
 
-      expect(spy.called).to.be.true;
+      expect(update.calledWith({ variantIndex: index })).to.be.true;
     });
   });
 });

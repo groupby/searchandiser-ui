@@ -29,6 +29,7 @@ describe('ProductTransformer', () => {
 
     it('should be able to override default values', () => {
       const struct = Object.assign({ id: 'productId' }, STRUCT);
+
       transformer = new ProductTransformer(struct);
 
       expect(transformer.struct).to.eql(struct);
@@ -36,6 +37,7 @@ describe('ProductTransformer', () => {
 
     it('should accept tranform override from struct', () => {
       const struct = Object.assign({ _transform: () => null }, STRUCT);
+
       transformer = new ProductTransformer(struct);
 
       expect(transformer.productTransform).to.eq(struct._transform);
@@ -43,6 +45,7 @@ describe('ProductTransformer', () => {
 
     it('should recognize configured variants', () => {
       const struct = Object.assign({ variants: 'child' }, STRUCT);
+
       transformer = new ProductTransformer(struct);
 
       expect(transformer.hasVariants).to.be.true;
@@ -54,6 +57,7 @@ describe('ProductTransformer', () => {
         variants: 'child',
         _variantStructure: { id: 'variantId' }
       }, STRUCT);
+
       transformer = new ProductTransformer(struct);
 
       expect(transformer.idField).to.eq('child.variantId');

@@ -2,7 +2,7 @@ import { RelatedQueries } from '../../src/tags/related-queries/gb-related-querie
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<RelatedQueries>('gb-related-queries', ({ flux, mount, sandbox, itMountsTag }) => {
+suite<RelatedQueries>('gb-related-queries', ({ flux, mount, stub, itMountsTag }) => {
 
   itMountsTag();
 
@@ -31,11 +31,11 @@ suite<RelatedQueries>('gb-related-queries', ({ flux, mount, sandbox, itMountsTag
     });
 
     it('rewrites on option selected', () => {
-      const stub = sandbox().stub(flux(), 'rewrite');
+      const rewrite = stub(flux(), 'rewrite');
 
       model.relatedLinks[1].click();
 
-      expect(stub.calledWith(RELATED_QUERIES[1]));
+      expect(rewrite.calledWith(RELATED_QUERIES[1]));
     });
   });
 });

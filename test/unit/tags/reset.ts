@@ -2,10 +2,7 @@ import { Reset } from '../../../src/tags/reset/gb-reset';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-reset', Reset, ({
-  flux, tag, sandbox,
-  expectSubscriptions
-}) => {
+suite('gb-reset', Reset, ({ flux, tag, spy, expectSubscriptions }) => {
 
   describe('init()', () => {
     it('should listen for mount event', () => {
@@ -17,31 +14,28 @@ suite('gb-reset', Reset, ({
     });
 
     it('should register click listener', () => {
-      const addEventListener = sinon.spy((event, cb) => {
-        expect(event).to.eq('click');
-        expect(cb).to.eq(tag().clearQuery);
-      });
+      const addEventListener = spy();
       tag().root = <any>{ addEventListener };
 
       tag().init();
 
-      expect(addEventListener.called).to.be.true;
+      expect(addEventListener.calledWith('click', tag().clearQuery)).to.be.true;
     });
   });
 
   describe('clearQuery()', () => {
     it('should clear query', (done) => {
-      sandbox().stub(flux(), 'reset', (value) => {
+      flux().reset = (value): any => {
         expect(value).to.eq('');
         done();
-      });
+      };
       tag().searchBox = <any>{ value: 'something' };
 
       tag().clearQuery();
     });
 
     it('should emit tracker event', (done) => {
-      sandbox().stub(flux(), 'reset', () => Promise.resolve());
+      flux().reset = (): any => Promise.resolve();
       tag().searchBox = <any>{ value: 'something' };
       tag().services = <any>{
         tracker: {

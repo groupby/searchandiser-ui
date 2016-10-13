@@ -1,18 +1,17 @@
 import '../../src/tags/index';
 import { SelectTag } from '../../src/tags/select/gb-select';
 import { FluxTag, MixinFlux } from '../../src/tags/tag';
+import { buildSuite, getDescribe, SuiteModifier } from '../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 
-function suite<T extends FluxTag<any>>(tagName: string, mixin: any, cb: (suite: FunctionalSuite<T>) => void);
-function suite<T extends FluxTag<any>>(tagName: string, cb: (suite: FunctionalSuite<T>) => void);
-function suite<T extends FluxTag<any>>(tagName: string, mixinOrCb: any, cb?: Function) {
+function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string, mixinOrCb: any, cb?: Function) {
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
-  const tests = hasMixin ? cb : mixinOrCb;
+  const tests: (suiteUtils: FunctionalUtils<T>) => void = hasMixin ? cb : mixinOrCb;
 
-  describe(`${tagName} behaviour`, () => {
+  getDescribe(modifier)(`${tagName} behaviour`, () => {
     let _flux: FluxCapacitor;
     let _html: HTMLElement;
     let _sandbox: Sinon.SinonSandbox;
@@ -30,7 +29,8 @@ function suite<T extends FluxTag<any>>(tagName: string, mixinOrCb: any, cb?: Fun
     tests({
       flux: () => _flux,
       html: () => _html,
-      sandbox: () => _sandbox,
+      spy: (obj?, method?) => _sandbox.spy(obj, method),
+      stub: (obj?, method?, func?) => _sandbox.stub(obj, method, func),
       tagName,
       mount,
       itMountsTag
@@ -49,6 +49,18 @@ function suite<T extends FluxTag<any>>(tagName: string, mixinOrCb: any, cb?: Fun
     });
   }
 }
+
+export interface BaseSuite extends Suite {
+  skip?: Suite;
+  only?: Suite;
+}
+
+export interface Suite {
+  <T extends FluxTag<any>>(tagName: string, mixin: any, cb: (suite: FunctionalUtils<T>) => void);
+  <T extends FluxTag<any>>(tagName: string, cb: (suite: FunctionalUtils<T>) => void);
+}
+
+const suite = buildSuite<BaseSuite>(_suite);
 
 export default suite;
 
@@ -72,12 +84,13 @@ export function removeTag(html: HTMLElement) {
   document.body.removeChild(html);
 }
 
-export interface FunctionalSuite<T> {
+export interface FunctionalUtils<T> {
   flux: () => FluxCapacitor;
   html: () => HTMLElement;
-  sandbox: () => Sinon.SinonSandbox;
+  spy: Sinon.SinonSpyStatic;
+  stub: Sinon.SinonStubStatic;
   mount: (opts?: any) => T;
-  itMountsTag: () => null;
+  itMountsTag: () => void;
   tagName: string;
 }
 

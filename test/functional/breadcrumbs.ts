@@ -2,7 +2,7 @@ import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => {
+suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
 
   itMountsTag();
 
@@ -118,11 +118,11 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => 
 
       it('should unrefine on click', () => {
         const refinement = { type: 'Value', value: 'B', navigationName: 'first' };
-        const stub = sandbox().stub(flux(), 'unrefine');
+        const unrefine = stub(flux(), 'unrefine');
 
         model.refinementLinks()[1].click();
 
-        expect(stub.calledWith(refinement)).to.be.true;
+        expect(unrefine.calledWith(refinement)).to.be.true;
       });
     });
   });

@@ -2,7 +2,7 @@ import { Sort } from '../../src/tags/sort/gb-sort';
 import suite, { SelectModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Sort>('gb-sort', ({ flux, mount, sandbox, itMountsTag }) => {
+suite<Sort>('gb-sort', ({ flux, mount, stub, itMountsTag }) => {
 
   itMountsTag();
 
@@ -28,12 +28,12 @@ suite<Sort>('gb-sort', ({ flux, mount, sandbox, itMountsTag }) => {
 
     it('should call flux.sort() on click', () => {
       const model = new Model(mount());
-      const stub = sandbox().stub(flux(), 'sort');
+      const sort = stub(flux(), 'sort');
 
       model.options[1].click();
 
       expect(model.clearOption).to.not.be.ok;
-      expect(stub.calledWith({ field: 'title', order: 'Ascending' })).to.be.true;
+      expect(sort.calledWith({ field: 'title', order: 'Ascending' })).to.be.true;
     });
   });
 });

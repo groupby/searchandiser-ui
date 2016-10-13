@@ -1,10 +1,11 @@
 import { DEFAULT_CONFIG, Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-navigation', Navigation, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
   itShouldConfigure
 }) => {
@@ -23,18 +24,14 @@ suite('gb-navigation', Navigation, ({
   describe('updateRefinements()', () => {
     it('should call update() with processed', () => {
       const results: any = { a: 'b' };
-      const refinements = [{ c: 'd' }];
-      const spy =
-        tag().update =
-        sinon.spy(({ processed }) => expect(processed).to.eq(refinements));
-      tag().replaceRefinements = (res): any => {
-        expect(res).to.eq(results);
-        return refinements;
-      };
+      const processed = [{ c: 'd' }];
+      const update = tag().update = spy();
+      const replaceRefinements = stub(tag(), 'replaceRefinements').returns(processed);
 
       tag().updateRefinements(results);
 
-      expect(spy.called).to.be.true;
+      expect(replaceRefinements.calledWith(results)).to.be.true;
+      expect(update.calledWith({ processed })).to.be.true;
     });
   });
 
@@ -93,33 +90,21 @@ suite('gb-navigation', Navigation, ({
 
   describe('send()', () => {
     it('should refine on send()', () => {
-      const stub = sandbox().stub(flux(), 'refine', (ref) =>
-        expect(ref).to.eql({
-          navigationName: 'price',
-          type: 'Range',
-          low: 4,
-          high: 6
-        }));
+      const refine = stub(flux(), 'refine');
 
       tag().send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(stub.called).to.be.true;
+      expect(refine.calledWith(refinement('price', 4, 6))).to.be.true;
     });
   });
 
   describe('remove()', () => {
     it('should unrefine on remove()', () => {
-      const stub = sandbox().stub(flux(), 'unrefine', (ref) =>
-        expect(ref).to.eql({
-          navigationName: 'price',
-          type: 'Range',
-          low: 4,
-          high: 6
-        }));
+      const unrefine = stub(flux(), 'unrefine');
 
       tag().remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(stub.called).to.be.true;
+      expect(unrefine.calledWith(refinement('price', 4, 6))).to.be.true;
     });
   });
 });

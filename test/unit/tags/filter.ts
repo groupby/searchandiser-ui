@@ -4,7 +4,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-filter', Filter, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
   itShouldConfigure
 }) => {
@@ -42,57 +42,55 @@ suite('gb-filter', Filter, ({
     it('should update the select tag with options', () => {
       const results: any = { x: 'y' };
       const refinements = [{ a: 'b', c: 'd' }];
-      const updateOptions = sinon.spy((options) => expect(options).to.eq(refinements));
+      const updateOptions = spy();
       tag().tags = <any>{ 'gb-select': { updateOptions } };
       tag().convertRefinements = () => refinements;
 
       tag().updateValues(results);
 
-      expect(updateOptions.called).to.be.true;
+      expect(updateOptions.calledWith(refinements)).to.be.true;
     });
 
     it('should call update() with options', () => {
       const results: any = { x: 'y' };
-      const refinements = [{ a: 'b', c: 'd' }];
+      const options = [{ a: 'b', c: 'd' }];
+      const update = tag().update = spy();
       tag().tags = <any>{};
-      tag().convertRefinements = () => refinements;
-      tag().update = ({ options }) => expect(options).to.eq(refinements);
+      tag().convertRefinements = () => options;
 
       tag().updateValues(results);
+
+      expect(update.calledWith({ options })).to.be.true;
     });
   });
 
   describe('onselect()', () => {
     it('should call reset on clear navigation', () => {
-      const stub = sandbox().stub(flux(), 'reset');
+      const reset = stub(flux(), 'reset');
 
       tag().onselect('*');
 
-      expect(stub.called).to.be.true;
+      expect(reset.called).to.be.true;
     });
 
     it('should call refine on navigation selected', () => {
       const selection = { type: 'Value', value: 'DeWalt' };
       const navigationName = 'brand';
-      const stub = sandbox().stub(flux(), 'refine', (selected) =>
-        expect(selected).to.eql(Object.assign(selection, { navigationName })));
+      const refine = stub(flux(), 'refine');
       tag()._config = { field: navigationName };
 
       tag().onselect(selection);
 
-      expect(stub.called).to.be.true;
+      expect(refine.calledWith(Object.assign(selection, { navigationName }))).to.be.true;
     });
 
     it('should call unrefine to clear current selection', () => {
       const selection = tag().selected = { a: 'b', c: 'd' };
-      const stub = sandbox().stub(flux(), 'unrefine', (selected, opts) => {
-        expect(selected).to.eq(selection);
-        expect(opts.skipSearch).to.be.true;
-      });
+      const unrefine = stub(flux(), 'unrefine');
 
       tag().onselect('*');
 
-      expect(stub.called).to.be.true;
+      expect(unrefine.calledWith(selection, { skipSearch: true })).to.be.true;
     });
   });
 });

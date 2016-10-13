@@ -4,7 +4,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-collections', Collections, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
   itShouldConfigure
 }) => {
@@ -56,8 +56,7 @@ suite('gb-collections', Collections, ({
   describe('switchCollection()', () => {
     it('should call onselect with collection', () => {
       const collection = 'my collection';
-      const stub = sandbox().stub(tag(), 'onselect', (coll) =>
-        expect(coll).to.eq(collection));
+      const onselect = stub(tag(), 'onselect');
 
       tag().switchCollection(<any>{
         target: {
@@ -71,32 +70,29 @@ suite('gb-collections', Collections, ({
         }
       });
 
-      expect(stub.called).to.be.true;
+      expect(onselect.calledWith(collection)).to.be.true;
     });
   });
 
   describe('updateCounts', () => {
     it('should call update() with counts', () => {
-      const newCounts = [{ a: 'b' }];
-      const spy =
-        tag().update =
-        sinon.spy(({counts}) => expect(counts).to.eq(newCounts));
+      const counts = [{ a: 'b' }];
+      const update = tag().update = spy();
 
-      tag().updateCounts(newCounts);
+      tag().updateCounts(counts);
 
-      expect(spy.called).to.be.true;
+      expect(update.calledWith({ counts })).to.be.true;
     });
   });
 
   describe('onselect()', () => {
     it('should call flux.switchCollection()', () => {
       const collection = 'onsale';
-      const stub = sandbox().stub(flux(), 'switchCollection', (coll) =>
-        expect(coll).to.eq(collection));
+      const switchCollection = stub(flux(), 'switchCollection');
 
       tag().onselect(collection);
 
-      expect(stub.called).to.be.true;
+      expect(switchCollection.calledWith(collection)).to.be.true;
     });
   });
 });

@@ -3,7 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-results', Results, ({ flux, tag, expectSubscriptions }) => {
+suite('gb-results', Results, ({ flux, tag, spy, expectSubscriptions }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
@@ -38,17 +38,12 @@ suite('gb-results', Results, ({ flux, tag, expectSubscriptions }) => {
     it('should update selected on RESULTS', () => {
       const records = [{ a: 'b' }, { c: 'd' }];
       const collection = 'mycollection';
+      const update = tag().update = spy();
       flux().query.withConfiguration({ collection });
-      const spy =
-        tag().update =
-        sinon.spy((obj) => {
-          expect(obj.records).to.eq(records);
-          expect(obj.collection).to.eq(collection);
-        });
 
       tag().updateRecords(<any>{ records });
 
-      expect(spy.called).to.be.true;
+      expect(update.calledWith({ records, collection })).to.be.true;
     });
   });
 

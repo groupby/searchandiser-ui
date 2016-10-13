@@ -3,7 +3,11 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-template', Template, ({ tag, itShouldConfigure, expectSubscriptions }) => {
+suite('gb-template', Template, ({
+  tag, spy,
+  itShouldConfigure,
+  expectSubscriptions
+}) => {
 
   describe('init()', () => {
     itShouldConfigure();
@@ -26,29 +30,18 @@ suite('gb-template', Template, ({ tag, itShouldConfigure, expectSubscriptions })
   describe('updateActive()', () => {
     it('should update active on RESULTS', () => {
       const target = 'My Spotlight Template';
-      const sortedZones = [{ a: 'b' }];
-      const zones = { a: 'b' };
-      const spy =
-        tag().update =
-        sinon.spy((obj) => {
-          expect(obj.isActive).to.be.true;
-          expect(obj.zones).to.eq(sortedZones);
-          expect(obj.zoneMap).to.eq(zones);
-        });
+      const zoneList = [{ a: 'b' }];
+      const zoneMap = { a: 'b' };
+      const update = tag().update = spy();
       tag()._config = { target };
-      tag().sortZones = (zoneMap) => {
-        expect(zoneMap).to.eq(zones);
-        return sortedZones;
+      tag().sortZones = (zones) => {
+        expect(zones).to.eq(zoneMap);
+        return zoneList;
       };
 
-      tag().updateActive(<any>{
-        template: {
-          name: target,
-          zones
-        }
-      });
+      tag().updateActive(<any>{ template: { name: target, zones: zoneMap } });
 
-      expect(spy.called).to.be.true;
+      expect(update.calledWith({ isActive: true, zones: zoneList, zoneMap })).to.be.true;
     });
   });
 

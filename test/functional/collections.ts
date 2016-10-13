@@ -7,7 +7,7 @@ const SERVICES = {
 };
 
 suite<Collections>('gb-collections', { services: SERVICES }, ({
-  flux, mount, sandbox,
+  flux, mount, spy, stub,
   itMountsTag
 }) => {
 
@@ -107,26 +107,26 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({
 
     describe('gb-collection-item', () => {
       it('switches collection on click', () => {
-        const spy = sandbox().spy(tag, 'onselect');
-        const stub = sandbox().stub(flux(), 'switchCollection');
+        const onselect = spy(tag, 'onselect');
+        const switchCollection = stub(flux(), 'switchCollection');
         tag.update();
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('.gb-collection')[1]).click();
 
-        expect(spy.calledWith(COLLECTIONS[1])).to.be.true;
-        expect(stub.calledWith(COLLECTIONS[1])).to.be.true;
+        expect(onselect.calledWith(COLLECTIONS[1])).to.be.true;
+        expect(switchCollection.calledWith(COLLECTIONS[1])).to.be.true;
       });
     });
 
     describe('gb-collection-dropdown-item', () => {
       it('switches dropdown collection on click', () => {
-        const stub = sandbox().stub(flux(), 'switchCollection');
+        const switchCollection = stub(flux(), 'switchCollection');
         tag._config = <any>{ dropdown: true };
         tag.update({ options: OPTIONS });
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('gb-collection-dropdown-item a')[1]).click();
 
-        expect(stub.calledWith(OPTIONS[1].value)).to.be.true;
+        expect(switchCollection.calledWith(OPTIONS[1].value)).to.be.true;
       });
     });
   });

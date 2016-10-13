@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite<Navigation>('gb-navigation', ({
-  flux, html, mount, sandbox,
+  flux, html, mount, stub,
   itMountsTag
 }) => {
 
@@ -63,11 +63,11 @@ suite<Navigation>('gb-navigation', ({
     describe('refine()', () => {
       it('should select refinement on click', () => {
         const refinement = { value: 'Deliver', type: 'Value', count: 123 };
-        const stub = sandbox().stub(utils, 'toRefinement');
+        const toRefinement = stub(utils, 'toRefinement');
 
         model.refinementTitles[1].click();
 
-        expect(stub.calledWith(refinement)).to.be.true;
+        expect(toRefinement.calledWith(refinement)).to.be.true;
       });
 
       it('should display selected refinement', () => {
@@ -76,7 +76,7 @@ suite<Navigation>('gb-navigation', ({
           refinements: [
             { value: 'Random', type: 'Value', count: 888 }]
         };
-        const stub = sandbox().stub(flux(), 'refine', (refinement) =>
+        const refine = stub(flux(), 'refine', (refinement) =>
           flux().emit(Events.RESULTS, {
             availableNavigation: [navigation],
             selectedNavigation: [{ displayName: 'Main', refinements: [refinement] }]
@@ -95,20 +95,20 @@ suite<Navigation>('gb-navigation', ({
 
         expect(model.selectedRefinement).to.not.be.ok;
         expect(model.refinementTitles[0].textContent).to.eq('Random');
-        expect(stub.called).to.be.false;
+        expect(refine.called).to.be.false;
 
         model.refinementTitles[1].click();
 
         expect(model.refinementTitles[0].textContent).to.eq('Random');
         expect(model.selectedRefinement).to.be.ok;
-        expect(stub.called).to.be.true;
+        expect(refine.called).to.be.true;
       });
     });
 
     describe('unrefine()', () => {
       it('should remove selected refinements on click', () => {
         const refinement = { value: 'Grocery', type: 'Value', count: 52 };
-        const toRefinement = sandbox().stub(utils, 'toRefinement');
+        const toRefinement = stub(utils, 'toRefinement');
         tag.processed = <any>[{
           displayName: 'Main',
           refinements: [
@@ -133,7 +133,7 @@ suite<Navigation>('gb-navigation', ({
             { value: 'Deliver', type: 'Value', count: 123 }
           ]
         };
-        const stub = sandbox().stub(flux(), 'unrefine', (refinements) =>
+        const unrefine = stub(flux(), 'unrefine', (refinements) =>
           flux().emit(Events.RESULTS, {
             availableNavigation: [
               navigation,
@@ -153,13 +153,13 @@ suite<Navigation>('gb-navigation', ({
 
         expect(model.selectedRefinement).to.be.ok;
         expect(html().querySelector('gb-selected-refinement .gb-ref__value').textContent).to.eq('Random');
-        expect(stub.called).to.be.false;
+        expect(unrefine.called).to.be.false;
 
         (<HTMLAnchorElement>html().querySelector('gb-selected-refinement .gb-ref__link')).click();
 
         expect(model.selectedRefinement).to.not.be.ok;
         expect(html().querySelectorAll('gb-available-refinement .gb-ref__title')[2].textContent).to.eq('Random');
-        expect(stub.called).to.be.true;
+        expect(unrefine.called).to.be.true;
       });
     });
 
@@ -182,7 +182,7 @@ suite<Navigation>('gb-navigation', ({
     });
 
     it('should show more refinements on click', () => {
-      const stub = sandbox().stub(flux(), 'refinements', () =>
+      const refinements = stub(flux(), 'refinements', () =>
         flux().emit(Events.REFINEMENT_RESULTS, {
           navigation: {
             name: 'main', displayName: 'Main',
@@ -202,7 +202,7 @@ suite<Navigation>('gb-navigation', ({
 
       expect((<any>tag.processed[0]).moreRefinements).to.be.false;
       expect(model.refinementTitles[2].textContent).to.eq('Third');
-      expect(stub.calledWith('main'));
+      expect(refinements.calledWith('main'));
     });
   });
 });

@@ -1,4 +1,14 @@
-import * as utils from '../../src/utils/common';
+import {
+  checkBooleanAttr,
+  checkNested,
+  displayRefinement,
+  findSearchBox,
+  findTag,
+  getPath,
+  remap,
+  toRefinement,
+  unless
+} from '../../../src/utils/common';
 import { expect } from 'chai';
 
 describe('utils', () => {
@@ -13,7 +23,7 @@ describe('utils', () => {
       document.body.appendChild(el);
       el['_tag'] = { searchBox: 'searchBox' };
 
-      expect(utils.findSearchBox()).to.eq('searchBox');
+      expect(findSearchBox()).to.eq('searchBox');
     });
   });
 
@@ -30,9 +40,9 @@ describe('utils', () => {
       attr.value = 'gb-breadcrumbs';
       el3.setAttributeNode(attr);
 
-      expect(utils.findTag('gb-test')).to.eq(el);
-      expect(utils.findTag('gb-sayt')).to.eq(el2);
-      expect(utils.findTag('gb-breadcrumbs')).to.eq(el3);
+      expect(findTag('gb-test')).to.eq(el);
+      expect(findTag('gb-sayt')).to.eq(el2);
+      expect(findTag('gb-breadcrumbs')).to.eq(el3);
     });
   });
 
@@ -41,10 +51,10 @@ describe('utils', () => {
       const ref1: any = { type: 'Value', value: 'High' };
       const ref2: any = { type: 'Range', high: '5', low: '4' };
       const nav: any = { name: 'Type' };
-      const refinement = utils.toRefinement(ref1, nav);
-      const refinement2 = utils.toRefinement(ref2, nav);
+      const refinement1 = toRefinement(ref1, nav);
+      const refinement2 = toRefinement(ref2, nav);
 
-      expect(refinement).to.eql({
+      expect(refinement1).to.eql({
         type: ref1.type,
         value: ref1.value,
         navigationName: nav.name
@@ -63,8 +73,8 @@ describe('utils', () => {
       const ref1: any = { type: 'Value', value: 'Rugs' };
       const ref2: any = { type: 'Range', high: '5', low: '4' };
 
-      expect(utils.displayRefinement(ref1)).to.eq(ref1.value);
-      expect(utils.displayRefinement(ref2)).to.eq('4 - 5');
+      expect(displayRefinement(ref1)).to.eq(ref1.value);
+      expect(displayRefinement(ref2)).to.eq('4 - 5');
     });
   });
 
@@ -72,11 +82,11 @@ describe('utils', () => {
     it('should return true if has nested objects', () => {
       const obj = { tags: { sort: { options: {} } } };
 
-      expect(utils.checkNested(obj, 'tags', 'sort', 'options')).to.be.true;
+      expect(checkNested(obj, 'tags', 'sort', 'options')).to.be.true;
     });
 
     it('should return false if does not have nested objects', () => {
-      expect(utils.checkNested({}, 'tags', 'sort', 'options')).to.be.false;
+      expect(checkNested({}, 'tags', 'sort', 'options')).to.be.false;
     });
   });
 
@@ -85,9 +95,9 @@ describe('utils', () => {
       let empty;
       const notEmpty = 'Existence';
 
-      expect(utils.unless(notEmpty, [])).to.eq(notEmpty);
-      expect(utils.unless(empty, notEmpty)).to.eq(notEmpty);
-      expect(utils.unless(empty, empty, empty, notEmpty)).to.eq(notEmpty);
+      expect(unless(notEmpty, [])).to.eq(notEmpty);
+      expect(unless(empty, notEmpty)).to.eq(notEmpty);
+      expect(unless(empty, empty, empty, notEmpty)).to.eq(notEmpty);
     });
   });
 
@@ -96,13 +106,13 @@ describe('utils', () => {
       const obj = { tags: { collections: { options: { a: 'b', c: 'd' } } } };
       const path = 'tags.collections';
 
-      expect(utils.getPath(obj, path)).to.eq(obj.tags.collections);
+      expect(getPath(obj, path)).to.eq(obj.tags.collections);
     });
   });
 
   describe('remap()', () => {
     it('should removes keys that do not appear in the mapping', () => {
-      expect(utils.remap({ b: 'a', c: 'test' }, { a: 'b', d: 'c' })).to.eql({ a: 'a', d: 'test' });
+      expect(remap({ b: 'a', c: 'test' }, { a: 'b', d: 'c' })).to.eql({ a: 'a', d: 'test' });
     });
   });
 
@@ -110,11 +120,11 @@ describe('utils', () => {
     it('should process strings as booleans', () => {
       const options = { attr1: true, attr2: 'true', attr3: false, attr4: 'false' };
 
-      expect(utils.checkBooleanAttr('attr1', options)).to.be.true;
-      expect(utils.checkBooleanAttr('attr2', options)).to.be.true;
-      expect(utils.checkBooleanAttr('attr3', options)).to.be.false;
-      expect(utils.checkBooleanAttr('attr4', options)).to.be.false;
-      expect(utils.checkBooleanAttr('attr5', options)).to.be.false;
+      expect(checkBooleanAttr('attr1', options)).to.be.true;
+      expect(checkBooleanAttr('attr2', options)).to.be.true;
+      expect(checkBooleanAttr('attr3', options)).to.be.false;
+      expect(checkBooleanAttr('attr4', options)).to.be.false;
+      expect(checkBooleanAttr('attr5', options)).to.be.false;
     });
   });
 });

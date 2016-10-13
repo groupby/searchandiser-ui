@@ -4,7 +4,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-submit', Submit, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
   itShouldConfigure
 }) => {
@@ -37,22 +37,19 @@ suite('gb-submit', Submit, ({
     });
 
     it('should register click listener', () => {
-      const addEventListener = sinon.spy((event, cb) => {
-        expect(event).to.eq('click');
-        expect(cb).to.eq(tag().submitQuery);
-      });
+      const addEventListener = spy();
       tag().root = <any>{ addEventListener };
 
       tag().init();
 
-      expect(addEventListener.called).to.be.true;
+      expect(addEventListener.calledWith('click', tag().submitQuery)).to.be.true;
     });
   });
 
   describe('setSearchBox()', () => {
     it('should set the searchBox', () => {
       const searchBox = { a: 'b' };
-      sandbox().stub(utils, 'findSearchBox', () => searchBox);
+      stub(utils, 'findSearchBox').returns(searchBox);
 
       tag().setSearchBox();
 
@@ -74,13 +71,13 @@ suite('gb-submit', Submit, ({
 
     it('should emit tracker event', (done) => {
       const query = 'something';
-      const stub = sandbox().stub(flux(), 'reset', () => Promise.resolve());
+      const reset = stub(flux(), 'reset').returns(Promise.resolve());
       tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{
         tracker: {
           search: () => {
             expect(tag().searchBox.value).to.eq(query);
-            expect(stub.called).to.be.true;
+            expect(reset.called).to.be.true;
             done();
           }
         }
@@ -90,18 +87,15 @@ suite('gb-submit', Submit, ({
     });
 
     it('should submit static query', () => {
-      const newQuery = 'something';
-      const update = sinon.spy((query, refinements) => {
-        expect(query).to.eq(newQuery);
-        expect(refinements).to.eql([]);
-      });
+      const query = 'something';
+      const update = spy();
       tag()._config.staticSearch = true;
-      tag().searchBox = <HTMLInputElement>{ value: newQuery };
+      tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{ url: { update, active: () => true } };
 
       tag().submitQuery();
 
-      expect(update.called).to.be.true;
+      expect(update.calledWith(query, [])).to.be.true;
     });
   });
 });

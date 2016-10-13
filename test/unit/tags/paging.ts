@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-paging', Paging, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
   itShouldConfigure
 }) => {
@@ -44,11 +44,7 @@ suite('gb-paging', Paging, ({
     it('should update page position', () => {
       const pageNumbers = [1, 2, 3, 4, 5];
       const limit = 7;
-      const stub = sandbox().stub(tag(), 'updatePageInfo', (pages, current, last) => {
-        expect(pages).to.eq(pageNumbers);
-        expect(current).to.eq(9);
-        expect(last).to.eq(16);
-      });
+      const updatePageInfo = stub(tag(), 'updatePageInfo');
       tag()._config = { limit };
       flux().page = <any>{
         pageNumbers: (pages) => {
@@ -61,97 +57,96 @@ suite('gb-paging', Paging, ({
 
       tag().pageInfo();
 
-      expect(stub.called).to.be.true;
+      expect(updatePageInfo.calledWith(pageNumbers, 9, 16)).to.be.true;
     });
   });
 
   describe('updatePageInfo()', () => {
     it('should update page info', () => {
-      const spy =
-        tag().update =
-        sinon.spy((obj) => {
-          expect(obj.backDisabled).to.be.false;
-          expect(obj.forwardDisabled).to.be.true;
-          expect(obj.lowOverflow).to.be.false;
-          expect(obj.highOverflow).to.be.true;
-          expect(obj.pageNumbers).to.eql([1, 2, 3, 4, 5, 6]);
-          expect(obj.lastPage).to.eq(43);
-          expect(obj.currentPage).to.eq(43);
-        });
+      const pageNumbers = [1, 2, 3, 4, 5, 6];
+      const update = tag().update = spy();
 
-      tag().updatePageInfo([1, 2, 3, 4, 5, 6], 43, 43);
+      tag().updatePageInfo(pageNumbers, 43, 43);
 
-      expect(spy.called).to.be.true;
+      expect(update.calledWith({
+        pageNumbers,
+        backDisabled: false,
+        forwardDisabled: true,
+        lowOverflow: false,
+        highOverflow: true,
+        lastPage: 43,
+        currentPage: 43
+      })).to.be.true;
     });
 
     it('should set lowOverflow and highOverflow true', () => {
-      const spy =
+      const update =
         tag().update =
-        sinon.spy((obj) => {
+        spy((obj) => {
           expect(obj.lowOverflow).to.be.true;
           expect(obj.highOverflow).to.be.true;
         });
 
       tag().updatePageInfo([2, 3, 4], 1, 6);
 
-      expect(spy.called).to.be.true;
+      expect(update.called).to.be.true;
     });
 
     it('should set lowOverflow and highOverflow to false', () => {
-      const spy =
+      const update =
         tag().update =
-        sinon.spy((obj) => {
+        spy((obj) => {
           expect(obj.lowOverflow).to.be.false;
           expect(obj.highOverflow).to.be.false;
         });
 
       tag().updatePageInfo([1, 2, 3, 4], 1, 4);
 
-      expect(spy.called).to.be.true;
+      expect(update.called).to.be.true;
     });
 
     it('should set backDisabled and forwardDisabled to true', () => {
-      const spy =
+      const update =
         tag().update =
-        sinon.spy((obj) => {
+        spy((obj) => {
           expect(obj.backDisabled).to.be.true;
           expect(obj.forwardDisabled).to.be.true;
         });
 
       tag().updatePageInfo([1], 1, 1);
 
-      expect(spy.called).to.be.true;
+      expect(update.called).to.be.true;
     });
 
     it('should set backDisabled and forwardDisabled to false', () => {
-      const spy =
+      const update =
         tag().update =
-        sinon.spy((obj) => {
+        spy((obj) => {
           expect(obj.backDisabled).to.be.false;
           expect(obj.forwardDisabled).to.be.false;
         });
 
       tag().updatePageInfo([1, 2, 3], 2, 3);
 
-      expect(spy.called).to.be.true;
+      expect(update.called).to.be.true;
     });
   });
 
   describe('updateCurrentPage()', () => {
     it('should update current page', () => {
-      const spy =
+      const update =
         tag().update =
-        sinon.spy((obj) => expect(obj.currentPage).to.eq(10));
+        spy((obj) => expect(obj.currentPage).to.eq(10));
 
       tag().updateCurrentPage({ pageNumber: 10 });
 
-      expect(spy.called).to.be.true;
+      expect(update.called).to.be.true;
     });
   });
 
   describe('wrapPager()', () => {
     it('first()', (done) => {
-      const reset = sinon.spy(() => Promise.resolve());
+      const reset = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ reset });
       tag().emitEvent = () => {
         expect(reset.called).to.be.true;
@@ -162,7 +157,7 @@ suite('gb-paging', Paging, ({
     });
 
     it('prev()', (done) => {
-      const prev = sinon.spy(() => Promise.resolve());
+      const prev = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ prev });
       tag().emitEvent = () => {
         expect(prev.called).to.be.true;
@@ -173,7 +168,7 @@ suite('gb-paging', Paging, ({
     });
 
     it('next()', (done) => {
-      const next = sinon.spy(() => Promise.resolve());
+      const next = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ next });
       tag().emitEvent = () => {
         expect(next.called).to.be.true;
@@ -184,7 +179,7 @@ suite('gb-paging', Paging, ({
     });
 
     it('last()', (done) => {
-      const last = sinon.spy(() => Promise.resolve());
+      const last = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ last });
       tag().emitEvent = () => {
         expect(last.called).to.be.true;
@@ -196,7 +191,7 @@ suite('gb-paging', Paging, ({
 
     it('switchPage()', (done) => {
       const newPage = 7;
-      const switchPage = sinon.spy((page) => Promise.resolve(expect(page).to.eq(newPage)));
+      const switchPage = spy((page) => Promise.resolve(expect(page).to.eq(newPage)));
       const pager = tag().wrapPager(<any>{ switchPage });
       tag().emitEvent = () => {
         expect(switchPage.called).to.be.true;

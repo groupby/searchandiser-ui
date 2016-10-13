@@ -3,7 +3,7 @@ import suite, { SelectModel } from './_suite';
 import { expect } from 'chai';
 
 suite<Filter>('gb-filter', ({
-  flux, html, mount, sandbox,
+  flux, html, mount, stub,
   itMountsTag
 }) => {
 
@@ -54,12 +54,12 @@ suite<Filter>('gb-filter', ({
       });
 
       it('should call flux.unrefine() on click', (done) => {
-        const unrefineStub = sandbox().stub(flux(), 'unrefine');
-        const refineStub = sandbox().stub(flux(), 'refine');
+        const unrefine = stub(flux(), 'unrefine');
+        const refine = stub(flux(), 'refine');
         flux().results = <any>{ availableNavigation: [NAVIGATION] };
         flux().reset = (): any => {
-          expect(refineStub.called).to.be.true;
-          expect(unrefineStub.calledWith(tag.selected)).to.be.true;
+          expect(refine.called).to.be.true;
+          expect(unrefine.calledWith(tag.selected)).to.be.true;
           done();
         };
         model.options[0].click();

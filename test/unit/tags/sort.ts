@@ -3,7 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-sort', Sort, ({
-  flux, tag, sandbox,
+  flux, tag, stub,
   itShouldConfigure
 }) => {
 
@@ -46,15 +46,12 @@ suite('gb-sort', Sort, ({
     it('should sort on value', () => {
       const nextSort = { a: 'b', c: 'd' };
       const pastSorts = [{ e: 'f' }, { g: 'h' }];
-      const stub = sandbox().stub(flux(), 'sort', (newSort, oldSorts): any => {
-        expect(newSort).to.eq(nextSort);
-        expect(oldSorts).to.eq(pastSorts);
-      });
+      const sort = stub(flux(), 'sort');
       tag().sortValues = () => pastSorts;
 
       tag().onselect(<any>nextSort);
 
-      expect(stub.called).to.be.true;
+      expect(sort.calledWith(nextSort, pastSorts)).to.be.true;
     });
   });
 });

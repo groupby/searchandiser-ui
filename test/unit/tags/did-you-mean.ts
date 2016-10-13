@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-did-you-mean', DidYouMean, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions
 }) => {
 
@@ -19,18 +19,25 @@ suite('gb-did-you-mean', DidYouMean, ({
   describe('send()', () => {
     it('should rewrite on send', (done) => {
       const newQuery = 'red sneakers';
-      sandbox().stub(flux(), 'rewrite', (query) => {
+      flux().rewrite = (query): any => {
         expect(query).to.eq(newQuery);
         done();
-      });
+      };
 
       tag().send(<any>{ target: { text: newQuery } });
     });
 
     it('should emit tracker event', (done) => {
       const newQuery = 'red sneakers';
-      sandbox().stub(flux(), 'rewrite', () => Promise.resolve());
-      tag().services = <any>{ tracker: { didYouMean: () => done() } };
+      const rewrite = stub(flux(), 'rewrite', () => Promise.resolve());
+      tag().services = <any>{
+        tracker: {
+          didYouMean: () => {
+            expect(rewrite.called).to.be.true;
+            done();
+          }
+        }
+      };
 
       tag().send(<any>{ target: { text: newQuery } });
     });
@@ -38,14 +45,12 @@ suite('gb-did-you-mean', DidYouMean, ({
 
   describe('updateDidYouMean()', () => {
     it('should call update() with didYouMean', () => {
-      const dym = ['a', 'b', 'c'];
-      const spy =
-        tag().update =
-        sinon.spy(({ didYouMean }) => expect(didYouMean).to.eq(dym));
+      const didYouMean = ['a', 'b', 'c'];
+      const update = tag().update = spy();
 
-      tag().updateDidYouMean(<any>{ didYouMean: dym });
+      tag().updateDidYouMean(<any>{ didYouMean });
 
-      expect(spy.called).to.be.true;
+      expect(update.calledWith({ didYouMean })).to.be.true;
     });
   });
 });

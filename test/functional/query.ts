@@ -4,7 +4,7 @@ import { LOCATION } from '../../src/utils/common';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Query>('gb-query', ({ flux, sandbox, mount: _mount, itMountsTag }) => {
+suite<Query>('gb-query', ({ flux, stub, mount: _mount, itMountsTag }) => {
 
   itMountsTag();
 
@@ -29,17 +29,17 @@ suite<Query>('gb-query', ({ flux, sandbox, mount: _mount, itMountsTag }) => {
   describe('redirect when autoSearch off', () => {
     it('should register for input event', () => {
       const tag = mount(false);
-      const input = tag.searchBox = document.createElement('input');
-      const spy = input.addEventListener = sinon.spy();
+      const addEventListener = sinon.spy();
+      tag.searchBox = Object.assign(document.createElement('input'), { addEventListener });
 
       tag.listenForInput();
 
-      expect(spy.calledWith('input'));
+      expect(addEventListener.calledWith('input'));
     });
 
     it.skip('should hide autocomplete and modify URL on static search', () => {
       // doesn't actually test the thing
-      sandbox().stub(LOCATION, 'replace', (url) => expect(url).to.eq('search?q='));
+      stub(LOCATION, 'replace', (url) => expect(url).to.eq('search?q='));
       flux().search = (): any => null;
       flux().emit = (event): any => expect(event).to.eq(AUTOCOMPLETE_HIDE_EVENT);
 

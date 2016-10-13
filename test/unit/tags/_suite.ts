@@ -1,21 +1,18 @@
 import { FluxTag } from '../../../src/tags/tag';
 import { expectSubscriptions } from '../../utils/expectations';
+import { buildSuite, getDescribe, SuiteModifier } from '../../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
-/* tslint:disable:max-line-length */
-function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
-function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);
-function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) {
-  /* tslint:enable:max-line-length */
+function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) { // tslint:disable-line:max-line-length
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
-  const tests = hasMixin ? cb : mixinOrCb;
+  const tests: (suiteUtils: UnitUtils<T>) => void = hasMixin ? cb : mixinOrCb;
 
-  describe(`${tagName} logic`, () => {
+  getDescribe(modifier)(`${tagName} logic`, () => {
     let _flux: FluxCapacitor;
     let _tag: T;
-    let _sandbox: Sinon.SinonSandbox;
+    let sandbox: Sinon.SinonSandbox;
 
     beforeEach(() => {
       // TODO: should be this vvv
@@ -23,14 +20,15 @@ function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mi
       let { tag, flux } = fluxTag(new clazz(), mixin);
       _tag = tag;
       _flux = flux;
-      _sandbox = sinon.sandbox.create();
+      sandbox = sinon.sandbox.create();
     });
-    afterEach(() => _sandbox.restore());
+    afterEach(() => sandbox.restore());
 
     tests({
       flux: () => _flux,
       tag: () => _tag,
-      sandbox: () => _sandbox,
+      spy: (obj?, method?) => sandbox.spy(obj, method),
+      stub: (obj?, method?, func?) => sandbox.stub(obj, method, func),
       expectSubscriptions: _expectSubscriptions,
       itShouldConfigure,
       tagName
@@ -57,6 +55,18 @@ function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mi
   });
 }
 
+export interface BaseSuite extends Suite {
+  skip?: Suite;
+  only?: Suite;
+}
+
+export interface Suite {
+  <T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitUtils<T>) => void);
+  <T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, cb: (suite: UnitUtils<T>) => void);
+}
+
+const suite = buildSuite<BaseSuite>(_suite);
+
 export default suite;
 
 export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
@@ -72,11 +82,11 @@ export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: 
   return { flux, tag };
 }
 
-export interface UnitSuite<T> {
+export interface UnitUtils<T> {
   flux: () => FluxCapacitor;
   tag: () => T;
-  sandbox: () => Sinon.SinonSandbox;
-  mount: (opts?: any) => T;
+  spy: Sinon.SinonSpyStatic;
+  stub: Sinon.SinonStubStatic;
   expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
   itShouldConfigure: (defaultConfig?: any) => void;
   tagName: string;

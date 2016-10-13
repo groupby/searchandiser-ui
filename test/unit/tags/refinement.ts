@@ -22,38 +22,32 @@ describe(`${TAG} logic`, () => {
     });
   });
 
-  suite('gb-available-refinement', AvailableRefinement, MIXIN, ({ tag }) => {
+  suite('gb-available-refinement', AvailableRefinement, MIXIN, ({ tag, spy }) => {
     describe('send()', () => {
       it('should make refinement', () => {
         const refinement = tag().ref = { type: 'Range', low: 4, high: 6 };
         const navigation = tag().nav = { name: 'price' };
-        const send = sinon.spy((ref, nav) => {
-          expect(ref).to.eq(refinement);
-          expect(nav).to.eq(navigation);
-        });
+        const send = spy();
         tag()._scope = { send };
 
         tag().send();
 
-        expect(send.called).to.be.true;
+        expect(send.calledWith(refinement, navigation)).to.be.true;
       });
     });
   });
 
-  suite('gb-selected-refinement', SelectedRefinement, MIXIN, ({ tag }) => {
+  suite('gb-selected-refinement', SelectedRefinement, MIXIN, ({ tag, spy }) => {
     describe('remove()', () => {
       it('should remove refinement', () => {
         const refinement = tag().ref = { type: 'Range', low: 4, high: 6 };
         const navigation = tag().nav = { name: 'price' };
-        const remove = sinon.spy((ref, nav) => {
-          expect(ref).to.eq(refinement);
-          expect(nav).to.eq(navigation);
-        });
+        const remove = spy();
         tag()._scope = { remove };
 
         tag().remove();
 
-        expect(remove.called).to.be.true;
+        expect(remove.calledWith(refinement, navigation)).to.be.true;
       });
     });
   });
