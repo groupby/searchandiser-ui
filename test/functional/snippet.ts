@@ -2,11 +2,15 @@ import { Snippet } from '../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<Snippet>('gb-snippet', ({ html, mount, tagName }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<Snippet>('gb-snippet', ({ mount, tagName, itMountsTag }) => {
 
-    expect(tag).to.be.ok;
-    expect(html().querySelector(`div.${tagName}`)).to.be.ok;
+  itMountsTag();
+
+  describe('render', () => {
+    it('should render snippet', () => {
+      const tag = mount();
+
+      expect(tag.root.querySelector(`div.${tagName}`)).to.be.ok;
+    });
   });
 });

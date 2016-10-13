@@ -120,8 +120,8 @@ suite<Collections>('gb-collections', { services: SERVICES }, ({
 
     describe('gb-collection-dropdown-item', () => {
       it('switches dropdown collection on click', () => {
-        tag._config = <any>{ dropdown: true };
         const stub = sandbox().stub(flux(), 'switchCollection');
+        tag._config = <any>{ dropdown: true };
         tag.update({ options: OPTIONS });
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('gb-collection-dropdown-item a')[1]).click();

@@ -1,75 +1,78 @@
 import { Template } from '../../src/tags/template/gb-template';
-import suite from './_suite';
+import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Template>('gb-template', ({ html, mount }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<Template>('gb-template', ({ mount, itMountsTag }) => {
 
-    expect(tag).to.be.ok;
-    expect(html().querySelector('div')).to.not.be.ok;
-  });
+  itMountsTag();
 
-  it('renders when active', () => {
-    const tag = mount();
+  describe('render', () => {
+    it('should not render inner div', () => {
+      const tag = mount();
 
-    tag.update({ isActive: true });
-    expect(html().querySelector('div')).to.be.ok;
-  });
-
-  it('renders from template', () => {
-    const templateName = 'My Template';
-    const content = 'something';
-    const richContent = '<h1>my content</h1>';
-    const tag = mount();
-
-    tag._config = { target: templateName };
-    tag.updateActive(<any>{
-      template: {
-        name: templateName,
-        zones: {
-          a: {
-            type: 'Content',
-            content
-          },
-          b: {
-            type: 'Rich_Content',
-            richContent
-          },
-          c: {
-            type: 'Record',
-            records: [
-              {
-                allMeta: {
-                  id: '1',
-                  title: 'My Record'
-                }
-              }
-            ]
-          }
-        }
-      }
+      expect(tag.root.querySelector('div')).to.not.be.ok;
     });
 
-    expect(contentZones()).to.have.length(1);
-    expect(contentZones()[0].textContent).to.eq(content);
+    it('should render inner div when active', () => {
+      const tag = mount();
 
-    expect(richContentZones()).to.have.length(1);
-    expect(richContentZones()[0].firstElementChild.innerHTML).to.eq(richContent);
+      tag.update({ isActive: true });
 
-    expect(recordZones()).to.have.length(1);
-    expect(recordZones()[0].querySelectorAll('gb-product')).to.have.length(1);
+      expect(tag.root.querySelector('div')).to.be.ok;
+    });
   });
 
-  function contentZones() {
-    return html().querySelectorAll('gb-content-zone');
-  }
+  describe('render with template', () => {
+    it('renders from template', () => {
+      const templateName = 'My Template';
+      const content = 'something';
+      const richContent = '<h1>my content</h1>';
+      const tag = mount();
+      const model = new Model(tag);
+      tag._config = { target: templateName };
 
-  function richContentZones() {
-    return html().querySelectorAll('gb-rich-content-zone');
-  }
+      tag.updateActive(<any>{
+        template: {
+          name: templateName,
+          zones: {
+            a: {
+              type: 'Content',
+              content
+            },
+            b: {
+              type: 'Rich_Content',
+              richContent
+            },
+            c: {
+              type: 'Record',
+              records: [{ allMeta: { id: '1', title: 'My Record' } }]
+            }
+          }
+        }
+      });
 
-  function recordZones() {
-    return html().querySelectorAll('gb-record-zone');
-  }
+      expect(model.contentZones).to.have.length(1);
+      expect(model.contentZones[0].textContent).to.eq(content);
+
+      expect(model.richContentZones).to.have.length(1);
+      expect(model.richContentZones[0].firstElementChild.innerHTML).to.eq(richContent);
+
+      expect(model.recordZones).to.have.length(1);
+      expect(model.recordZones[0].querySelectorAll('gb-product')).to.have.length(1);
+    });
+  });
 });
+
+class Model extends BaseModel<Template> {
+  get contentZones() {
+    return this.list(this.html, 'gb-content-zone');
+  }
+
+  get richContentZones() {
+    return this.list(this.html, 'gb-rich-content-zone');
+  }
+
+  get recordZones() {
+    return this.list(this.html, 'gb-record-zone');
+  }
+}

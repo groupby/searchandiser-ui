@@ -1,35 +1,51 @@
 import { Results } from '../../src/tags/results/gb-results';
-import suite from './_suite';
+import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
 const STRUCT = { title: 'title' };
 
-suite<Results>('gb-results', { config: { structure: STRUCT } }, ({ html, mount }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<Results>('gb-results', { config: { structure: STRUCT } }, ({ html, mount, itMountsTag }) => {
 
-    expect(tag).to.be.ok;
-    expect(html().querySelector('gb-list')).to.be.ok;
+  itMountsTag();
+
+  describe('render', () => {
+    it('should render as list', () => {
+      mount();
+
+      expect(html().querySelector('gb-list')).to.be.ok;
+    });
   });
 
-  it('renders from records', () => {
-    const tag = mount();
+  describe('render with records', () => {
+    it('should render each record', () => {
+      const tag = mount();
+      const model = new Model(tag);
 
-    tag.updateRecords(<any>{ records: [{}, {}, {}] });
-    expect(products()).to.have.length(3);
-    expect(html().querySelectorAll('gb-list li')).to.have.length(3);
+      tag.updateRecords(<any>{ records: [{}, {}, {}] });
+
+      expect(model.products).to.have.length(3);
+      expect(html().querySelectorAll('gb-list li')).to.have.length(3);
+    });
+
+    it('should render product info', () => {
+      const title = 'Red Sneakers';
+      const tag = mount();
+      const model = new Model(tag);
+
+      tag.updateRecords(<any>{ records: [{ allMeta: { title } }] });
+
+      expect(model.productTitle(model.products[0]).textContent).to.eq(title);
+    });
   });
-
-  it('renders product info', () => {
-    const title = 'Red Sneakers';
-    const tag = mount();
-
-    tag.updateRecords(<any>{ records: [{ allMeta: { title } }] });
-
-    expect(products()[0].querySelector('.gb-product__title').textContent).to.eq(title);
-  });
-
-  function products() {
-    return html().querySelectorAll('gb-product');
-  }
 });
+
+class Model extends BaseModel<Results> {
+
+  get products() {
+    return this.list(this.html, 'gb-product');
+  }
+
+  productTitle(product: HTMLElement) {
+    return this.element(product, '.gb-product__title');
+  }
+}

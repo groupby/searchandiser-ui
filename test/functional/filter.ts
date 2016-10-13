@@ -57,18 +57,17 @@ suite<Filter>('gb-filter', ({
         const unrefineStub = sandbox().stub(flux(), 'unrefine');
         const refineStub = sandbox().stub(flux(), 'refine');
         flux().results = <any>{ availableNavigation: [NAVIGATION] };
-        flux().reset = () => done();
+        flux().reset = (): any => {
+          expect(refineStub.called).to.be.true;
+          expect(unrefineStub.calledWith(tag.selected)).to.be.true;
+          done();
+        };
         model.options[0].click();
 
         model.clearOption.click();
-
-        expect(refineStub.called).to.be.true;
-        expect(unrefineStub.calledWith(tag.selected)).to.be.true;
       });
     });
   });
 });
 
-class Model extends SelectModel<Filter> {
-
-}
+class Model extends SelectModel<Filter> { }

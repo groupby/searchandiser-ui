@@ -1,37 +1,47 @@
 import { RelatedQueries } from '../../src/tags/related-queries/gb-related-queries';
-import suite from './_suite';
+import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<RelatedQueries>('gb-related-queries', ({ flux, html, mount }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<RelatedQueries>('gb-related-queries', ({ flux, mount, sandbox, itMountsTag }) => {
 
-    expect(tag).to.be.ok;
-    expect(html().querySelector('gb-list')).to.be.ok;
-  });
+  itMountsTag();
 
-  describe('render behaviour', () => {
-    const relatedQueries = ['first', 'second', 'third'];
-
-    it('renders from results', () => {
+  describe('render', () => {
+    it('should render list', () => {
       const tag = mount();
 
-      tag.updatedRelatedQueries(<any>{ relatedQueries });
-      expect(relatedLinks().length).to.eq(3);
-      expect(relatedLinks()[0].textContent).to.eq(relatedQueries[0]);
+      expect(tag.root.querySelector('gb-list')).to.be.ok;
+    });
+  });
+
+  describe('render with related queries', () => {
+    const RELATED_QUERIES = ['first', 'second', 'third'];
+    let tag: RelatedQueries;
+    let model: Model;
+
+    beforeEach(() => {
+      tag = mount();
+      model = new Model(tag);
+      tag.updatedRelatedQueries(<any>{ relatedQueries: RELATED_QUERIES });
+    });
+
+    it('should render related queries', () => {
+      expect(model.relatedLinks.length).to.eq(3);
+      expect(model.relatedLinks[0].textContent).to.eq(RELATED_QUERIES[0]);
     });
 
     it('rewrites on option selected', () => {
-      const tag = mount();
+      const stub = sandbox().stub(flux(), 'rewrite');
 
-      flux().rewrite = (query): any => expect(query).to.eq(relatedQueries[1]);
+      model.relatedLinks[1].click();
 
-      tag.updatedRelatedQueries(<any>{ relatedQueries });
-      tag.on('updated', () => relatedLinks()[1].click());
+      expect(stub.calledWith(RELATED_QUERIES[1]));
     });
   });
-
-  function relatedLinks(): NodeListOf<HTMLAnchorElement> {
-    return <NodeListOf<HTMLAnchorElement>>html().querySelectorAll('li > a');
-  }
 });
+
+class Model extends BaseModel<RelatedQueries> {
+  get relatedLinks() {
+    return this.list(this.html, 'li > a');
+  }
+}

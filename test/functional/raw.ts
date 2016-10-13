@@ -1,25 +1,32 @@
 import { Raw } from '../../src/tags/raw/gb-raw';
-import suite from './_suite';
+import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
+
+suite<Raw>('gb-raw', { configure }, ({ mount, itMountsTag }) => {
+
+  itMountsTag();
+
+  describe('render', () => {
+    it('should render inner div', () => {
+      const model = new Model(mount());
+
+      expect(model.content).to.be.ok;
+    });
+
+    it('should not render content as html', () => {
+      const model = new Model(mount());
+
+      expect(model.content.textContent).to.eq('red sneakers');
+    });
+  });
+});
 
 function configure() {
   this._config = { content: '<div>red sneakers</div>' };
 }
 
-suite<Raw>('gb-raw', { configure }, ({ html, mount }) => {
-
-  it('mounts tag', () => {
-    const tag = mount();
-
-    expect(tag).to.be.ok;
-    expect(html().querySelector('div')).to.be.ok;
-  });
-
-  describe('render behaviour', () => {
-    it('should not render content as html', () => {
-      mount();
-
-      expect(html().querySelector('div').textContent).to.eq('red sneakers');
-    });
-  });
-});
+class Model extends BaseModel<Raw> {
+  get content() {
+    return this.element(this.html, 'div');
+  }
+}

@@ -2,16 +2,16 @@ import { Paging } from '../../src/tags/paging/gb-paging';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Paging>('gb-paging', ({ html, mount, itMountsTag }) => {
+suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
 
   itMountsTag();
 
   it('renders nested components', () => {
-    mount();
+    const tag = mount();
 
-    expect(html().querySelector('gb-terminal-pager')).to.be.ok;
-    expect(html().querySelector('gb-pager')).to.be.ok;
-    expect(html().querySelector('gb-pages')).to.be.ok;
+    expect(tag.root.querySelector('gb-terminal-pager')).to.be.ok;
+    expect(tag.root.querySelector('gb-pager')).to.be.ok;
+    expect(tag.root.querySelector('gb-pages')).to.be.ok;
   });
 
   it('should render labels and icons', () => {
@@ -31,17 +31,17 @@ suite<Paging>('gb-paging', ({ html, mount, itMountsTag }) => {
   });
 
   it('should not render terminal pager', () => {
-    mount({ terminals: false });
+    const tag = mount({ terminals: false });
 
-    expect(html().querySelector('gb-terminal-pager')).to.be.ok;
-    expect(html().querySelectorAll('.gb-terminal__link')).to.have.length(0);
+    expect(tag.root.querySelector('gb-terminal-pager')).to.be.ok;
+    expect(tag.root.querySelectorAll('.gb-terminal__link')).to.have.length(0);
   });
 
   it('should not render labels', () => {
-    mount({ labels: false });
+    const tag = mount({ labels: false });
 
-    expect(html().querySelectorAll('.gb-terminal__link span')).to.have.length(0);
-    expect(html().querySelectorAll('.gb-pager__link span')).to.have.length(0);
+    expect(tag.root.querySelectorAll('.gb-terminal__link span')).to.have.length(0);
+    expect(tag.root.querySelectorAll('.gb-pager__link span')).to.have.length(0);
   });
 
   it('should render alternate labels', () => {
@@ -54,9 +54,9 @@ suite<Paging>('gb-paging', ({ html, mount, itMountsTag }) => {
   });
 
   it('should not render icons', () => {
-    mount({ icons: false });
+    const tag = mount({ icons: false });
 
-    expect(html().querySelectorAll('gb-icon')).to.have.length(0);
+    expect(tag.root.querySelectorAll('gb-icon')).to.have.length(0);
   });
 
   it('should render icons with classes', () => {
@@ -86,36 +86,36 @@ suite<Paging>('gb-paging', ({ html, mount, itMountsTag }) => {
       const tag = mount();
       tag.updatePageInfo([1, 2, 3, 4], 2, 6);
 
-      expect(html().querySelector('.gb-pager__link.prev:not(.disabled)')).to.be.ok;
-      expect(html().querySelector('.gb-terminal__link.first:not(.disabled)')).to.be.ok;
+      expect(tag.root.querySelector('.gb-pager__link.prev:not(.disabled)')).to.be.ok;
+      expect(tag.root.querySelector('.gb-terminal__link.first:not(.disabled)')).to.be.ok;
     });
 
     it('should not be able to page backward', () => {
       const tag = mount();
       tag.updatePageInfo([1, 2, 3, 4], 1, 6);
 
-      expect(html().querySelector('.gb-pager__link.prev.disabled')).to.be.ok;
-      expect(html().querySelector('.gb-terminal__link.first.disabled')).to.be.ok;
+      expect(tag.root.querySelector('.gb-pager__link.prev.disabled')).to.be.ok;
+      expect(tag.root.querySelector('.gb-terminal__link.first.disabled')).to.be.ok;
     });
 
     it('should be able to page forward', () => {
       const tag = mount();
       tag.updatePageInfo([1, 2, 3, 4], 1, 6);
 
-      expect(html().querySelector('.gb-pager__link.next:not(.disabled)')).to.be.ok;
-      expect(html().querySelector('.gb-terminal__link.last:not(.disabled)')).to.be.ok;
+      expect(tag.root.querySelector('.gb-pager__link.next:not(.disabled)')).to.be.ok;
+      expect(tag.root.querySelector('.gb-terminal__link.last:not(.disabled)')).to.be.ok;
     });
 
     it('should not be able to page forward', () => {
       const tag = mount();
       tag.updatePageInfo([1, 2, 3, 4], 4, 4);
 
-      expect(html().querySelector('.gb-pager__link.next.disabled')).to.be.ok;
-      expect(html().querySelector('.gb-terminal__link.last.disabled')).to.be.ok;
+      expect(tag.root.querySelector('.gb-pager__link.next.disabled')).to.be.ok;
+      expect(tag.root.querySelector('.gb-terminal__link.last.disabled')).to.be.ok;
     });
   });
 
-  describe('paging actions behvaiour', () => {
+  describe('paging actions', () => {
     it('should go to first page', (done) => {
       const tag = mount();
       const model = new Model(tag);
