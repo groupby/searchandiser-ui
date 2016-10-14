@@ -55,7 +55,7 @@ export class Autocomplete {
   }
 
   removeActiveClass() {
-    this.links().forEach((element) => element.classList.remove('active'));
+    this.links().forEach((element) => element.classList.remove(ACTIVE));
   }
 
   reset() {
