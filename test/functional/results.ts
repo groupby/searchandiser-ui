@@ -2,9 +2,13 @@ import { Results } from '../../src/tags/results/gb-results';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-const STRUCT = { title: 'title' };
+const MIXIN = {
+  config: {
+    structure: { title: 'title' }
+  }
+};
 
-suite<Results>('gb-results', { config: { structure: STRUCT } }, ({ html, mount, itMountsTag }) => {
+suite<Results>('gb-results', MIXIN, ({ html, mount, itMountsTag }) => {
 
   itMountsTag();
 

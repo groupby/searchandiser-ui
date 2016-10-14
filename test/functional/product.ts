@@ -1,41 +1,56 @@
 import { Product } from '../../src/tags/product/gb-product';
-import { createTag, mixinFlux, removeTag } from './_suite';
+import suite from './_suite';
+import { BaseModel } from './_suite';
 import { expect } from 'chai';
-import * as riot from 'riot';
 
-const TAG = 'gb-product';
+const STRUCTURE = { title: 'title', price: 'price', image: 'image' };
+const VARIANT_STRUCTURE = { image: 'image', price: 'price', id: 'id' };
+const STRUCTURE_WITH_VARIANTS = {
+  title: 'title',
+  variants: 'variants',
+  _variantStructure: VARIANT_STRUCTURE
+};
 
-describe(`${TAG} tag`, () => {
-  const structure = { title: 'title', price: 'price', image: 'image' };
-  const all_meta = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
-  let html: HTMLElement;
+suite<Product>('gb-product', { config: { structure: STRUCTURE }, _scope: {} }, ({ mount, itMountsTag }) => {
 
-  beforeEach(() => {
-    mixinFlux({ config: { structure }, _scope: { opts: {} } });
-    html = createTag(TAG);
-  });
-  afterEach(() => removeTag(html));
+  itMountsTag();
 
-  it('mounts tag', () => {
-    const tag = mount();
+  describe('render', () => {
+    it('should render product image', () => {
+      const tag = mount();
 
-    expect(tag).to.be.ok;
-    expect(html.querySelector('gb-product-image')).to.be.ok;
-  });
-
-  it('renders product info', () => {
-    mount();
-
-    expect(html.querySelector('gb-product-info')).to.be.ok;
-    expect(html.querySelector('.gb-product__title').textContent).to.eq(all_meta.title);
-    expect(html.querySelector('.gb-product__price').textContent).to.eq(all_meta.price);
-    expect(html.querySelector('img').src).to.include(all_meta.image);
-    expect(html.querySelector('a').href).to.include(`details.html?id=${all_meta.id}`);
+      expect(tag.root.querySelector('gb-product-image')).to.be.ok;
+    });
   });
 
-  describe('product with variants', () => {
-    const variantStructure = { image: 'image', price: 'price', id: 'id' };
-    const variantAllMeta = {
+  describe('render with product', () => {
+    const ALL_META = { title: 'Red Sneakers', price: '$12.45', image: 'image.png', id: '13323' };
+    let tag: Product;
+    let model: Model;
+
+    beforeEach(() => {
+      tag = mount({ all_meta: ALL_META });
+      model = new Model(tag);
+    });
+
+    it('should render product info', () => {
+      expect(tag.root.querySelector('gb-product-info')).to.be.ok;
+      expect(model.title.textContent).to.eq(ALL_META.title);
+      expect(model.price.textContent).to.eq(ALL_META.price);
+      expect(model.image.src).to.include(ALL_META.image);
+      expect(model.link.href).to.include(`details.html?id=${ALL_META.id}`);
+    });
+  });
+});
+
+suite<Product>('gb-product with variants', { config: { structure: STRUCTURE_WITH_VARIANTS }, _scope: {} }, ({
+  mount, itMountsTag
+}) => {
+
+  itMountsTag();
+
+  describe('render with product', () => {
+    const ALL_META = {
       title: 'Sneaky Sneakers',
       variants: [
         {
@@ -50,63 +65,67 @@ describe(`${TAG} tag`, () => {
         }
       ]
     };
-    let variantHtml: HTMLElement;
+    let tag: Product;
+    let model: Model;
 
     beforeEach(() => {
-      mixinFlux({
-        config: {
-          structure: {
-            title: 'title',
-            variants: 'variants',
-            _variantStructure: variantStructure
-          }
-        }
-      });
-      variantHtml = createTag(TAG);
-    });
-    afterEach(() => removeTag(variantHtml));
-
-    it('switches variants', () => {
-      const tag = mount({ all_meta: variantAllMeta });
-      expect(tag).to.be.ok;
-
-      expect(variantHtml.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
-      expect(variantHtml.querySelector('.gb-product__price').textContent).to.eq('$2000');
-      expect(variantHtml.querySelector('img').src).to.include('redsneaks.png');
-      expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.1');
-
-      expect(variantLinks()).to.have.length(2);
-      expect((<DOMStringMap & any>(variantLinks()[0]).dataset).index).to.eq('0');
-      expect((<DOMStringMap & any>(variantLinks()[1]).dataset).index).to.eq('1');
-
-      variantLinks()[0].click();
-
-      expect(variantHtml.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
-      expect(variantHtml.querySelector('.gb-product__price').textContent).to.eq('$2000');
-      expect(variantHtml.querySelector('img').src).to.include('redsneaks.png');
-      expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.1');
-
-      variantLinks()[1].click();
-
-      expect(variantHtml.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
-      expect(variantHtml.querySelector('.gb-product__price').textContent).to.eq('$1');
-      expect(variantHtml.querySelector('img').src).to.include('greensneaks.png');
-      expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.2');
-
-      variantLinks()[0].click();
-
-      expect(variantHtml.querySelector('.gb-product__title').textContent).to.eq('Sneaky Sneakers');
-      expect(variantHtml.querySelector('.gb-product__price').textContent).to.eq('$2000');
-      expect(variantHtml.querySelector('img').src).to.include('redsneaks.png');
-      expect(variantHtml.querySelector('a').href).to.include('details.html?id=1.1');
+      tag = mount({ all_meta: ALL_META });
+      model = new Model(tag);
     });
 
-    function variantLinks() {
-      return <NodeListOf<HTMLAnchorElement>>variantHtml.querySelectorAll('.gb-product__variant-link');
-    }
+    it('should switch variant on click', () => {
+      expect(model.title.textContent).to.eq('Sneaky Sneakers');
+      expect(model.price.textContent).to.eq('$2000');
+      expect(model.image.src).to.include('redsneaks.png');
+      expect(model.link.href).to.include('details.html?id=1.1');
+
+      expect(model.variantLinks).to.have.length(2);
+      expect(model.variantLinks[0].dataset['index']).to.eq('0');
+      expect(model.variantLinks[1].dataset['index']).to.eq('1');
+
+      model.variantLinks[0].click();
+
+      expect(model.title.textContent).to.eq('Sneaky Sneakers');
+      expect(model.price.textContent).to.eq('$2000');
+      expect(model.image.src).to.include('redsneaks.png');
+      expect(model.link.href).to.include('details.html?id=1.1');
+
+      model.variantLinks[1].click();
+
+      expect(model.title.textContent).to.eq('Sneaky Sneakers');
+      expect(model.price.textContent).to.eq('$1');
+      expect(model.image.src).to.include('greensneaks.png');
+      expect(model.link.href).to.include('details.html?id=1.2');
+
+      model.variantLinks[0].click();
+
+      expect(model.title.textContent).to.eq('Sneaky Sneakers');
+      expect(model.price.textContent).to.eq('$2000');
+      expect(model.image.src).to.include('redsneaks.png');
+      expect(model.link.href).to.include('details.html?id=1.1');
+    });
   });
-
-  function mount(opts: any = { all_meta }) {
-    return <Product>riot.mount(TAG, opts)[0];
-  }
 });
+
+class Model extends BaseModel<Product> {
+
+  get title() {
+    return this.element(this.html, '.gb-product__title');
+  }
+
+  get price() {
+    return this.element(this.html, '.gb-product__price');
+  }
+
+  get image() {
+    return this.element<HTMLImageElement>(this.html, 'img');
+  }
+
+  get link() {
+    return this.element<HTMLAnchorElement>(this.html, 'a');
+  }
+
+  get variantLinks() {
+    return this.list(this.html, '.gb-product__variant-link');
+  }
+}

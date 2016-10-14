@@ -2,11 +2,9 @@ import { Collections } from '../../src/tags/collections/gb-collections';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-const SERVICES = {
-  collections: {}
-};
+const MIXIN = { services: { collections: {} } };
 
-suite<Collections>('gb-collections', { services: SERVICES }, ({
+suite<Collections>('gb-collections', MIXIN, ({
   flux, mount, spy, stub,
   itMountsTag
 }) => {

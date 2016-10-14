@@ -6,12 +6,13 @@ import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 
-function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string, mixinOrCb: any, cb?: Function) {
+function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, description: string, mixinOrCb: any, cb?: Function) {
+  const tagName = description.split(' ')[0];
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
   const tests: (suiteUtils: FunctionalUtils<T>) => void = hasMixin ? cb : mixinOrCb;
 
-  getDescribe(modifier)(`${tagName} behaviour`, () => {
+  getDescribe(modifier)(`${description} behaviour`, () => {
     let _flux: FluxCapacitor;
     let _html: HTMLElement;
     let _sandbox: Sinon.SinonSandbox;
@@ -46,6 +47,7 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       const tag = mount();
 
       expect(tag).to.be.ok;
+      expect(tag.root).to.be.ok;
     });
   }
 }

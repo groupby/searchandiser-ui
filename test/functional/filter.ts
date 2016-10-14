@@ -20,10 +20,7 @@ suite<Filter>('gb-filter', ({
   describe('render with navigation', () => {
     const NAVIGATION = {
       name: 'brand',
-      refinements: [{
-        type: 'Value',
-        value: 'DeWalt'
-      }]
+      refinements: [{ type: 'Value', value: 'DeWalt' }]
     };
     let tag: Filter;
     let model: Model;
