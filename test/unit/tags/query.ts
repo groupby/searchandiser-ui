@@ -202,7 +202,7 @@ suite('gb-query', Query, ({
       tag().onSubmit();
 
       expect(handlers).to.have.length(3);
-      handlers.forEach((spy) => expect(spy.called).to.be.true);
+      handlers.forEach((handler) => expect(handler.called).to.be.true);
     });
 
     it('should emit autocomplete:hide', () => {
