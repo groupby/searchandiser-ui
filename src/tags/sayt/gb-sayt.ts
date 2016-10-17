@@ -102,9 +102,9 @@ export class Sayt {
     }
   }
 
-  searchProducts(query: string) {
+  searchProducts(query: string = '', refinements?: string) {
     if (this.showProducts) {
-      this.sayt.productSearch(query)
+      this.sayt.productSearch(query, { refinements })
         .then((res) => this.update({ products: res.result.products }));
     }
   }
@@ -113,8 +113,10 @@ export class Sayt {
     this.flux.emit(Events.REWRITE_QUERY, query);
   }
 
-  notifier(query: string) {
-    if (this._config.autoSearch) this.searchProducts(query);
+  notifier(query: string, refinement?: string, field?: string) {
+    const isRefinement = refinement && refinement !== this._config.allCategoriesLabel;
+    const refinementString = `~${field || this._config.categoryField}=${refinement}`;
+    if (this._config.autoSearch) this.searchProducts(field ? '' : query, isRefinement ? refinementString : undefined);
     this.rewriteQuery(query);
   }
 

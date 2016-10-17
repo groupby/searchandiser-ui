@@ -179,12 +179,37 @@ suite('gb-sayt', Sayt, ({
       tag().sayt = { productSearch };
       tag().update = (data) => {
         expect(data).to.eql({ products });
-        expect(productSearch.calledWith(suggestion)).to.be.true;
+        expect(productSearch.calledWith(suggestion, { refinements: undefined })).to.be.true;
         done();
       };
       tag().showProducts = true;
 
       tag().searchProducts(suggestion);
+    });
+
+    it('should search products with empty query', (done) => {
+      const productSearch = spy((query) => {
+        expect(query).to.eq('');
+        done();
+      });
+      tag().sayt = { productSearch };
+      tag().showProducts = true;
+
+      tag().searchProducts();
+    });
+
+    it('should search products with refinements', (done) => {
+      const suggestion = 'red sneakers';
+      const refinements = '~Brand=Nike';
+      const productSearch = spy((query, options) => {
+        expect(query).to.eq(suggestion);
+        expect(options).to.eql({ refinements });
+        done();
+      });
+      tag().sayt = { productSearch };
+      tag().showProducts = true;
+
+      tag().searchProducts(suggestion, refinements);
     });
 
     it('should not search products', () => {
@@ -216,8 +241,29 @@ suite('gb-sayt', Sayt, ({
 
       tag().notifier(query);
 
-      expect(searchProducts.calledWith(query)).to.be.true;
+      expect(searchProducts.calledWith(query, undefined)).to.be.true;
       expect(rewriteQuery.calledWith(query)).to.be.true;
+    });
+
+    it('should fetch suggestions with refinements', () => {
+      const query = 'cool shoes';
+      const searchProducts = stub(tag(), 'searchProducts');
+      tag().rewriteQuery = () => null;
+      tag()._config = { autoSearch: true, categoryField: 'size' };
+
+      tag().notifier(query, 'Medium');
+
+      expect(searchProducts.calledWith(query, '~size=Medium')).to.be.true;
+    });
+
+    it('should fetch suggestions with refinements and overrite query', () => {
+      const searchProducts = stub(tag(), 'searchProducts');
+      tag().rewriteQuery = () => null;
+      tag()._config = { autoSearch: true, categoryField: 'size' };
+
+      tag().notifier('Color: Blue', 'Blue', 'color');
+
+      expect(searchProducts.calledWith('', '~color=Blue')).to.be.true;
     });
 
     it('should fetch rewrite query but not fetch suggestions', () => {
