@@ -256,7 +256,7 @@ suite('gb-sayt', Sayt, ({
       expect(searchProducts.calledWith(query, '~size=Medium')).to.be.true;
     });
 
-    it('should fetch suggestions with refinements and overrite query', () => {
+    it('should fetch suggestions with refinements and overwite query', () => {
       const searchProducts = stub(tag(), 'searchProducts');
       tag().rewriteQuery = () => null;
       tag()._config = { autoSearch: true, categoryField: 'size' };
