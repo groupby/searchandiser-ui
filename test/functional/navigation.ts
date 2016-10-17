@@ -21,12 +21,14 @@ suite<Navigation>('gb-navigation', ({
 
   describe('render with refinements', () => {
     const NAVIGATIONS = [{
+      name: 'main',
       displayName: 'Main',
       refinements: [
         { value: 'Pick up', type: 'Value', count: 12345 },
         { value: 'Deliver', type: 'Value', count: 123 }
       ]
     }, {
+      name: 'category',
       displayName: 'Category',
       refinements: [
         { value: 'Health', type: 'Value', count: 200 },
@@ -45,6 +47,8 @@ suite<Navigation>('gb-navigation', ({
 
     it('should render refinements', () => {
       expect(html().querySelector('gb-refinement-list')).to.be.ok;
+      expect(html().querySelector('#main')).to.be.ok;
+      expect(html().querySelector('#category')).to.be.ok;
       expect(html().querySelector('gb-available-refinement')).to.be.ok;
       expect(html().querySelector('gb-selected-refinement')).to.be.ok;
       expect(html().querySelectorAll('.gb-navigation-title')[0].textContent).to.eq('Main');
