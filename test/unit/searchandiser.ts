@@ -18,7 +18,7 @@ import * as riot from 'riot';
 describe('searchandiser', () => {
   let sandbox: Sinon.SinonSandbox;
   let searchandiser: Searchandiser;
-  let flux;
+  let flux: FluxCapacitor;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
@@ -129,7 +129,7 @@ describe('searchandiser', () => {
     it('should perform a blank search', (done) => {
       const stub = sandbox.stub(flux, 'search', (query) =>
         Promise.resolve(expect(query).to.be.undefined));
-      flux.emit = (event, data) => {
+      flux.emit = (event, data): any => {
         expect(event).to.eq('page_changed');
         expect(data).to.eql({ pageNumber: 1, finalPage: 1 });
         expect(stub.called).to.be.true;
@@ -283,16 +283,53 @@ describe('searchandiser', () => {
 
   describe('initCapacitor()', () => {
     it('should create a new flux capacitor', () => {
-      const config = { customerId: 123, a: 'b', c: 'd' };
+      const config: any = { customerId: 123, a: 'b', c: 'd' };
       const stub = sandbox.stub(groupby, 'FluxCapacitor', (customerId, configuration, mask) => {
         expect(customerId).to.eq(123);
         expect(configuration).to.eq(config);
         expect(mask).to.eq(CONFIGURATION_MASK);
       });
 
-      initCapacitor(<any>config);
+      flux = initCapacitor(config);
 
+      expect(flux).to.be.an.instanceof(FluxCapacitor);
       expect(stub.called).to.be.true;
+    });
+
+    it('should mask config properties for query', () => {
+      const config: any = {
+        collection: 'products',
+        area: 'Main',
+        language: 'en',
+        pageSize: 12,
+        sort: { a: 'b' },
+        fields: ['*'],
+        customUrlParams: { c: 'd' },
+        pruneRefinements: true,
+        tags: {
+          a: {
+            option: true
+          }
+        },
+        structure: {
+          title: 'title'
+        }
+      };
+
+      flux = initCapacitor(config);
+
+      expect(flux.query.build()).to.eql({
+        query: '',
+        wildcardSearchEnabled: false,
+        collection: 'products',
+        area: 'Main',
+        language: 'en',
+        pageSize: 12,
+        sort: { a: 'b' },
+        fields: ['*'],
+        customUrlParams: { c: 'd' },
+        pruneRefinements: true,
+      });
     });
   });
 
