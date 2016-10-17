@@ -46,7 +46,10 @@ export class Autocomplete {
   swapAttributes(next: HTMLElement) {
     this.removeActiveClass();
     next.classList.add(ACTIVE);
-    if (next.dataset['value']) this.tag.notifier(next.dataset['value']);
+    const value = next.dataset['value'];
+    const refinement = next.dataset['refinement'];
+    const field = next.dataset['field'];
+    if (value || refinement) this.tag.notifier(value, refinement, field);
     return next;
   }
 
@@ -70,8 +73,9 @@ export class Autocomplete {
         event.preventDefault();
 
         if (this.isSelectedInAutocomplete()) {
-          if (this.linkAbove()) {
-            this.selectLink(this.linkAbove());
+          const linkAbove = this.linkAbove();
+          if (linkAbove) {
+            this.selectLink(linkAbove);
           } else {
             this.searchInput.value = this.preautocompleteValue;
             this.reset();
@@ -81,12 +85,10 @@ export class Autocomplete {
         }
         break;
       case KEY_DOWN:
-        if (this.isSelectedInAutocomplete()) {
-          this.selectLink(this.linkBelow());
-        } else {
+        if (!this.isSelectedInAutocomplete()) {
           this.preautocompleteValue = this.searchInput.value;
-          this.selectLink(this.linkBelow());
         }
+        this.selectLink(this.linkBelow());
         break;
       case KEY_ENTER:
         if (this.isSelectedInAutocomplete()) {

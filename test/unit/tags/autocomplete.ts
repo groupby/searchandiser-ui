@@ -139,16 +139,64 @@ describe('Autocomplete', () => {
       expect(add.calledWith('active')).to.be.true;
     });
 
-    it('should call notifier', () => {
-      const notifier = sandbox.spy();
-      const nextLink: any = { classList: { add: () => null }, dataset: { value: 'thing' } };
-      autocomplete = new Autocomplete(<any>{ notifier });
-      sandbox.stub(autocomplete, 'removeActiveClass');
+    describe('notifier()', () => {
+      const VALUE = 'thing';
+      const REFINEMENT = 'Medium';
+      const FIELD = 'size';
+      let notifier: Sinon.SinonSpy;
+      let nextLink: any & { dataset: any };
 
-      const link = autocomplete.swapAttributes(nextLink);
+      beforeEach(() => {
+        notifier = sandbox.spy();
+        autocomplete = new Autocomplete(<any>{ notifier });
+        autocomplete.removeActiveClass = () => null;
+        nextLink = { classList: { add: () => null } };
+      });
 
-      expect(link).to.eq(nextLink);
-      expect(notifier.called).to.be.true;
+      it('should call notifier with value', () => {
+        nextLink.dataset = { value: VALUE };
+
+        const link = autocomplete.swapAttributes(nextLink);
+
+        expect(link).to.eq(nextLink);
+        expect(notifier.calledWith(VALUE, undefined, undefined)).to.be.true;
+      });
+
+      it('should call notifier with value and refinement', () => {
+        nextLink.dataset = { value: VALUE, refinement: REFINEMENT };
+
+        const link = autocomplete.swapAttributes(nextLink);
+
+        expect(link).to.eq(nextLink);
+        expect(notifier.calledWith(VALUE, REFINEMENT, undefined)).to.be.true;
+      });
+
+      it('should call notifier with just refinement', () => {
+        nextLink.dataset = { refinement: REFINEMENT };
+
+        const link = autocomplete.swapAttributes(nextLink);
+
+        expect(link).to.eq(nextLink);
+        expect(notifier.calledWith(undefined, REFINEMENT, undefined)).to.be.true;
+      });
+
+      it('should call notifier with value, refinement and field', () => {
+        nextLink.dataset = { value: VALUE, refinement: REFINEMENT, field: FIELD };
+
+        const link = autocomplete.swapAttributes(nextLink);
+
+        expect(link).to.eq(nextLink);
+        expect(notifier.calledWith(VALUE, REFINEMENT, FIELD)).to.be.true;
+      });
+
+      it('should not call notifier with just field', () => {
+        nextLink.dataset = { field: FIELD };
+
+        const link = autocomplete.swapAttributes(nextLink);
+
+        expect(link).to.eq(nextLink);
+        expect(notifier.called).to.be.false;
+      });
     });
   });
 
