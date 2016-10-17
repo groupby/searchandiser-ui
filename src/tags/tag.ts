@@ -1,4 +1,3 @@
-
 import { Services } from '../services/init';
 import { checkBooleanAttr, getPath } from '../utils/common';
 import { FluxCapacitor } from 'groupby-api';

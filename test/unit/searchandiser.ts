@@ -306,6 +306,7 @@ describe('searchandiser', () => {
         fields: ['*'],
         customUrlParams: { c: 'd' },
         pruneRefinements: true,
+        disableAutocorrection: true,
         tags: {
           a: {
             option: true
@@ -329,6 +330,7 @@ describe('searchandiser', () => {
         fields: ['*'],
         customUrlParams: { c: 'd' },
         pruneRefinements: true,
+        disableAutocorrection: true
       });
     });
   });
