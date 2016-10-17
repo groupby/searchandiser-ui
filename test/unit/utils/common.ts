@@ -1,18 +1,23 @@
 import {
   checkBooleanAttr,
   checkNested,
+  debounce,
   displayRefinement,
   findSearchBox,
   findTag,
+  getParam,
   getPath,
   remap,
   toRefinement,
-  unless
+  unless,
+  LOCATION
 } from '../../../src/utils/common';
 import { expect } from 'chai';
+import * as origDebounce from 'debounce';
+import * as queryString from 'query-string';
 
 describe('utils', () => {
-  let sandbox;
+  let sandbox: Sinon.SinonSandbox;
 
   beforeEach(() => sandbox = sinon.sandbox.create());
   afterEach(() => sandbox.restore());
@@ -112,7 +117,16 @@ describe('utils', () => {
 
   describe('remap()', () => {
     it('should removes keys that do not appear in the mapping', () => {
-      expect(remap({ b: 'a', c: 'test' }, { a: 'b', d: 'c' })).to.eql({ a: 'a', d: 'test' });
+      const original = { b: 'a', c: 'test' };
+      const mapping = { a: 'b', d: 'c' };
+
+      expect(remap(original, mapping)).to.eql({ a: 'a', d: 'test' });
+    });
+
+    it('should return original object', () => {
+      const original = { b: 'a', c: 'test' };
+
+      expect(remap(original)).to.eq(original);
     });
   });
 
@@ -125,6 +139,50 @@ describe('utils', () => {
       expect(checkBooleanAttr('attr3', options)).to.be.false;
       expect(checkBooleanAttr('attr4', options)).to.be.false;
       expect(checkBooleanAttr('attr5', options)).to.be.false;
+    });
+  });
+
+  describe('getParam()', () => {
+    it('should parse query string and return the requested parameter', () => {
+      const query = '?a=b&c=d';
+      const param = 'size';
+      const value = 'Medium';
+      sandbox.stub(LOCATION, 'getSearch').returns(query);
+      sandbox.stub(queryString, 'parse').returns({ [param]: value });
+
+      expect(getParam(param)).to.eq(value);
+    });
+  });
+
+  describe('debounce()', () => {
+    it('should export debounce', () => {
+      expect(debounce).to.eq(origDebounce);
+    });
+  });
+
+  describe('LOCATION', () => {
+    it('should have properties', () => {
+      expect(LOCATION.href()).to.eq(window.location.href);
+      expect(LOCATION.getSearch()).to.eq(window.location.search);
+      expect(LOCATION.pathname()).to.eq(window.location.pathname);
+    });
+
+    it('should call window.location.replace()', () => {
+      const url = 'http://example.com/search';
+      const replace = sandbox.stub(window.location, 'replace');
+
+      LOCATION.replace(url);
+
+      expect(replace.calledWith(url)).to.be.true;
+    });
+
+    it('should call window.location.assign()', () => {
+      const url = 'http://example.com/search';
+      const assign = sandbox.stub(window.location, 'assign');
+
+      LOCATION.assign(url);
+
+      expect(assign.calledWith(url)).to.be.true;
     });
   });
 });

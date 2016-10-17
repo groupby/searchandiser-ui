@@ -108,7 +108,7 @@ describe('collections service', () => {
         emit: () => done(),
         query: { raw: {} }
       };
-      const spy =
+      const search =
         flux.bridge.search =
         sinon.spy(() => {
           expect(service.inProgress.cancelled).to.be.true;
@@ -122,16 +122,16 @@ describe('collections service', () => {
 
       expect(service.inProgress).to.be.an.instanceof(Promise);
       expect(service.inProgress.cancelled).to.be.undefined;
-      expect(spy.called).to.be.true;
+      expect(search.called).to.be.true;
     });
 
     it('should not update results if cancelled', (done) => {
       const flux: any = { bridge: {}, query: { raw: {} } };
-      const spy =
+      const search =
         flux.bridge.search =
         sinon.spy(() => new Promise((resolve) => setTimeout(() => resolve({}), 50)));
       service = new Collections(flux, <any>{});
-      const stub = sandbox.stub(service, 'extractCounts', () => {
+      const extractCounts = sandbox.stub(service, 'extractCounts', () => {
         service.inProgress.cancelled = true;
         flux.emit = sinon.spy();
       });
@@ -140,8 +140,8 @@ describe('collections service', () => {
       service.updateCollectionCounts();
 
       setTimeout(() => {
-        expect(spy.called).to.be.true;
-        expect(stub.called).to.be.true;
+        expect(search.called).to.be.true;
+        expect(extractCounts.called).to.be.true;
         expect(flux.emit.called).to.be.false;
         done();
       }, 100);
@@ -170,36 +170,30 @@ describe('collections service', () => {
     it('should update selected collection count', () => {
       const collection = 'mycollection';
       const totalRecordCount = 450;
-      const emit = sinon.spy((event, counts) => {
-        expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
-        expect(counts).to.eql({ [collection]: totalRecordCount });
-      });
+      const emit = sinon.spy();
       const flux: any = { emit, query: { raw: { collection } } };
       service = new Collections(flux, <any>{});
 
       service.updateSelectedCollectionCount(<any>{ totalRecordCount });
 
-      expect(emit.called).to.be.true;
+      expect(emit.calledWith(COLLECTIONS_UPDATED_EVENT, { [collection]: totalRecordCount })).to.be.true;
     });
 
     it('should update selected collection count with existing counts', () => {
       const collection = 'mycollection';
       const totalRecordCount = 450;
-      const emit = sinon.spy((event, counts) => {
-        expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
-        expect(counts).to.eql({
-          [collection]: totalRecordCount,
-          prod: 403,
-          test: 330
-        });
-      });
+      const emit = sinon.spy();
       const flux: any = { emit, query: { raw: { collection } } };
       service = new Collections(flux, <any>{});
       service.counts = { prod: 403, test: 330 };
 
       service.updateSelectedCollectionCount(<any>{ totalRecordCount });
 
-      expect(emit.called).to.be.true;
+      expect(emit.calledWith(COLLECTIONS_UPDATED_EVENT, {
+        [collection]: totalRecordCount,
+        prod: 403,
+        test: 330
+      })).to.be.true;
     });
   });
 

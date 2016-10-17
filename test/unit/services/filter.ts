@@ -1,4 +1,4 @@
-import { Filter } from '../../../src/services/filter';
+import { Filter, FILTER_UPDATED_EVENT } from '../../../src/services/filter';
 import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
 import { Events, FluxCapacitor, Query } from 'groupby-api';
@@ -69,36 +69,51 @@ describe('filter service', () => {
   });
 
   describe('updateFluxClone()', () => {
-    it('should update fluxClone state', () => {
+    it('should update fluxClone state', (done) => {
       const parentQuery = 'red sneakers';
       service = new Filter(<any>{ query: new Query(parentQuery) }, <any>{});
-
-      service.fluxClone.search = (query: string): any => {
-        expect(query).to.eq(parentQuery);
-        return { then: (cb: Function) => expect(cb).to.be.a('function') };
-      };
+      const search = sandbox.stub(service.fluxClone, 'search', () => ({
+        then: (cb) => {
+          expect(service.fluxClone.query.raw.refinements).to.eql([]);
+          expect(search.calledWith(parentQuery)).to.be.true;
+          done();
+        }
+      }));
 
       service.updateFluxClone();
-      expect(service.fluxClone.query.raw.refinements).to.eql([]);
     });
 
-    it('should update fluxClone state with refinements', () => {
+    it('should update fluxClone state with refinements', (done) => {
       const parentQuery = 'red sneakers';
       const refinements: any = { a: 'b', c: 'd' };
-      service = new Filter(<any>{
-        query: new Query(parentQuery)
-          .withSelectedRefinements(refinements)
-      }, <any>{});
-
-      service.fluxClone.search = (query: string): any => {
-        expect(query).to.eq(parentQuery);
-        return { then: (cb: Function) => expect(cb).to.be.a('function') };
-      };
-
+      const query = new Query(parentQuery).withSelectedRefinements(refinements);
+      service = new Filter(<any>{ query }, <any>{});
+      const search = sandbox.stub(service.fluxClone, 'search', () => {
+        expect(service.fluxClone.query.raw.refinements).to.eql([refinements]);
+        expect(search.calledWith(parentQuery)).to.be.true;
+        done();
+      });
       service.isTargetNav = () => false;
 
       service.updateFluxClone();
-      expect(service.fluxClone.query.raw.refinements).to.eql([refinements]);
+    });
+
+    it('should emit filter_updated event', () => {
+      const emit = sinon.spy();
+      const flux: any = { query: new Query('red sneakers'), emit };
+      const result = { a: 'b' };
+      service = new Filter(flux, <any>{});
+      sandbox.stub(service.fluxClone, 'search', () => ({
+        then: (cb) => {
+          expect(cb).to.be.a('function');
+          cb(result);
+        }
+      }));
+      service.isTargetNav = () => false;
+
+      service.updateFluxClone();
+
+      expect(emit.calledWith(FILTER_UPDATED_EVENT, result)).to.be.true;
     });
   });
 });

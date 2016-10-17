@@ -4,6 +4,8 @@ import * as queryString from 'query-string';
 import filterObject = require('filter-object');
 import oget = require('oget');
 
+export { debounce }
+
 export type SelectedRefinement = SelectedValueRefinement & SelectedRangeRefinement;
 
 export const LOCATION = {
@@ -60,10 +62,10 @@ export function getPath(obj: any, path: string = '') {
  *
  * N.B. It removes keys that do not appear in the mapping
  */
-export function remap(x: any, mapping: any) {
+export function remap(obj: any, mapping?: any) {
   if (mapping) {
     return Object.keys(mapping).reduce((acc, key) => {
-      const value = getPath(x, mapping[key]);
+      const value = getPath(obj, mapping[key]);
       if (value) {
         return Object.assign(acc, { [key]: value });
       } else {
@@ -71,11 +73,9 @@ export function remap(x: any, mapping: any) {
       }
     }, {});
   } else {
-    return x;
+    return obj;
   }
 }
-
-export { debounce }
 
 export function checkBooleanAttr(attribute: string, opts: any) {
   return typeof opts === 'object'
