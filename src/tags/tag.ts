@@ -77,7 +77,7 @@ export class SaytTag<T> {
   }
 }
 
-function setTagName(tag: FluxTag<any>) {
+export function setTagName(tag: FluxTag<any>) {
   const htmlTagName = tag.root.tagName.toLowerCase();
   const tagName = htmlTagName.startsWith('gb-') ?
     htmlTagName :
@@ -90,7 +90,7 @@ function setTagName(tag: FluxTag<any>) {
   }
 }
 
-function setParents(tag: FluxTag<any>) {
+export function setParents(tag: FluxTag<any>) {
   tag._parents = tag.parent ? Object.assign({}, tag.parent['_parents']) : {};
   if (tag._tagName) {
     tag._parents[tag._tagName] = tag;
@@ -102,8 +102,8 @@ function setParents(tag: FluxTag<any>) {
 }
 
 // somehow this function isn't working for the gb-select inside gb-sort
-function setScope(tag: FluxTag<any>) {
-  if (tag.opts.scope in tag._parents) {
+export function setScope(tag: FluxTag<any>) {
+  if (tag._parents && tag._parents[tag.opts.scope]) {
     tag._scope = tag._parents[tag.opts.scope];
   } else if (tag.parent && tag.parent._scope) {
     tag._scope = tag.parent._scope;
@@ -114,6 +114,6 @@ function setScope(tag: FluxTag<any>) {
   }
 }
 
-export function MixinFlux(flux: FluxCapacitor, config: any, services: any) {
+export function MixinFlux(flux: FluxCapacitor, config: any, services: any): FluxTag<any> {
   return Object.assign(new FluxTag()['__proto__'], { flux, config, services });
 }
