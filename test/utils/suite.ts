@@ -2,6 +2,33 @@
  * Suite Helpers
  */
 
+export function baseSuite(modifier: SuiteModifier, description: string, suite: (utils: SuiteUtils) => void) {
+  getDescribe(modifier)(description, () => {
+    let _sandbox: Sinon.SinonSandbox;
+
+    suite({
+      init,
+      teardown,
+      spy: (obj?, method?) => _sandbox.spy(obj, method),
+      stub: (obj?, method?, func?) => _sandbox.stub(obj, method, func)
+    });
+
+    function init() {
+      _sandbox = sinon.sandbox.create();
+    }
+    function teardown() {
+      _sandbox.restore();
+    }
+  });
+}
+
+export interface SuiteUtils {
+  init: () => void;
+  teardown: () => void;
+  spy: Sinon.SinonSpyStatic;
+  stub: Sinon.SinonStubStatic;
+}
+
 export enum SuiteModifier {
   Only, Skip
 }

@@ -1,20 +1,15 @@
 import { Collections, COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
 import { expectSubscriptions } from '../../utils/expectations';
+import suite from './_suite';
 import { expect } from 'chai';
 import { Events, Request } from 'groupby-api';
 
-describe('collections service', () => {
-  let sandbox: Sinon.SinonSandbox;
-  let service: Collections;
-
-  beforeEach(() => {
-    service = new Collections(<any>{}, <any>{});
-    sandbox = sinon.sandbox.create();
-  });
-  afterEach(() => sandbox.restore());
+suite('collections', ({ spy, stub }) => {
 
   describe('on construction', () => {
     it('should set properties', () => {
+      const service = new Collections(<any>{}, <any>{});
+
       expect(service.collectionsConfig).to.eql({});
       expect(service.fetchCounts).to.be.true;
       expect(service.isLabeled).to.be.false;
@@ -27,7 +22,7 @@ describe('collections service', () => {
       const collections = { collections: 'my collection', counts: false, options };
       const config: any = { tags: { collections } };
 
-      service = new Collections(<any>{}, config);
+      const service = new Collections(<any>{}, config);
 
       expect(service.collectionsConfig).to.eq(collections);
       expect(service.fetchCounts).to.be.false;
@@ -39,7 +34,7 @@ describe('collections service', () => {
 
   describe('init()', () => {
     it('should update itself', (done) => {
-      service = new Collections(<any>{ on: () => null }, <any>{});
+      const service = new Collections(<any>{ on: () => null }, <any>{});
       service.updateCollectionCounts = () => done();
 
       service.init();
@@ -47,7 +42,7 @@ describe('collections service', () => {
 
     it('should listen events', () => {
       const flux: any = {};
-      service = new Collections(flux, <any>{});
+      const service = new Collections(flux, <any>{});
 
       expectSubscriptions(() => service.init(), {
         [Events.QUERY_CHANGED]: null,
@@ -57,10 +52,14 @@ describe('collections service', () => {
   });
 
   describe('updateCollectionCounts()', () => {
+    let service: Collections;
+
+    beforeEach(() => service = new Collections(<any>{}, <any>{}));
+
     it('should update collection counts', (done) => {
       const collections = ['a', 'b', 'c'];
       const counts = { a: 10, b: 30, c: 50 };
-      const emit = sinon.spy((event, newCounts) => {
+      const emit = spy((event, newCounts) => {
         expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
         expect(newCounts).to.eql(counts);
         expect(service.inProgress).to.be.an.instanceof(Promise);
@@ -110,7 +109,7 @@ describe('collections service', () => {
       };
       const search =
         flux.bridge.search =
-        sinon.spy(() => {
+        spy(() => {
           expect(service.inProgress.cancelled).to.be.true;
           return new Promise((resolve) => setTimeout(() => resolve({}), 100));
         });
@@ -129,11 +128,11 @@ describe('collections service', () => {
       const flux: any = { bridge: {}, query: { raw: {} } };
       const search =
         flux.bridge.search =
-        sinon.spy(() => new Promise((resolve) => setTimeout(() => resolve({}), 50)));
+        spy(() => new Promise((resolve) => setTimeout(() => resolve({}), 50)));
       service = new Collections(flux, <any>{});
-      const extractCounts = sandbox.stub(service, 'extractCounts', () => {
+      const extractCounts = stub(service, 'extractCounts', () => {
         service.inProgress.cancelled = true;
-        flux.emit = sinon.spy();
+        flux.emit = spy();
       });
       service.collections = ['a'];
 
@@ -155,6 +154,7 @@ describe('collections service', () => {
         { results: { totalRecordCount: 1412 }, collection: 'b' },
         { results: { totalRecordCount: 409 }, collection: 'c' }
       ];
+      const service = new Collections(<any>{}, <any>{});
 
       const counts = service.extractCounts(results);
 
@@ -170,9 +170,9 @@ describe('collections service', () => {
     it('should update selected collection count', () => {
       const collection = 'mycollection';
       const totalRecordCount = 450;
-      const emit = sinon.spy();
+      const emit = spy();
       const flux: any = { emit, query: { raw: { collection } } };
-      service = new Collections(flux, <any>{});
+      const service = new Collections(flux, <any>{});
 
       service.updateSelectedCollectionCount(<any>{ totalRecordCount });
 
@@ -182,9 +182,9 @@ describe('collections service', () => {
     it('should update selected collection count with existing counts', () => {
       const collection = 'mycollection';
       const totalRecordCount = 450;
-      const emit = sinon.spy();
+      const emit = spy();
       const flux: any = { emit, query: { raw: { collection } } };
-      service = new Collections(flux, <any>{});
+      const service = new Collections(flux, <any>{});
       service.counts = { prod: 403, test: 330 };
 
       service.updateSelectedCollectionCount(<any>{ totalRecordCount });
@@ -201,7 +201,7 @@ describe('collections service', () => {
     it('should determine if collection is currently selected', () => {
       const collection = 'my collection';
       const flux: any = { query: { raw: { collection } } };
-      service = new Collections(flux, <any>{});
+      const service = new Collections(flux, <any>{});
 
       expect(service.isSelected(collection)).to.be.true;
       expect(service.isSelected('some collection')).to.be.false;
@@ -212,7 +212,7 @@ describe('collections service', () => {
     it('should return the currently configured collection', () => {
       const collection = 'my collection';
       const flux: any = { query: { raw: { collection } } };
-      service = new Collections(flux, <any>{});
+      const service = new Collections(flux, <any>{});
 
       expect(service.selectedCollection).to.eq(collection);
     });
@@ -220,7 +220,7 @@ describe('collections service', () => {
     it('should default to originally configured collection', () => {
       const collection = 'other collection';
       const config: any = { collection };
-      service = new Collections(<any>{}, config);
+      const service = new Collections(<any>{}, config);
 
       expect(service.selectedCollection).to.eq(collection);
     });

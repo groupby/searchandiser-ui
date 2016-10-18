@@ -1,5 +1,6 @@
 import { SESSION_COOKIE_KEY, Tracker, VISITOR_COOKIE_KEY } from '../../../src/services/tracker';
 import { expectSubscriptions } from '../../utils/expectations';
+import suite from './_suite';
 import { expect } from 'chai';
 import * as GbTracker from 'gb-tracker-client';
 import { Events } from 'groupby-api';
@@ -10,19 +11,11 @@ const TEST_CONFIG: any = {
   area: 'other'
 };
 
-describe('tracker service', () => {
-  let sandbox: Sinon.SinonSandbox;
-  let service: Tracker;
+suite('tracker', ({ spy, stub }) => {
 
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-    service = new Tracker(<any>{ on: () => null }, TEST_CONFIG);
-  });
-  afterEach(() => sandbox.restore());
-
-  describe('on constuction', () => {
+  describe('on construction', () => {
     it('should have default values', () => {
-      service = new Tracker(<any>{}, TEST_CONFIG);
+      const service = new Tracker(<any>{}, TEST_CONFIG);
 
       expect(service.tracker).to.be.an.instanceof(GbTracker);
       expect(service._config).to.eql({});
@@ -31,13 +24,17 @@ describe('tracker service', () => {
     it('should take global tracker config', () => {
       const trackerConfig = { visitorId: 14523, sessionId: 512908 };
 
-      service = new Tracker(<any>{}, Object.assign({ tracker: trackerConfig }, TEST_CONFIG));
+      const service = new Tracker(<any>{}, Object.assign({ tracker: trackerConfig }, TEST_CONFIG));
 
       expect(service._config).to.eq(trackerConfig);
     });
   });
 
   describe('init()', () => {
+    let service: Tracker;
+
+    beforeEach(() => service = new Tracker(<any>{ on: () => null }, TEST_CONFIG));
+
     it('should set visitor information', (done) => {
       service.setVisitorInfo = () => done();
 
@@ -53,10 +50,14 @@ describe('tracker service', () => {
   });
 
   describe('setVisitorInfo()', () => {
+    let service: Tracker;
+
+    beforeEach(() => service = new Tracker(<any>{ on: () => null }, TEST_CONFIG));
+
     it('should use configured ids', () => {
       const visitorId = '1faslkdj';
       const sessionId = 'lk15k3j4';
-      const setVisitor = sandbox.stub(service, 'setVisitor');
+      const setVisitor = stub(service, 'setVisitor');
       service._config = { visitorId, sessionId };
 
       service.setVisitorInfo();
@@ -67,7 +68,7 @@ describe('tracker service', () => {
     it('should use cookies', () => {
       const visitorId = '1faslkdj';
       const sessionId = 'lk15k3j4';
-      const setVisitor = sandbox.stub(service, 'setVisitor');
+      const setVisitor = stub(service, 'setVisitor');
       Cookies.set(VISITOR_COOKIE_KEY, visitorId);
       Cookies.set(SESSION_COOKIE_KEY, sessionId);
 
@@ -77,7 +78,7 @@ describe('tracker service', () => {
     });
 
     it('should generate ids', () => {
-      const setVisitor = sandbox.stub(service, 'setVisitor', (visId, sessId) => {
+      const setVisitor = stub(service, 'setVisitor', (visId, sessId) => {
         expect(visId).to.be.ok;
         expect(visId).to.have.length.gt(1);
         expect(sessId).to.be.ok;
@@ -108,7 +109,8 @@ describe('tracker service', () => {
     it('should call tracker.setVisitor()', () => {
       const visitorId = '149182';
       const sessionId = '151092';
-      const setVisitor = sinon.spy();
+      const setVisitor = spy();
+      const service = new Tracker(<any>{ on: () => null }, TEST_CONFIG);
       service.tracker = <any>{ setVisitor };
 
       service.setVisitor(visitorId, sessionId);
@@ -121,8 +123,8 @@ describe('tracker service', () => {
     it('should call tracker.sendSearchEvent()', () => {
       const results = { a: 'b', c: 'd' };
       const flux: any = { results };
-      const sendSearchEvent = sinon.spy();
-      service = new Tracker(flux, TEST_CONFIG);
+      const sendSearchEvent = spy();
+      const service = new Tracker(flux, TEST_CONFIG);
       service.tracker = <any>{ sendSearchEvent };
 
       service.sendSearchEvent();
@@ -139,8 +141,8 @@ describe('tracker service', () => {
       const originalQuery = 'shoes';
       const results = { originalQuery, a: 'b', c: 'd' };
       const flux: any = { results };
-      const sendSearchEvent = sinon.spy((event) => expect(event.search.query).to.eq(originalQuery));
-      service = new Tracker(flux, TEST_CONFIG);
+      const sendSearchEvent = spy((event) => expect(event.search.query).to.eq(originalQuery));
+      const service = new Tracker(flux, TEST_CONFIG);
       service.tracker = <any>{ sendSearchEvent };
 
       service.sendSearchEvent();
@@ -149,8 +151,8 @@ describe('tracker service', () => {
     });
 
     it('should allow overriding the origin', () => {
-      const sendSearchEvent = sinon.spy((event) => expect(event.search.origin).to.eql({ dym: true }));
-      service = new Tracker(<any>{ results: {} }, TEST_CONFIG);
+      const sendSearchEvent = spy((event) => expect(event.search.origin).to.eql({ dym: true }));
+      const service = new Tracker(<any>{ results: {} }, TEST_CONFIG);
       service.tracker = <any>{ sendSearchEvent };
 
       service.sendSearchEvent('dym');
@@ -162,7 +164,7 @@ describe('tracker service', () => {
   describe('listenForViewProduct()', () => {
     it('should listen for details event', () => {
       const flux: any = { on: () => null };
-      service = new Tracker(flux, TEST_CONFIG);
+      const service = new Tracker(flux, TEST_CONFIG);
 
       service.listenForViewProduct();
 
@@ -175,8 +177,8 @@ describe('tracker service', () => {
       const record = { allMeta: { id: 125123, shortTitle: 'Shoes', cost: 113.49 } };
       const structure = { title: 'shortTitle', price: 'cost' };
       const flux: any = { on: (event, cb) => cb(record) };
-      const sendViewProductEvent = sinon.spy();
-      service = new Tracker(flux, Object.assign({ structure }, TEST_CONFIG));
+      const sendViewProductEvent = spy();
+      const service = new Tracker(flux, Object.assign({ structure }, TEST_CONFIG));
       service.tracker = <any>{ sendViewProductEvent };
 
       service.listenForViewProduct();
@@ -195,7 +197,8 @@ describe('tracker service', () => {
   describe('addToCart()', () => {
     it('should call tracker.sendAddToCartEvent()', () => {
       const event = { a: 'b' };
-      const sendAddToCartEvent = sinon.spy();
+      const sendAddToCartEvent = spy();
+      const service = new Tracker(<any>{}, TEST_CONFIG);
       service.tracker = <any>{ sendAddToCartEvent };
 
       service.addToCart(event);
@@ -207,7 +210,8 @@ describe('tracker service', () => {
   describe('order()', () => {
     it('should call tracker.sendOrderEvent()', () => {
       const event = { a: 'b' };
-      const sendOrderEvent = sinon.spy();
+      const sendOrderEvent = spy();
+      const service = new Tracker(<any>{}, TEST_CONFIG);
       service.tracker = <any>{ sendOrderEvent };
 
       service.order(event);
@@ -218,7 +222,8 @@ describe('tracker service', () => {
 
   describe('search()', () => {
     it('should call sendSearchEvent()', () => {
-      const sendSearchEvent = sandbox.stub(service, 'sendSearchEvent');
+      const service = new Tracker(<any>{}, TEST_CONFIG);
+      const sendSearchEvent = stub(service, 'sendSearchEvent');
 
       service.search();
 
@@ -228,7 +233,8 @@ describe('tracker service', () => {
 
   describe('didYouMean()', () => {
     it('should call sendSearchEvent()', () => {
-      const sendSearchEvent = sandbox.stub(service, 'sendSearchEvent');
+      const service = new Tracker(<any>{}, TEST_CONFIG);
+      const sendSearchEvent = stub(service, 'sendSearchEvent');
 
       service.didYouMean();
 
@@ -238,7 +244,8 @@ describe('tracker service', () => {
 
   describe('sayt()', () => {
     it('should call sendSearchEvent()', () => {
-      const sendSearchEvent = sandbox.stub(service, 'sendSearchEvent');
+      const service = new Tracker(<any>{}, TEST_CONFIG);
+      const sendSearchEvent = stub(service, 'sendSearchEvent');
 
       service.sayt();
 

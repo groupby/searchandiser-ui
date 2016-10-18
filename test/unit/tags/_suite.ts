@@ -1,6 +1,6 @@
 import { FluxTag } from '../../../src/tags/tag';
 import { expectSubscriptions } from '../../utils/expectations';
-import { buildSuite, getDescribe, SuiteModifier } from '../../utils/suite';
+import { baseSuite, buildSuite, SuiteModifier } from '../../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
@@ -9,10 +9,9 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
   const mixin = hasMixin ? mixinOrCb : {};
   const tests: (suiteUtils: UnitUtils<T>) => void = hasMixin ? cb : mixinOrCb;
 
-  getDescribe(modifier)(`${tagName} logic`, () => {
+  baseSuite(modifier, `${tagName} logic`, ({ init, teardown, spy, stub }) => {
     let _flux: FluxCapacitor;
     let _tag: T;
-    let sandbox: Sinon.SinonSandbox;
 
     beforeEach(() => {
       // TODO: should be this vvv
@@ -20,16 +19,16 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       let { tag, flux } = fluxTag(new clazz(), mixin);
       _tag = tag;
       _flux = flux;
-      sandbox = sinon.sandbox.create();
+      init();
     });
-    afterEach(() => sandbox.restore());
+    afterEach(() => teardown());
 
     tests({
       flux: () => _flux,
       tag: () => _tag,
-      spy: (obj?, method?) => sandbox.spy(obj, method),
-      stub: (obj?, method?, func?) => sandbox.stub(obj, method, func),
       expectSubscriptions: _expectSubscriptions,
+      spy,
+      stub,
       itShouldConfigure,
       tagName
     });

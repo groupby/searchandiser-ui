@@ -2,14 +2,11 @@ import { Url } from '../../../src/services/url';
 import { LOCATION } from '../../../src/utils/common';
 import { SimpleBeautifier } from '../../../src/utils/simple-beautifier';
 import { UrlBeautifier } from '../../../src/utils/url-beautifier';
+import suite from './_suite';
 import { expect } from 'chai';
 import { Query } from 'groupby-api';
 
-describe('url service', () => {
-  let sandbox: Sinon.SinonSandbox;
-
-  beforeEach(() => sandbox = sinon.sandbox.create());
-  afterEach(() => sandbox.restore());
+suite('url', ({ spy, stub }) => {
 
   describe('init()', () => {
     it('should initialise beautifiers', () => {
@@ -24,8 +21,8 @@ describe('url service', () => {
 
     it('should not do search on initialSearch = true', () => {
       const config: any = { url: {}, initialSearch: true };
-      sandbox.stub(Url, 'parseUrl', () => expect.fail());
-      sandbox.stub(Url, 'parseBeautifiedUrl', () => expect.fail());
+      stub(Url, 'parseUrl', () => expect.fail());
+      stub(Url, 'parseBeautifiedUrl', () => expect.fail());
       const service = new Url(<any>{}, config, <any>{});
 
       service.init();
@@ -35,7 +32,7 @@ describe('url service', () => {
       it('should parse query from location', (done) => {
         const origConfig: any = { url: { queryParam: 'q' } };
         const query = new Query('test');
-        const parseUrl = sandbox.stub(Url, 'parseUrl', (beautifier) => {
+        const parseUrl = stub(Url, 'parseUrl', (beautifier) => {
           expect(beautifier).to.be.an.instanceof(SimpleBeautifier);
           return query;
         });
@@ -57,7 +54,7 @@ describe('url service', () => {
         const query = new Query('test');
         const flux: any = { search: (queryString) => Promise.resolve() };
         const service = new Url(flux, origConfig, <any>{ tracker: { search: () => done() } });
-        sandbox.stub(Url, 'parseUrl', () => query);
+        stub(Url, 'parseUrl', () => query);
 
         service.init();
       });
@@ -67,7 +64,7 @@ describe('url service', () => {
       it('should parse query from beautified location', (done) => {
         const origConfig: any = { url: { beautifier: true } };
         const query = new Query('test');
-        const stub = sandbox.stub(Url, 'parseBeautifiedUrl', (beautifier) => {
+        const parseBeautifiedUrl = stub(Url, 'parseBeautifiedUrl', (beautifier) => {
           expect(beautifier).to.be.an.instanceof(UrlBeautifier);
           return query;
         });
@@ -75,7 +72,7 @@ describe('url service', () => {
           search: (queryString) => {
             expect(queryString).to.eq('test');
             expect(flux.query).to.eq(query);
-            expect(stub.called).to.be.true;
+            expect(parseBeautifiedUrl.called).to.be.true;
             done();
           }
         };
@@ -89,7 +86,7 @@ describe('url service', () => {
         const query = new Query('test');
         const flux: any = { search: (queryString) => Promise.resolve() };
         const service = new Url(flux, origConfig, <any>{ tracker: { search: () => done() } });
-        sandbox.stub(Url, 'parseBeautifiedUrl', () => query);
+        stub(Url, 'parseBeautifiedUrl', () => query);
 
         service.init();
       });
@@ -99,7 +96,7 @@ describe('url service', () => {
   describe('active()', () => {
     it('should return true', () => {
       const config: any = { url: { searchUrl: '/not/my/path' } };
-      const pathname = sandbox.stub(LOCATION, 'pathname').returns('/my/path');
+      const pathname = stub(LOCATION, 'pathname').returns('/my/path');
       const service = new Url(<any>{}, config, <any>{});
 
       expect(service.active()).to.be.true;
@@ -108,7 +105,7 @@ describe('url service', () => {
 
     it('should return false', () => {
       const searchUrl = '/my/path';
-      const pathname = sandbox.stub(LOCATION, 'pathname').returns(searchUrl);
+      const pathname = stub(LOCATION, 'pathname').returns(searchUrl);
       const service = new Url(<any>{}, <any>{ url: { searchUrl } }, <any>{});
 
       expect(service.active()).to.be.false;
@@ -124,7 +121,7 @@ describe('url service', () => {
         const refinements = [{ a: 'b' }];
         const mockFlux: any = { query: { raw: { refinements } } };
         const config: any = { url: { c: 'd' } };
-        const setLocation = sandbox.stub(Url, 'setLocation');
+        const setLocation = stub(Url, 'setLocation');
         const urlService = new Url(mockFlux, config, <any>{});
         urlService.simple = <any>{
           build: (query) => {
@@ -142,9 +139,9 @@ describe('url service', () => {
 
       it('should update location using simple beautifier with refinements', () => {
         const refinements = [{ a: 'b' }];
-        const setLocation = sandbox.stub(Url, 'setLocation');
+        const setLocation = stub(Url, 'setLocation');
         const urlService = new Url(<any>{ query: { raw: { refinements: [] } } }, <any>{ url: {} }, <any>{});
-        const build = sinon.spy(({ raw }) => expect(raw.refinements).to.eql(refinements));
+        const build = spy(({ raw }) => expect(raw.refinements).to.eql(refinements));
         urlService.simple = <any>{ build };
 
         urlService.update('red shoes', refinements);
@@ -161,7 +158,7 @@ describe('url service', () => {
         const refinements = [{ a: 'b' }];
         const mockFlux: any = { query: { raw: { refinements } } };
         const config: any = { url: { beautifier: true } };
-        const setLocation = sandbox.stub(Url, 'setLocation');
+        const setLocation = stub(Url, 'setLocation');
         const urlService = new Url(mockFlux, config, <any>{});
         urlService.beautifier = <any>{
           build: (query: Query) => {
@@ -180,9 +177,9 @@ describe('url service', () => {
       it('should update location using beautifier with refinements', () => {
         const refinements = [{ a: 'b' }];
         const config: any = { url: { beautifier: true } };
-        const setLocation = sandbox.stub(Url, 'setLocation');
+        const setLocation = stub(Url, 'setLocation');
         const urlService = new Url(<any>{ query: { raw: { refinements: [] } } }, config, <any>{});
-        const build = sinon.spy(({ raw }) => expect(raw.refinements).to.eql(refinements));
+        const build = spy(({ raw }) => expect(raw.refinements).to.eql(refinements));
         urlService.beautifier = <any>{ build };
 
         urlService.update('red shoes', refinements);
@@ -195,7 +192,7 @@ describe('url service', () => {
 
   describe('parseUrl()', () => {
     it('should call parse with the current url', () => {
-      const parse = sinon.spy();
+      const parse = spy();
       const beautifier: any = { parse };
 
       Url.parseUrl(beautifier);
@@ -206,7 +203,7 @@ describe('url service', () => {
 
   describe('parseBeautifiedUrl()', () => {
     it('should call parse with the current url', () => {
-      const parse = sinon.spy();
+      const parse = spy();
       const beautifier: any = { parse };
 
       Url.parseBeautifiedUrl(beautifier);
@@ -219,12 +216,12 @@ describe('url service', () => {
     const SEARCH_URL = '/my/path';
     let pathname: Sinon.SinonStub;
 
-    beforeEach(() => pathname = sandbox.stub(LOCATION, 'pathname').returns(SEARCH_URL));
+    beforeEach(() => pathname = stub(LOCATION, 'pathname').returns(SEARCH_URL));
     afterEach(() => expect(pathname.called).to.be.true);
 
     it('should update search', () => {
       const newUrl = 'example.com/search?q=hats';
-      const setSearch = sandbox.stub(LOCATION, 'setSearch');
+      const setSearch = stub(LOCATION, 'setSearch');
 
       Url.setLocation(newUrl, { searchUrl: SEARCH_URL });
 
@@ -233,7 +230,7 @@ describe('url service', () => {
 
     it('should replace url', () => {
       const newUrl = 'example.com/things?q=hats';
-      const replace = sandbox.stub(LOCATION, 'replace');
+      const replace = stub(LOCATION, 'replace');
 
       Url.setLocation(newUrl, { searchUrl: '/search' });
 

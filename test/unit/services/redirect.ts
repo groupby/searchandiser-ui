@@ -1,13 +1,10 @@
 import { Redirect } from '../../../src/services/redirect';
 import { LOCATION } from '../../../src/utils/common';
 import { expectSubscriptions } from '../../utils/expectations';
+import suite from './_suite';
 import { expect } from 'chai';
 
-describe('redirect service', () => {
-  let sandbox: Sinon.SinonSandbox;
-
-  beforeEach(() => sandbox = sinon.sandbox.create());
-  afterEach(() => sandbox.restore());
+suite('redirect', ({ stub }) => {
 
   describe('init()', () => {
     it('should listen for redirect events', () => {
@@ -23,7 +20,7 @@ describe('redirect service', () => {
       const url = 'my-page.html';
       const flux: any = { on: (event, cb) => cb(url) };
       const service = new Redirect(flux);
-      const redirect = sandbox.stub(service, 'redirect');
+      const redirect = stub(service, 'redirect');
 
       service.init();
 
@@ -34,7 +31,7 @@ describe('redirect service', () => {
   describe('redirect()', () => {
     it('should call LOCATION.assign()', () => {
       const url = 'my-page.html';
-      const assign = sandbox.stub(LOCATION, 'assign');
+      const assign = stub(LOCATION, 'assign');
       const service = new Redirect(<any>{});
 
       service.redirect(url);
