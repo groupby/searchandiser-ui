@@ -1,0 +1,23 @@
+<gb-infini-scroll>
+  <gb-results disable-update></gb-results>
+
+  <script>
+    import '../results/gb-results.tag.html';
+    import { InfiniScroll } from './gb-infini-scroll';
+    this._mixin(InfiniScroll);
+  </script>
+
+  <style scoped>
+    :scope {
+      overflow-y: scroll;
+      display: block;
+      height: 450px;
+    }
+    :scope gb-results {
+      display: block;
+    }
+    :scope gb-list {
+      display: block;
+    }
+  </style>
+</gb-infini-scroll>

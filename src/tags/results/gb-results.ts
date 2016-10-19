@@ -3,6 +3,14 @@ import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
+export interface ResultsConfig {
+  disableUpdate?: boolean;
+}
+
+export const DEFAULT_CONFIG: ResultsConfig = {
+  disableUpdate: false
+};
+
 export interface Results extends FluxTag<any> { }
 
 export class Results {
@@ -14,11 +22,15 @@ export class Results {
   getPath: typeof getPath;
 
   init() {
+    this.configure(DEFAULT_CONFIG);
+
     this.struct = this.config.structure;
     this.variantStruct = unless(this.struct._variantStructure, this.struct);
     this.getPath = getPath;
 
-    this.flux.on(Events.RESULTS, this.updateRecords);
+    if (!this._config.disableUpdate) {
+      this.flux.on(Events.RESULTS, this.updateRecords);
+    }
   }
 
   updateRecords({ records }: ResultsModel) {

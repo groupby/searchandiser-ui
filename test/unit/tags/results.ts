@@ -1,11 +1,13 @@
-import { Results } from '../../../src/tags/results/gb-results';
+import { DEFAULT_CONFIG, Results } from '../../../src/tags/results/gb-results';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-results', Results, ({ flux, tag, spy, expectSubscriptions }) => {
+suite('gb-results', Results, ({ flux, tag, spy, itShouldConfigure, expectSubscriptions }) => {
 
   describe('init()', () => {
+    itShouldConfigure(DEFAULT_CONFIG);
+
     it('should have default values', () => {
       const structure = { a: 'b' };
       tag().config = { structure };
@@ -31,6 +33,14 @@ suite('gb-results', Results, ({ flux, tag, spy, expectSubscriptions }) => {
       expectSubscriptions(() => tag().init(), {
         [Events.RESULTS]: tag().updateRecords
       });
+    });
+
+    it('should not listen for events', () => {
+      flux().on = (): any => expect.fail();
+      tag().config = { structure: {} };
+      tag().opts = { disableUpdate: true };
+
+      tag().init();
     });
   });
 

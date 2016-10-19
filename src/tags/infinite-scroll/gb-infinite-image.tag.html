@@ -1,19 +1,20 @@
-<gb-product-image>
+<gb-infinite-image>
   <a class="gb-product-image { _style }" href={ _scope.link() }>
-    <gb-lazy-image src={ imageLink() }></gb-lazy-image>
-    <!-- <img src={ imageLink() } alt="" /> -->
+    <img class={ thumbnail: opts.thumbnail !==u ndefined } src={ imageLink() } alt="" />
   </a>
 
   <script>
-    import '../lazy-image/gb-lazy-image.tag.html';
     this._scopeTo('gb-product');
     const _scope = this._scope;
     this.imageLink = () => _scope.image(_scope.productMeta().image);
   </script>
 
   <style scoped>
-    /*.gb-product-image.gb-stylish img {
+    .gb-product-image.gb-stylish img {
       width: 380px;
-    }*/
+    }
+    .gb-product-image.gb-stylish img.thumbnail {
+      width: 80px;
+    }
   </style>
-</gb-product-image>
+</gb-infinite-image>

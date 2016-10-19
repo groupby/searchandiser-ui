@@ -1,0 +1,35 @@
+<gb-infinite-scroll>
+  <ul id="scroller">
+    <div id="runway"> </div>
+  </ul>
+
+  <script>
+    import '../results/gb-results.tag.html';
+    import './gb-tombstone.tag.html';
+    import '../product/gb-product.tag.html';
+    import { InfiniteScroll } from './gb-infinite-scroll';
+    this._mixin(InfiniteScroll);
+  </script>
+
+  <style scoped>
+    #scroller {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      box-sizing: border-box;
+      contain: layout;
+      will-change: transform;
+    }
+    #runway {
+      position: absolute;
+      height: 1px;
+      width: 1px;
+      transition: transform 0.2s;
+    }
+  </style>
+</gb-infinite-scroll>
