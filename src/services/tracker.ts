@@ -1,4 +1,4 @@
-import { SearchandiserConfig, TrackerConfig } from '../searchandiser';
+import { SearchandiserConfig } from '../searchandiser';
 import { ProductTransformer } from '../utils/product-transformer';
 import * as GbTracker from 'gb-tracker-client';
 import { Events, FluxCapacitor } from 'groupby-api';
@@ -8,6 +8,11 @@ import * as uuid from 'node-uuid';
 export const MAX_COOKIE_AGE = 365; // days
 export const VISITOR_COOKIE_KEY = 'visitor';
 export const SESSION_COOKIE_KEY = 'session';
+
+export interface TrackerConfig {
+  sessionId?: string;
+  visitorId?: string;
+}
 
 export class Tracker {
 

@@ -1,4 +1,5 @@
 import { debounce } from '../../utils/common';
+import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
@@ -6,11 +7,12 @@ import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api
 import escapeStringRegexp = require('escape-string-regexp');
 
 export interface SaytConfig {
-  structure?: any;
+  structure?: ProductStructure;
   categoryField?: string;
   allCategoriesLabel?: string;
   collection?: string;
   area?: string;
+  language?: string;
   products?: number;
   queries?: number;
   minimumCharacters?: number;
@@ -19,7 +21,7 @@ export interface SaytConfig {
   staticSearch?: boolean;
   https?: boolean;
   highlight?: boolean;
-  navigationNames?: any;
+  navigationNames?: { [name: string]: string };
   allowedNavigations?: string[];
 }
 
@@ -72,7 +74,10 @@ export class Sayt {
     return {
       subdomain: this.config.customerId,
       collection: this._config.collection || this.config.collection,
-      autocomplete: { numSearchTerms: this._config.queries },
+      autocomplete: {
+        numSearchTerms: this._config.queries,
+        language: this._config.language
+      },
       productSearch: {
         area: this._config.area || this.config.area,
         numProducts: this._config.products
