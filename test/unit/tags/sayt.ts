@@ -80,15 +80,16 @@ suite('gb-sayt', Sayt, ({
       const customerId = 'mycustomer';
       const collection = 'mycollection';
       const area = 'MyArea';
+      const language = 'en';
       tag().config = { customerId, collection, area };
-      tag()._config = { queries: 2, products: 3, https: true };
+      tag()._config = { queries: 2, products: 3, https: true, language };
 
       const config = tag().generateSaytConfig();
 
       expect(config).to.eql({
         subdomain: customerId,
         collection,
-        autocomplete: { numSearchTerms: 2 },
+        autocomplete: { language, numSearchTerms: 2 },
         productSearch: { area, numProducts: 3 },
         https: true
       });

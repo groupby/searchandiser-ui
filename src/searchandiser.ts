@@ -1,14 +1,24 @@
 import { initServices } from './services/init';
+import { TrackerConfig } from './services/tracker';
+import { UrlConfig } from './services/url';
+import { BreadcrumbsConfig } from './tags/breadcrumbs/gb-breadcrumbs';
 import { CollectionsConfig } from './tags/collections/gb-collections';
+import { DetailsConfig } from './tags/details/gb-details';
 import { FilterConfig } from './tags/filter/gb-filter';
+import { NavigationConfig } from './tags/navigation/gb-navigation';
+import { PageSizeConfig } from './tags/page-size/gb-page-size';
+import { PagingConfig } from './tags/paging/gb-paging';
+import { QueryConfig } from './tags/query/gb-query';
+import { SaytConfig } from './tags/sayt/gb-sayt';
+import { SortConfig } from './tags/sort/gb-sort';
+import { SubmitConfig } from './tags/submit/gb-submit';
 import { MixinFlux } from './tags/tag';
 import { checkNested } from './utils/common';
 import { ProductStructure } from './utils/product-transformer';
-import { BeautifierConfig } from './utils/url-beautifier';
 import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
-export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection}';
+export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection}'; // tslint:disable:max-line-length
 export const DEFAULT_CONFIG = { initialSearch: true };
 export const DEFAULT_URL_CONFIG = { queryParam: 'q', searchUrl: 'search' };
 
@@ -123,23 +133,9 @@ export interface BridgeConfig {
   skipSemantish?: boolean;
 }
 
-export interface UrlConfig {
-  beautifier?: boolean | BeautifierConfig;
-  queryParam?: string;
-  searchUrl?: string;
-  detailsUrl?: string;
-}
-
-export interface TrackerConfig {
-  sessionId?: string;
-  visitorId?: string;
-}
-
 export interface SearchandiserConfig {
   bridge?: BridgeConfig;
-
   url?: UrlConfig;
-
   tracker?: TrackerConfig;
 
   customerId: string;
@@ -152,25 +148,17 @@ export interface SearchandiserConfig {
   pageSizes?: number[];
   sort?: Sort[];
   tags: {
-    sort?: {
-      options?: any[];
-    };
-    sayt?: {
-      structure?: ProductStructure;
-      products?: number;
-      queries?: number;
-      autoSearch?: boolean;
-      staticSearch?: boolean;
-      highlight?: boolean;
-      categoryField?: string;
-      navigationNames?: any;
-      allowedNavigations?: string[];
-      minimumCharacters?: number;
-      delay?: number;
-      https?: boolean;
-    };
+    breadcrumbs?: BreadcrumbsConfig;
     collections?: CollectionsConfig;
+    details?: DetailsConfig;
     filter?: FilterConfig;
+    navigation?: NavigationConfig;
+    pageSize?: PageSizeConfig;
+    paging?: PagingConfig;
+    query?: QueryConfig;
+    sayt?: SaytConfig;
+    sort?: SortConfig;
+    submit?: SubmitConfig;
   };
   stylish?: boolean;
   initialSearch?: boolean;

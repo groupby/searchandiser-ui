@@ -1,10 +1,17 @@
-import { SearchandiserConfig, UrlConfig } from '../searchandiser';
+import { SearchandiserConfig } from '../searchandiser';
 import { LOCATION } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
-import { UrlBeautifier } from '../utils/url-beautifier';
+import { BeautifierConfig, UrlBeautifier } from '../utils/url-beautifier';
 import { Services } from './init';
 import { FluxCapacitor, Query } from 'groupby-api';
 import * as parseUri from 'parseUri';
+
+export interface UrlConfig {
+  beautifier?: boolean | BeautifierConfig;
+  queryParam?: string;
+  searchUrl?: string;
+  detailsUrl?: string;
+}
 
 export class Url {
 
