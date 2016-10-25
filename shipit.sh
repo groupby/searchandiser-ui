@@ -5,6 +5,8 @@ git clone https://github.com/groupby/cdn.git ${HOME}/cdn
 currentVersion=$(jq -r .version < package.json)
 
 copyFiles() {
+  sed -i.bak '/\/\/# sourceMappingURL=/d' "dist/searchandiser-ui-${currentVersion}.js"
+  rm dist/*.bak
   cp dist/searchandiser-ui-*.js* ${1}
   for file in dist/searchandiser-ui-*.js*
   do
