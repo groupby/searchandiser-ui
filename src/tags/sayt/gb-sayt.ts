@@ -80,7 +80,8 @@ export class Sayt {
       },
       productSearch: {
         area: this._config.area || this.config.area,
-        numProducts: this._config.products
+        numProducts: this._config.products,
+        language: this._config.language
       },
       https: this._config.https
     };
