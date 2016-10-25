@@ -90,7 +90,7 @@ suite('gb-sayt', Sayt, ({
         subdomain: customerId,
         collection,
         autocomplete: { language, numSearchTerms: 2 },
-        productSearch: { area, numProducts: 3 },
+        productSearch: { area, language, numProducts: 3 },
         https: true
       });
     });

@@ -100,7 +100,7 @@
     "parseUri": "^1.2.3-2",
     "query-string": "^4.2.2",
     "riot": "^2.5.0",
-    "sayt": "^0.1.6",
+    "sayt": "^0.1.7",
     "string.prototype.repeat": "^0.2.0",
     "string.prototype.startswith": "^0.2.0"
   }
