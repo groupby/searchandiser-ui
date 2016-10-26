@@ -185,7 +185,7 @@ export class Sayt {
 
     const doRefinement = !node.dataset['norefine'];
     const refinement: SelectedValueRefinement = {
-      navigationName: node.dataset['field'],
+      navigationName: node.dataset['field'] || this._config.categoryField,
       value: node.dataset['refinement'],
       type: 'Value'
     };
