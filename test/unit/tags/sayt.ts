@@ -476,7 +476,22 @@ suite('gb-sayt', Sayt, ({
       expect(update.calledWith(suggestion, [refinement(field, value)])).to.be.true;
     });
 
-    it('should perform refinement using configured category field', () => {
+    it('should perform refinement using configured category field', (done) => {
+      const field = 'size';
+      const value = 'medium';
+      flux().refine = (ref): any => {
+        expect(ref).to.eql(refinement(field, value));
+        done();
+      };
+      tag()._config = { categoryField: field };
+
+      tag().refine(<any>{
+        tagName: 'GB-SAYT-LINK',
+        dataset: { refinement: value }
+      }, 'red heels');
+    });
+
+    it('should perform static refinement using configured category field', () => {
       const suggestion = 'red heels';
       const value = 8;
       const field = 'size';
