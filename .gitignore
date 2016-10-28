@@ -18,3 +18,5 @@ test/**/*.js*
 coverage
 dist
 docs
+screenshots
+reports
