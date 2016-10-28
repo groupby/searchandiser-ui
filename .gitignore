@@ -3,6 +3,7 @@
 .tmp
 .idea
 *.log
+*.tmp
 tmp
 
 node_modules
