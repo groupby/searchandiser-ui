@@ -12,6 +12,7 @@ src/**/*.d.ts
 src/**/*.js*
 test/**/*.d.ts
 test/**/*.js*
+!test/e2e/**/*.js
 
 coverage
 dist
