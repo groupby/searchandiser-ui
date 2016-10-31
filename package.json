@@ -19,7 +19,7 @@
     "coverage:report": "istanbul report",
     "coverage:codacy": "cat ./coverage/lcov.info | codacy-coverage",
     "e2e": "nightwatch",
-    "e2e:ci": "nightwatch --ci",
+    "e2e:ci": "nightwatch --env ci",
     "build": "webpack",
     "prod": "NODE_ENV=production webpack",
     "watch": "webpack --watch",
