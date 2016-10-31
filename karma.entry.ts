@@ -3,5 +3,8 @@ import './test/bootstrap';
 const coreContext = (<{ context?: Function }>require).context('./src', true, /\.ts/);
 coreContext.keys().forEach(coreContext);
 
-const testContext = (<{ context?: Function }>require).context('./test', true, /\.ts/);
-testContext.keys().forEach(testContext);
+const unitTestContext = (<{ context?: Function }>require).context('./test/unit', true, /\.ts/);
+unitTestContext.keys().forEach(unitTestContext);
+
+const functionalTestContext = (<{ context?: Function }>require).context('./test/functional', true, /\.ts/);
+unitTestContext.keys().forEach(unitTestContext);
