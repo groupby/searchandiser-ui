@@ -13,6 +13,7 @@ dependencies:
 test:
   override:
     - npm run test+coverage
+    - npm run prod
     - npm run e2e:ci
 
 deployment:
@@ -22,7 +23,6 @@ deployment:
     commands:
       - echo "//registry.npmjs.org/:_authToken=${NPM_API_KEY}" > ~/.npmrc
       - sudo apt-get update && sudo apt-get install jq
-      - npm run prod
       - ./shipit.sh
       - npm run package
       - npm publish
