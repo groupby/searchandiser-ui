@@ -28,6 +28,14 @@ module.exports = {
         on_failure: true,
         path: 'screenshots/'
       }
+    },
+
+    ci: {
+      desiredCapabilities: {
+        browserName: 'phantomjs',
+        javascriptEnabled: true,
+        'phantomjs.binary.path': '/usr/local/bin/phantomjs'
+      }
     }
   }
 };
