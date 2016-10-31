@@ -13,7 +13,7 @@ dependencies:
 test:
   override:
     - npm run test+coverage
-    - npm run e2e --env ci
+    - npm run e2e:ci
 
 deployment:
   npm:
