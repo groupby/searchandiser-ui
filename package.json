@@ -20,6 +20,7 @@
     "coverage:codacy": "cat ./coverage/lcov.info | codacy-coverage",
     "e2e": "nightwatch",
     "e2e:ci": "nightwatch --env ci",
+    "e2e:watch": "watch nightwatch src test/e2e",
     "build": "webpack",
     "prod": "NODE_ENV=production webpack",
     "watch": "webpack --watch",
@@ -93,6 +94,7 @@
     "typings": "^1.3.3",
     "unminified-webpack-plugin": "^1.1.0",
     "url-loader": "^0.5.7",
+    "watch": "^1.0.1",
     "webpack": "^1.13.1"
   },
   "dependencies": {
