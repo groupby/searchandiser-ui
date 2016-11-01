@@ -4,6 +4,7 @@ module.exports = {
   src_folders: ['test/e2e/tests'],
   output_folder: 'reports/',
   globals_path: 'test/e2e/globals',
+  custom_commands_path: 'test/e2e/functions',
   // page_objects_path: ['test/e2e/pages'],
   selenium: {
     start_process: false,
