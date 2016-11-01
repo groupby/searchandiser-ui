@@ -15,7 +15,7 @@ import { SubmitConfig } from './tags/submit/gb-submit';
 import { MixinFlux } from './tags/tag';
 import { checkNested } from './utils/common';
 import { ProductStructure } from './utils/product-transformer';
-import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
+import { Events, FluxBridgeConfig, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
 export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection}'; // tslint:disable:max-line-length
@@ -64,11 +64,9 @@ export function transformConfig(config: SearchandiserConfig): SearchandiserConfi
     const bridgeConfig: BridgeConfig = {};
 
     const headers = config.bridge.headers || {};
-    if (config.bridge.skipCache) headers['Skip-Caching'] = true;
-    if (config.bridge.skipSemantish) headers['Skip-Semantish'] = true;
+    if (config.bridge.skipCache) headers['Skip-Caching'] = 'true';
+    if (config.bridge.skipSemantish) headers['Skip-Semantish'] = 'true';
     bridgeConfig.headers = headers;
-
-    if (config.bridge.https) bridgeConfig.https = true;
 
     Object.assign(finalConfig.bridge, bridgeConfig);
   }
@@ -126,9 +124,7 @@ export class Searchandiser {
   }
 }
 
-export interface BridgeConfig {
-  https?: boolean;
-  headers?: any;
+export interface BridgeConfig extends FluxBridgeConfig {
   skipCache?: boolean;
   skipSemantish?: boolean;
 }

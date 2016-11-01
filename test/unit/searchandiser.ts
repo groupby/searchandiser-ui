@@ -212,6 +212,13 @@ describe('searchandiser', () => {
         expect(config.bridge.https).to.be.true;
       });
 
+      it('should accept errorHandler', () => {
+        const errorHandler = () => null;
+        const config = transformConfig(<any>{ bridge: { errorHandler } });
+
+        expect(config.bridge.errorHandler).to.eq(errorHandler);
+      });
+
       it('should accept headers', () => {
         const headers = {
           These: 'Are',
@@ -231,8 +238,8 @@ describe('searchandiser', () => {
         });
 
         expect(config.bridge.headers).to.eql({
-          'Skip-Caching': true,
-          'Skip-Semantish': true
+          'Skip-Caching': 'true',
+          'Skip-Semantish': 'true'
         });
       });
 
@@ -246,7 +253,7 @@ describe('searchandiser', () => {
 
         expect(config.bridge.headers).to.eql({
           Some: 'Headers',
-          'Skip-Caching': true
+          'Skip-Caching': 'true'
         });
       });
 
