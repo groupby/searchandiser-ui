@@ -1,5 +1,5 @@
 import { BridgeConfig, SearchandiserConfig } from '../searchandiser';
-import { FluxBridgeConfig, Sort } from 'groupby-api';
+import { Sort } from 'groupby-api';
 import oget = require('oget');
 
 export const DEFAULT_CONFIG: SearchandiserConfig = <any>{

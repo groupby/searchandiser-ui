@@ -104,7 +104,7 @@ describe('Configuration', () => {
 
     describe('applyDefaults()', () => {
       it('should set defaults', () => {
-        const config = Configuration.applyDefaults({}, DEFAULT_CONFIG);
+        const config = Configuration.applyDefaults(<any>{}, DEFAULT_CONFIG);
 
         expect(config).to.eql(DEFAULT_CONFIG);
       });
