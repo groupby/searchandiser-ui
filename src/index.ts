@@ -1,5 +1,3 @@
-import './polyfills';
-import { initSearchandiser } from './searchandiser';
-import './tags/index';
+import { searchandiser } from './pkg-index';
 
-export = initSearchandiser();
+export = searchandiser;
