@@ -1,8 +1,8 @@
-import { BridgeConfig } from '../searchandiser';
-import { Sort } from 'groupby-api';
+import { BridgeConfig, SearchandiserConfig } from '../searchandiser';
+import { FluxBridgeConfig, Sort } from 'groupby-api';
 import oget = require('oget');
 
-export const DEFAULT_CONFIG = {
+export const DEFAULT_CONFIG: SearchandiserConfig = <any>{
   initialSearch: true,
 
   url: {
@@ -12,7 +12,7 @@ export const DEFAULT_CONFIG = {
 };
 
 export interface ConfigurationHandler {
-  <T>(config: T): T;
+  <T>(configOrValue: T): T;
 }
 
 export type HandlerMap = { [key: string]: ConfigurationHandler };
@@ -20,16 +20,16 @@ export type HandlerMap = { [key: string]: ConfigurationHandler };
 export class Configuration {
 
   handlers: HandlerMap = {
-    bridge: (cfg: BridgeConfig = {}) => {
-      const headers = cfg.headers || {};
-      if (cfg.skipCache) {
+    bridge: (config: BridgeConfig = {}) => {
+      const headers = config.headers || {};
+      if (config.skipCache) {
         headers['Skip-Caching'] = 'true';
       }
-      if (cfg.skipSemantish) {
+      if (config.skipSemantish) {
         headers['Skip-Semantish'] = 'true';
       }
 
-      return Object.assign(cfg, { headers });
+      return Object.assign(config, { headers });
     },
     sort: (sort: Sort) => {
       if (!sort) {
@@ -51,7 +51,7 @@ export class Configuration {
     }
   };
 
-  constructor(public rawConfig: any) { }
+  constructor(public rawConfig: SearchandiserConfig) { }
 
   apply() {
     Configuration.validate(this.rawConfig);
@@ -59,7 +59,7 @@ export class Configuration {
     return Configuration.transform(config, this.handlers);
   }
 
-  static applyDefaults(config: any, defaults: any) {
+  static applyDefaults(config: SearchandiserConfig, defaults: SearchandiserConfig) {
     for (let key of Object.keys(defaults)) {
       if (typeof defaults[key] === 'object') {
         config[key] = Object.assign(config[key] || {}, defaults[key]);
@@ -70,14 +70,14 @@ export class Configuration {
     return config;
   }
 
-  static transform(config: any, handlers: HandlerMap) {
+  static transform(config: SearchandiserConfig, handlers: HandlerMap) {
     for (let key of Object.keys(handlers)) {
       config[key] = handlers[key](config[key]);
     }
     return config;
   }
 
-  static validate(config: any) {
+  static validate(config: SearchandiserConfig) {
     if (!config.structure) {
       throw 'must provide a record structure';
     }
