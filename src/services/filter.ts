@@ -1,4 +1,4 @@
-import { initCapacitor, SearchandiserConfig } from '../searchandiser';
+import { CONFIGURATION_MASK, SearchandiserConfig } from '../searchandiser';
 import { FilterConfig } from '../tags/filter/gb-filter';
 import { getPath } from '../utils/common';
 import { Events, FluxCapacitor } from 'groupby-api';
@@ -38,6 +38,6 @@ export class Filter {
   }
 
   clone() {
-    return initCapacitor(this.config);
+    return new FluxCapacitor(this.config.customerId, this.config, CONFIGURATION_MASK);
   }
 }
