@@ -1,6 +1,6 @@
 {
   "name": "searchandiser-ui",
-  "version": "0.2.22",
+  "version": "0.2.23",
   "description": "UI components for the GroupBy Searchandiser API.",
   "typings": "dist/src/index.d.ts",
   "main": "index.js",
