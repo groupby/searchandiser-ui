@@ -2,6 +2,51 @@ import { Configuration, DEFAULT_CONFIG } from '../../../src/utils/configuration'
 import { expect } from 'chai';
 
 describe('Configuration', () => {
+  let sandbox: Sinon.SinonSandbox;
+
+  beforeEach(() => sandbox = sinon.sandbox.create());
+  afterEach(() => sandbox.restore());
+
+  describe('apply()', () => {
+    const RAW_CONFIG: any = { a: 'b' };
+    let configuration: Configuration;
+
+    beforeEach(() => configuration = new Configuration(RAW_CONFIG));
+
+    it('should validate() rawConfig', () => {
+      const validate = sandbox.stub(Configuration, 'validate');
+      sandbox.stub(Configuration, 'applyDefaults');
+      sandbox.stub(Configuration, 'transform');
+
+      configuration.apply();
+
+      expect(validate.calledWith(RAW_CONFIG)).to.be.true;
+    });
+
+    it('should applyDefaults() to rawConfig', () => {
+      const applyDefaults = sandbox.stub(Configuration, 'applyDefaults');
+      sandbox.stub(Configuration, 'validate');
+      sandbox.stub(Configuration, 'transform');
+
+      configuration.apply();
+
+      expect(applyDefaults.calledWith(RAW_CONFIG, DEFAULT_CONFIG)).to.be.true;
+    });
+
+    it('should transform() config and return it', () => {
+      const config: any = { a: 'b' };
+      const transformed = { c: 'd' };
+      const transform = sandbox.stub(Configuration, 'transform').returns(transformed);
+      sandbox.stub(Configuration, 'applyDefaults').returns(config);
+      sandbox.stub(Configuration, 'validate');
+
+      const result = configuration.apply();
+
+      expect(result).to.eq(transformed);
+      expect(transform.calledWith(config, configuration.handlers)).to.be.true;
+    });
+  });
+
   describe('static', () => {
     describe('validate()', () => {
       it('should require structure', () => {
