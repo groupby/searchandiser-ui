@@ -2,10 +2,19 @@ const webpack = require('webpack');
 const pjson = require('./package.json');
 const CleanPlugin = require('clean-webpack-plugin');
 const UnminifiedPlugin = require('unminified-webpack-plugin');
+const SmartBannerPlugin = require('smart-banner-webpack-plugin');
+const fs = require('fs');
 
 let isProd = false;
 let isCi = false;
 let isTest = false;
+let isPackage = false;
+
+const nodeModules = fs.readdirSync('node_modules')
+  .filter((x) => ['.bin'].indexOf(x) === -1)
+  .reduce((mods, mod) => Object.assign(mods, {
+    [mod]: `commonjs ${mod}`
+  }), {});
 
 function resolve() {
   return {
@@ -90,25 +99,33 @@ switch (process.env.NODE_ENV) {
   case 'prod':
   case 'production':
     isProd = true;
+  case 'package':
+    isPackage = true;
   default:
     return module.exports = {
       resolve: resolve(),
 
-      entry: './src/index.ts',
+      entry: isPackage ? './src/pkg-index.ts' : './src/index.ts',
 
       output: {
         path: './dist',
-        filename: `${pjson.name}-${pjson.version}${isProd ? '.min' : ''}.js`
+        filename: isPackage ? 'index.js' : `${pjson.name}-${pjson.version}${isProd ? '.min' : ''}.js`
       },
+
+      target: isPackage ? 'node' : undefined,
+
+      externals: isPackage ? nodeModules : undefined,
 
       devtool: 'source-map',
 
-      plugins: isProd ? [
-        new CleanPlugin(['dist']),
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin({ comments: false }),
-        new UnminifiedPlugin()
-      ] : [new CleanPlugin(['dist'])],
+      plugins: [new CleanPlugin(['dist'])]
+        .concat(isProd ? [
+          new webpack.optimize.DedupePlugin(),
+          new webpack.optimize.UglifyJsPlugin({ comments: false }),
+          new UnminifiedPlugin()
+        ] : isPackage ? [
+          new SmartBannerPlugin("var riot = require('riot'); module.exports =", { raw: true })
+        ] : []),
 
       module: {
         preLoaders: preLoaders().concat({

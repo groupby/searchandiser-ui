@@ -11,6 +11,3 @@ coverage/
 *.yml
 *.conf.js
 *.config.js
-
-dist/karma.entry.*
-dist/test

@@ -1,1 +1,1 @@
-module.exports = require('./dist/src/pkg-index');
+module.exports = require('./dist/index');

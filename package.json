@@ -2,7 +2,7 @@
   "name": "searchandiser-ui",
   "version": "0.2.23",
   "description": "UI components for the GroupBy Searchandiser API.",
-  "typings": "dist/src/index.d.ts",
+  "typings": "dist/src/pkg-index.d.ts",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -21,7 +21,8 @@
     "build": "webpack",
     "prod": "NODE_ENV=production webpack",
     "watch": "webpack --watch",
-    "package": "rimraf dist && npm run build:ts && npm run build:riot && npm run build:babel && npm run copy:images",
+    "package": "NODE_ENV=package webpack",
+    "package:manual": "rimraf dist && npm run build:ts && npm run build:riot && npm run build:babel && npm run copy:images",
     "build:ts": "tsc --outDir dist",
     "build:riot": "rimraf dist/src/tags/index.* && riot src dist/src/tags/index.es6 --ext tag.html",
     "build:babel": "babel dist/src/tags/index.es6 --out-file dist/src/tags/index.js",
@@ -79,6 +80,7 @@
     "riotjs-loader": "^3.0.0",
     "script-loader": "^0.7.0",
     "sinon": "^1.16.1",
+    "smart-banner-webpack-plugin": "^2.0.0",
     "source-map-loader": "^0.1.5",
     "sourcemap-istanbul-instrumenter-loader": "^0.2.0",
     "style-loader": "^0.13.1",
