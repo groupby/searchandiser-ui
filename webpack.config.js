@@ -11,7 +11,7 @@ let isTest = false;
 let isPackage = false;
 
 const nodeModules = fs.readdirSync('node_modules')
-  .filter((x) => ['.bin'].indexOf(x) === -1)
+  .filter((mod) => ['.bin'].indexOf(mod) === -1 && mod !== 'ts-helpers')
   .reduce((mods, mod) => Object.assign(mods, {
     [mod]: `commonjs ${mod}`
   }), {});
