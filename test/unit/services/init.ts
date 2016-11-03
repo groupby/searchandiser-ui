@@ -1,7 +1,6 @@
 import { Collections } from '../../../src/services/collections';
 import { Filter } from '../../../src/services/filter';
 import { initServices, startServices } from '../../../src/services/init';
-import * as serviceInitializer from '../../../src/services/init';
 import { Redirect } from '../../../src/services/redirect';
 import { Url } from '../../../src/services/url';
 import { expect } from 'chai';
