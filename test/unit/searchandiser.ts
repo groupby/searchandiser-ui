@@ -1,17 +1,9 @@
-import {
-  applyDefaultConfig,
-  initCapacitor,
-  initSearchandiser,
-  transformConfig,
-  validateConfig,
-  CONFIGURATION_MASK,
-  DEFAULT_URL_CONFIG,
-  Searchandiser
-} from '../../src/searchandiser';
+import { initSearchandiser, CONFIGURATION_MASK, Searchandiser } from '../../src/searchandiser';
 import * as serviceInitialiser from '../../src/services/init';
 import * as Tags from '../../src/tags/tag';
+import * as configuration from '../../src/utils/configuration';
 import { expect } from 'chai';
-import { FluxCapacitor } from 'groupby-api';
+import { Events, FluxCapacitor } from 'groupby-api';
 import * as groupby from 'groupby-api';
 import * as riot from 'riot';
 
@@ -149,250 +141,97 @@ describe('searchandiser', () => {
     });
   });
 
-  describe('applyDefaultConfig()', () => {
-    it('should set defaults', () => {
-      const config = applyDefaultConfig(<any>{});
-
-      expect(config).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG });
-    });
-
-    it('should override defaults', () => {
-      const originalConfig: any = {
-        initialSearch: false,
-        url: {
-          queryParam: 'query',
-          searchUrl: '/productSearch'
-        }
-      };
-
-      const config = applyDefaultConfig(originalConfig);
-
-      expect(config).to.eql(originalConfig);
-    });
-  });
-
-  describe('transformConfig()', () => {
-    it('should not modify the configuration', () => {
-      const config = transformConfig(<any>{});
-
-      expect(config).to.eql({});
-    });
-
-    it('should set the pageSize', () => {
-      const config = transformConfig(<any>{ pageSizes: [5, 10, 25, 50, 100] });
-
-      expect(config.pageSize).to.eq(5);
-    });
-
-    it('should set the default sort', () => {
-      const config = transformConfig(<any>{
-        tags: {
-          sort: {
-            options: [
-              { value: { field: 'A', order: 'B' } },
-              { value: { field: 'C', order: 'D' } }
-            ]
-          }
-        }
-      });
-
-      expect(config.sort).to.eql([{ field: 'A', order: 'B' }]);
-    });
-
-    describe('bridge configuration', () => {
-      it('should not remove the bridge configuration', () => {
-        const config = transformConfig(<any>{ bridge: {} });
-
-        expect(config.bridge).to.be.ok;
-      });
-
-      it('should accept HTTPS', () => {
-        const config = transformConfig(<any>{ bridge: { https: true } });
-
-        expect(config.bridge.https).to.be.true;
-      });
-
-      it('should accept errorHandler', () => {
-        const errorHandler = () => null;
-        const config = transformConfig(<any>{ bridge: { errorHandler } });
-
-        expect(config.bridge.errorHandler).to.eq(errorHandler);
-      });
-
-      it('should accept headers', () => {
-        const headers = {
-          These: 'Are',
-          My: 'Headers'
-        };
-
-        const config = transformConfig(<any>{ bridge: { headers } });
-        expect(config.bridge.headers).to.eq(headers);
-      });
-
-      it('should set configured headers', () => {
-        const config = transformConfig(<any>{
-          bridge: {
-            skipCache: true,
-            skipSemantish: true
-          }
-        });
-
-        expect(config.bridge.headers).to.eql({
-          'Skip-Caching': 'true',
-          'Skip-Semantish': 'true'
-        });
-      });
-
-      it('should merge headers', () => {
-        const config = transformConfig(<any>{
-          bridge: {
-            headers: { Some: 'Headers' },
-            skipCache: true
-          }
-        });
-
-        expect(config.bridge.headers).to.eql({
-          Some: 'Headers',
-          'Skip-Caching': 'true'
-        });
-      });
-
-      it('should not clobber timeout', () => {
-        const config = transformConfig(<any>{ bridge: { timeout: 1300 } });
-
-        expect(config.bridge.timeout).to.eq(1300);
-      });
-    });
-  });
-
   describe('initSearchandiser()', () => {
     it('should generate a configuration function', () => {
       const fluxMixin = { a: 'b', c: 'd' };
+      const customerId = 'test';
       const structure = { title: 't', price: 'p' };
-      const mixinStub = sandbox.stub(riot, 'mixin', (mixin) => expect(mixin).to.eq(fluxMixin));
-      const initServices = sandbox.stub(serviceInitialiser, 'initServices', (fluxInstance, config) => {
-        expect(fluxInstance).to.be.an.instanceof(FluxCapacitor);
-        expect(config).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG, structure });
-      });
+      const config: any = { customerId, structure };
+      const finalConfig = { customerId, e: 'f' };
+      const mockFlux = { g: 'h' };
+      sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
+      sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
+      sandbox.stub(riot, 'mixin');
+      sandbox.stub(serviceInitialiser, 'initServices');
       sandbox.stub(Tags, 'MixinFlux', () => fluxMixin);
 
       const configure = initSearchandiser();
       expect(configure).to.be.a('function');
+      expect(Object.keys(configure)).to.eql([]);
 
-      configure({ structure });
+      configure(config);
 
-      expect(configure['flux']).to.be.an.instanceof(FluxCapacitor);
-      expect(configure['config']).to.eql({ initialSearch: true, url: DEFAULT_URL_CONFIG, structure });
-      expect(mixinStub.called).to.be.true;
-      expect(initServices.called).to.be.true;
+      expect(Object.keys(configure)).to.include.members(Object.keys(Searchandiser.prototype));
     });
-  });
 
-  describe('initCapacitor()', () => {
-    it('should create a new flux capacitor', () => {
-      const config: any = { customerId: 123, a: 'b', c: 'd' };
-      const stub = sandbox.stub(groupby, 'FluxCapacitor', (customerId, configuration, mask) => {
-        expect(customerId).to.eq(123);
-        expect(configuration).to.eq(config);
-        expect(mask).to.eq(CONFIGURATION_MASK);
+    it('should process the configuration on configure()', () => {
+      const config: any = { a: 'b' };
+      const finalConfig = { c: 'd' };
+      const configurationStub = sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
+      sandbox.stub(riot, 'mixin');
+      sandbox.stub(serviceInitialiser, 'initServices');
+      sandbox.stub(Tags, 'MixinFlux');
+
+      const configure = initSearchandiser();
+      configure(config);
+
+      expect(configure['config']).to.eq(finalConfig);
+      expect(configurationStub.calledWith(config)).to.be.true;
+    });
+
+    it('should create a new FluxCapacitor on configure()', () => {
+      const customerId = 'test';
+      const finalConfig = { customerId, e: 'f' };
+      const mockFlux = { g: 'h' };
+      const fluxCapacitor = sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
+      sandbox.stub(serviceInitialiser, 'initServices');
+      sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
+      sandbox.stub(riot, 'mixin');
+      sandbox.stub(Tags, 'MixinFlux');
+
+      const configure = initSearchandiser();
+      configure(<any>{ a: 'b' });
+
+      expect(configure['flux']).to.eq(mockFlux);
+      expect(fluxCapacitor.calledWith(customerId, finalConfig, CONFIGURATION_MASK)).to.be.true;
+    });
+
+    it('should start the services on configure()', () => {
+      const services = { a: 'b' };
+      const finalConfig = { c: 'd' };
+      sandbox.stub(serviceInitialiser, 'initServices', (fluxInstance, cfg) => {
+        expect(fluxInstance).to.be.an.instanceof(FluxCapacitor);
+        expect(fluxInstance).to.have.all.keys(Object.keys(Events));
+        expect(cfg).to.eql(finalConfig);
+        return services;
       });
+      sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
+      sandbox.stub(groupby, 'FluxCapacitor');
+      sandbox.stub(riot, 'mixin');
+      sandbox.stub(Tags, 'MixinFlux');
 
-      flux = initCapacitor(config);
+      const configure = initSearchandiser();
+      configure(<any>{ e: 'f' });
 
-      expect(flux).to.be.an.instanceof(FluxCapacitor);
-      expect(stub.called).to.be.true;
+      expect(configure['services']).to.eq(services);
     });
 
-    it('should mask config properties for query', () => {
-      const config: any = {
-        collection: 'products',
-        area: 'Main',
-        language: 'en',
-        pageSize: 12,
-        sort: { a: 'b' },
-        fields: ['*'],
-        customUrlParams: { c: 'd' },
-        pruneRefinements: true,
-        disableAutocorrection: true,
-        tags: {
-          a: {
-            option: true
-          }
-        },
-        structure: {
-          title: 'title'
-        }
-      };
+    it('should register riot mixin on configure()', () => {
+      const mixed = { a: 'b' };
+      const finalConfig = { c: 'd' };
+      const mockFlux = { e: 'f' };
+      const services = { g: 'h' };
+      const riotMixin = sandbox.stub(riot, 'mixin');
+      const fluxMixin = sandbox.stub(Tags, 'MixinFlux', () => mixed);
+      sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
+      sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
+      sandbox.stub(serviceInitialiser, 'initServices').returns(services);
 
-      flux = initCapacitor(config);
+      const configure = initSearchandiser();
+      configure(<any>{ i: 'j' });
 
-      expect(flux.query.build()).to.eql({
-        query: '',
-        wildcardSearchEnabled: false,
-        collection: 'products',
-        area: 'Main',
-        language: 'en',
-        pageSize: 12,
-        sort: { a: 'b' },
-        fields: ['*'],
-        customUrlParams: { c: 'd' },
-        pruneRefinements: true,
-        disableAutocorrection: true
-      });
-    });
-  });
-
-  describe('validateConfig()', () => {
-    it('should require structure', () => {
-      expect(() => validateConfig(<any>{})).to.throw('must provide a record structure');
-    });
-
-    it('should require structure.title', () => {
-      const config: any = { structure: {} };
-
-      expect(() => validateConfig(config)).to.throw('structure.title must be the path to the title field');
-    });
-
-    it('should require non-blank structure.title', () => {
-      const config: any = { structure: { title: '  ' } };
-
-      expect(() => validateConfig(config)).to.throw('structure.title must be the path to the title field');
-    });
-
-    it('should require structure.price', () => {
-      const config: any = { structure: { title: 'title' } };
-
-      expect(() => validateConfig(config)).to.throw('structure.price must be the path to the price field');
-    });
-
-    it('should require non-blank structure.price', () => {
-      const config: any = { structure: { title: 'title', price: '  ' } };
-
-      expect(() => validateConfig(config)).to.throw('structure.price must be the path to the price field');
-    });
-
-    it('should be valid', () => {
-      const config: any = { structure: { title: 'title', price: 'price' } };
-
-      expect(() => validateConfig(config)).not.to.throw();
-    });
-
-    it('should accept variant title', () => {
-      const config: any = { structure: { price: 'price', _variantStructure: { title: 'title' } } };
-
-      expect(() => validateConfig(config)).not.to.throw();
-    });
-
-    it('should accept variant price', () => {
-      const config: any = { structure: { title: 'title', _variantStructure: { price: 'price' } } };
-
-      expect(() => validateConfig(config)).not.to.throw();
-    });
-
-    it('should accept variant title and price', () => {
-      const config: any = { structure: { _variantStructure: { title: 'title', price: 'price' } } };
-
-      expect(() => validateConfig(config)).not.to.throw();
+      expect(riotMixin.calledWith(mixed)).to.be.true;
+      expect(fluxMixin.calledWith(mockFlux, finalConfig, services)).to.be.true;
     });
   });
 });

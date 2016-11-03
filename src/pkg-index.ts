@@ -1,5 +1,5 @@
 import './polyfills';
-import { initSearchandiser, Searchandiser } from './searchandiser';
+import { initSearchandiser, Searchandiser, SearchandiserConfig } from './searchandiser';
 import './tags/index';
 import * as utils from './utils/common';
 import {
@@ -20,5 +20,6 @@ export {
   FluxCapacitor,
   Query,
   Sayt,
-  Searchandiser
+  Searchandiser,
+  SearchandiserConfig
 }

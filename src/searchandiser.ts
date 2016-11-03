@@ -13,67 +13,22 @@ import { SaytConfig } from './tags/sayt/gb-sayt';
 import { SortConfig } from './tags/sort/gb-sort';
 import { SubmitConfig } from './tags/submit/gb-submit';
 import { MixinFlux } from './tags/tag';
-import { checkNested } from './utils/common';
+import { Configuration } from './utils/configuration';
 import { ProductStructure } from './utils/product-transformer';
-import { Events, FluxBridgeConfig, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
+import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
 export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection}'; // tslint:disable:max-line-length
-export const DEFAULT_CONFIG = { initialSearch: true };
-export const DEFAULT_URL_CONFIG = { queryParam: 'q', searchUrl: 'search' };
 
 export function initSearchandiser() {
-  return function configure(rawConfig: SearchandiserConfig & any = {}) {
-    const config: SearchandiserConfig = applyDefaultConfig(rawConfig);
-    validateConfig(config);
-    const flux = Object.assign(initCapacitor(config), Events);
+  return function configure(rawConfig: SearchandiserConfig = <any>{}) {
+    const config = new Configuration(rawConfig).apply();
+    const flux = new FluxCapacitor(config.customerId, config, CONFIGURATION_MASK);
+    Object.assign(flux, Events);
     const services = initServices(flux, config);
     riot.mixin(MixinFlux(flux, config, services));
     Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
   };
-}
-
-export function initCapacitor(config: SearchandiserConfig) {
-  const finalConfig = transformConfig(config);
-  return new FluxCapacitor(finalConfig.customerId, finalConfig, CONFIGURATION_MASK);
-}
-
-export function applyDefaultConfig(rawConfig: SearchandiserConfig): SearchandiserConfig {
-  const config = Object.assign({}, DEFAULT_CONFIG, rawConfig);
-  config.url = Object.assign(DEFAULT_URL_CONFIG, config.url);
-  return config;
-}
-
-export function validateConfig(config: SearchandiserConfig) {
-  if (!config.structure) {
-    throw new Error('must provide a record structure');
-  }
-  const struct = Object.assign(config.structure, config.structure._variantStructure);
-  if (!(struct.title && struct.title.trim())) {
-    throw new Error('structure.title must be the path to the title field');
-  }
-  if (!(struct.price && struct.price.trim())) {
-    throw new Error('structure.price must be the path to the price field');
-  }
-}
-
-export function transformConfig(config: SearchandiserConfig): SearchandiserConfig & any {
-  let finalConfig: FluxConfiguration & { sort: any[] } = <any>config;
-  if (config.pageSizes) finalConfig.pageSize = config.pageSizes[0];
-  if (config.bridge) {
-    const bridgeConfig: BridgeConfig = {};
-
-    const headers = config.bridge.headers || {};
-    if (config.bridge.skipCache) headers['Skip-Caching'] = 'true';
-    if (config.bridge.skipSemantish) headers['Skip-Semantish'] = 'true';
-    bridgeConfig.headers = headers;
-
-    Object.assign(finalConfig.bridge, bridgeConfig);
-  }
-  if (checkNested(config, 'tags', 'sort', 'options')) {
-    finalConfig.sort = [config.tags.sort.options.map((val) => val.value)[0]];
-  }
-  return finalConfig;
 }
 
 export class Searchandiser {
