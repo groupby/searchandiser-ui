@@ -6,6 +6,14 @@ import { Tracker } from './tracker';
 import { Url } from './url';
 import { FluxCapacitor } from 'groupby-api';
 
+const SERVICES = {
+  collections: Collections,
+  filter: Filter,
+  redirect: Redirect,
+  tracker: Tracker,
+  url: Url
+};
+
 export interface Services {
   collections: Collections;
   filter: Filter;
@@ -14,23 +22,26 @@ export interface Services {
   url: Url;
 }
 
+export interface Service {
+  new (flux: FluxCapacitor, config: SearchandiserConfig, services: { [name: string]: any }): { init: () => null };
+}
+
 export function initServices(flux: FluxCapacitor, config: SearchandiserConfig) {
+  const servicesConstructors: { [name: string]: Service } = Object.assign({}, SERVICES, config.services || {});
   const services: Services = <any>{};
 
-  services.collections = new Collections(flux, config);
-  services.filter = new Filter(flux, config);
-  services.redirect = new Redirect(flux);
-  services.tracker = new Tracker(flux, config);
-  services.url = new Url(flux, config, services);
+  for (let key of Object.keys(servicesConstructors)) {
+    services[key] = new servicesConstructors[key](flux, config, services);
+  }
 
   startServices(services);
   return services;
 }
 
 export function startServices(services: any) {
-  for (let service in services) {
-    if (services.hasOwnProperty(service)) {
-      services[service].init();
+  for (let key of Object.keys(services)) {
+    if (services[key]) {
+      services[key].init();
     }
   }
 }

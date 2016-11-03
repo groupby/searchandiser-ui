@@ -1,6 +1,7 @@
 import { Collections } from '../../../src/services/collections';
 import { Filter } from '../../../src/services/filter';
 import { initServices, startServices } from '../../../src/services/init';
+import * as serviceInitializer from '../../../src/services/init';
 import { Redirect } from '../../../src/services/redirect';
 import { Url } from '../../../src/services/url';
 import { expect } from 'chai';
@@ -22,6 +23,38 @@ describe('service initializer', () => {
       expect(services.url).to.be.an.instanceof(Url);
       expect(services.collections).to.be.an.instanceof(Collections);
     });
+
+    it('should include client services', () => {
+      const flux: any = { on: () => null, search: () => Promise.resolve() };
+      function Thing() {
+        this.init = () => null;
+        return this;
+      }
+
+      const services: any = initServices(flux, <any>{
+        customerId: 'test',
+        area: 'other',
+        services: { thing: Thing }
+      });
+
+      expect(services.thing).to.be.an.instanceof(Thing);
+    });
+
+    it('should override default services', () => {
+      const flux: any = { on: () => null, search: () => Promise.resolve() };
+      function Thing() {
+        this.init = () => null;
+        return this;
+      }
+
+      const services = initServices(flux, <any>{
+        customerId: 'test',
+        area: 'other',
+        services: { url: Thing }
+      });
+
+      expect(services.url).to.be.an.instanceof(Thing);
+    });
   });
 
   describe('startServices()', () => {
@@ -32,6 +65,14 @@ describe('service initializer', () => {
       startServices(services);
 
       expect(init.callCount).to.eq(3);
+    });
+
+    it('should skip failed services', () => {
+      const init = sinon.spy();
+
+      startServices({ a: null, b: undefined, c: { init } });
+
+      expect(init.callCount).to.eq(1);
     });
   });
 });
