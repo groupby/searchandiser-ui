@@ -60,14 +60,15 @@ export class Configuration {
   }
 
   static applyDefaults(config: SearchandiserConfig, defaults: SearchandiserConfig) {
-    for (let key of Object.keys(defaults)) {
-      if (typeof defaults[key] === 'object') {
-        config[key] = Object.assign(config[key] || {}, defaults[key]);
+    const finalConfig = Object.assign({}, defaults);
+    for (let key of Object.keys(config)) {
+      if (Array.isArray(config[key]) || typeof config[key] !== 'object') {
+        finalConfig[key] = config[key];
       } else {
-        config[key] = defaults[key];
+        finalConfig[key] = Object.assign(finalConfig[key] || {}, config[key]);
       }
     }
-    return config;
+    return finalConfig;
   }
 
   static transform(config: SearchandiserConfig, handlers: HandlerMap) {
