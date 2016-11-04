@@ -122,6 +122,22 @@ describe('Configuration', () => {
 
         expect(config).to.eql(originalConfig);
       });
+
+      it('should handle arrays', () => {
+        const pageSizes = [14, 20, 30];
+        const originalConfig: any = { pageSizes };
+
+        const config = Configuration.applyDefaults(originalConfig, DEFAULT_CONFIG);
+
+        expect(config).to.eql({
+          initialSearch: true,
+          url: {
+            queryParam: 'query',
+            searchUrl: '/productSearch'
+          },
+          pageSizes
+        });
+      });
     });
 
     describe('transform()', () => {
