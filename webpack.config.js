@@ -109,7 +109,7 @@ switch (process.env.NODE_ENV) {
 
       output: {
         path: './dist',
-        filename: isPackage ? 'index.js' : `${pjson.name}-${pjson.version}${isProd ? '.min' : ''}.js`
+        filename: isPackage && !isProd ? 'index.js' : `${pjson.name}-${pjson.version}${isProd ? '.min' : ''}.js`
       },
 
       target: isPackage ? 'node' : undefined,
