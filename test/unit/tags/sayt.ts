@@ -400,7 +400,9 @@ suite('gb-sayt', Sayt, ({
       const update = spy((queryObj) => {
         expect(queryObj).to.be.an.instanceof(Query);
         expect(queryObj.raw.query).to.eq(suggestion);
+        expect(queryObj.raw.skip).to.eq(19);
       });
+      flux().query = new Query('black heels').skip(19);
       tag().rewriteQuery = () => expect.fail();
       tag().services = <any>{ url: { isActive: () => true, update } };
       tag()._config = { staticSearch: true };
@@ -470,7 +472,9 @@ suite('gb-sayt', Sayt, ({
         expect(queryObj).to.be.an.instanceof(Query);
         expect(queryObj.raw.query).to.eq(suggestion);
         expect(queryObj.raw.refinements).to.eql([refinement(field, value)]);
+        expect(queryObj.raw.skip).to.eq(13);
       });
+      flux().query = new Query('blue heels').skip(13);
       flux().rewrite = (): any => expect.fail();
       tag().services = <any>{ url: { update, isActive: () => true } };
       tag()._config = { staticSearch: true };
@@ -478,6 +482,23 @@ suite('gb-sayt', Sayt, ({
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement: value }
+      }, suggestion);
+
+      expect(update.called).to.be.true;
+    });
+
+    it('should perform a static refinement with only query', () => {
+      const suggestion = 'red heels';
+      const update = spy((queryObj) => {
+        expect(queryObj.raw.query).to.eq(suggestion);
+        expect(queryObj.raw.refinements).to.eql([]);
+      });
+      tag().services = <any>{ url: { update, isActive: () => true } };
+      tag()._config = { staticSearch: true };
+
+      tag().refine(<any>{
+        tagName: 'GB-SAYT-LINK',
+        dataset: { norefine: true }
       }, suggestion);
 
       expect(update.called).to.be.true;
@@ -506,7 +527,9 @@ suite('gb-sayt', Sayt, ({
         expect(queryObj).to.be.an.instanceof(Query);
         expect(queryObj.raw.query).to.eq(suggestion);
         expect(queryObj.raw.refinements).to.eql([refinement(field, value)]);
+        expect(queryObj.raw.skip).to.eq(30);
       });
+      flux().query = new Query('black heels').skip(30);
       tag().services = <any>{ url: { update, isActive: () => true } };
       tag()._config = { staticSearch: true, categoryField: field };
 

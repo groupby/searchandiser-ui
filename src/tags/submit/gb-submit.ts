@@ -40,7 +40,7 @@ export class Submit {
     const inputValue = this.searchBox.value;
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(new Query(inputValue));
+      this.services.url.update(this.flux.query.withQuery(inputValue));
     } else {
       this.flux.reset(inputValue)
         .then(() => this.services.tracker.search());

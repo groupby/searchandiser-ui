@@ -98,10 +98,7 @@ export class Query {
 
   setLocation() {
     if (this.services.url.isActive()) {
-      const query = new FluxQuery()
-        .withConfiguration(this.flux.query.build())
-        .withQuery(this.inputValue());
-      this.services.url.update(query);
+      this.services.url.update(this.flux.query.withQuery(this.inputValue()));
     } else {
       this.flux.reset(this.inputValue());
     }

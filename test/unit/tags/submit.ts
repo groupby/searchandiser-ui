@@ -92,7 +92,9 @@ suite('gb-submit', Submit, ({
       const update = spy((queryObj) => {
         expect(queryObj).to.be.an.instanceof(Query);
         expect(queryObj.raw.query).to.eq(query);
+        expect(queryObj.raw.skip).to.eq(20);
       });
+      flux().query = new Query('other').skip(20);
       tag()._config.staticSearch = true;
       tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{ url: { update, isActive: () => true } };

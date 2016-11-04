@@ -191,9 +191,8 @@ export class Sayt {
     };
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      const query = new FluxQuery(queryString);
-      if (doRefinement) { query.withSelectedRefinements(refinement); }
-      this.services.url.update(query);
+      this.services.url.update(this.flux.query.withQuery(queryString)
+        .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] }));
     } else if (doRefinement) {
       this.flux.rewrite(queryString, { skipSearch: true });
       this.flux.refine(refinement)
@@ -211,7 +210,7 @@ export class Sayt {
     const query = node.dataset['value'];
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(new FluxQuery(query));
+      this.services.url.update(this.flux.query.withQuery(query));
     } else {
       this.rewriteQuery(query);
       this.flux.reset(query)

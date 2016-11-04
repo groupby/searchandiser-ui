@@ -244,22 +244,9 @@ suite('gb-query', Query, ({
   describe('setLocation()', () => {
     it('should call url.update()', () => {
       const query = 'belts';
-      const update = spy((queryObj: FluxQuery) => {
-        expect(queryObj).to.be.an.instanceof(FluxQuery);
-        expect(queryObj.raw.query).to.eq(query);
-      });
-      tag().searchBox = <any>{ value: query };
-      tag().services = <any>{ url: { update, isActive: () => true } };
-
-      tag().setLocation();
-
-      expect(update.called).to.be.true;
-    });
-
-    it('should call url.update() with existing query state', () => {
-      const query = 'belts';
       const fields = ['title', 'id'];
       const update = spy((queryObj: FluxQuery) => {
+        expect(queryObj).to.be.an.instanceof(FluxQuery);
         expect(queryObj.raw.query).to.eq(query);
         expect(queryObj.raw.fields).to.eql(fields);
       });
