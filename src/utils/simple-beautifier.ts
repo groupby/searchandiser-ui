@@ -19,6 +19,7 @@ export class SimpleBeautifier {
 
     if (queryParams.refinements) {
       const refinements = JSON.parse(queryParams.refinements);
+      console.log(refinements);
       if (refinements.length > 0) {
         queryFromUrl.withSelectedRefinements(...refinements);
       }
