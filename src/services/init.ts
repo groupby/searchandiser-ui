@@ -14,6 +14,12 @@ const SERVICES = {
   url: Url
 };
 
+const CORE_SERVICES = {
+  collections: Collections,
+  filter: Filter,
+  tracker: Tracker
+};
+
 export interface Services {
   collections: Collections;
   filter: Filter;
@@ -26,8 +32,10 @@ export interface Service {
   new (flux: FluxCapacitor, config: SearchandiserConfig, services: { [name: string]: any }): { init: () => null };
 }
 
+type ServiceMap = { [name: string]: Service };
+
 export function initServices(flux: FluxCapacitor, config: SearchandiserConfig) {
-  const servicesConstructors: { [name: string]: Service } = Object.assign({}, SERVICES, config.services || {});
+  const servicesConstructors: ServiceMap = Object.assign({}, SERVICES, config.services || {}, CORE_SERVICES);
   const services: Services = <any>{};
 
   for (let key of Object.keys(servicesConstructors)) {

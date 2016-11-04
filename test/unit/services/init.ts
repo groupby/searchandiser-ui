@@ -12,6 +12,11 @@ describe('service initializer', () => {
   afterEach(() => sandbox.restore());
 
   describe('initServices()', () => {
+    function Thing() {
+      this.init = () => null;
+      return this;
+    }
+
     it('should initialize all services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
 
@@ -25,10 +30,6 @@ describe('service initializer', () => {
 
     it('should include client services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
-      function Thing() {
-        this.init = () => null;
-        return this;
-      }
 
       const services: any = initServices(flux, <any>{
         customerId: 'test',
@@ -41,10 +42,6 @@ describe('service initializer', () => {
 
     it('should override default services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
-      function Thing() {
-        this.init = () => null;
-        return this;
-      }
 
       const services = initServices(flux, <any>{
         customerId: 'test',
@@ -53,6 +50,18 @@ describe('service initializer', () => {
       });
 
       expect(services.url).to.be.an.instanceof(Thing);
+    });
+
+    it('should not override core services', () => {
+      const flux: any = { on: () => null, search: () => Promise.resolve() };
+
+      const services = initServices(flux, <any>{
+        customerId: 'test',
+        area: 'other',
+        services: { collections: Thing }
+      });
+
+      expect(services.collections).to.be.an.instanceof(Collections);
     });
   });
 
