@@ -3,7 +3,7 @@ import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Events } from 'groupby-api';
+import { Events, Query as FluxQuery } from 'groupby-api';
 
 suite('gb-query', Query, ({
   tag, flux, spy, stub,
@@ -244,13 +244,32 @@ suite('gb-query', Query, ({
   describe('setLocation()', () => {
     it('should call url.update()', () => {
       const query = 'belts';
-      const update = spy();
+      const update = spy((queryObj: FluxQuery) => {
+        expect(queryObj).to.be.an.instanceof(FluxQuery);
+        expect(queryObj.raw.query).to.eq(query);
+      });
       tag().searchBox = <any>{ value: query };
       tag().services = <any>{ url: { update, isActive: () => true } };
 
       tag().setLocation();
 
-      expect(update.calledWith(query)).to.be.true;
+      expect(update.called).to.be.true;
+    });
+
+    it('should call url.update() with existing query state', () => {
+      const query = 'belts';
+      const fields = ['title', 'id'];
+      const update = spy((queryObj: FluxQuery) => {
+        expect(queryObj.raw.query).to.eq(query);
+        expect(queryObj.raw.fields).to.eql(fields);
+      });
+      flux().query = new FluxQuery('shoes').withFields(...fields);
+      tag().searchBox = <any>{ value: query };
+      tag().services = <any>{ url: { update, isActive: () => true } };
+
+      tag().setLocation();
+
+      expect(update.called).to.be.true;
     });
 
     it('should call flux.reset()', () => {

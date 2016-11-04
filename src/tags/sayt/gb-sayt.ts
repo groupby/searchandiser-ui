@@ -3,7 +3,7 @@ import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
-import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
+import { Events, Navigation, Record, SelectedValueRefinement, Query as FluxQuery } from 'groupby-api';
 import escapeStringRegexp = require('escape-string-regexp');
 
 export interface SaytConfig {
@@ -180,7 +180,7 @@ export class Sayt {
     return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
   }
 
-  refine(node: HTMLElement, query: string) {
+  refine(node: HTMLElement, queryString: string) {
     while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
 
     const doRefinement = !node.dataset['norefine'];
@@ -191,13 +191,15 @@ export class Sayt {
     };
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(query, doRefinement ? [refinement] : []);
+      const query = new FluxQuery(queryString);
+      if (doRefinement) { query.withSelectedRefinements(refinement); }
+      this.services.url.update(query);
     } else if (doRefinement) {
-      this.flux.rewrite(query, { skipSearch: true });
+      this.flux.rewrite(queryString, { skipSearch: true });
       this.flux.refine(refinement)
         .then(() => this.services.tracker.sayt());
     } else {
-      this.flux.reset(query)
+      this.flux.reset(queryString)
         .then(() => this.services.tracker.sayt());
     }
   }
@@ -209,7 +211,7 @@ export class Sayt {
     const query = node.dataset['value'];
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(query, []);
+      this.services.url.update(new FluxQuery(query));
     } else {
       this.rewriteQuery(query);
       this.flux.reset(query)

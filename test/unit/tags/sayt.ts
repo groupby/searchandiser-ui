@@ -4,7 +4,7 @@ import * as utils from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Events } from 'groupby-api';
+import { Events, Query } from 'groupby-api';
 
 suite('gb-sayt', Sayt, ({
   flux, tag, spy, stub,
@@ -397,7 +397,10 @@ suite('gb-sayt', Sayt, ({
 
     it('should perform a static search', () => {
       const suggestion = 'red heels';
-      const update = spy();
+      const update = spy((queryObj) => {
+        expect(queryObj).to.be.an.instanceof(Query);
+        expect(queryObj.raw.query).to.eq(suggestion);
+      });
       tag().rewriteQuery = () => expect.fail();
       tag().services = <any>{ url: { isActive: () => true, update } };
       tag()._config = { staticSearch: true };
@@ -409,7 +412,7 @@ suite('gb-sayt', Sayt, ({
         }
       });
 
-      expect(update.calledWith(suggestion, [])).to.be.true;
+      expect(update.called).to.be.true;
     });
   });
 
@@ -463,7 +466,11 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const field = 'size';
       const value = 8;
-      const update = spy();
+      const update = spy((queryObj) => {
+        expect(queryObj).to.be.an.instanceof(Query);
+        expect(queryObj.raw.query).to.eq(suggestion);
+        expect(queryObj.raw.refinements).to.eql([refinement(field, value)]);
+      });
       flux().rewrite = (): any => expect.fail();
       tag().services = <any>{ url: { update, isActive: () => true } };
       tag()._config = { staticSearch: true };
@@ -473,7 +480,7 @@ suite('gb-sayt', Sayt, ({
         dataset: { field, refinement: value }
       }, suggestion);
 
-      expect(update.calledWith(suggestion, [refinement(field, value)])).to.be.true;
+      expect(update.called).to.be.true;
     });
 
     it('should perform refinement using configured category field', (done) => {
@@ -495,7 +502,11 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const value = 8;
       const field = 'size';
-      const update = spy();
+      const update = spy((queryObj) => {
+        expect(queryObj).to.be.an.instanceof(Query);
+        expect(queryObj.raw.query).to.eq(suggestion);
+        expect(queryObj.raw.refinements).to.eql([refinement(field, value)]);
+      });
       tag().services = <any>{ url: { update, isActive: () => true } };
       tag()._config = { staticSearch: true, categoryField: field };
 
@@ -504,7 +515,7 @@ suite('gb-sayt', Sayt, ({
         dataset: { refinement: value }
       }, suggestion);
 
-      expect(update.calledWith(suggestion, [refinement(field, value)])).to.be.true;
+      expect(update.called).to.be.true;
     });
   });
 

@@ -50,7 +50,6 @@ export class Url {
     return LOCATION.pathname() !== this.urlConfig.searchUrl;
   }
 
-  // TODO: better way to do this is with browser history rewrites
   update(query: Query) {
     const url = (this.beautify ? this.beautifier : this.simple).build(query);
 
@@ -65,6 +64,7 @@ export class Url {
     return beautifier.parse(LOCATION.href());
   }
 
+  // TODO: better way to do this is with browser history rewrites
   static setLocation(url: string, config: UrlConfig) {
     if (LOCATION.pathname() === config.searchUrl) {
       LOCATION.setSearch(`?${parseUri(url).query}`);

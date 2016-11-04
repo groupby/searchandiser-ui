@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG, Submit } from '../../../src/tags/submit/gb-submit';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
+import { Query } from 'groupby-api';
 
 suite('gb-submit', Submit, ({
   flux, tag, spy, stub,
@@ -88,14 +89,17 @@ suite('gb-submit', Submit, ({
 
     it('should submit static query', () => {
       const query = 'something';
-      const update = spy();
+      const update = spy((queryObj) => {
+        expect(queryObj).to.be.an.instanceof(Query);
+        expect(queryObj.raw.query).to.eq(query);
+      });
       tag()._config.staticSearch = true;
       tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{ url: { update, isActive: () => true } };
 
       tag().submitQuery();
 
-      expect(update.calledWith(query, [])).to.be.true;
+      expect(update.called).to.be.true;
     });
   });
 });

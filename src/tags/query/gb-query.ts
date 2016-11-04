@@ -3,7 +3,7 @@ import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
 import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
-import { Events } from 'groupby-api';
+import { Events, Query as FluxQuery } from 'groupby-api';
 import * as riot from 'riot';
 
 const KEY_ENTER = 13;
@@ -98,7 +98,10 @@ export class Query {
 
   setLocation() {
     if (this.services.url.isActive()) {
-      this.services.url.update(this.inputValue());
+      const query = new FluxQuery()
+        .withConfiguration(this.flux.query.build())
+        .withQuery(this.inputValue());
+      this.services.url.update(query);
     } else {
       this.flux.reset(this.inputValue());
     }

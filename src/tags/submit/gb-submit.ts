@@ -1,5 +1,6 @@
 import { findSearchBox } from '../../utils/common';
 import { FluxTag } from '../tag';
+import { Query } from 'groupby-api';
 import * as riot from 'riot';
 
 export interface SubmitConfig {
@@ -39,7 +40,7 @@ export class Submit {
     const inputValue = this.searchBox.value;
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(inputValue, []);
+      this.services.url.update(new Query(inputValue));
     } else {
       this.flux.reset(inputValue)
         .then(() => this.services.tracker.search());
