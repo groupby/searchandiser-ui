@@ -210,7 +210,8 @@ export class Sayt {
     const query = node.dataset['value'];
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(this.flux.query.withQuery(query));
+      this.services.url.update(this.flux.query.withQuery(query)
+        .withConfiguration(<any>{ refinements: [] }));
     } else {
       this.rewriteQuery(query);
       this.flux.reset(query)

@@ -244,13 +244,15 @@ suite('gb-query', Query, ({
   describe('setLocation()', () => {
     it('should call url.update()', () => {
       const query = 'belts';
-      const fields = ['title', 'id'];
       const update = spy((queryObj: FluxQuery) => {
         expect(queryObj).to.be.an.instanceof(FluxQuery);
         expect(queryObj.raw.query).to.eq(query);
-        expect(queryObj.raw.fields).to.eql(fields);
+        expect(queryObj.raw.refinements).to.eql([]);
+        expect(queryObj.raw.skip).to.eq(19);
       });
-      flux().query = new FluxQuery('shoes').withFields(...fields);
+      flux().query = new FluxQuery('shoes')
+        .withSelectedRefinements({ navigationName: 'brand', type: 'Value', value: 'Nike' })
+        .skip(19);
       tag().searchBox = <any>{ value: query };
       tag().services = <any>{ url: { update, isActive: () => true } };
 

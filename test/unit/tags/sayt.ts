@@ -400,9 +400,12 @@ suite('gb-sayt', Sayt, ({
       const update = spy((queryObj) => {
         expect(queryObj).to.be.an.instanceof(Query);
         expect(queryObj.raw.query).to.eq(suggestion);
+        expect(queryObj.raw.refinements).to.eql([]);
         expect(queryObj.raw.skip).to.eq(19);
       });
-      flux().query = new Query('black heels').skip(19);
+      flux().query = new Query('black heels')
+        .withSelectedRefinements({ navigationName: 'brand', type: 'Value', value: '' })
+        .skip(19);
       tag().rewriteQuery = () => expect.fail();
       tag().services = <any>{ url: { isActive: () => true, update } };
       tag()._config = { staticSearch: true };
