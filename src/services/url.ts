@@ -46,20 +46,13 @@ export class Url {
     }
   }
 
-  active() {
+  isActive() {
     return LOCATION.pathname() !== this.urlConfig.searchUrl;
   }
 
   // TODO: better way to do this is with browser history rewrites
-  update(query: string, refinements: any[] = this.flux.query.raw.refinements) {
-    const queryObj = new Query(query).withSelectedRefinements(...refinements);
-
-    let url;
-    if (this.beautify) {
-      url = this.beautifier.build(queryObj);
-    } else {
-      url = this.simple.build(queryObj);
-    }
+  update(query: Query) {
+    const url = (this.beautify ? this.beautifier : this.simple).build(query);
 
     Url.setLocation(url, this.urlConfig);
   }

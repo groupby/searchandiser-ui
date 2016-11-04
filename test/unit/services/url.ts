@@ -99,7 +99,7 @@ suite('url', ({ spy, stub }) => {
       const pathname = stub(LOCATION, 'pathname').returns('/my/path');
       const service = new Url(<any>{}, config, <any>{});
 
-      expect(service.active()).to.be.true;
+      expect(service.isActive()).to.be.true;
       expect(pathname.called).to.be.true;
     });
 
@@ -108,84 +108,42 @@ suite('url', ({ spy, stub }) => {
       const pathname = stub(LOCATION, 'pathname').returns(searchUrl);
       const service = new Url(<any>{}, <any>{ url: { searchUrl } }, <any>{});
 
-      expect(service.active()).to.be.false;
+      expect(service.isActive()).to.be.false;
       expect(pathname.called).to.be.true;
     });
   });
 
   describe('update()', () => {
     describe('simple', () => {
-      it('should build query using simple beautifier', () => {
-        const newQuery = 'red shoes';
+      it('should update location using simple beautifier', () => {
+        const query = new Query('red shoes').withSelectedRefinements(<any>{ a: 'b' });
         const newUrl = 'example.com';
-        const refinements = [{ a: 'b' }];
-        const mockFlux: any = { query: { raw: { refinements } } };
-        const config: any = { url: { c: 'd' } };
         const setLocation = stub(Url, 'setLocation');
-        const urlService = new Url(mockFlux, config, <any>{});
-        urlService.simple = <any>{
-          build: (query) => {
-            expect(query).to.be.an.instanceof(Query);
-            expect(query.raw.query).to.eq(newQuery);
-            expect(query.raw.refinements).to.eql(refinements);
-            return newUrl;
-          }
-        };
-
-        urlService.update(newQuery);
-
-        expect(setLocation.calledWith(newUrl, { c: 'd' })).to.be.true;
-      });
-
-      it('should update location using simple beautifier with refinements', () => {
-        const refinements = [{ a: 'b' }];
-        const setLocation = stub(Url, 'setLocation');
-        const urlService = new Url(<any>{ query: { raw: { refinements: [] } } }, <any>{ url: {} }, <any>{});
-        const build = spy(({ raw }) => expect(raw.refinements).to.eql(refinements));
+        const urlService = new Url(<any>{}, <any>{ url: {} }, <any>{});
+        const build = spy(() => newUrl);
         urlService.simple = <any>{ build };
 
-        urlService.update('red shoes', refinements);
+        urlService.update(query);
 
-        expect(setLocation.called).to.be.true;
-        expect(build.called).to.be.true;
+        expect(setLocation.calledWith(newUrl)).to.be.true;
+        expect(build.calledWith(query)).to.be.true;
       });
     });
 
     describe('beautified', () => {
-      it('should build update location using beautifier', () => {
-        const newQuery = 'query';
-        const newUrl = 'example.com';
-        const refinements = [{ a: 'b' }];
-        const mockFlux: any = { query: { raw: { refinements } } };
-        const config: any = { url: { beautifier: true } };
-        const setLocation = stub(Url, 'setLocation');
-        const urlService = new Url(mockFlux, config, <any>{});
-        urlService.beautifier = <any>{
-          build: (query: Query) => {
-            expect(query).to.be.an.instanceof(Query);
-            expect(query.raw.query).to.eq(newQuery);
-            expect(query.raw.refinements).to.eql(refinements);
-            return newUrl;
-          }
-        };
-
-        urlService.update(newQuery);
-
-        expect(setLocation.calledWith(newUrl, { beautifier: true })).to.be.true;
-      });
-
       it('should update location using beautifier with refinements', () => {
-        const refinements = [{ a: 'b' }];
+        const query = new Query('red shoes').withSelectedRefinements(<any>{ a: 'b' });
+        const newUrl = 'example.com';
         const config: any = { url: { beautifier: true } };
         const setLocation = stub(Url, 'setLocation');
-        const urlService = new Url(<any>{ query: { raw: { refinements: [] } } }, config, <any>{});
-        const build = spy(({ raw }) => expect(raw.refinements).to.eql(refinements));
+        const urlService = new Url(<any>{}, config, <any>{});
+        const build = spy(() => newUrl);
         urlService.beautifier = <any>{ build };
 
-        urlService.update('red shoes', refinements);
+        urlService.update(query);
 
-        expect(setLocation.called).to.be.true;
-        expect(build.called).to.be.true;
+        expect(setLocation.calledWith(newUrl)).to.be.true;
+        expect(build.calledWith(query)).to.be.true;
       });
     });
   });

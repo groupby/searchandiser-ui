@@ -38,7 +38,7 @@ export class Submit {
   submitQuery() {
     const inputValue = this.searchBox.value;
 
-    if (this._config.staticSearch && this.services.url.active()) {
+    if (this._config.staticSearch && this.services.url.isActive()) {
       this.services.url.update(inputValue, []);
     } else {
       this.flux.reset(inputValue)

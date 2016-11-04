@@ -91,7 +91,7 @@ suite('gb-submit', Submit, ({
       const update = spy();
       tag()._config.staticSearch = true;
       tag().searchBox = <HTMLInputElement>{ value: query };
-      tag().services = <any>{ url: { update, active: () => true } };
+      tag().services = <any>{ url: { update, isActive: () => true } };
 
       tag().submitQuery();
 

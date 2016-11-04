@@ -399,7 +399,7 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const update = spy();
       tag().rewriteQuery = () => expect.fail();
-      tag().services = <any>{ url: { active: () => true, update } };
+      tag().services = <any>{ url: { isActive: () => true, update } };
       tag()._config = { staticSearch: true };
 
       tag().search(<any>{
@@ -465,7 +465,7 @@ suite('gb-sayt', Sayt, ({
       const value = 8;
       const update = spy();
       flux().rewrite = (): any => expect.fail();
-      tag().services = <any>{ url: { update, active: () => true } };
+      tag().services = <any>{ url: { update, isActive: () => true } };
       tag()._config = { staticSearch: true };
 
       tag().refine(<any>{
@@ -496,7 +496,7 @@ suite('gb-sayt', Sayt, ({
       const value = 8;
       const field = 'size';
       const update = spy();
-      tag().services = <any>{ url: { update, active: () => true } };
+      tag().services = <any>{ url: { update, isActive: () => true } };
       tag()._config = { staticSearch: true, categoryField: field };
 
       tag().refine(<any>{

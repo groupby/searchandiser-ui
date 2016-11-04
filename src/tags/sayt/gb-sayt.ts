@@ -190,7 +190,7 @@ export class Sayt {
       type: 'Value'
     };
 
-    if (this._config.staticSearch && this.services.url.active()) {
+    if (this._config.staticSearch && this.services.url.isActive()) {
       this.services.url.update(query, doRefinement ? [refinement] : []);
     } else if (doRefinement) {
       this.flux.rewrite(query, { skipSearch: true });
@@ -208,7 +208,7 @@ export class Sayt {
 
     const query = node.dataset['value'];
 
-    if (this._config.staticSearch && this.services.url.active()) {
+    if (this._config.staticSearch && this.services.url.isActive()) {
       this.services.url.update(query, []);
     } else {
       this.rewriteQuery(query);

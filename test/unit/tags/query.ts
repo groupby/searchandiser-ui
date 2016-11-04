@@ -246,7 +246,7 @@ suite('gb-query', Query, ({
       const query = 'belts';
       const update = spy();
       tag().searchBox = <any>{ value: query };
-      tag().services = <any>{ url: { update, active: () => true } };
+      tag().services = <any>{ url: { update, isActive: () => true } };
 
       tag().setLocation();
 
@@ -257,7 +257,7 @@ suite('gb-query', Query, ({
       const query = 'scarf';
       const reset = stub(flux(), 'reset');
       tag().searchBox = <any>{ value: query };
-      tag().services = <any>{ url: { active: () => false } };
+      tag().services = <any>{ url: { isActive: () => false } };
 
       tag().setLocation();
 
