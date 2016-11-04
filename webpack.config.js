@@ -100,7 +100,7 @@ switch (process.env.NODE_ENV) {
   case 'production':
     isProd = true;
   case 'package':
-    isPackage = true;
+    isPackage = !isProd;
   default:
     return module.exports = {
       resolve: resolve(),
@@ -109,7 +109,7 @@ switch (process.env.NODE_ENV) {
 
       output: {
         path: './dist',
-        filename: isPackage && !isProd ? 'index.js' : `${pjson.name}-${pjson.version}${isProd ? '.min' : ''}.js`
+        filename: isPackage ? 'index.js' : `${pjson.name}-${pjson.version}${isProd ? '.min' : ''}.js`
       },
 
       target: isPackage ? 'node' : undefined,
