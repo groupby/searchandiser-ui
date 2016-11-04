@@ -1,4 +1,4 @@
-import { initServices } from './services/init';
+import { initServices, Service } from './services/init';
 import { TrackerConfig } from './services/tracker';
 import { UrlConfig } from './services/url';
 import { BreadcrumbsConfig } from './tags/breadcrumbs/gb-breadcrumbs';
@@ -85,11 +85,14 @@ export interface BridgeConfig extends FluxBridgeConfig {
 }
 
 export interface SearchandiserConfig {
+  customerId: string;
+  structure: ProductStructure;
+
+  // services
   bridge?: BridgeConfig;
   url?: UrlConfig;
   tracker?: TrackerConfig;
 
-  customerId: string;
   area?: string;
   collection?: string;
   customUrlParams?: any[];
@@ -98,7 +101,7 @@ export interface SearchandiserConfig {
   pageSize?: number;
   pageSizes?: number[];
   sort?: Sort[];
-  tags: {
+  tags?: {
     breadcrumbs?: BreadcrumbsConfig;
     collections?: CollectionsConfig;
     details?: DetailsConfig;
@@ -111,7 +114,7 @@ export interface SearchandiserConfig {
     sort?: SortConfig;
     submit?: SubmitConfig;
   };
+  services?: { [name: string]: Service };
   stylish?: boolean;
   initialSearch?: boolean;
-  structure: ProductStructure;
 }

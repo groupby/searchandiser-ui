@@ -97,8 +97,9 @@ export class Query {
   }
 
   setLocation() {
-    if (this.services.url.active()) {
-      this.services.url.update(this.inputValue());
+    if (this.services.url.isActive()) {
+      this.services.url.update(this.flux.query.withQuery(this.inputValue())
+        .withConfiguration(<any>{ refinements: [] }));
     } else {
       this.flux.reset(this.inputValue());
     }

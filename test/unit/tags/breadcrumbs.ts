@@ -46,7 +46,11 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>{ selectedNavigation });
 
-      expect(update.calledWith({ originalQuery: undefined, selected: selectedNavigation, correctedQuery: undefined })).to.be.true;
+      expect(update.calledWith({
+        originalQuery: undefined,
+        selected: selectedNavigation,
+        correctedQuery: undefined
+      })).to.be.true;
     });
 
     it('should update correctedQuery', () => {

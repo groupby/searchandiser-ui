@@ -38,8 +38,9 @@ export class Submit {
   submitQuery() {
     const inputValue = this.searchBox.value;
 
-    if (this._config.staticSearch && this.services.url.active()) {
-      this.services.url.update(inputValue, []);
+    if (this._config.staticSearch && this.services.url.isActive()) {
+      this.services.url.update(this.flux.query.withQuery(inputValue)
+        .withConfiguration(<any>{ refinements: [] }));
     } else {
       this.flux.reset(inputValue)
         .then(() => this.services.tracker.search());

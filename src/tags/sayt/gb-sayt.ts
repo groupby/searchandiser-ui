@@ -180,7 +180,7 @@ export class Sayt {
     return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
   }
 
-  refine(node: HTMLElement, query: string) {
+  refine(node: HTMLElement, queryString: string) {
     while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
 
     const doRefinement = !node.dataset['norefine'];
@@ -190,14 +190,15 @@ export class Sayt {
       type: 'Value'
     };
 
-    if (this._config.staticSearch && this.services.url.active()) {
-      this.services.url.update(query, doRefinement ? [refinement] : []);
+    if (this._config.staticSearch && this.services.url.isActive()) {
+      this.services.url.update(this.flux.query.withQuery(queryString)
+        .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] }));
     } else if (doRefinement) {
-      this.flux.rewrite(query, { skipSearch: true });
+      this.flux.rewrite(queryString, { skipSearch: true });
       this.flux.refine(refinement)
         .then(() => this.services.tracker.sayt());
     } else {
-      this.flux.reset(query)
+      this.flux.reset(queryString)
         .then(() => this.services.tracker.sayt());
     }
   }
@@ -208,8 +209,9 @@ export class Sayt {
 
     const query = node.dataset['value'];
 
-    if (this._config.staticSearch && this.services.url.active()) {
-      this.services.url.update(query, []);
+    if (this._config.staticSearch && this.services.url.isActive()) {
+      this.services.url.update(this.flux.query.withQuery(query)
+        .withConfiguration(<any>{ refinements: [] }));
     } else {
       this.rewriteQuery(query);
       this.flux.reset(query)

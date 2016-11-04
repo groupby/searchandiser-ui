@@ -12,6 +12,11 @@ describe('service initializer', () => {
   afterEach(() => sandbox.restore());
 
   describe('initServices()', () => {
+    function Thing() {
+      this.init = () => null;
+      return this;
+    }
+
     it('should initialize all services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
 
@@ -20,6 +25,42 @@ describe('service initializer', () => {
       expect(services.filter).to.be.an.instanceof(Filter);
       expect(services.redirect).to.be.an.instanceof(Redirect);
       expect(services.url).to.be.an.instanceof(Url);
+      expect(services.collections).to.be.an.instanceof(Collections);
+    });
+
+    it('should include client services', () => {
+      const flux: any = { on: () => null, search: () => Promise.resolve() };
+
+      const services: any = initServices(flux, <any>{
+        customerId: 'test',
+        area: 'other',
+        services: { thing: Thing }
+      });
+
+      expect(services.thing).to.be.an.instanceof(Thing);
+    });
+
+    it('should override default services', () => {
+      const flux: any = { on: () => null, search: () => Promise.resolve() };
+
+      const services = initServices(flux, <any>{
+        customerId: 'test',
+        area: 'other',
+        services: { url: Thing }
+      });
+
+      expect(services.url).to.be.an.instanceof(Thing);
+    });
+
+    it('should not override core services', () => {
+      const flux: any = { on: () => null, search: () => Promise.resolve() };
+
+      const services = initServices(flux, <any>{
+        customerId: 'test',
+        area: 'other',
+        services: { collections: Thing }
+      });
+
       expect(services.collections).to.be.an.instanceof(Collections);
     });
   });
@@ -32,6 +73,14 @@ describe('service initializer', () => {
       startServices(services);
 
       expect(init.callCount).to.eq(3);
+    });
+
+    it('should skip failed services', () => {
+      const init = sinon.spy();
+
+      startServices({ a: null, b: undefined, c: { init } });
+
+      expect(init.callCount).to.eq(1);
     });
   });
 });
