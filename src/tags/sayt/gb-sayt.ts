@@ -3,7 +3,7 @@ import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
-import { Events, Navigation, Record, SelectedValueRefinement, Query as FluxQuery } from 'groupby-api';
+import { Events, Navigation, Query as FluxQuery, Record, SelectedValueRefinement } from 'groupby-api';
 import escapeStringRegexp = require('escape-string-regexp');
 
 export interface SaytConfig {
