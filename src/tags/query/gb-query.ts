@@ -1,7 +1,6 @@
 import { findTag } from '../../utils/common';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
-import '../sayt/gb-sayt.tag.html';
 import { FluxTag } from '../tag';
 import { Events } from 'groupby-api';
 import * as riot from 'riot';
