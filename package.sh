@@ -15,13 +15,9 @@ npm run 'ts:build' >> package.log
 # -- RIOT TAGS --
 echo '== processing riot tags files' | tee -a package.log
 
-# compile riot tags to es6
-echo ' |-- compiling tags to es6' | tee -a package.log
+# compile riot tags to es5
+echo ' |-- compiling tags to es5' | tee -a package.log
 npm run 'riot:build' >> package.log
-
-# transpile es6 tags to es5
-echo ' |-- transpiling tags to es5' | tee -a package.log
-npm run 'riot:babel' >> package.log
 
 # remove references to .tag.html files
 echo ' |-- updating require statements for tags' | tee -a package.log
@@ -31,7 +27,7 @@ sed -i.bak 's/\.png/\.datauri/g' dist/src/tags/**/*.js
 # add riot to tag files
 echo ' `-- adding riot import to tags' | tee -a package.log
 for i in dist/src/tags/**/*.tag.js; do
-  sed -i.bak $'2s/^/var riot = require("riot");\\\n/' $i
+  sed -i.bak $'1s/^/var riot = require("riot");\\\n/' $i
 done
 
 # -- IMAGES --
