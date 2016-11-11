@@ -75,7 +75,7 @@ export class Searchandiser {
   }
 
   private riotTagName(tagName: string) {
-    return tagName.startsWith('gb-') ? tagName : `gb-${tagName}`;
+    return tagName.startsWith('gb-') || !this.config.simpleAttach ? tagName : `gb-${tagName}`;
   }
 }
 
@@ -117,4 +117,5 @@ export interface SearchandiserConfig {
   services?: { [name: string]: Service };
   stylish?: boolean;
   initialSearch?: boolean;
+  simpleAttach?: boolean;
 }

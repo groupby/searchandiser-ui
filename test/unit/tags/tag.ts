@@ -47,6 +47,22 @@ describe('base tag logic', () => {
       expect(tag._camelTagName).to.not.be.ok;
     });
 
+    it('should fall back to root.tagName', () => {
+      const tag: FluxTag<any> = <any>{
+        root: {
+          tagName: 'MY-SOME-NAME',
+          dataset: {},
+          getAttribute: () => null
+        }
+      };
+
+      setTagName(tag);
+
+      expect(tag._tagName).to.eq('my-some-name');
+      expect(tag._simpleTagName).to.eq('some-name');
+      expect(tag._camelTagName).to.eq('someName');
+    });
+
     it('should set tag names from root.tagName', () => {
       const tag: FluxTag<any> = <any>{
         root: {
@@ -65,8 +81,9 @@ describe('base tag logic', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'SOMENAME',
-          dataset: {},
-          getAttribute: () => 'gb-test-tag'
+          dataset: {
+            is: 'gb-test-tag'
+          }
         }
       };
 
@@ -75,6 +92,24 @@ describe('base tag logic', () => {
       expect(tag._tagName).to.eq('gb-test-tag');
       expect(tag._simpleTagName).to.eq('test-tag');
       expect(tag._camelTagName).to.eq('testTag');
+    });
+
+    it('should set tag names from riot-tag', () => {
+      const getAttribute = sinon.spy(() => 'gb-test-tag');
+      const tag: FluxTag<any> = <any>{
+        root: {
+          tagName: 'SOMENAME',
+          dataset: {},
+          getAttribute
+        }
+      };
+
+      setTagName(tag);
+
+      expect(tag._tagName).to.eq('gb-test-tag');
+      expect(tag._simpleTagName).to.eq('test-tag');
+      expect(tag._camelTagName).to.eq('testTag');
+      expect(getAttribute.calledWith('riot-tag')).to.be.true;
     });
   });
 

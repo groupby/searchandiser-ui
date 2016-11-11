@@ -79,13 +79,15 @@ export class SaytTag<T> {
 
 export function setTagName(tag: FluxTag<any>) {
   const htmlTagName = tag.root.tagName.toLowerCase();
-  const tagName = htmlTagName.startsWith('gb-') ?
-    htmlTagName :
-    tag.root.dataset['is'] || tag.root.getAttribute('riot-tag');
+  let tagName = htmlTagName;
+
+  if (htmlTagName.indexOf('-') === -1) {
+    tagName = tag.root.dataset['is'] || tag.root.getAttribute('riot-tag');
+  }
 
   if (tagName) {
     tag._tagName = tagName;
-    tag._simpleTagName = tag._tagName.replace(/^gb-/, '');
+    tag._simpleTagName = tag._tagName.replace(/^[a-z]*?-/, '');
     tag._camelTagName = tag._simpleTagName.replace(/-([a-z])/g, (match) => match[1].toUpperCase());
   }
 }

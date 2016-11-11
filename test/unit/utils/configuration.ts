@@ -112,6 +112,7 @@ describe('Configuration', () => {
       it('should override defaults', () => {
         const originalConfig: any = {
           initialSearch: false,
+          simpleAttach: false,
           url: {
             queryParam: 'query',
             searchUrl: '/productSearch'
@@ -129,14 +130,7 @@ describe('Configuration', () => {
 
         const config = Configuration.applyDefaults(originalConfig, DEFAULT_CONFIG);
 
-        expect(config).to.eql({
-          initialSearch: true,
-          url: {
-            queryParam: 'query',
-            searchUrl: '/productSearch'
-          },
-          pageSizes
-        });
+        expect(config.pageSizes).to.eq(pageSizes);
       });
     });
 

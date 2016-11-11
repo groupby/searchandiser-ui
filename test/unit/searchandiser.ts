@@ -38,58 +38,62 @@ describe('searchandiser', () => {
     });
   });
 
-  describe('attach logic', () => {
+  describe('attach()', () => {
     it('should mount tag with full name', () => {
       const tagName = 'gb-my-tag';
-      const stub = sandbox.stub(riot, 'mount', (tag, opts) => {
-        expect(tag).to.eq(tagName);
-        expect(opts).to.eql({});
-      });
+      const mount = sandbox.stub(riot, 'mount');
 
       const tags = searchandiser.attach(tagName);
 
       expect(tags).to.be.null;
-      expect(stub.called).to.be.true;
+      expect(mount.calledWith(tagName, {})).to.be.true;
+    });
+
+    it('should mount tag with custom name', () => {
+      const tagName = 'my-tag';
+      const mount = sandbox.stub(riot, 'mount');
+
+      searchandiser.attach(tagName);
+
+      expect(mount.calledWith(tagName)).to.be.true;
     });
 
     it('should mount tag with simple name', () => {
-      const stub = sandbox.stub(riot, 'mount', (tag) => expect(tag).to.eq('gb-my-tag'));
+      const mount = sandbox.stub(riot, 'mount');
+      searchandiser.config.simpleAttach = true;
 
       searchandiser.attach('my-tag');
 
-      expect(stub.called).to.be.true;
+      expect(mount.calledWith('gb-my-tag')).to.be.true;
     });
 
     it('should mount tag with opts', () => {
       const tagName = 'gb-my-tag';
       const options = { a: 'b', c: 'd' };
-      const stub = sandbox.stub(riot, 'mount', (tag, opts) => expect(opts).to.eq(options));
+      const mount = sandbox.stub(riot, 'mount');
 
       searchandiser.attach(tagName, options);
 
-      expect(stub.called).to.be.true;
+      expect(mount.calledWith(tagName, options)).to.be.true;
     });
 
     it('should mount with CSS selector', () => {
       const tagName = 'gb-my-tag';
       const css = '.gb-my.tag';
-      const stub = sandbox.stub(riot, 'mount', (cssSelector, tag, opts) => {
-        expect(cssSelector).to.eq(css);
-        expect(tag).to.eq(tagName);
-      });
+      const mount = sandbox.stub(riot, 'mount');
 
       searchandiser.attach(tagName, css);
 
-      expect(stub.called).to.be.true;
+      expect(mount.calledWith(css, tagName)).to.be.true;
     });
 
     it('should pass options with CSS selector', () => {
       const options = { a: 'b', c: 'd' };
-      const stub = sandbox.stub(riot, 'mount', (tag, cssSelector, opts) => expect(opts).to.eql(options));
+      const mount = sandbox.stub(riot, 'mount', (tag, cssSelector, opts) => expect(opts).to.eql(options));
 
       searchandiser.attach('gb-my-tag', '.gb-my.tag', options);
 
-      expect(stub.called).to.be.true;
+      expect(mount.called).to.be.true;
     });
 
     it('should return a single tag', () => {
@@ -103,41 +107,41 @@ describe('searchandiser', () => {
 
     it('should return a tag array', () => {
       const myTags = [{ a: 'b' }, { c: 'd' }];
-      sandbox.stub(riot, 'mount')
-        .returns(myTags);
+      sandbox.stub(riot, 'mount').returns(myTags);
 
       const tags = searchandiser.attach('gb-my-tag');
       expect(tags).to.eq(myTags);
     });
   });
 
-  it('should call riot.compile()', (done) => {
-    sandbox.stub(riot, 'compile', () => done());
+  describe('compile()', () => {
+    it('should call riot.compile()', (done) => {
+      sandbox.stub(riot, 'compile', () => done());
 
-    searchandiser.compile();
+      searchandiser.compile();
+    });
   });
 
   describe('search()', () => {
     it('should perform a blank search', (done) => {
-      const stub = sandbox.stub(flux, 'search', (query) =>
-        Promise.resolve(expect(query).to.be.undefined));
-      flux.emit = (event, data): any => {
-        expect(event).to.eq('page_changed');
-        expect(data).to.eql({ pageNumber: 1, finalPage: 1 });
-        expect(stub.called).to.be.true;
-        done();
-      };
+      const search = sandbox.stub(flux, 'search').returns(Promise.resolve());
+      const emit = sandbox.stub(flux, 'emit');
 
-      searchandiser.search();
+      searchandiser.search()
+        .then(() => {
+          expect(search.calledWith(undefined)).to.be.true;
+          expect(emit.calledWith('page_changed', { pageNumber: 1, finalPage: 1 })).to.be.true;
+          done();
+        });
     });
 
     it('should perform a search with query', () => {
       const someQuery = 'some query';
-      const stub = sinon.stub(flux, 'search', (query) => Promise.resolve(expect(query).to.eq(someQuery)));
+      const search = sinon.stub(flux, 'search').returns(Promise.resolve());
 
       searchandiser.search(someQuery);
 
-      expect(stub.called).to.be.true;
+      expect(search.calledWith(someQuery)).to.be.true;
     });
   });
 
@@ -151,11 +155,12 @@ describe('searchandiser', () => {
       const mockFlux = { g: 'h' };
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
       sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
+      sandbox.stub(Tags, 'MixinFlux').returns(fluxMixin);
       sandbox.stub(riot, 'mixin');
       sandbox.stub(serviceInitialiser, 'initServices');
-      sandbox.stub(Tags, 'MixinFlux', () => fluxMixin);
 
       const configure = initSearchandiser();
+
       expect(configure).to.be.a('function');
       expect(Object.keys(configure)).to.eql([]);
 
@@ -184,8 +189,8 @@ describe('searchandiser', () => {
       const finalConfig = { customerId, e: 'f' };
       const mockFlux = { g: 'h' };
       const fluxCapacitor = sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
-      sandbox.stub(serviceInitialiser, 'initServices');
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
+      sandbox.stub(serviceInitialiser, 'initServices');
       sandbox.stub(riot, 'mixin');
       sandbox.stub(Tags, 'MixinFlux');
 
