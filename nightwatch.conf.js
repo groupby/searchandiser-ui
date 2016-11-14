@@ -33,9 +33,7 @@ module.exports = {
 
     ci: {
       desiredCapabilities: {
-        browserName: 'phantomjs',
-        javascriptEnabled: true,
-        'phantomjs.binary.path': '/usr/local/bin/phantomjs'
+        browserName: 'firefox'
       }
     }
   }
