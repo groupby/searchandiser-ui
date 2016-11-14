@@ -32,15 +32,12 @@ suite('url', ({ spy, stub }) => {
       it('should parse query from location', (done) => {
         const origConfig: any = { url: { queryParam: 'q' } };
         const query = new Query('test');
-        const parseUrl = stub(Url, 'parseUrl', (beautifier) => {
-          expect(beautifier).to.be.an.instanceof(SimpleBeautifier);
-          return query;
-        });
+        const parseUrl = stub(Url, 'parseUrl').returns(query);
         const flux: any = {
           search: (queryString) => {
             expect(queryString).to.eq('test');
             expect(flux.query).to.eq(query);
-            expect(parseUrl.called).to.be.true;
+            expect(parseUrl).to.have.been.calledWith(sinon.match.instanceOf(SimpleBeautifier));
             done();
           }
         };
@@ -64,15 +61,12 @@ suite('url', ({ spy, stub }) => {
       it('should parse query from beautified location', (done) => {
         const origConfig: any = { url: { beautifier: true } };
         const query = new Query('test');
-        const parseBeautifiedUrl = stub(Url, 'parseBeautifiedUrl', (beautifier) => {
-          expect(beautifier).to.be.an.instanceof(UrlBeautifier);
-          return query;
-        });
+        const parseBeautifiedUrl = stub(Url, 'parseBeautifiedUrl').returns(query);
         const flux: any = {
           search: (queryString) => {
             expect(queryString).to.eq('test');
             expect(flux.query).to.eq(query);
-            expect(parseBeautifiedUrl.called).to.be.true;
+            expect(parseBeautifiedUrl).to.have.been.calledWith(sinon.match.instanceOf(UrlBeautifier));
             done();
           }
         };
@@ -100,7 +94,7 @@ suite('url', ({ spy, stub }) => {
       const service = new Url(<any>{}, config, <any>{});
 
       expect(service.isActive()).to.be.true;
-      expect(pathname.called).to.be.true;
+      expect(pathname).to.have.been.called;
     });
 
     it('should return false', () => {
@@ -109,7 +103,7 @@ suite('url', ({ spy, stub }) => {
       const service = new Url(<any>{}, <any>{ url: { searchUrl } }, <any>{});
 
       expect(service.isActive()).to.be.false;
-      expect(pathname.called).to.be.true;
+      expect(pathname).to.have.been.called;
     });
   });
 
@@ -125,8 +119,8 @@ suite('url', ({ spy, stub }) => {
 
         urlService.update(query);
 
-        expect(setLocation.calledWith(newUrl)).to.be.true;
-        expect(build.calledWith(query)).to.be.true;
+        expect(setLocation).to.have.been.calledWith(newUrl);
+        expect(build).to.have.been.calledWith(query);
       });
     });
 
@@ -142,8 +136,8 @@ suite('url', ({ spy, stub }) => {
 
         urlService.update(query);
 
-        expect(setLocation.calledWith(newUrl)).to.be.true;
-        expect(build.calledWith(query)).to.be.true;
+        expect(setLocation).to.have.been.calledWith(newUrl);
+        expect(build).to.have.been.calledWith(query);
       });
     });
   });
@@ -155,7 +149,7 @@ suite('url', ({ spy, stub }) => {
 
       Url.parseUrl(beautifier);
 
-      expect(parse.calledWith(window.location.href)).to.be.true;
+      expect(parse).to.have.been.calledWith(window.location.href);
     });
   });
 
@@ -166,7 +160,7 @@ suite('url', ({ spy, stub }) => {
 
       Url.parseBeautifiedUrl(beautifier);
 
-      expect(parse.calledWith(window.location.href)).to.be.true;
+      expect(parse).to.have.been.calledWith(window.location.href);
     });
   });
 
@@ -175,7 +169,7 @@ suite('url', ({ spy, stub }) => {
     let pathname: Sinon.SinonStub;
 
     beforeEach(() => pathname = stub(LOCATION, 'pathname').returns(SEARCH_URL));
-    afterEach(() => expect(pathname.called).to.be.true);
+    afterEach(() => expect(pathname).to.have.been.called);
 
     it('should update search', () => {
       const newUrl = 'example.com/search?q=hats';
@@ -183,7 +177,7 @@ suite('url', ({ spy, stub }) => {
 
       Url.setLocation(newUrl, { searchUrl: SEARCH_URL });
 
-      expect(setSearch.calledWith('?q=hats')).to.be.true;
+      expect(setSearch).to.have.been.calledWith('?q=hats');
     });
 
     it('should replace url', () => {
@@ -192,7 +186,7 @@ suite('url', ({ spy, stub }) => {
 
       Url.setLocation(newUrl, { searchUrl: '/search' });
 
-      expect(replace.calledWith(newUrl)).to.be.true;
+      expect(replace).to.have.been.calledWith(newUrl);
     });
   });
 });

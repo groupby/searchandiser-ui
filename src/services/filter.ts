@@ -29,7 +29,7 @@ export class Filter {
       this.fluxClone.query.withSelectedRefinements(...filteredRefinements);
     }
 
-    this.fluxClone.search(searchRequest.query)
+    return this.fluxClone.search(searchRequest.query)
       .then((res) => this.flux.emit(FILTER_UPDATED_EVENT, res));
   }
 

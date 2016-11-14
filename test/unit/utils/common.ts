@@ -173,7 +173,7 @@ describe('utils', () => {
 
       LOCATION.replace(url);
 
-      expect(replace.calledWith(url)).to.be.true;
+      expect(replace).to.have.been.calledWith(url);
     });
 
     it('should call window.location.assign()', () => {
@@ -182,7 +182,7 @@ describe('utils', () => {
 
       LOCATION.assign(url);
 
-      expect(assign.calledWith(url)).to.be.true;
+      expect(assign).to.have.been.calledWith(url);
     });
   });
 });

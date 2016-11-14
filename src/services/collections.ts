@@ -48,7 +48,7 @@ export class Collections {
 
       const promises = this.inProgress = <CancelablePromise<any>>Promise.all(searches);
 
-      promises.then(this.extractCounts)
+      return promises.then(this.extractCounts)
         .then((counts) => {
           if (!promises.cancelled) {
             Object.assign(this.counts, counts);

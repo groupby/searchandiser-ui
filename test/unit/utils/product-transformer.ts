@@ -638,11 +638,7 @@ describe('ProductTransformer', () => {
 
     it('should return a remapped variant when called', () => {
       const originalVariant = { mainColour: 'blue', size: '12.5' };
-      const remappedVariant = { a: 'b', c: 'd' };
-      const stub = sandbox.stub(utils, 'remap', (meta) => {
-        expect(meta).to.eq(originalVariant);
-        return remappedVariant;
-      });
+      const remap = sandbox.stub(utils, 'remap').returns({ a: 'b', c: 'd' });
 
       const mapping = transformer.remapVariant({ price: '$14', brand: 'nike' },
         { colour: 'mainColour', size: 'usSize' });
@@ -655,7 +651,7 @@ describe('ProductTransformer', () => {
         c: 'd'
       });
 
-      expect(stub.called).to.be.true;
+      expect(remap).to.have.been.calledWith(originalVariant);
     });
   });
 

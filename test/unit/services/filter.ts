@@ -70,31 +70,34 @@ suite('filter', ({ spy, stub }) => {
   describe('updateFluxClone()', () => {
     it('should update fluxClone state', (done) => {
       const parentQuery = 'red sneakers';
-      const service = new Filter(<any>{ query: new Query(parentQuery) }, <any>{});
-      const search = stub(service.fluxClone, 'search', () => ({
-        then: (cb) => {
+      const service = new Filter(<any>{
+        emit: () => null,
+        query: new Query(parentQuery)
+      }, <any>{});
+      const search = stub(service.fluxClone, 'search').returns(Promise.resolve());
+
+      service.updateFluxClone()
+        .then(() => {
           expect(service.fluxClone.query.raw.refinements).to.eql([]);
           expect(search.calledWith(parentQuery)).to.be.true;
           done();
-        }
-      }));
-
-      service.updateFluxClone();
+        });
     });
 
     it('should update fluxClone state with refinements', (done) => {
       const parentQuery = 'red sneakers';
       const refinements: any = { a: 'b', c: 'd' };
       const query = new Query(parentQuery).withSelectedRefinements(refinements);
-      const service = new Filter(<any>{ query }, <any>{});
-      const search = stub(service.fluxClone, 'search', () => {
-        expect(service.fluxClone.query.raw.refinements).to.eql([refinements]);
-        expect(search.calledWith(parentQuery)).to.be.true;
-        done();
-      });
+      const service = new Filter(<any>{ emit: () => null, query }, <any>{});
+      const search = stub(service.fluxClone, 'search').returns(Promise.resolve());
       service.isTargetNav = () => false;
 
-      service.updateFluxClone();
+      service.updateFluxClone()
+        .then(() => {
+          expect(service.fluxClone.query.raw.refinements).to.eql([refinements]);
+          expect(search.calledWith(parentQuery)).to.be.true;
+          done();
+        });
     });
 
     it('should emit filter_updated event', () => {
@@ -112,7 +115,7 @@ suite('filter', ({ spy, stub }) => {
 
       service.updateFluxClone();
 
-      expect(emit.calledWith(FILTER_UPDATED_EVENT, result)).to.be.true;
+      expect(emit).to.have.been.calledWith(FILTER_UPDATED_EVENT, result);
     });
   });
 });

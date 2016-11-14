@@ -33,7 +33,7 @@ suite<Sort>('gb-sort', ({ flux, mount, stub, itMountsTag }) => {
       model.options[1].click();
 
       expect(model.clearOption).to.not.be.ok;
-      expect(sort.calledWith({ field: 'title', order: 'Ascending' })).to.be.true;
+      expect(sort).to.have.been.calledWith({ field: 'title', order: 'Ascending' });
     });
   });
 });

@@ -166,7 +166,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
 
         model.refinementLinks()[1].click();
 
-        expect(unrefine.calledWith(refinement)).to.be.true;
+        expect(unrefine).to.have.been.calledWith(refinement);
       });
     });
   });

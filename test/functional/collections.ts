@@ -111,8 +111,8 @@ suite<Collections>('gb-collections', MIXIN, ({
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('.gb-collection')[1]).click();
 
-        expect(onselect.calledWith(COLLECTIONS[1])).to.be.true;
-        expect(switchCollection.calledWith(COLLECTIONS[1])).to.be.true;
+        expect(onselect).to.have.been.calledWith(COLLECTIONS[1]);
+        expect(switchCollection).to.have.been.calledWith(COLLECTIONS[1]);
       });
     });
 
@@ -124,7 +124,7 @@ suite<Collections>('gb-collections', MIXIN, ({
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('gb-collection-dropdown-item a')[1]).click();
 
-        expect(switchCollection.calledWith(OPTIONS[1].value)).to.be.true;
+        expect(switchCollection).to.have.been.calledWith(OPTIONS[1].value);
       });
     });
   });

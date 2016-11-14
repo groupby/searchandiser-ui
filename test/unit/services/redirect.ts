@@ -12,7 +12,7 @@ suite('redirect', ({ stub }) => {
       const service = new Redirect(flux);
 
       expectSubscriptions(() => service.init(), {
-        ['redirect']: null
+        redirect: null
       }, flux);
     });
 
@@ -24,7 +24,7 @@ suite('redirect', ({ stub }) => {
 
       service.init();
 
-      expect(redirect.calledWith(url)).to.be.true;
+      expect(redirect).to.have.been.calledWith(url);
     });
   });
 
@@ -36,7 +36,7 @@ suite('redirect', ({ stub }) => {
 
       service.redirect(url);
 
-      expect(assign.calledWith(url)).to.be.true;
+      expect(assign).to.have.been.calledWith(url);
     });
   });
 });

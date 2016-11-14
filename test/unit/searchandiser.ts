@@ -46,7 +46,7 @@ describe('searchandiser', () => {
       const tags = searchandiser.attach(tagName);
 
       expect(tags).to.be.null;
-      expect(mount.calledWith(tagName, {})).to.be.true;
+      expect(mount).to.have.been.calledWith(tagName, {});
     });
 
     it('should mount tag with custom name', () => {
@@ -55,7 +55,7 @@ describe('searchandiser', () => {
 
       searchandiser.attach(tagName);
 
-      expect(mount.calledWith(tagName)).to.be.true;
+      expect(mount).to.have.been.calledWith(tagName);
     });
 
     it('should mount tag with simple name', () => {
@@ -64,7 +64,7 @@ describe('searchandiser', () => {
 
       searchandiser.attach('my-tag');
 
-      expect(mount.calledWith('gb-my-tag')).to.be.true;
+      expect(mount).to.have.been.calledWith('gb-my-tag');
     });
 
     it('should mount tag with opts', () => {
@@ -74,7 +74,7 @@ describe('searchandiser', () => {
 
       searchandiser.attach(tagName, options);
 
-      expect(mount.calledWith(tagName, options)).to.be.true;
+      expect(mount).to.have.been.calledWith(tagName, options);
     });
 
     it('should mount with CSS selector', () => {
@@ -84,16 +84,16 @@ describe('searchandiser', () => {
 
       searchandiser.attach(tagName, css);
 
-      expect(mount.calledWith(css, tagName)).to.be.true;
+      expect(mount).to.have.been.calledWith(css, tagName);
     });
 
     it('should pass options with CSS selector', () => {
       const options = { a: 'b', c: 'd' };
-      const mount = sandbox.stub(riot, 'mount', (tag, cssSelector, opts) => expect(opts).to.eql(options));
+      const mount = sandbox.stub(riot, 'mount');
 
       searchandiser.attach('gb-my-tag', '.gb-my.tag', options);
 
-      expect(mount.called).to.be.true;
+      expect(mount).to.have.been.calledWith(sinon.match.any, sinon.match.any, options);
     });
 
     it('should return a single tag', () => {
@@ -129,8 +129,8 @@ describe('searchandiser', () => {
 
       searchandiser.search()
         .then(() => {
-          expect(search.calledWith(undefined)).to.be.true;
-          expect(emit.calledWith('page_changed', { pageNumber: 1, finalPage: 1 })).to.be.true;
+          expect(search).to.have.been.calledWith(undefined);
+          expect(emit).to.have.been.calledWith('page_changed', { pageNumber: 1, finalPage: 1 });
           done();
         });
     });
@@ -141,7 +141,7 @@ describe('searchandiser', () => {
 
       searchandiser.search(someQuery);
 
-      expect(search.calledWith(someQuery)).to.be.true;
+      expect(search).to.have.been.calledWith(someQuery);
     });
   });
 
@@ -181,7 +181,7 @@ describe('searchandiser', () => {
       configure(config);
 
       expect(configure['config']).to.eq(finalConfig);
-      expect(configurationStub.calledWith(config)).to.be.true;
+      expect(configurationStub).to.have.been.calledWith(config);
     });
 
     it('should create a new FluxCapacitor on configure()', () => {
@@ -198,7 +198,7 @@ describe('searchandiser', () => {
       configure(<any>{ a: 'b' });
 
       expect(configure['flux']).to.eq(mockFlux);
-      expect(fluxCapacitor.calledWith(customerId, finalConfig, CONFIGURATION_MASK)).to.be.true;
+      expect(fluxCapacitor).to.have.been.calledWith(customerId, finalConfig, CONFIGURATION_MASK);
     });
 
     it('should start the services on configure()', () => {
@@ -227,7 +227,7 @@ describe('searchandiser', () => {
       const mockFlux = { e: 'f' };
       const services = { g: 'h' };
       const riotMixin = sandbox.stub(riot, 'mixin');
-      const fluxMixin = sandbox.stub(Tags, 'MixinFlux', () => mixed);
+      const fluxMixin = sandbox.stub(Tags, 'MixinFlux').returns(mixed);
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
       sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
       sandbox.stub(serviceInitialiser, 'initServices').returns(services);
@@ -235,8 +235,8 @@ describe('searchandiser', () => {
       const configure = initSearchandiser();
       configure(<any>{ i: 'j' });
 
-      expect(riotMixin.calledWith(mixed)).to.be.true;
-      expect(fluxMixin.calledWith(mockFlux, finalConfig, services)).to.be.true;
+      expect(riotMixin).to.have.been.calledWith(mixed);
+      expect(fluxMixin).to.have.been.calledWith(mockFlux, finalConfig, services);
     });
   });
 });

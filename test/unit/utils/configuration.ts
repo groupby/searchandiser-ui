@@ -20,7 +20,7 @@ describe('Configuration', () => {
 
       configuration.apply();
 
-      expect(validate.calledWith(RAW_CONFIG)).to.be.true;
+      expect(validate).to.have.been.calledWith(RAW_CONFIG);
     });
 
     it('should applyDefaults() to rawConfig', () => {
@@ -30,7 +30,7 @@ describe('Configuration', () => {
 
       configuration.apply();
 
-      expect(applyDefaults.calledWith(RAW_CONFIG, DEFAULT_CONFIG)).to.be.true;
+      expect(applyDefaults).to.have.been.calledWith(RAW_CONFIG, DEFAULT_CONFIG);
     });
 
     it('should transform() config and return it', () => {
@@ -43,7 +43,7 @@ describe('Configuration', () => {
       const result = configuration.apply();
 
       expect(result).to.eq(transformed);
-      expect(transform.calledWith(config, configuration.handlers)).to.be.true;
+      expect(transform).to.have.been.calledWith(config, configuration.handlers);
     });
   });
 

@@ -62,7 +62,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.setVisitorInfo();
 
-      expect(setVisitor.calledWith(visitorId, sessionId)).to.be.true;
+      expect(setVisitor).to.have.been.calledWith(visitorId, sessionId);
     });
 
     it('should use cookies', () => {
@@ -74,7 +74,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.setVisitorInfo();
 
-      expect(setVisitor.calledWith(visitorId, sessionId)).to.be.true;
+      expect(setVisitor).to.have.been.calledWith(visitorId, sessionId);
     });
 
     it('should generate ids', () => {
@@ -87,7 +87,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.setVisitorInfo();
 
-      expect(setVisitor.called).to.be.true;
+      expect(setVisitor).to.have.been.called;
     });
 
     it('should set cookies', () => {
@@ -115,7 +115,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.setVisitor(visitorId, sessionId);
 
-      expect(setVisitor.calledWith(visitorId, sessionId)).to.be.true;
+      expect(setVisitor).to.have.been.calledWith(visitorId, sessionId);
     });
   });
 
@@ -129,35 +129,35 @@ suite('tracker', ({ spy, stub }) => {
 
       service.sendSearchEvent();
 
-      expect(sendSearchEvent.calledWith({
+      expect(sendSearchEvent).to.have.been.calledWith({
         search: Object.assign({
           origin: { search: true },
           query: ''
         }, results)
-      })).to.be.true;
+      });
     });
 
     it('should use originalQuery', () => {
       const originalQuery = 'shoes';
       const results = { originalQuery, records: [], a: 'b', c: 'd' };
       const flux: any = { results };
-      const sendSearchEvent = spy((event) => expect(event.search.query).to.eq(originalQuery));
+      const sendSearchEvent = spy();
       const service = new Tracker(flux, TEST_CONFIG);
       service.tracker = <any>{ sendSearchEvent };
 
       service.sendSearchEvent();
 
-      expect(sendSearchEvent.called).to.be.true;
+      expect(sendSearchEvent).to.have.been.calledWithMatch({ search: { query: originalQuery } });
     });
 
     it('should allow overriding the origin', () => {
-      const sendSearchEvent = spy((event) => expect(event.search.origin).to.eql({ dym: true }));
+      const sendSearchEvent = spy();
       const service = new Tracker(<any>{ results: { records: [] } }, TEST_CONFIG);
       service.tracker = <any>{ sendSearchEvent };
 
       service.sendSearchEvent('dym');
 
-      expect(sendSearchEvent.called).to.be.true;
+      expect(sendSearchEvent).to.have.been.calledWithMatch({ search: { origin: { dym: true } } });
     });
 
     it('should remap the record root fields', () => {
@@ -174,21 +174,25 @@ suite('tracker', ({ spy, stub }) => {
           }]
         }
       };
-      const sendSearchEvent = spy((event) => expect(event.search.records).to.eql([{
-        _id: 12,
-        _t: 'Big Shoes',
-        _u: 'http://example.com'
-      }, {
-        _id: 29,
-        _t: 'Small Shoes',
-        _u: 'http://other.ca'
-      }]));
+      const sendSearchEvent = spy();
       const service = new Tracker(flux, TEST_CONFIG);
       service.tracker = <any>{ sendSearchEvent };
 
       service.sendSearchEvent();
 
-      expect(sendSearchEvent.called).to.be.true;
+      expect(sendSearchEvent).to.have.been.calledWithMatch({
+        search: {
+          records: [{
+            _id: 12,
+            _t: 'Big Shoes',
+            _u: 'http://example.com'
+          }, {
+            _id: 29,
+            _t: 'Small Shoes',
+            _u: 'http://other.ca'
+          }]
+        }
+      });
     });
   });
 
@@ -214,14 +218,14 @@ suite('tracker', ({ spy, stub }) => {
 
       service.listenForViewProduct();
 
-      expect(sendViewProductEvent.calledWith({
+      expect(sendViewProductEvent).to.have.been.calledWith({
         product: {
           productId: 125123,
           title: 'Shoes',
           price: 113.49,
           category: 'NONE'
         }
-      })).to.be.true;
+      });
     });
   });
 
@@ -234,7 +238,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.addToCart(event);
 
-      expect(sendAddToCartEvent.calledWith(event)).to.be.true;
+      expect(sendAddToCartEvent).to.have.been.calledWith(event);
     });
   });
 
@@ -247,7 +251,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.order(event);
 
-      expect(sendOrderEvent.calledWith(event)).to.be.true;
+      expect(sendOrderEvent).to.have.been.calledWith(event);
     });
   });
 
@@ -258,7 +262,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.search();
 
-      expect(sendSearchEvent.calledWith()).to.be.true;
+      expect(sendSearchEvent).to.have.been.called;
     });
   });
 
@@ -269,7 +273,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.didYouMean();
 
-      expect(sendSearchEvent.calledWith('dym')).to.be.true;
+      expect(sendSearchEvent).to.have.been.calledWith('dym');
     });
   });
 
@@ -280,7 +284,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.sayt();
 
-      expect(sendSearchEvent.calledWith('sayt')).to.be.true;
+      expect(sendSearchEvent).to.have.been.calledWith('sayt');
     });
   });
 });

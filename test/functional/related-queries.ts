@@ -35,7 +35,7 @@ suite<RelatedQueries>('gb-related-queries', ({ flux, mount, stub, itMountsTag })
 
       model.relatedLinks[1].click();
 
-      expect(rewrite.calledWith(RELATED_QUERIES[1]));
+      expect(rewrite).to.have.been.calledWith(RELATED_QUERIES[1]);
     });
   });
 });

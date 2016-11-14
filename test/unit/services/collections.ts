@@ -59,12 +59,7 @@ suite('collections', ({ spy, stub }) => {
     it('should update collection counts', (done) => {
       const collections = ['a', 'b', 'c'];
       const counts = { a: 10, b: 30, c: 50 };
-      const emit = spy((event, newCounts) => {
-        expect(event).to.eq(COLLECTIONS_UPDATED_EVENT);
-        expect(newCounts).to.eql(counts);
-        expect(service.inProgress).to.be.an.instanceof(Promise);
-        done();
-      });
+      const emit = spy();
       const flux: any = {
         emit,
         query: { raw: { pageSize: 50, fields: ['brand', 'size'] } },
@@ -89,7 +84,12 @@ suite('collections', ({ spy, stub }) => {
         return counts;
       };
 
-      service.updateCollectionCounts();
+      service.updateCollectionCounts()
+        .then(() => {
+          expect(emit).to.have.been.calledWith(COLLECTIONS_UPDATED_EVENT, counts);
+          expect(service.inProgress).to.be.an.instanceof(Promise);
+          done();
+        });
     });
 
     it('should not update collection counts if fetchCounts is false', () => {
@@ -121,7 +121,7 @@ suite('collections', ({ spy, stub }) => {
 
       expect(service.inProgress).to.be.an.instanceof(Promise);
       expect(service.inProgress.cancelled).to.be.undefined;
-      expect(search.called).to.be.true;
+      expect(search).to.have.been.called;
     });
 
     it('should not update results if cancelled', (done) => {
@@ -139,9 +139,9 @@ suite('collections', ({ spy, stub }) => {
       service.updateCollectionCounts();
 
       setTimeout(() => {
-        expect(search.called).to.be.true;
-        expect(extractCounts.called).to.be.true;
-        expect(flux.emit.called).to.be.false;
+        expect(search).to.have.been.called;
+        expect(extractCounts).to.have.been.called;
+        expect(flux.emit).to.not.have.been.called;
         done();
       }, 100);
     });
@@ -176,7 +176,9 @@ suite('collections', ({ spy, stub }) => {
 
       service.updateSelectedCollectionCount(<any>{ totalRecordCount });
 
-      expect(emit.calledWith(COLLECTIONS_UPDATED_EVENT, { [collection]: totalRecordCount })).to.be.true;
+      expect(emit).to.have.been.calledWith(COLLECTIONS_UPDATED_EVENT, {
+        [collection]: totalRecordCount
+      });
     });
 
     it('should update selected collection count with existing counts', () => {
@@ -189,11 +191,11 @@ suite('collections', ({ spy, stub }) => {
 
       service.updateSelectedCollectionCount(<any>{ totalRecordCount });
 
-      expect(emit.calledWith(COLLECTIONS_UPDATED_EVENT, {
+      expect(emit).to.have.been.calledWith(COLLECTIONS_UPDATED_EVENT, {
         [collection]: totalRecordCount,
         prod: 403,
         test: 330
-      })).to.be.true;
+      });
     });
   });
 

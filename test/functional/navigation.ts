@@ -71,7 +71,7 @@ suite<Navigation>('gb-navigation', ({
 
         model.refinementTitles[1].click();
 
-        expect(toRefinement.calledWith(refinement)).to.be.true;
+        expect(toRefinement).to.have.been.calledWith(refinement);
       });
 
       it('should display selected refinement', () => {
@@ -99,13 +99,13 @@ suite<Navigation>('gb-navigation', ({
 
         expect(model.selectedRefinement).to.not.be.ok;
         expect(model.refinementTitles[0].textContent).to.eq('Random');
-        expect(refine.called).to.be.false;
+        expect(refine).to.not.have.been.called;
 
         model.refinementTitles[1].click();
 
         expect(model.refinementTitles[0].textContent).to.eq('Random');
         expect(model.selectedRefinement).to.be.ok;
-        expect(refine.called).to.be.true;
+        expect(refine).to.have.been.called;
       });
     });
 
@@ -125,7 +125,7 @@ suite<Navigation>('gb-navigation', ({
 
         (<HTMLAnchorElement>html().querySelector('.gb-ref__link')).click();
 
-        expect(toRefinement.calledWith(refinement)).to.be.true;
+        expect(toRefinement).to.have.been.calledWith(refinement);
       });
 
       it('should remove unselected refinement from display', () => {
@@ -157,13 +157,13 @@ suite<Navigation>('gb-navigation', ({
 
         expect(model.selectedRefinement).to.be.ok;
         expect(html().querySelector('gb-selected-refinement .gb-ref__value').textContent).to.eq('Random');
-        expect(unrefine.called).to.be.false;
+        expect(unrefine).to.not.have.been.called;
 
         (<HTMLAnchorElement>html().querySelector('gb-selected-refinement .gb-ref__link')).click();
 
         expect(model.selectedRefinement).to.not.be.ok;
         expect(html().querySelectorAll('gb-available-refinement .gb-ref__title')[2].textContent).to.eq('Random');
-        expect(unrefine.called).to.be.true;
+        expect(unrefine).to.have.been.called;
       });
     });
 
@@ -206,7 +206,7 @@ suite<Navigation>('gb-navigation', ({
 
       expect((<any>tag.processed[0]).moreRefinements).to.be.false;
       expect(model.refinementTitles[2].textContent).to.eq('Third');
-      expect(refinements.calledWith('main'));
+      expect(refinements).to.have.been.calledWith('main');
     });
   });
 });
