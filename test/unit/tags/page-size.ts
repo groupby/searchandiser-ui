@@ -3,7 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-page-size', PageSize, ({
-  tag, flux, stub,
+  tag, flux, spy, stub,
   itShouldConfigure
 }) => {
 
@@ -51,18 +51,25 @@ suite('gb-page-size', PageSize, ({
     });
 
     it('should emit tracking event', (done) => {
-      const resize = stub(flux(), 'resize', () => Promise.resolve());
-      tag().services = <any>{
-        tracker: {
-          search: () => {
-            expect(resize.called).to.be.true;
-            done();
-          }
-        }
-      };
+      const search = spy();
+      const resize = stub(flux(), 'resize').returns(Promise.resolve());
+      tag().services = <any>{ tracker: { search } };
       flux().query.skip(43);
 
-      tag().onselect(40);
+      tag().onselect(40)
+        .then(() => {
+          expect(search.called).to.be.true;
+          expect(resize.called).to.be.true;
+          done();
+        });
+    });
+
+    it('should check for tracker service', (done) => {
+      stub(flux(), 'resize').returns(Promise.resolve());
+      tag().services = <any>{};
+
+      tag().onselect(40)
+        .then(() => done());
     });
   });
 });

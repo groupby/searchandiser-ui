@@ -147,18 +147,26 @@ suite('gb-query', Query, ({
     });
 
     it('should call emit tracker event', (done) => {
-      stub(tag(), 'inputValue');
+      const search = spy();
       const reset = stub(flux(), 'reset').returns(Promise.resolve());
-      tag().services = <any>{
-        tracker: {
-          search: () => {
-            expect(reset.called).to.be.true;
-            done();
-          }
-        }
-      };
+      stub(tag(), 'inputValue');
+      tag().services = <any>{ tracker: { search } };
 
-      tag().resetToInputValue();
+      tag().resetToInputValue()
+        .then(() => {
+          expect(reset.called).to.be.true;
+          expect(search.called).to.be.true;
+          done();
+        });
+    });
+
+    it('should check for tracker service', (done) => {
+      stub(tag(), 'inputValue');
+      stub(flux(), 'reset').returns(Promise.resolve());
+      tag().services = <any>{};
+
+      tag().resetToInputValue()
+        .then(() => done());
     });
   });
 

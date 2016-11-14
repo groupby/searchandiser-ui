@@ -166,7 +166,7 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
 
     it('does a search of a suggested query with a category refinement when you click', (done) => {
       model.searchBox.value = 'original';
-      tag.refine = (target, query) => {
+      tag.refine = (target, query): any => {
         expect(target.parentElement.dataset['refinement']).to.eq('the category');
         done();
       };
@@ -183,7 +183,7 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
 
     it('does a refinement search when you click', (done) => {
       model.searchBox.value = 'original';
-      tag.refine = (target, query) => {
+      tag.refine = (target, query): any => {
         expect(query).to.eq('');
         expect(target.parentElement.dataset['field']).to.eq('brand000');
         expect(target.parentElement.dataset['value']).to.eq('Brand: 3');

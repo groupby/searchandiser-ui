@@ -72,22 +72,30 @@ suite('gb-submit', Submit, ({
 
     it('should emit tracker event', (done) => {
       const query = 'something';
+      const search = spy();
       const reset = stub(flux(), 'reset').returns(Promise.resolve());
       tag().searchBox = <HTMLInputElement>{ value: query };
-      tag().services = <any>{
-        tracker: {
-          search: () => {
-            expect(tag().searchBox.value).to.eq(query);
-            expect(reset.called).to.be.true;
-            done();
-          }
-        }
-      };
+      tag().services = <any>{ tracker: { search } };
 
-      tag().submitQuery();
+      tag().submitQuery()
+        .then(() => {
+          expect(tag().searchBox.value).to.eq(query);
+          expect(reset.called).to.be.true;
+          expect(search.called).to.be.true;
+          done();
+        });
     });
 
-    it('should submit static query', () => {
+    it('should check for tracker service', (done) => {
+      stub(flux(), 'reset').returns(Promise.resolve());
+      tag().searchBox = <HTMLInputElement>{ value: 'something' };
+      tag().services = <any>{};
+
+      tag().submitQuery()
+        .then(() => done());
+    });
+
+    it('should submit static query', (done) => {
       const query = 'something';
       const update = spy((queryObj) => {
         expect(queryObj).to.be.an.instanceof(Query);
@@ -102,9 +110,11 @@ suite('gb-submit', Submit, ({
       tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{ url: { update, isActive: () => true } };
 
-      tag().submitQuery();
-
-      expect(update.called).to.be.true;
+      tag().submitQuery()
+        .then(() => {
+          expect(update.called).to.be.true;
+          done();
+        });
     });
   });
 });

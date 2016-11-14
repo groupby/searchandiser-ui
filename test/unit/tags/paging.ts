@@ -232,5 +232,11 @@ suite('gb-paging', Paging, ({
 
       tag().emitEvent();
     });
+
+    it('should check for tracker service', () => {
+      tag().services = <any>{};
+
+      tag().emitEvent();
+    });
   });
 });

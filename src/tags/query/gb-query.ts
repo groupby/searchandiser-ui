@@ -64,8 +64,8 @@ export class Query {
   }
 
   resetToInputValue() {
-    this.flux.reset(this.inputValue())
-      .then(() => this.services.tracker.search());
+    return this.flux.reset(this.inputValue())
+      .then(() => this.services.tracker && this.services.tracker.search());
   }
 
   listenForStaticSearch() {
