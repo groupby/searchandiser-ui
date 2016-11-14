@@ -121,7 +121,7 @@ suite('tracker', ({ spy, stub }) => {
 
   describe('sendSearchEvent()', () => {
     it('should call tracker.sendSearchEvent()', () => {
-      const results = { a: 'b', c: 'd' };
+      const results = { a: 'b', c: 'd', records: [] };
       const flux: any = { results };
       const sendSearchEvent = spy();
       const service = new Tracker(flux, TEST_CONFIG);
@@ -139,7 +139,7 @@ suite('tracker', ({ spy, stub }) => {
 
     it('should use originalQuery', () => {
       const originalQuery = 'shoes';
-      const results = { originalQuery, a: 'b', c: 'd' };
+      const results = { originalQuery, records: [], a: 'b', c: 'd' };
       const flux: any = { results };
       const sendSearchEvent = spy((event) => expect(event.search.query).to.eq(originalQuery));
       const service = new Tracker(flux, TEST_CONFIG);
@@ -152,10 +152,41 @@ suite('tracker', ({ spy, stub }) => {
 
     it('should allow overriding the origin', () => {
       const sendSearchEvent = spy((event) => expect(event.search.origin).to.eql({ dym: true }));
-      const service = new Tracker(<any>{ results: {} }, TEST_CONFIG);
+      const service = new Tracker(<any>{ results: { records: [] } }, TEST_CONFIG);
       service.tracker = <any>{ sendSearchEvent };
 
       service.sendSearchEvent('dym');
+
+      expect(sendSearchEvent.called).to.be.true;
+    });
+
+    it('should remap the record root fields', () => {
+      const flux: any = {
+        results: {
+          records: [{
+            id: 12,
+            title: 'Big Shoes',
+            url: 'http://example.com'
+          }, {
+            id: 29,
+            title: 'Small Shoes',
+            url: 'http://other.ca'
+          }]
+        }
+      };
+      const sendSearchEvent = spy((event) => expect(event.search.records).to.eql([{
+        _id: 12,
+        _t: 'Big Shoes',
+        _u: 'http://example.com'
+      }, {
+        _id: 29,
+        _t: 'Small Shoes',
+        _u: 'http://other.ca'
+      }]));
+      const service = new Tracker(flux, TEST_CONFIG);
+      service.tracker = <any>{ sendSearchEvent };
+
+      service.sendSearchEvent();
 
       expect(sendSearchEvent.called).to.be.true;
     });

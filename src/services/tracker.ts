@@ -1,6 +1,7 @@
 import { SearchandiserConfig } from '../searchandiser';
 import { ProductTransformer } from '../utils/product-transformer';
 import * as GbTracker from 'gb-tracker-client';
+import filterObject = require('filter-object');
 import { Events, FluxCapacitor } from 'groupby-api';
 import * as Cookies from 'js-cookie';
 import * as uuid from 'node-uuid';
@@ -85,11 +86,19 @@ export class Tracker {
   }
 
   sendSearchEvent(origin: string = 'search') {
+    const convertedRecords = this.flux.results.records.map((record) => Object.assign({
+      _id: record.id,
+      _u: record.url,
+      _t: record.title,
+    }, filterObject(record, '!{id,url,title}')));
+
     this.tracker.sendSearchEvent({
       search: Object.assign({
         origin: { [origin]: true },
         query: this.flux.results.originalQuery || ''
-      }, this.flux.results)
+      }, this.flux.results, {
+          records: convertedRecords
+        })
     });
   }
 }
