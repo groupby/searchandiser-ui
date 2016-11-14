@@ -114,7 +114,7 @@ export interface SearchandiserConfig {
     sort?: SortConfig;
     submit?: SubmitConfig;
   };
-  services?: { [name: string]: Service };
+  services?: { [name: string]: Service | boolean };
   stylish?: boolean;
   initialSearch?: boolean;
   simpleAttach?: boolean;

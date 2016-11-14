@@ -7,8 +7,6 @@ import { Url } from './url';
 import { FluxCapacitor } from 'groupby-api';
 
 const SERVICES = {
-  collections: Collections,
-  filter: Filter,
   redirect: Redirect,
   tracker: Tracker,
   url: Url
@@ -16,8 +14,7 @@ const SERVICES = {
 
 const CORE_SERVICES = {
   collections: Collections,
-  filter: Filter,
-  tracker: Tracker
+  filter: Filter
 };
 
 export interface Services {
@@ -39,7 +36,10 @@ export function initServices(flux: FluxCapacitor, config: SearchandiserConfig) {
   const services: Services = <any>{};
 
   for (let key of Object.keys(servicesConstructors)) {
-    services[key] = new servicesConstructors[key](flux, config, services);
+    const Service = servicesConstructors[key]; // tslint:disable-line:variable-name
+    if (Service) {
+      services[key] = new Service(flux, config, services);
+    }
   }
 
   startServices(services);

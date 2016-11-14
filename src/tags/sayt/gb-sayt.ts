@@ -191,15 +191,15 @@ export class Sayt {
     };
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(this.flux.query.withQuery(queryString)
-        .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] }));
+      return Promise.resolve(this.services.url.update(this.flux.query.withQuery(queryString)
+        .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] })));
     } else if (doRefinement) {
       this.flux.rewrite(queryString, { skipSearch: true });
-      this.flux.refine(refinement)
-        .then(() => this.services.tracker.sayt());
+      return this.flux.refine(refinement)
+        .then(this.emitEvent);
     } else {
-      this.flux.reset(queryString)
-        .then(() => this.services.tracker.sayt());
+      return this.flux.reset(queryString)
+        .then(this.emitEvent);
     }
   }
 
@@ -210,12 +210,12 @@ export class Sayt {
     const query = node.dataset['value'];
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(this.flux.query.withQuery(query)
-        .withConfiguration(<any>{ refinements: [] }));
+      return Promise.resolve(this.services.url.update(this.flux.query
+        .withConfiguration(<any>{ query, refinements: [] })));
     } else {
       this.rewriteQuery(query);
-      this.flux.reset(query)
-        .then(() => this.services.tracker.sayt());
+      return this.flux.reset(query)
+        .then(this.emitEvent);
     }
   }
 
@@ -235,5 +235,11 @@ export class Sayt {
         this.reset();
       }
     };
+  }
+
+  emitEvent() {
+    if (this.services.tracker) {
+      this.services.tracker.sayt();
+    }
   }
 }

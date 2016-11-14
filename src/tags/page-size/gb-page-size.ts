@@ -19,7 +19,7 @@ export class PageSize {
   }
 
   onselect(value: number) {
-    this.flux.resize(value, this._config.resetOffset)
-      .then(() => this.services.tracker.search());
+    return this.flux.resize(value, this._config.resetOffset)
+      .then(() => this.services.tracker && this.services.tracker.search());
   }
 }

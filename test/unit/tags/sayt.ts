@@ -355,29 +355,28 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
       const reset = stub(flux(), 'reset').returns(Promise.resolve());
+      const emitEvent = stub(tag(), 'emitEvent');
       tag()._config = {};
-      tag().services = <any>{
-        tracker: {
-          sayt: () => {
-            expect(rewriteQuery.calledWith(suggestion)).to.be.true;
-            expect(reset.calledWith(suggestion)).to.be.true;
-            done();
-          }
-        }
-      };
 
       tag().search(<any>{
         target: {
           tagName: 'GB-SAYT-LINK',
           dataset: { value: suggestion }
         }
-      });
+      })
+        .then(() => {
+          expect(rewriteQuery.calledWith(suggestion)).to.be.true;
+          expect(reset.calledWith(suggestion)).to.be.true;
+          expect(emitEvent.called).to.be.true;
+          done();
+        });
     });
 
-    it('should search for the gb-sayt-link node', () => {
+    it('should search for the gb-sayt-link node', (done) => {
       const suggestion = 'red heels';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
       const reset = stub(flux(), 'reset').returns(Promise.resolve());
+      stub(tag(), 'emitEvent');
       tag()._config = {};
 
       tag().search(<any>{
@@ -389,13 +388,15 @@ suite('gb-sayt', Sayt, ({
             }
           }
         }
-      });
-
-      expect(rewriteQuery.calledWith(suggestion)).to.be.true;
-      expect(reset.calledWith(suggestion)).to.be.true;
+      })
+        .then(() => {
+          expect(rewriteQuery.calledWith(suggestion)).to.be.true;
+          expect(reset.calledWith(suggestion)).to.be.true;
+          done();
+        });
     });
 
-    it('should perform a static search', () => {
+    it('should perform a static search', (done) => {
       const suggestion = 'red heels';
       const update = spy((queryObj) => {
         expect(queryObj).to.be.an.instanceof(Query);
@@ -415,9 +416,11 @@ suite('gb-sayt', Sayt, ({
           tagName: 'GB-SAYT-LINK',
           dataset: { value: suggestion }
         }
-      });
-
-      expect(update.called).to.be.true;
+      })
+        .then(() => {
+          expect(update.called).to.be.true;
+          done();
+        });
     });
   });
 
@@ -428,21 +431,19 @@ suite('gb-sayt', Sayt, ({
       const value = 'medium';
       const rewrite = stub(flux(), 'rewrite');
       const refine = stub(flux(), 'refine').returns(Promise.resolve());
+      const emitEvent = stub(tag(), 'emitEvent');
       tag()._config = {};
-      tag().services = <any>{
-        tracker: {
-          sayt: () => {
-            expect(rewrite.calledWith(suggestion, { skipSearch: true })).to.be.true;
-            expect(refine.calledWith(refinement(field, value))).to.be.true;
-            done();
-          }
-        }
-      };
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement: value }
-      }, suggestion);
+      }, suggestion)
+        .then(() => {
+          expect(rewrite.calledWith(suggestion, { skipSearch: true })).to.be.true;
+          expect(refine.calledWith(refinement(field, value))).to.be.true;
+          expect(emitEvent.called).to.be.true;
+          done();
+        });
     });
 
     it('should skip refinement and do query', (done) => {
@@ -451,23 +452,20 @@ suite('gb-sayt', Sayt, ({
       const refinement = 8;
       const reset = stub(flux(), 'reset').returns(Promise.resolve());
       flux().rewrite = (): any => expect.fail();
+      stub(tag(), 'emitEvent');
       tag()._config = {};
-      tag().services = <any>{
-        tracker: {
-          sayt: () => {
-            expect(reset.calledWith(suggestion)).to.be.true;
-            done();
-          }
-        }
-      };
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement, norefine: true }
-      }, suggestion);
+      }, suggestion)
+        .then(() => {
+          expect(reset.calledWith(suggestion)).to.be.true;
+          done();
+        });
     });
 
-    it('should perform a static refinement', () => {
+    it('should perform a static refinement', (done) => {
       const suggestion = 'red heels';
       const field = 'size';
       const value = 8;
@@ -485,12 +483,14 @@ suite('gb-sayt', Sayt, ({
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field, refinement: value }
-      }, suggestion);
-
-      expect(update.called).to.be.true;
+      }, suggestion)
+        .then(() => {
+          expect(update.called).to.be.true;
+          done();
+        });
     });
 
-    it('should perform a static refinement with only query', () => {
+    it('should perform a static refinement with only query', (done) => {
       const suggestion = 'red heels';
       const update = spy((queryObj) => {
         expect(queryObj.raw.query).to.eq(suggestion);
@@ -502,9 +502,11 @@ suite('gb-sayt', Sayt, ({
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { norefine: true }
-      }, suggestion);
-
-      expect(update.called).to.be.true;
+      }, suggestion)
+        .then(() => {
+          expect(update.called).to.be.true;
+          done();
+        });
     });
 
     it('should perform refinement using configured category field', (done) => {
@@ -539,9 +541,10 @@ suite('gb-sayt', Sayt, ({
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { refinement: value }
-      }, suggestion);
-
-      expect(update.called).to.be.true;
+      }, suggestion)
+        .then(() => {
+          expect(update.called).to.be.true;
+        });
     });
   });
 
@@ -744,6 +747,24 @@ suite('gb-sayt', Sayt, ({
       func();
 
       expect(fetchSuggestions.calledWith(value)).to.be.true;
+    });
+  });
+
+  describe('emitEvent()', () => {
+    it('should call tracker.sayt()', (done) => {
+      tag().services = <any>{
+        tracker: {
+          sayt: () => done()
+        }
+      };
+
+      tag().emitEvent();
+    });
+
+    it('should check for the tracker service', () => {
+      tag().services = <any>{};
+
+      tag().emitEvent();
     });
   });
 });

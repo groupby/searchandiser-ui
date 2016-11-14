@@ -28,18 +28,24 @@ suite('gb-did-you-mean', DidYouMean, ({
     });
 
     it('should emit tracker event', (done) => {
-      const newQuery = 'red sneakers';
-      const rewrite = stub(flux(), 'rewrite', () => Promise.resolve());
-      tag().services = <any>{
-        tracker: {
-          didYouMean: () => {
-            expect(rewrite.called).to.be.true;
-            done();
-          }
-        }
-      };
+      const didYouMean = spy();
+      const rewrite = stub(flux(), 'rewrite').returns(Promise.resolve());
+      tag().services = <any>{ tracker: { didYouMean } };
 
-      tag().send(<any>{ target: { text: newQuery } });
+      tag().send(<any>{ target: {} })
+        .then(() => {
+          expect(didYouMean.called).to.be.true;
+          expect(rewrite.called).to.be.true;
+          done();
+        });
+    });
+
+    it('should check for tracker service', (done) => {
+      stub(flux(), 'rewrite').returns(Promise.resolve());
+      tag().services = <any>{};
+
+      tag().send(<any>{ target: {} })
+        .then(() => done());
     });
   });
 

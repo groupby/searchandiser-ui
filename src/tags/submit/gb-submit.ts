@@ -39,11 +39,11 @@ export class Submit {
     const inputValue = this.searchBox.value;
 
     if (this._config.staticSearch && this.services.url.isActive()) {
-      this.services.url.update(this.flux.query.withQuery(inputValue)
-        .withConfiguration(<any>{ refinements: [] }));
+      return Promise.resolve(this.services.url.update(this.flux.query.withQuery(inputValue)
+        .withConfiguration(<any>{ refinements: [] })));
     } else {
-      this.flux.reset(inputValue)
-        .then(() => this.services.tracker.search());
+      return this.flux.reset(inputValue)
+        .then(() => this.services.tracker && this.services.tracker.search());
     }
   }
 }

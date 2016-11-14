@@ -41,7 +41,7 @@ export class Url {
       if (query) {
         this.flux.query = query;
         this.flux.search(query.raw.query)
-          .then(() => this.services.tracker.search());
+          .then(() => this.services.tracker && this.services.tracker.search());
       }
     }
   }

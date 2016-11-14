@@ -63,6 +63,19 @@ describe('service initializer', () => {
 
       expect(services.collections).to.be.an.instanceof(Collections);
     });
+
+    it('should allow disabling non-core services', () => {
+      const flux: any = { on: () => null, search: () => Promise.resolve() };
+
+      const services = initServices(flux, <any>{
+        customerId: 'test',
+        area: 'other',
+        services: { collections: false, tracker: false }
+      });
+
+      expect(services.collections).to.be.an.instanceof(Collections);
+      expect(services.tracker).to.be.undefined;
+    });
   });
 
   describe('startServices()', () => {

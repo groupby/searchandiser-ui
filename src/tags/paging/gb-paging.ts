@@ -107,6 +107,8 @@ export class Paging {
   }
 
   emitEvent() {
-    this.services.tracker.search();
+    if (this.services.tracker) {
+      this.services.tracker.search();
+    }
   }
 }

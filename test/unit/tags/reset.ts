@@ -35,18 +35,26 @@ suite('gb-reset', Reset, ({ flux, tag, spy, expectSubscriptions }) => {
     });
 
     it('should emit tracker event', (done) => {
+      const search = spy();
       flux().reset = (): any => Promise.resolve();
       tag().searchBox = <any>{ value: 'something' };
-      tag().services = <any>{
-        tracker: {
-          search: () => {
-            expect(tag().searchBox.value).to.eq('');
-            done();
-          }
-        }
-      };
+      tag().services = <any>{ tracker: { search } };
 
-      tag().clearQuery();
+      tag().clearQuery()
+        .then(() => {
+          expect(tag().searchBox.value).to.eq('');
+          expect(search.called).to.be.true;
+          done();
+        });
+    });
+
+    it('should check for tracker service', (done) => {
+      flux().reset = (): any => Promise.resolve();
+      tag().searchBox = <any>{ value: 'something' };
+      tag().services = <any>{};
+
+      tag().clearQuery()
+        .then(() => done());
     });
   });
 });
