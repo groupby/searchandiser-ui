@@ -16,15 +16,27 @@ export class Product {
   transformer: ProductTransformer;
 
   init() {
+    this.configure();
+
     this.variantIndex = 0;
     this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
-    this.struct = this._scope.struct || this.config.structure || {};
+    this.struct = this.config.structure || this._scope.struct || this.config.structure || {};
     this.transformer = new ProductTransformer(this.struct);
 
+    this.styleProduct();
     this.transformRecord(this.opts.all_meta);
   }
 
-  transformRecord(allMeta: any) {
+  styleProduct() {
+    if (this._config.infinite) {
+      this.root.classList.add('gb-infinite');
+    }
+    if (this._config.tombstone) {
+      this.root.classList.add('tombstone');
+    }
+  }
+
+  transformRecord(allMeta: any = {}) {
     const productMeta = this.transformer.transform(clone(allMeta, false));
     this.update({
       productMeta: () => productMeta(this.variantIndex),

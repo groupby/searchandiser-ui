@@ -17,6 +17,11 @@ export const LOCATION = {
   assign: (url) => window.location.assign(url)
 };
 
+export const WINDOW = {
+  addEventListener: (event, cb) => window.addEventListener(event, cb),
+  Image: () => new Image()
+};
+
 export function findSearchBox() {
   return <HTMLInputElement>oget(findTag('gb-query'), '_tag.searchBox');
 }

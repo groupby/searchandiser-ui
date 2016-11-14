@@ -3,9 +3,14 @@ import { ProductMeta, ProductTransformer } from '../../../src/utils/product-tran
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-product', Product, ({ tag, spy, stub }) => {
+suite('gb-product', Product, ({
+  tag, spy, stub,
+  itShouldConfigure
+}) => {
 
   describe('init()', () => {
+    itShouldConfigure();
+
     beforeEach(() => {
       tag()._scope = {};
       tag().transformRecord = () => null;
@@ -26,6 +31,12 @@ suite('gb-product', Product, ({ tag, spy, stub }) => {
       tag().init();
 
       expect(tag().detailsUrl).to.eq(detailsUrl);
+    });
+
+    it('should call styleProduct()', (done) => {
+      tag().styleProduct = () => done();
+
+      tag().init();
     });
 
     it('should call transformRecord()', () => {
@@ -70,6 +81,28 @@ suite('gb-product', Product, ({ tag, spy, stub }) => {
     });
   });
 
+  describe('styleProduct()', () => {
+    it('should add class gb-infinite', () => {
+      const add = spy();
+      tag().root = <any>{ classList: { add } };
+      tag()._config = { infinite: true };
+
+      tag().styleProduct();
+
+      expect(add.calledWith('gb-infinite')).to.be.true;
+    });
+
+    it('should add class tombstone', () => {
+      const add = spy();
+      tag().root = <any>{ classList: { add } };
+      tag()._config = { tombstone: true };
+
+      tag().styleProduct();
+
+      expect(add.calledWith('tombstone')).to.be.true;
+    });
+  });
+
   describe('transformRecord()', () => {
     const ALL_META = {
       title: 'Red Sneakers',
@@ -80,6 +113,16 @@ suite('gb-product', Product, ({ tag, spy, stub }) => {
         value: '6532'
       }
     };
+
+    it('should perform transformation on empty object', () => {
+      tag().update = () => null;
+      tag().transformer = <any>new MockTransformer(ALL_META, {}, []);
+      const transform = tag().transformer.transform = sinon.spy(() => () => null);
+
+      tag().transformRecord();
+
+      expect(transform.calledWith({})).to.be.true;
+    });
 
     it('should perform transformation', () => {
       const remappedMeta = { e: 'f', g: 'h' };
