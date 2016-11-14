@@ -73,7 +73,7 @@ suite('gb-submit', Submit, ({
     it('should emit tracker event', (done) => {
       const query = 'something';
       const search = spy();
-      const reset = stub(flux(), 'reset').returns(Promise.resolve());
+      const reset = stub(flux(), 'reset').resolves();
       tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{ tracker: { search } };
 
@@ -87,7 +87,7 @@ suite('gb-submit', Submit, ({
     });
 
     it('should check for tracker service', (done) => {
-      stub(flux(), 'reset').returns(Promise.resolve());
+      stub(flux(), 'reset').resolves();
       tag().searchBox = <HTMLInputElement>{ value: 'something' };
       tag().services = <any>{};
 

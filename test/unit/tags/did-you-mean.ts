@@ -41,7 +41,7 @@ suite('gb-did-you-mean', DidYouMean, ({
     });
 
     it('should check for tracker service', (done) => {
-      stub(flux(), 'rewrite').returns(Promise.resolve());
+      stub(flux(), 'rewrite').resolves();
       tag().services = <any>{};
 
       tag().send(<any>{ target: {} })

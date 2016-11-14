@@ -43,7 +43,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
       tag().init();
 
-      expect(addEventListener.calledWith('resize', tag().onResize)).to.be.true;
+      expect(addEventListener).to.have.been.calledWith('resize', tag().onResize);
     });
 
     it('should call onResize()', (done) => {
@@ -72,12 +72,12 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       const appendChild = spy();
       tag().scroller = <any>{ appendChild };
       tag().items = [];
-      stub(renderer.Renderer, 'createTombstone').returns(Promise.resolve(node));
+      stub(renderer.Renderer, 'createTombstone').resolves(node);
 
       tag().onResize()
         .then(() => {
-          expect(appendChild.calledWith(node)).to.be.true;
-          expect(unmount.called).to.be.true;
+          expect(appendChild).to.have.been.calledWith(node);
+          expect(unmount).to.have.been.called;
           done();
         });
     });
@@ -90,7 +90,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       };
       tag().scroller = SCROLLER;
       tag().items = [];
-      stub(renderer.Renderer, 'createTombstone').returns(Promise.resolve(node));
+      stub(renderer.Renderer, 'createTombstone').resolves(node);
 
       tag().onResize()
         .then(() => {
@@ -106,8 +106,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
         { height: 11, width: 20 },
         { height: 21, width: 12 }
       ];
-      stub(renderer.Renderer, 'createTombstone')
-        .returns(Promise.resolve({ _tag: TAG }));
+      stub(renderer.Renderer, 'createTombstone').resolves({ _tag: TAG });
 
       tag().onResize()
         .then(() => {
@@ -124,8 +123,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       tag().scroller = SCROLLER;
       tag().items = [];
       tag().onScroll = () => done();
-      stub(renderer.Renderer, 'createTombstone')
-        .returns(Promise.resolve({ _tag: TAG }));
+      stub(renderer.Renderer, 'createTombstone').resolves({ _tag: TAG });
 
       tag().onResize();
     });
@@ -134,12 +132,12 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
   describe('onScroll()', () => {
     it('should create a Renderer and call attachToView()', () => {
       const attachToView = spy();
-      const rendererStub = stub(renderer, 'Renderer', () => ({ attachToView }));
+      const rendererStub = stub(renderer, 'Renderer').returns({ attachToView });
 
       tag().onScroll();
 
-      expect(rendererStub.calledWith(tag())).to.be.true;
-      expect(attachToView.called).to.be.true;
+      expect(rendererStub).to.have.been.calledWith(tag());
+      expect(attachToView).to.have.been.called;
     });
   });
 
@@ -159,10 +157,10 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
     });
 
     it('should fetch if no request in progress', (done) => {
-      const fetch = stub(tag(), 'fetch').returns(Promise.resolve());
+      const fetch = stub(tag(), 'fetch').resolves();
       tag().updateItems = () => {
         expect(tag().updating).to.be.true;
-        expect(fetch.called).to.be.true;
+        expect(fetch).to.have.been.called;
         done();
       };
 
@@ -196,19 +194,19 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
   describe('fetch()', () => {
     it('should get requested number of records', () => {
-      const search = stub(flux().bridge, 'search').returns(Promise.resolve());
-      const query = flux().query = new Query('shoes')
+      const search = stub(flux().bridge, 'search').resolves();
+      flux().query = new Query('shoes')
         .withSelectedRefinements({ navigationName: 'brand', type: 'Value', value: 'Nike' })
         .withPageSize(14);
       tag().loadedItems = 28;
 
       tag().fetch(50);
 
-      expect(search.calledWith(Object.assign(query.build(), { pageSize: 50, skip: 28 }))).to.be.true;
+      expect(search).to.have.been.calledWithMatch({ pageSize: 50, skip: 28 });
     });
 
     it('should get the default minimum number of records', () => {
-      const search = stub(flux().bridge, 'search').returns(Promise.resolve());
+      const search = stub(flux().bridge, 'search').resolves();
 
       tag().fetch(1);
 
@@ -218,7 +216,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
     it('should return records', (done) => {
       const item1 = { a: 'b' };
       const item2 = { c: 'd' };
-      stub(flux().bridge, 'search').returns(Promise.resolve({ records: [item1, item2] }));
+      stub(flux().bridge, 'search').resolves({ records: [item1, item2] });
 
       tag().fetch(40)
         .then((records) => {
@@ -251,8 +249,8 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       expect(tag().items).to.have.length(8);
       expect(tag().items[1]).to.eql({});
       expect(tag().items[5].data).to.eql({});
-      expect(addItem.callCount).to.eq(5);
-      expect(attachToView.called).to.be.true;
+      expect(addItem).to.have.callCount(5);
+      expect(attachToView).to.have.been.called;
     });
   });
 

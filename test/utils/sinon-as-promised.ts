@@ -1,16 +1,14 @@
 function resolves(value: any) {
-  return this.returns(new Promise((resolve) => resolve(value)));
+  return this.returns(Promise.resolve(value));
 }
 
 sinon.stub.resolves = resolves;
-// sinon.behavior.resolves = resolves
 
 function rejects(err: any) {
   if (typeof err === 'string') {
     err = new Error(err);
   }
-  return this.returns(new Promise((resolve, reject) => reject(err)));
+  return this.returns(Promise.reject(err));
 }
 
 sinon.stub.rejects = rejects;
-// sinon.behavior.rejects = rejects
