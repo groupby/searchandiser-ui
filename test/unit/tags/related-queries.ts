@@ -23,18 +23,18 @@ suite('gb-related-queries', RelatedQueries, ({
 
       tag().updatedRelatedQueries(<any>{ relatedQueries });
 
-      expect(update.calledWith({ relatedQueries })).to.be.true;
+      expect(update).to.have.been.calledWith({ relatedQueries });
     });
   });
 
   describe('send()', () => {
     it('should call flux.rewrite()', () => {
-      const newQuery = 'red sneakers';
+      const text = 'red sneakers';
       const rewrite = stub(flux(), 'rewrite');
 
-      tag().send(<any>{ target: { text: newQuery } });
+      tag().send(<any>{ target: { text } });
 
-      expect(rewrite.calledWith(newQuery)).to.be.true;
+      expect(rewrite).to.have.been.calledWith(text);
     });
   });
 });

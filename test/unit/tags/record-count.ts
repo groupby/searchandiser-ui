@@ -23,11 +23,11 @@ suite('gb-record-count', RecordCount, ({ tag, spy, expectSubscriptions }) => {
 
       tag().updatePageInfo(results);
 
-      expect(update.calledWith({
+      expect(update).to.have.been.calledWith({
         first: recordStart,
         last: recordEnd,
         total: totalRecordCount
-      })).to.be.true;
+      });
     });
   });
 });

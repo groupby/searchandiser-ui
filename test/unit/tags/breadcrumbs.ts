@@ -26,7 +26,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
       const update = tag().update = spy();
       tag().clearRefinements();
 
-      expect(update.calledWith({ selected: [] })).to.be.true;
+      expect(update).to.have.been.calledWith({ selected: [] });
     });
   });
 
@@ -37,7 +37,11 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>{ originalQuery });
 
-      expect(update.calledWith({ originalQuery, selected: undefined, correctedQuery: undefined })).to.be.true;
+      expect(update).to.have.been.calledWith({
+        originalQuery,
+        selected: undefined,
+        correctedQuery: undefined
+      });
     });
 
     it('should update refinements', () => {
@@ -46,11 +50,11 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>{ selectedNavigation });
 
-      expect(update.calledWith({
+      expect(update).to.have.been.calledWith({
         originalQuery: undefined,
         selected: selectedNavigation,
         correctedQuery: undefined
-      })).to.be.true;
+      });
     });
 
     it('should update correctedQuery', () => {
@@ -59,7 +63,11 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>{ correctedQuery });
 
-      expect(update.calledWith({ originalQuery: undefined, selected: undefined, correctedQuery })).to.be.true;
+      expect(update).to.have.been.calledWith({
+        originalQuery: undefined,
+        selected: undefined,
+        correctedQuery
+      });
     });
 
     it('should update the whole query state', () => {
@@ -71,7 +79,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>queryState);
 
-      expect(update.calledWith({ originalQuery, correctedQuery, selected })).to.be.true;
+      expect(update).to.have.been.calledWith({ originalQuery, correctedQuery, selected });
     });
   });
 
@@ -85,8 +93,8 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().remove(refinement, navigation);
 
-      expect(toRefinement.calledWith(refinement, navigation)).to.be.true;
-      expect(unrefine.calledWith(constructedRefinement)).to.be.true;
+      expect(toRefinement).to.have.been.calledWith(refinement, navigation);
+      expect(unrefine).to.have.been.calledWith(constructedRefinement);
     });
   });
 });

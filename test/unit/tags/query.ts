@@ -45,7 +45,7 @@ suite('gb-query', Query, ({
       tag().attachListeners();
 
       expect(tag().searchBox).to.eq(searchBox);
-      expect(addEventListener.calledWith('keydown', tag().keydownListener)).to.be.true;
+      expect(addEventListener).to.have.been.calledWith('keydown', tag().keydownListener);
     });
 
     it('should attach sayt listeners', (done) => {
@@ -68,7 +68,7 @@ suite('gb-query', Query, ({
 
       tag().attachListeners();
 
-      expect(listenForInput.called).to.be.true;
+      expect(listenForInput).to.have.been.called;
     });
 
     it('should listen for enter keypress event', () => {
@@ -77,7 +77,7 @@ suite('gb-query', Query, ({
 
       tag().attachListeners();
 
-      expect(listenForStaticSearch.called).to.be.true;
+      expect(listenForStaticSearch).to.have.been.called;
     });
 
     it('should listen for submit event', () => {
@@ -86,7 +86,7 @@ suite('gb-query', Query, ({
 
       tag().attachListeners();
 
-      expect(listenForInput.called).to.be.true;
+      expect(listenForInput).to.have.been.called;
     });
   });
 
@@ -108,7 +108,7 @@ suite('gb-query', Query, ({
 
       tag().listenForInput();
 
-      expect(addEventListener.calledWith('input', tag().resetToInputValue)).to.be.true;
+      expect(addEventListener).to.have.been.calledWith('input', tag().resetToInputValue);
     });
   });
 
@@ -154,8 +154,8 @@ suite('gb-query', Query, ({
 
       tag().resetToInputValue()
         .then(() => {
-          expect(reset.called).to.be.true;
-          expect(search.called).to.be.true;
+          expect(reset).to.have.been.called;
+          expect(search).to.have.been.called;
           done();
         });
     });
@@ -177,7 +177,7 @@ suite('gb-query', Query, ({
 
       tag().keydownListener(<any>{});
 
-      expect(findTag.called).to.be.true;
+      expect(findTag).to.have.been.called;
     });
 
     it('should call sayt autocomplete.keyboardListener()', () => {
@@ -189,7 +189,7 @@ suite('gb-query', Query, ({
 
       tag().keydownListener(keyboardEvent);
 
-      expect(keyboardListener.calledWith(keyboardEvent, tag().onSubmit)).to.be.true;
+      expect(keyboardListener).to.have.been.calledWith(keyboardEvent, tag().onSubmit);
     });
 
     it('should call sayt onSubmit()', () => {
@@ -204,13 +204,12 @@ suite('gb-query', Query, ({
 
   describe('onSubmit()', () => {
     it('should execute enterKeyHandlers', () => {
-      const handlers = [spy(), spy(), spy()];
-      tag().enterKeyHandlers = handlers;
+      const handler = spy();
+      tag().enterKeyHandlers = [handler, handler, handler];
 
       tag().onSubmit();
 
-      expect(handlers).to.have.length(3);
-      handlers.forEach((handler) => expect(handler.called).to.be.true);
+      expect(handler).to.have.been.calledThrice;
     });
 
     it('should emit autocomplete:hide', () => {
@@ -219,7 +218,7 @@ suite('gb-query', Query, ({
 
       tag().onSubmit();
 
-      expect(emit.calledWith(AUTOCOMPLETE_HIDE_EVENT)).to.be.true;
+      expect(emit).to.have.been.calledWith(AUTOCOMPLETE_HIDE_EVENT);
     });
   });
 
@@ -266,7 +265,7 @@ suite('gb-query', Query, ({
 
       tag().setLocation();
 
-      expect(update.called).to.be.true;
+      expect(update).to.have.been.called;
     });
 
     it('should call flux.reset()', () => {
@@ -277,7 +276,7 @@ suite('gb-query', Query, ({
 
       tag().setLocation();
 
-      expect(reset.calledWith(query)).to.be.true;
+      expect(reset).to.have.been.calledWith(query);
     });
   });
 });

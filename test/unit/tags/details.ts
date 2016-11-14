@@ -46,8 +46,8 @@ suite('gb-details', Details, ({
 
       tag().init();
 
-      expect(getParam.calledWith('id')).to.be.true;
-      expect(details.calledWith(id, idField)).to.be.true;
+      expect(getParam).to.have.been.calledWith('id');
+      expect(details).to.have.been.calledWith(id, idField);
     });
   });
 
@@ -62,7 +62,7 @@ suite('gb-details', Details, ({
 
       tag().updateRecord(<any>{ allMeta });
 
-      expect(update.called).to.be.true;
+      expect(update).to.have.been.called;
     });
   });
 });

@@ -43,7 +43,7 @@ suite('gb-results', Results, ({ flux, tag, spy, expectSubscriptions }) => {
 
       tag().updateRecords(<any>{ records });
 
-      expect(update.calledWith({ records, collection })).to.be.true;
+      expect(update).to.have.been.calledWith({ records, collection });
     });
   });
 

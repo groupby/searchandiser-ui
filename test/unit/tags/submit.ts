@@ -43,7 +43,7 @@ suite('gb-submit', Submit, ({
 
       tag().init();
 
-      expect(addEventListener.calledWith('click', tag().submitQuery)).to.be.true;
+      expect(addEventListener).to.have.been.calledWith('click', tag().submitQuery);
     });
   });
 
@@ -80,8 +80,8 @@ suite('gb-submit', Submit, ({
       tag().submitQuery()
         .then(() => {
           expect(tag().searchBox.value).to.eq(query);
-          expect(reset.called).to.be.true;
-          expect(search.called).to.be.true;
+          expect(reset).to.have.been.called;
+          expect(search).to.have.been.called;
           done();
         });
     });
@@ -97,12 +97,7 @@ suite('gb-submit', Submit, ({
 
     it('should submit static query', (done) => {
       const query = 'something';
-      const update = spy((queryObj) => {
-        expect(queryObj).to.be.an.instanceof(Query);
-        expect(queryObj.raw.query).to.eq(query);
-        expect(queryObj.raw.refinements).to.eql([]);
-        expect(queryObj.raw.skip).to.eq(20);
-      });
+      const update = spy();
       flux().query = new Query('other')
         .withSelectedRefinements({ navigationName: 'colour', type: 'Value', value: 'blue' })
         .skip(20);
@@ -112,7 +107,14 @@ suite('gb-submit', Submit, ({
 
       tag().submitQuery()
         .then(() => {
-          expect(update.called).to.be.true;
+          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.have.been.calledWithMatch({
+            raw: {
+              query,
+              refinements: [],
+              skip: 20
+            }
+          });
           done();
         });
     });

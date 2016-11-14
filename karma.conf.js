@@ -1,9 +1,10 @@
-var webpackConfig = require('./webpack.config');
+const webpackConfig = require('./webpack.config');
 
-var isCi = process.env.NODE_ENV === 'ci';
+// eslint-disable-next-line no-process-env
+const isCi = process.env.NODE_ENV === 'ci';
 
 function reporters() {
-  var coverageReporters = [{
+  const coverageReporters = [{
     type: 'json',
     subdir: '.',
     file: 'coverage.json'
@@ -17,7 +18,7 @@ function reporters() {
 module.exports = function(config) {
   config.set({
     basePath: '',
-    frameworks: ['mocha', 'chai', 'sinon', 'source-map-support'],
+    frameworks: ['mocha', 'sinon-chai', 'sinon', 'chai', 'source-map-support'],
     files: ['./karma.entry.ts'],
     preprocessors: {
       './karma.entry.ts': ['webpack']

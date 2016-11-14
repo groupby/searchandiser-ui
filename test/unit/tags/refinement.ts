@@ -32,7 +32,7 @@ describe(`${TAG} logic`, () => {
 
         tag().send();
 
-        expect(send.calledWith(refinement, navigation)).to.be.true;
+        expect(send).to.have.been.calledWith(refinement, navigation);
       });
     });
   });
@@ -47,7 +47,7 @@ describe(`${TAG} logic`, () => {
 
         tag().remove();
 
-        expect(remove.calledWith(refinement, navigation)).to.be.true;
+        expect(remove).to.have.been.calledWith(refinement, navigation);
       });
     });
   });

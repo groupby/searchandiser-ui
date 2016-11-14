@@ -57,7 +57,7 @@ suite('gb-paging', Paging, ({
 
       tag().pageInfo();
 
-      expect(updatePageInfo.calledWith(pageNumbers, 9, 16)).to.be.true;
+      expect(updatePageInfo).to.have.been.calledWith(pageNumbers, 9, 16);
     });
   });
 
@@ -80,67 +80,57 @@ suite('gb-paging', Paging, ({
     });
 
     it('should set lowOverflow and highOverflow true', () => {
-      const update =
-        tag().update =
-        spy((obj) => {
-          expect(obj.lowOverflow).to.be.true;
-          expect(obj.highOverflow).to.be.true;
-        });
+      const update = tag().update = spy();
 
       tag().updatePageInfo([2, 3, 4], 1, 6);
 
-      expect(update.called).to.be.true;
+      expect(update).to.have.been.calledWithMatch({
+        lowOverflow: true,
+        highOverflow: true
+      });
     });
 
     it('should set lowOverflow and highOverflow to false', () => {
-      const update =
-        tag().update =
-        spy((obj) => {
-          expect(obj.lowOverflow).to.be.false;
-          expect(obj.highOverflow).to.be.false;
-        });
+      const update = tag().update = spy();
 
       tag().updatePageInfo([1, 2, 3, 4], 1, 4);
 
-      expect(update.called).to.be.true;
+      expect(update).to.have.been.calledWithMatch({
+        lowOverflow: false,
+        highOverflow: false
+      });
     });
 
     it('should set backDisabled and forwardDisabled to true', () => {
-      const update =
-        tag().update =
-        spy((obj) => {
-          expect(obj.backDisabled).to.be.true;
-          expect(obj.forwardDisabled).to.be.true;
-        });
+      const update = tag().update = spy();
 
       tag().updatePageInfo([1], 1, 1);
 
-      expect(update.called).to.be.true;
+      expect(update).to.have.been.calledWithMatch({
+        backDisabled: true,
+        forwardDisabled: true
+      });
     });
 
     it('should set backDisabled and forwardDisabled to false', () => {
-      const update =
-        tag().update =
-        spy((obj) => {
-          expect(obj.backDisabled).to.be.false;
-          expect(obj.forwardDisabled).to.be.false;
-        });
+      const update = tag().update = spy();
 
       tag().updatePageInfo([1, 2, 3], 2, 3);
 
-      expect(update.called).to.be.true;
+      expect(update).to.have.been.calledWithMatch({
+        backDisabled: false,
+        forwardDisabled: false
+      });
     });
   });
 
   describe('updateCurrentPage()', () => {
     it('should update current page', () => {
-      const update =
-        tag().update =
-        spy((obj) => expect(obj.currentPage).to.eq(10));
+      const update = tag().update = spy();
 
       tag().updateCurrentPage({ pageNumber: 10 });
 
-      expect(update.called).to.be.true;
+      expect(update).to.have.been.calledWithMatch({ currentPage: 10 });
     });
   });
 
@@ -149,7 +139,7 @@ suite('gb-paging', Paging, ({
       const reset = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ reset });
       tag().emitEvent = () => {
-        expect(reset.called).to.be.true;
+        expect(reset).to.have.been.called;
         done();
       };
 
@@ -160,7 +150,7 @@ suite('gb-paging', Paging, ({
       const prev = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ prev });
       tag().emitEvent = () => {
-        expect(prev.called).to.be.true;
+        expect(prev).to.have.been.called;
         done();
       };
 
@@ -171,7 +161,7 @@ suite('gb-paging', Paging, ({
       const next = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ next });
       tag().emitEvent = () => {
-        expect(next.called).to.be.true;
+        expect(next).to.have.been.called;
         done();
       };
 
@@ -182,7 +172,7 @@ suite('gb-paging', Paging, ({
       const last = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ last });
       tag().emitEvent = () => {
-        expect(last.called).to.be.true;
+        expect(last).to.have.been.called;
         done();
       };
 
@@ -194,7 +184,7 @@ suite('gb-paging', Paging, ({
       const switchPage = spy((page) => Promise.resolve(expect(page).to.eq(newPage)));
       const pager = tag().wrapPager(<any>{ switchPage });
       tag().emitEvent = () => {
-        expect(switchPage.called).to.be.true;
+        expect(switchPage).to.have.been.called;
         done();
       };
 

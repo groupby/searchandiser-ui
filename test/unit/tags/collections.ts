@@ -70,7 +70,7 @@ suite('gb-collections', Collections, ({
         }
       });
 
-      expect(onselect.calledWith(collection)).to.be.true;
+      expect(onselect).to.have.been.calledWith(collection);
     });
   });
 
@@ -81,7 +81,7 @@ suite('gb-collections', Collections, ({
 
       tag().updateCounts(counts);
 
-      expect(update.calledWith({ counts })).to.be.true;
+      expect(update).to.have.been.calledWith({ counts });
     });
   });
 
@@ -92,7 +92,7 @@ suite('gb-collections', Collections, ({
 
       tag().onselect(collection);
 
-      expect(switchCollection.calledWith(collection)).to.be.true;
+      expect(switchCollection).to.have.been.calledWith(collection);
     });
   });
 });

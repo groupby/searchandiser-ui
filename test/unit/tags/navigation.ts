@@ -30,8 +30,8 @@ suite('gb-navigation', Navigation, ({
 
       tag().updateRefinements(results);
 
-      expect(replaceRefinements.calledWith(results)).to.be.true;
-      expect(update.calledWith({ processed })).to.be.true;
+      expect(replaceRefinements).to.have.been.calledWith(results);
+      expect(update).to.have.been.calledWith({ processed });
     });
   });
 
@@ -94,7 +94,7 @@ suite('gb-navigation', Navigation, ({
 
       tag().send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(refine.calledWith(refinement('price', 4, 6))).to.be.true;
+      expect(refine).to.have.been.calledWith(refinement('price', 4, 6));
     });
   });
 
@@ -104,7 +104,7 @@ suite('gb-navigation', Navigation, ({
 
       tag().remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(unrefine.calledWith(refinement('price', 4, 6))).to.be.true;
+      expect(unrefine).to.have.been.calledWith(refinement('price', 4, 6));
     });
   });
 });

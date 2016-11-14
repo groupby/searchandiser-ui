@@ -109,7 +109,7 @@ describe('base tag logic', () => {
       expect(tag._tagName).to.eq('gb-test-tag');
       expect(tag._simpleTagName).to.eq('test-tag');
       expect(tag._camelTagName).to.eq('testTag');
-      expect(getAttribute.calledWith('riot-tag')).to.be.true;
+      expect(getAttribute).to.have.been.calledWith('riot-tag');
     });
   });
 

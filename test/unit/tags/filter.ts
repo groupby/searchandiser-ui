@@ -48,7 +48,7 @@ suite('gb-filter', Filter, ({
 
       tag().updateValues(results);
 
-      expect(updateOptions.calledWith(refinements)).to.be.true;
+      expect(updateOptions).to.have.been.calledWith(refinements);
     });
 
     it('should call update() with options', () => {
@@ -60,7 +60,7 @@ suite('gb-filter', Filter, ({
 
       tag().updateValues(results);
 
-      expect(update.calledWith({ options })).to.be.true;
+      expect(update).to.have.been.calledWith({ options });
     });
   });
 
@@ -70,7 +70,7 @@ suite('gb-filter', Filter, ({
 
       tag().onselect('*');
 
-      expect(reset.called).to.be.true;
+      expect(reset).to.have.been.called;
     });
 
     it('should call refine on navigation selected', () => {
@@ -81,7 +81,7 @@ suite('gb-filter', Filter, ({
 
       tag().onselect(selection);
 
-      expect(refine.calledWith(Object.assign(selection, { navigationName }))).to.be.true;
+      expect(refine).to.have.been.calledWith(Object.assign(selection, { navigationName }));
     });
 
     it('should call unrefine to clear current selection', () => {
@@ -90,7 +90,7 @@ suite('gb-filter', Filter, ({
 
       tag().onselect('*');
 
-      expect(unrefine.calledWith(selection, { skipSearch: true })).to.be.true;
+      expect(unrefine).to.have.been.calledWith(selection, { skipSearch: true });
     });
   });
 });

@@ -34,7 +34,7 @@ describe('Autocomplete', () => {
       const index = autocomplete.indexOfSelected();
 
       expect(index).to.eq(selectedIndex);
-      expect(indexOf.calledWith(selected)).to.be.true;
+      expect(indexOf).to.have.been.calledWith(selected);
     });
   });
 
@@ -56,7 +56,7 @@ describe('Autocomplete', () => {
       autocomplete.selectLink(selection);
 
       expect(autocomplete.selected).to.eq(selected);
-      expect(swapAttributes.calledWith(selection)).to.be.true;
+      expect(swapAttributes).to.have.been.calledWith(selection);
     });
   });
 
@@ -70,7 +70,7 @@ describe('Autocomplete', () => {
       const link = autocomplete.linkAbove();
 
       expect(link).to.eq(selected);
-      expect(indexOfSelected.called).to.be.true;
+      expect(indexOfSelected).to.have.been.called;
     });
   });
 
@@ -84,7 +84,7 @@ describe('Autocomplete', () => {
       const link = autocomplete.linkBelow();
 
       expect(link).to.eq(selected);
-      expect(indexOfSelected.called).to.be.true;
+      expect(indexOfSelected).to.have.been.called;
     });
   });
 
@@ -97,7 +97,7 @@ describe('Autocomplete', () => {
       const links = autocomplete.links();
 
       expect(links).to.eql(linkNodes);
-      expect(querySelectorAll.calledWith('gb-sayt-autocomplete gb-sayt-link')).to.be.true;
+      expect(querySelectorAll).to.have.been.calledWith('gb-sayt-autocomplete gb-sayt-link');
     });
   });
 
@@ -121,7 +121,7 @@ describe('Autocomplete', () => {
       const isSelected = autocomplete.isSelectedInAutocomplete();
 
       expect(isSelected).to.be.true;
-      expect(indexOf.calledWith(selected)).to.be.true;
+      expect(indexOf).to.have.been.calledWith(selected);
     });
   });
 
@@ -136,7 +136,7 @@ describe('Autocomplete', () => {
 
       expect(link).to.eq(nextLink);
       expect(removeActiveClass.called).to.be.true;
-      expect(add.calledWith('active')).to.be.true;
+      expect(add).to.have.been.calledWith('active');
     });
 
     describe('notifier()', () => {
@@ -159,7 +159,7 @@ describe('Autocomplete', () => {
         const link = autocomplete.swapAttributes(nextLink);
 
         expect(link).to.eq(nextLink);
-        expect(notifier.calledWith(VALUE, undefined, undefined)).to.be.true;
+        expect(notifier).to.have.been.calledWith(VALUE, undefined, undefined);
       });
 
       it('should call notifier with value and refinement', () => {
@@ -168,7 +168,7 @@ describe('Autocomplete', () => {
         const link = autocomplete.swapAttributes(nextLink);
 
         expect(link).to.eq(nextLink);
-        expect(notifier.calledWith(VALUE, REFINEMENT, undefined)).to.be.true;
+        expect(notifier).to.have.been.calledWith(VALUE, REFINEMENT, undefined);
       });
 
       it('should call notifier with just refinement', () => {
@@ -177,7 +177,7 @@ describe('Autocomplete', () => {
         const link = autocomplete.swapAttributes(nextLink);
 
         expect(link).to.eq(nextLink);
-        expect(notifier.calledWith(undefined, REFINEMENT, undefined)).to.be.true;
+        expect(notifier).to.have.been.calledWith(undefined, REFINEMENT, undefined);
       });
 
       it('should call notifier with value, refinement and field', () => {
@@ -186,7 +186,7 @@ describe('Autocomplete', () => {
         const link = autocomplete.swapAttributes(nextLink);
 
         expect(link).to.eq(nextLink);
-        expect(notifier.calledWith(VALUE, REFINEMENT, FIELD)).to.be.true;
+        expect(notifier).to.have.been.calledWith(VALUE, REFINEMENT, FIELD);
       });
 
       it('should not call notifier with just field', () => {
@@ -195,7 +195,7 @@ describe('Autocomplete', () => {
         const link = autocomplete.swapAttributes(nextLink);
 
         expect(link).to.eq(nextLink);
-        expect(notifier.called).to.be.false;
+        expect(notifier).to.not.have.been.called;
       });
     });
   });
@@ -212,20 +212,17 @@ describe('Autocomplete', () => {
 
   describe('removeActiveClass()', () => {
     it('should remove class from all links', () => {
-      const spy1 = sandbox.spy();
-      const spy2 = sandbox.spy();
-      const spy3 = sandbox.spy();
+      const remove = sandbox.spy();
       autocomplete.links = () => <any[]>[
-        { classList: { remove: spy1 } },
-        { classList: { remove: spy2 } },
-        { classList: { remove: spy3 } }
+        { classList: { remove } },
+        { classList: { remove } },
+        { classList: { remove } }
       ];
 
       autocomplete.removeActiveClass();
 
-      expect(spy1.calledWith('active')).to.be.true;
-      expect(spy2.calledWith('active')).to.be.true;
-      expect(spy3.calledWith('active')).to.be.true;
+      expect(remove).to.have.been.calledThrice;
+      expect(remove).to.always.have.been.calledWith('active');
     });
   });
 
@@ -236,8 +233,8 @@ describe('Autocomplete', () => {
 
       autocomplete.reset();
 
-      expect(resetSelected.called).to.be.true;
-      expect(removeActiveClass.called).to.be.true;
+      expect(resetSelected).to.have.been.called;
+      expect(removeActiveClass).to.have.been.called;
     });
   });
 
@@ -259,9 +256,9 @@ describe('Autocomplete', () => {
 
         autocomplete.keyboardListener(event, () => null);
 
-        expect(isSelectedInAutocomplete.called).to.be.true;
-        expect(preventDefault.called).to.be.true;
-        expect(emit.calledWith(AUTOCOMPLETE_HIDE_EVENT)).to.be.true;
+        expect(isSelectedInAutocomplete).to.have.been.called;
+        expect(preventDefault).to.have.been.called;
+        expect(emit).to.have.been.calledWith(AUTOCOMPLETE_HIDE_EVENT);
       });
 
       it('should reset autocomplete', () => {
@@ -275,10 +272,10 @@ describe('Autocomplete', () => {
         autocomplete.keyboardListener(event, () => null);
 
         expect(autocomplete.searchInput.value).to.eq(originalValue);
-        expect(isSelectedInAutocomplete.called).to.be.true;
-        expect(preventDefault.called).to.be.true;
-        expect(linkAbove.called).to.be.true;
-        expect(reset.called).to.be.true;
+        expect(isSelectedInAutocomplete).to.have.been.called;
+        expect(preventDefault).to.have.been.called;
+        expect(linkAbove).to.have.been.called;
+        expect(reset).to.have.been.called;
       });
 
       it('should select next link', () => {
@@ -290,10 +287,10 @@ describe('Autocomplete', () => {
 
         autocomplete.keyboardListener(event, () => null);
 
-        expect(isSelectedInAutocomplete.called).to.be.true;
-        expect(preventDefault.called).to.be.true;
-        expect(linkAbove.called).to.be.true;
-        expect(selectLink.calledWith(link)).to.be.true;
+        expect(isSelectedInAutocomplete).to.have.been.called;
+        expect(preventDefault).to.have.been.called;
+        expect(linkAbove).to.have.been.called;
+        expect(selectLink).to.have.been.calledWith(link);
       });
     });
 
@@ -314,9 +311,9 @@ describe('Autocomplete', () => {
         autocomplete.keyboardListener(event, () => null);
 
         expect(autocomplete.preautocompleteValue).to.eq(query);
-        expect(isSelectedInAutocomplete.called).to.be.true;
-        expect(linkBelow.called).to.be.true;
-        expect(selectLink.calledWith(link)).to.be.true;
+        expect(isSelectedInAutocomplete).to.have.been.called;
+        expect(linkBelow).to.have.been.called;
+        expect(selectLink).to.have.been.calledWith(link);
       });
 
       it('should select link below and not set preautocompleteValue', () => {
@@ -329,9 +326,9 @@ describe('Autocomplete', () => {
         autocomplete.keyboardListener(event, () => null);
 
         expect(autocomplete.preautocompleteValue).to.be.undefined;
-        expect(isSelectedInAutocomplete.called).to.be.true;
-        expect(linkBelow.called).to.be.true;
-        expect(selectLink.calledWith(link)).to.be.true;
+        expect(isSelectedInAutocomplete).to.have.been.called;
+        expect(linkBelow).to.have.been.called;
+        expect(selectLink).to.have.been.calledWith(link);
       });
     });
 
@@ -347,8 +344,8 @@ describe('Autocomplete', () => {
 
         autocomplete.keyboardListener(event, callback);
 
-        expect(isSelectedInAutocomplete.called).to.be.true;
-        expect(callback.called).to.be.true;
+        expect(isSelectedInAutocomplete).to.have.been.called;
+        expect(callback).to.have.been.called;
       });
 
       it('should select link below and not set preautocompleteValue', () => {
@@ -361,10 +358,10 @@ describe('Autocomplete', () => {
 
         autocomplete.keyboardListener(event, () => null);
 
-        expect(isSelectedInAutocomplete.called).to.be.true;
-        expect(querySelector.calledWith('a')).to.be.true;
-        expect(click.called).to.be.true;
-        expect(reset.called).to.be.true;
+        expect(isSelectedInAutocomplete).to.have.been.called;
+        expect(querySelector).to.have.been.calledWith('a');
+        expect(click).to.have.been.called;
+        expect(reset).to.have.been.called;
       });
     });
 
@@ -379,7 +376,7 @@ describe('Autocomplete', () => {
 
         autocomplete.keyboardListener(event, () => null);
 
-        expect(emit.calledWith(AUTOCOMPLETE_HIDE_EVENT)).to.be.true;
+        expect(emit).to.have.been.calledWith(AUTOCOMPLETE_HIDE_EVENT);
       });
     });
   });

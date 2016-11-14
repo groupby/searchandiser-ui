@@ -75,7 +75,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().updateOptions(options);
 
-      expect(update.calledWith({ options })).to.be.true;
+      expect(update).to.have.been.calledWith({ options });
     });
 
     it('should update options with clearOption', () => {
@@ -86,7 +86,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().updateOptions(options);
 
-      expect(update.calledWith({ options: [clearOption, ...options] })).to.be.true;
+      expect(update).to.have.been.calledWith({ options: [clearOption, ...options] });
     });
   });
 
@@ -196,7 +196,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       tag().unfocus();
 
       expect(tag().focused).to.be.false;
-      expect(blur.called).to.be.true;
+      expect(blur).to.have.been.called;
     });
   });
 
@@ -217,7 +217,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().selectOption('', JSON.stringify(opts));
 
-      expect(callback.calledWith(opts)).to.be.true;
+      expect(callback).to.have.been.calledWith(opts);
     });
 
     it('should return value', () => {
@@ -227,7 +227,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().selectOption('', opts);
 
-      expect(callback.calledWith(opts)).to.be.true;
+      expect(callback).to.have.been.calledWith(opts);
     });
 
     it('should return \'*\'', () => {
@@ -236,7 +236,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().selectOption('', undefined);
 
-      expect(callback.calledWith('*')).to.be.true;
+      expect(callback).to.have.been.calledWith('*');
     });
   });
 
@@ -255,8 +255,8 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       });
 
       expect(options[0].disabled).to.be.false;
-      expect(update.calledWith({ selected: option.value })).to.be.true;
-      expect(selectOption.calledWith(option.text, option.value)).to.be.true;
+      expect(update).to.have.been.calledWith({ selected: option.value });
+      expect(selectOption).to.have.been.calledWith(option.text, option.value);
     });
 
     it('should set first option enabled', () => {
@@ -269,9 +269,9 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       tag().selectNative(<any>{ target: { selectedOptions: [option] } });
 
       expect(options[0].disabled).to.be.true;
-      expect(nativeSelect.called).to.be.true;
-      expect(update.called).to.be.true;
-      expect(selectOption.called).to.be.true;
+      expect(nativeSelect).to.have.been.called;
+      expect(update).to.have.been.called;
+      expect(selectOption).to.have.been.called;
     });
   });
 
@@ -284,8 +284,8 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().selectCustom(option);
 
-      expect(blur.called).to.be.true;
-      expect(selectOption.calledWith(option.label, option.value)).to.be.true;
+      expect(blur).to.have.been.called;
+      expect(selectOption).to.have.been.calledWith(option.label, option.value);
     });
   });
 
@@ -295,7 +295,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().clearSelection();
 
-      expect(selectOption.calledWith(undefined, '*')).to.be.true;
+      expect(selectOption).to.have.been.calledWith(undefined, '*');
     });
   });
 });

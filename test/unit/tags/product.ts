@@ -35,7 +35,7 @@ suite('gb-product', Product, ({ tag, spy, stub }) => {
 
       tag().init();
 
-      expect(transformRecord.calledWith(all_meta)).to.be.true;
+      expect(transformRecord).to.have.been.calledWith(all_meta);
     });
 
     describe('struct', () => {
@@ -95,7 +95,7 @@ suite('gb-product', Product, ({ tag, spy, stub }) => {
 
       tag().transformRecord(ALL_META);
 
-      expect(update.called).to.be.true;
+      expect(update).to.have.been.called;
     });
   });
 
@@ -136,7 +136,7 @@ suite('gb-product', Product, ({ tag, spy, stub }) => {
 
       tag().switchVariant(<any>{ target: { dataset: { index } } });
 
-      expect(update.calledWith({ variantIndex: index })).to.be.true;
+      expect(update).to.have.been.calledWith({ variantIndex: index });
     });
   });
 });

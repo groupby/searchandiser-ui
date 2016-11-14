@@ -19,7 +19,7 @@ suite('gb-reset', Reset, ({ flux, tag, spy, expectSubscriptions }) => {
 
       tag().init();
 
-      expect(addEventListener.calledWith('click', tag().clearQuery)).to.be.true;
+      expect(addEventListener).to.have.been.calledWith('click', tag().clearQuery);
     });
   });
 
@@ -43,7 +43,7 @@ suite('gb-reset', Reset, ({ flux, tag, spy, expectSubscriptions }) => {
       tag().clearQuery()
         .then(() => {
           expect(tag().searchBox.value).to.eq('');
-          expect(search.called).to.be.true;
+          expect(search).to.have.been.called;
           done();
         });
     });
