@@ -84,18 +84,16 @@ suite('gb-product', Product, ({ tag, spy, stub }) => {
     it('should perform transformation', () => {
       const remappedMeta = { e: 'f', g: 'h' };
       const variants = ['a', 'b', 'c'];
-      const update =
-        tag().update =
-        spy((obj) => {
-          expect(obj.allMeta).to.eq(ALL_META);
-          expect(obj.productMeta()).to.eq(remappedMeta);
-          expect(obj.variants).to.eq(variants);
-        });
+      const update = tag().update = spy();
       tag().transformer = <any>new MockTransformer(ALL_META, remappedMeta, variants);
 
       tag().transformRecord(ALL_META);
 
-      expect(update).to.have.been.called;
+      expect(update).to.have.been.calledWith({
+        allMeta: ALL_META,
+        variants,
+        productMeta: sinon.match((meta) => meta() === remappedMeta)
+      });
     });
   });
 

@@ -78,16 +78,11 @@ suite('tracker', ({ spy, stub }) => {
     });
 
     it('should generate ids', () => {
-      const setVisitor = stub(service, 'setVisitor', (visId, sessId) => {
-        expect(visId).to.be.ok;
-        expect(visId).to.have.length.gt(1);
-        expect(sessId).to.be.ok;
-        expect(sessId).to.have.length.gt(1);
-      });
+      const setVisitor = stub(service, 'setVisitor');
 
       service.setVisitorInfo();
 
-      expect(setVisitor).to.have.been.called;
+      expect(setVisitor).to.have.been.calledWith(sinon.match.string, sinon.match.string);
     });
 
     it('should set cookies', () => {

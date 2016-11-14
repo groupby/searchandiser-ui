@@ -398,12 +398,7 @@ suite('gb-sayt', Sayt, ({
 
     it('should perform a static search', (done) => {
       const suggestion = 'red heels';
-      const update = spy((queryObj) => {
-        expect(queryObj).to.be.an.instanceof(Query);
-        expect(queryObj.raw.query).to.eq(suggestion);
-        expect(queryObj.raw.refinements).to.eql([]);
-        expect(queryObj.raw.skip).to.eq(19);
-      });
+      const update = spy();
       flux().query = new Query('black heels')
         .withSelectedRefinements({ navigationName: 'brand', type: 'Value', value: '' })
         .skip(19);
@@ -418,7 +413,14 @@ suite('gb-sayt', Sayt, ({
         }
       })
         .then(() => {
-          expect(update).to.have.been.called;
+          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.have.been.calledWithMatch({
+            raw: {
+              query: suggestion,
+              refinements: [],
+              skip: 19
+            }
+          });
           done();
         });
     });
@@ -469,12 +471,7 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const field = 'size';
       const value = 8;
-      const update = spy((queryObj) => {
-        expect(queryObj).to.be.an.instanceof(Query);
-        expect(queryObj.raw.query).to.eq(suggestion);
-        expect(queryObj.raw.refinements).to.eql([refinement(field, value)]);
-        expect(queryObj.raw.skip).to.eq(13);
-      });
+      const update = spy();
       flux().query = new Query('blue heels').skip(13);
       flux().rewrite = (): any => expect.fail();
       tag().services = <any>{ url: { update, isActive: () => true } };
@@ -485,17 +482,21 @@ suite('gb-sayt', Sayt, ({
         dataset: { field, refinement: value }
       }, suggestion)
         .then(() => {
-          expect(update).to.have.been.called;
+          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.have.been.calledWithMatch({
+            raw: {
+              query: suggestion,
+              refinements: [refinement(field, value)],
+              skip: 13
+            }
+          });
           done();
         });
     });
 
     it('should perform a static refinement with only query', (done) => {
       const suggestion = 'red heels';
-      const update = spy((queryObj) => {
-        expect(queryObj.raw.query).to.eq(suggestion);
-        expect(queryObj.raw.refinements).to.eql([]);
-      });
+      const update = spy();
       tag().services = <any>{ url: { update, isActive: () => true } };
       tag()._config = { staticSearch: true };
 
@@ -504,7 +505,12 @@ suite('gb-sayt', Sayt, ({
         dataset: { norefine: true }
       }, suggestion)
         .then(() => {
-          expect(update).to.have.been.called;
+          expect(update).to.have.been.calledWithMatch({
+            raw: {
+              query: suggestion,
+              refinements: []
+            }
+          });
           done();
         });
     });
@@ -528,12 +534,7 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const value = 8;
       const field = 'size';
-      const update = spy((queryObj) => {
-        expect(queryObj).to.be.an.instanceof(Query);
-        expect(queryObj.raw.query).to.eq(suggestion);
-        expect(queryObj.raw.refinements).to.eql([refinement(field, value)]);
-        expect(queryObj.raw.skip).to.eq(30);
-      });
+      const update = spy();
       flux().query = new Query('black heels').skip(30);
       tag().services = <any>{ url: { update, isActive: () => true } };
       tag()._config = { staticSearch: true, categoryField: field };
@@ -543,7 +544,14 @@ suite('gb-sayt', Sayt, ({
         dataset: { refinement: value }
       }, suggestion)
         .then(() => {
-          expect(update).to.have.been.called;
+          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.have.been.calledWithMatch({
+            raw: {
+              query: suggestion,
+              refinements: [refinement(field, value)],
+              skip: 30
+            }
+          });
           done();
         });
     });

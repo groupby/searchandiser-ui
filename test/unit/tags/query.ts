@@ -251,12 +251,7 @@ suite('gb-query', Query, ({
   describe('setLocation()', () => {
     it('should call url.update()', () => {
       const query = 'belts';
-      const update = spy((queryObj: FluxQuery) => {
-        expect(queryObj).to.be.an.instanceof(FluxQuery);
-        expect(queryObj.raw.query).to.eq(query);
-        expect(queryObj.raw.refinements).to.eql([]);
-        expect(queryObj.raw.skip).to.eq(19);
-      });
+      const update = spy();
       flux().query = new FluxQuery('shoes')
         .withSelectedRefinements({ navigationName: 'brand', type: 'Value', value: 'Nike' })
         .skip(19);
@@ -265,7 +260,14 @@ suite('gb-query', Query, ({
 
       tag().setLocation();
 
-      expect(update).to.have.been.called;
+      expect(update).to.have.been.calledWith(sinon.match.instanceOf(FluxQuery));
+      expect(update).to.have.been.calledWithMatch({
+        raw: {
+          query,
+          refinements: [],
+          skip: 19
+        }
+      });
     });
 
     it('should call flux.reset()', () => {

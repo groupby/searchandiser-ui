@@ -54,15 +54,15 @@ suite('gb-details', Details, ({
   describe('updateRecord()', () => {
     it('should update record', () => {
       const allMeta = { a: 'b', c: 'd' };
-      const update = tag().update = spy((obj) => {
-        expect(obj.allMeta).to.eql(allMeta);
-        expect(obj.productMeta).to.be.a('function');
-      });
+      const update = tag().update = spy();
       tag().transformer = <any>{ transform: (meta) => () => meta };
 
       tag().updateRecord(<any>{ allMeta });
 
-      expect(update).to.have.been.called;
+      expect(update).to.have.been.calledWith({
+        allMeta,
+        productMeta: sinon.match.func
+      });
     });
   });
 });

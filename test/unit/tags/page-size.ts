@@ -52,7 +52,7 @@ suite('gb-page-size', PageSize, ({
 
     it('should emit tracking event', (done) => {
       const search = spy();
-      const resize = stub(flux(), 'resize').returns(Promise.resolve());
+      const resize = stub(flux(), 'resize').resolves();
       tag().services = <any>{ tracker: { search } };
       flux().query.skip(43);
 
@@ -65,7 +65,7 @@ suite('gb-page-size', PageSize, ({
     });
 
     it('should check for tracker service', (done) => {
-      stub(flux(), 'resize').returns(Promise.resolve());
+      stub(flux(), 'resize').resolves();
       tag().services = <any>{};
 
       tag().onselect(40)
