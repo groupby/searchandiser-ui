@@ -148,7 +148,7 @@ suite('gb-query', Query, ({
 
     it('should call emit tracker event', (done) => {
       const search = spy();
-      const reset = stub(flux(), 'reset').returns(Promise.resolve());
+      const reset = stub(flux(), 'reset').resolves();
       stub(tag(), 'inputValue');
       tag().services = <any>{ tracker: { search } };
 
@@ -162,7 +162,7 @@ suite('gb-query', Query, ({
 
     it('should check for tracker service', (done) => {
       stub(tag(), 'inputValue');
-      stub(flux(), 'reset').returns(Promise.resolve());
+      stub(flux(), 'reset').resolves();
       tag().services = <any>{};
 
       tag().resetToInputValue()

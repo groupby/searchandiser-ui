@@ -181,10 +181,10 @@ suite('gb-paging', Paging, ({
 
     it('switchPage()', (done) => {
       const newPage = 7;
-      const switchPage = spy((page) => Promise.resolve(expect(page).to.eq(newPage)));
+      const switchPage = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ switchPage });
       tag().emitEvent = () => {
-        expect(switchPage).to.have.been.called;
+        expect(switchPage).to.have.been.calledWith(newPage);
         done();
       };
 

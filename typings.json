@@ -12,17 +12,17 @@
   },
   "globalDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",
-    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
-    "node": "registry:dt/node#6.0.0+20160925070332",
-    "sinon": "registry:dt/sinon#1.16.0+20160924120326"
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
+    "mocha": "registry:dt/mocha#2.2.5+20161028141524",
+    "node": "registry:dt/node#6.0.0+20161110151007",
+    "sinon": "registry:dt/sinon#1.16.0+20160924120326",
+    "sinon-chai": "registry:dt/sinon-chai#2.7.0+20160317120654"
   },
   "globalDependencies": {
-    "axios": "registry:dt/axios#0.9.1+20160629101425",
+    "axios": "registry:dt/axios#0.9.1+20161016142654",
     "clone": "registry:dt/clone#0.1.11+20160317120654",
-    "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
-    "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
+    "eventemitter3": "registry:dt/eventemitter3#1.2.0+20160901210137",
     "js-cookie": "registry:dt/js-cookie#2.0.0+20160317120654",
-    "query-string": "registry:dt/query-string#3.0.0+20160331065456",
-    "sinon-chai": "registry:dt/sinon-chai#2.7.0+20160317120654"
+    "query-string": "registry:dt/query-string#3.0.0+20161022032919"
   }
 }

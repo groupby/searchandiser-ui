@@ -74,7 +74,7 @@ suite('filter', ({ spy, stub }) => {
         emit: () => null,
         query: new Query(parentQuery)
       }, <any>{});
-      const search = stub(service.fluxClone, 'search').returns(Promise.resolve());
+      const search = stub(service.fluxClone, 'search').resolves();
 
       service.updateFluxClone()
         .then(() => {
@@ -89,7 +89,7 @@ suite('filter', ({ spy, stub }) => {
       const refinements: any = { a: 'b', c: 'd' };
       const query = new Query(parentQuery).withSelectedRefinements(refinements);
       const service = new Filter(<any>{ emit: () => null, query }, <any>{});
-      const search = stub(service.fluxClone, 'search').returns(Promise.resolve());
+      const search = stub(service.fluxClone, 'search').resolves();
       service.isTargetNav = () => false;
 
       service.updateFluxClone()

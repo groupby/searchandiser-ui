@@ -354,7 +354,7 @@ suite('gb-sayt', Sayt, ({
     it('should update results with suggestion as query', (done) => {
       const suggestion = 'red heels';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
-      const reset = stub(flux(), 'reset').returns(Promise.resolve());
+      const reset = stub(flux(), 'reset').resolves();
       const emitEvent = stub(tag(), 'emitEvent');
       tag()._config = {};
 
@@ -375,7 +375,7 @@ suite('gb-sayt', Sayt, ({
     it('should search for the gb-sayt-link node', (done) => {
       const suggestion = 'red heels';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
-      const reset = stub(flux(), 'reset').returns(Promise.resolve());
+      const reset = stub(flux(), 'reset').resolves();
       stub(tag(), 'emitEvent');
       tag()._config = {};
 
@@ -430,7 +430,7 @@ suite('gb-sayt', Sayt, ({
       const field = 'size';
       const value = 'medium';
       const rewrite = stub(flux(), 'rewrite');
-      const refine = stub(flux(), 'refine').returns(Promise.resolve());
+      const refine = stub(flux(), 'refine').resolves();
       const emitEvent = stub(tag(), 'emitEvent');
       tag()._config = {};
 
@@ -450,7 +450,7 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const field = 'size';
       const refinement = 8;
-      const reset = stub(flux(), 'reset').returns(Promise.resolve());
+      const reset = stub(flux(), 'reset').resolves();
       flux().rewrite = (): any => expect.fail();
       stub(tag(), 'emitEvent');
       tag()._config = {};

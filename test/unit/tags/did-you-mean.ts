@@ -29,7 +29,7 @@ suite('gb-did-you-mean', DidYouMean, ({
 
     it('should emit tracker event', (done) => {
       const didYouMean = spy();
-      const rewrite = stub(flux(), 'rewrite').returns(Promise.resolve());
+      const rewrite = stub(flux(), 'rewrite').resolves();
       tag().services = <any>{ tracker: { didYouMean } };
 
       tag().send(<any>{ target: {} })

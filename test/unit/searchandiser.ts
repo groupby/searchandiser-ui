@@ -124,7 +124,7 @@ describe('searchandiser', () => {
 
   describe('search()', () => {
     it('should perform a blank search', (done) => {
-      const search = sandbox.stub(flux, 'search').returns(Promise.resolve());
+      const search = sandbox.stub(flux, 'search').resolves();
       const emit = sandbox.stub(flux, 'emit');
 
       searchandiser.search()
@@ -137,7 +137,7 @@ describe('searchandiser', () => {
 
     it('should perform a search with query', () => {
       const someQuery = 'some query';
-      const search = sinon.stub(flux, 'search').returns(Promise.resolve());
+      const search = sinon.stub(flux, 'search').resolves();
 
       searchandiser.search(someQuery);
 
