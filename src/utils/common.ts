@@ -45,7 +45,7 @@ export function checkNested(obj: any, ...keys: string[]): boolean {
 }
 
 export function getParam(param: string): string | null {
-  return queryString.parse(LOCATION.getSearch())[param] || null;
+  return <string>queryString.parse(LOCATION.getSearch())[param] || null;
 }
 
 export function unless(obj: any, ...defaultObjs: any[]) {

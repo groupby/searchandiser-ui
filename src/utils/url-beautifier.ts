@@ -181,8 +181,10 @@ export class UrlParser {
       }
     }
 
-    const unmappedRefinements = queryString.parse(url.query)[this.config.extraRefinementsParam];
-    if (unmappedRefinements) query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
+    const unmappedRefinements = <string>queryString.parse(url.query)[this.config.extraRefinementsParam];
+    if (unmappedRefinements) {
+      query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
+    }
 
     return query;
   }
