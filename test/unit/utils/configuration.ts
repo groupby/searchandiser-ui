@@ -163,7 +163,7 @@ describe('Configuration', () => {
 
         const config = Configuration.transform(rawConfig, new Configuration(rawConfig).handlers);
 
-        expect(config.sort).to.eql({ field: 'A', order: 'B' });
+        expect(config.sort).to.eql([{ field: 'A', order: 'B' }]);
       });
 
       describe('bridge configuration', () => {

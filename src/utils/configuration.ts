@@ -36,10 +36,10 @@ export class Configuration {
       if (!sort) {
         let sortOptions = oget(this.rawConfig, 'tags.sort.options');
         if (sortOptions && sortOptions.length > 0) {
-          return sortOptions.map((val) => val.value)[0];
+          [sort] = sortOptions.map((val) => val.value);
         }
       }
-      return sort;
+      return Array.isArray(sort) ? sort : [sort];
     },
     pageSize: (pageSize: number) => {
       if (!pageSize) {
