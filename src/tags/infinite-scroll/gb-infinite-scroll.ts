@@ -34,12 +34,14 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   init() {
     this.configure(DEFAULT_CONFIG);
 
-    this.reset();
-
     this.scroller.addEventListener('scroll', this.onScroll);
     WINDOW.addEventListener('resize', this.onResize);
     this.flux.on(Events.QUERY_CHANGED, this.onResultsChanged);
+    this.flux.on(Events.REFINEMENTS_CHANGED, this.onResultsChanged);
+    this.flux.on(Events.SORT, this.onResultsChanged);
+    this.flux.on(Events.COLLECTION_CHANGED, this.onResultsChanged);
 
+    this.reset();
     this.onResize();
   }
 
@@ -47,6 +49,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
     this.items = [];
     this.loadedItems = 0;
     this.runwayEnd = 0;
+    this.scroller.textContent = '';
   }
 
   onResultsChanged() {
