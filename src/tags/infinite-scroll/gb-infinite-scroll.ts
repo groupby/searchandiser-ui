@@ -1,7 +1,7 @@
 import { WINDOW } from '../../utils/common';
 import { FluxTag } from '../tag';
 import { Renderer } from './renderer';
-import { Record } from 'groupby-api';
+import { Events, Record } from 'groupby-api';
 import * as riot from 'riot';
 
 export const MIN_REQUEST_SIZE = 25;
@@ -34,14 +34,29 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   init() {
     this.configure(DEFAULT_CONFIG);
 
+    this.scroller.addEventListener('scroll', this.onScroll);
+    WINDOW.addEventListener('resize', this.onResize);
+    this.flux.on(Events.QUERY_CHANGED, this.onResultsChanged);
+    this.flux.on(Events.REFINEMENTS_CHANGED, this.onResultsChanged);
+    this.flux.on(Events.SORT, this.onResultsChanged);
+    this.flux.on(Events.COLLECTION_CHANGED, this.onResultsChanged);
+
+    this.reset();
+    this.onResize();
+  }
+
+  reset() {
     this.items = [];
     this.loadedItems = 0;
     this.runwayEnd = 0;
+    while (this.scroller.hasChildNodes()) {
+      this.scroller.removeChild(this.scroller.lastChild);
+    }
+  }
 
-    this.scroller.addEventListener('scroll', this.onScroll);
-    WINDOW.addEventListener('resize', this.onResize);
-
-    this.onResize();
+  onResultsChanged() {
+    this.reset();
+    this.onScroll();
   }
 
   onScroll() {
