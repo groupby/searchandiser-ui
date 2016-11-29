@@ -3,33 +3,28 @@ import * as renderer from '../../../src/tags/infinite-scroll/renderer';
 import { WINDOW } from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Query } from 'groupby-api';
+import { Events, Query } from 'groupby-api';
 
 suite('gb-infinite-scroll', InfiniteScroll, ({
   flux, tag, spy, stub,
+  expectSubscriptions,
   itShouldConfigure
 }) => {
 
   describe('init()', () => {
     const SCROLLER: any = { addEventListener: () => null };
 
-    itShouldConfigure(DEFAULT_CONFIG);
-
-    it('should set initial values', () => {
+    beforeEach(() => {
       tag().scroller = SCROLLER;
       tag().onResize = () => null;
-
-      tag().init();
-
-      expect(tag().items).to.eql([]);
-      expect(tag().loadedItems).to.eq(0);
-      expect(tag().runwayEnd).to.eq(0);
+      tag().reset = () => null;
     });
+
+    itShouldConfigure(DEFAULT_CONFIG);
 
     it('should listen for scroll events on scroller', () => {
       const addEventListener = spy();
       tag().scroller = <any>{ addEventListener };
-      tag().onResize = () => null;
 
       tag().init();
 
@@ -39,18 +34,73 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
     it('should listen for resize events on window', () => {
       const addEventListener = stub(WINDOW, 'addEventListener');
       tag().scroller = <any>{ addEventListener };
-      tag().onResize = () => null;
 
       tag().init();
 
       expect(addEventListener).to.have.been.calledWith('resize', tag().onResize);
     });
 
+    it('should call onResultsChanged() for events', () => {
+      expectSubscriptions(() => tag().init(), {
+        [Events.QUERY_CHANGED]: tag().onResultsChanged,
+        [Events.REFINEMENTS_CHANGED]: tag().onResultsChanged,
+        [Events.COLLECTION_CHANGED]: tag().onResultsChanged,
+        [Events.SORT]: tag().onResultsChanged
+      });
+    });
+
+    it('should call reset()', (done) => {
+      tag().reset = () => done();
+
+      tag().init();
+    });
+
     it('should call onResize()', (done) => {
-      tag().scroller = SCROLLER;
       tag().onResize = () => done();
 
       tag().init();
+    });
+  });
+
+  describe('reset()', () => {
+    it('should reset values', () => {
+      tag().scroller = <any>{ hasChildNodes: () => false };
+      tag().items = <any[]>['a', 'b'];
+      tag().loadedItems = 3;
+      tag().runwayEnd = 100;
+
+      tag().reset();
+
+      expect(tag().items).to.eql([]);
+      expect(tag().loadedItems).to.eq(0);
+      expect(tag().runwayEnd).to.eq(0);
+    });
+
+    it('should remove nodes from scroller', () => {
+      const lastChild = { a: 'b' };
+      const removeChild = spy();
+      const hasChildNodes = stub();
+      hasChildNodes.onFirstCall().returns(true);
+      hasChildNodes.onSecondCall().returns(true);
+      hasChildNodes.onThirdCall().returns(true);
+      tag().scroller = <any>{ removeChild, lastChild, hasChildNodes };
+
+      tag().reset();
+
+      expect(removeChild).to.have.been.calledThrice;
+      expect(removeChild).to.have.always.been.calledWith(lastChild);
+    });
+  });
+
+  describe('onResultsChanged()', () => {
+    it('should call reset() and onScroll()', () => {
+      const reset = tag().reset = spy();
+      const onScroll = tag().onScroll = spy();
+
+      tag().onResultsChanged();
+
+      expect(reset).to.have.been.called;
+      expect(onScroll).to.have.been.called;
     });
   });
 

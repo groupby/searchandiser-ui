@@ -49,7 +49,9 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
     this.items = [];
     this.loadedItems = 0;
     this.runwayEnd = 0;
-    this.scroller.textContent = '';
+    while (this.scroller.hasChildNodes()) {
+      this.scroller.removeChild(this.scroller.lastChild);
+    }
   }
 
   onResultsChanged() {
