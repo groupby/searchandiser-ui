@@ -34,9 +34,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   init() {
     this.configure(DEFAULT_CONFIG);
 
-    this.items = [];
-    this.loadedItems = 0;
-    this.runwayEnd = 0;
+    this.reset();
 
     this.scroller.addEventListener('scroll', this.onScroll);
     WINDOW.addEventListener('resize', this.onResize);
