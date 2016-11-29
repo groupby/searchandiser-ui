@@ -34,7 +34,7 @@ export class Configuration {
     },
     sort: (sort: Sort) => {
       if (!sort) {
-        let sortOptions = oget(this.rawConfig, 'tags.sort.options');
+        const sortOptions = oget(this.rawConfig, 'tags.sort.options');
         if (sortOptions && sortOptions.length > 0) {
           [sort] = sortOptions.map((val) => val.value);
         }
@@ -43,9 +43,9 @@ export class Configuration {
     },
     pageSize: (pageSize: number) => {
       if (!pageSize) {
-        let pageSizes = this.rawConfig.pageSizes;
+        const pageSizes = this.rawConfig.pageSizes;
         if (pageSizes && pageSizes.length > 0) {
-          return pageSizes[0];
+          pageSize = pageSizes[0];
         }
       }
       return pageSize;
