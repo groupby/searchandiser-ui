@@ -26,7 +26,7 @@ Add the searchandiser CDN to the head in your html file.
 ```html
 <html>
   <head>
-    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.2.33.js"></script>
+    <script src="http://cdn.groupbycloud.com/dist/searchandiser-ui-0.2.34.js"></script>
   </head>
   <body>
     ...
