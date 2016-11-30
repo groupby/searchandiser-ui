@@ -1,4 +1,4 @@
-import { Product } from '../../../src/tags/product/gb-product';
+import { DEFAULT_CONFIG, Product } from '../../../src/tags/product/gb-product';
 import { ProductMeta, ProductTransformer } from '../../../src/utils/product-transformer';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -9,7 +9,7 @@ suite('gb-product', Product, ({
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure();
+    itShouldConfigure(DEFAULT_CONFIG);
 
     beforeEach(() => {
       tag()._scope = {};

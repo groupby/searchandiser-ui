@@ -3,7 +3,15 @@ import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
-export interface Results extends FluxTag<any> { }
+export const DEFAULT_CONFIG: ResultsConfig = {
+  lazy: false
+};
+
+export interface ResultsConfig {
+  lazy?: boolean;
+}
+
+export interface Results extends FluxTag<ResultsConfig> { }
 
 export class Results {
 
@@ -14,6 +22,8 @@ export class Results {
   getPath: typeof getPath;
 
   init() {
+    this.configure(DEFAULT_CONFIG);
+
     this.struct = this.config.structure;
     this.variantStruct = unless(this.struct._variantStructure, this.struct);
     this.getPath = getPath;
