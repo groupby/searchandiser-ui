@@ -32,7 +32,7 @@ suite<Product>('gb-product', {
     let model: Model;
 
     beforeEach(() => {
-      tag = mount({ all_meta: ALL_META });
+      tag = mount({ all_meta: ALL_META, lazy: false });
       model = new Model(tag);
     });
 
@@ -47,7 +47,8 @@ suite<Product>('gb-product', {
     });
 
     it('should render lazy image', () => {
-      tag.update({ lazy: true });
+      tag = mount({ all_meta: ALL_META });
+      model = new Model(tag);
 
       expect(model.lazyImage.getAttribute('src')).to.include(ALL_META.image);
 
@@ -85,7 +86,7 @@ suite<Product>('gb-product with variants', {
       let model: Model;
 
       beforeEach(() => {
-        tag = mount({ all_meta: ALL_META });
+        tag = mount({ all_meta: ALL_META, lazy: false });
         model = new Model(tag);
       });
 

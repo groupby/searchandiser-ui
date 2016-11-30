@@ -1,7 +1,7 @@
 <gb-product-image>
   <a class="gb-product-image { _style }" href={ _scope.link() }>
-    <gb-lazy-image if={ _scope.lazy } src={ imageLink() }></gb-lazy-image>
-    <img if={ !_scope.lazy } src={ imageLink() } alt="" />
+    <gb-lazy-image if={ _scope._config.lazy } src={ imageLink() }></gb-lazy-image>
+    <img if={ !_scope._config.lazy } src={ imageLink() } alt="" />
   </a>
 
   <script>

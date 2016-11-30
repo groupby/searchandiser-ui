@@ -1,11 +1,17 @@
-import { Results } from '../../../src/tags/results/gb-results';
+import { DEFAULT_CONFIG, Results } from '../../../src/tags/results/gb-results';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-results', Results, ({ flux, tag, spy, expectSubscriptions }) => {
+suite('gb-results', Results, ({
+  flux, tag, spy,
+  expectSubscriptions,
+  itShouldConfigure
+}) => {
 
   describe('init()', () => {
+    itShouldConfigure(DEFAULT_CONFIG);
+
     it('should have default values', () => {
       const structure = { a: 'b' };
       tag().config = { structure };
