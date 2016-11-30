@@ -6,6 +6,7 @@ const UnminifiedPlugin = require('unminified-webpack-plugin');
 let isProd = false;
 let isCi = false;
 let isTest = false;
+let isWallaby = false;
 
 function resolve() {
   return {
@@ -56,6 +57,8 @@ function loaders() {
 /* eslint-disable no-fallthrough */
 // eslint-disable-next-line no-process-env
 switch (process.env.NODE_ENV) {
+  case 'wallaby':
+    isWallaby = true;
   case 'ci':
   case 'continuous':
     isCi = true;
@@ -67,6 +70,8 @@ switch (process.env.NODE_ENV) {
       resolve: resolve(),
 
       devtool: 'inline-source-map',
+
+      plugins: isWallaby ? [new webpack.NormalModuleReplacementPlugin(/\.(css|png)$/, 'node-noop')] : [],
 
       module: {
         preLoaders: isCi ? preLoaders() : preLoaders().concat({
