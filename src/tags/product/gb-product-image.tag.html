@@ -1,7 +1,7 @@
 <gb-product-image>
   <a class="gb-product-image { _style }" href={ _scope.link() }>
-    <gb-lazy-image src={ imageLink() }></gb-lazy-image>
-    <!-- <img src={ imageLink() } alt="" /> -->
+    <gb-lazy-image if={ _scope.lazy } src={ imageLink() }></gb-lazy-image>
+    <img if={ !_scope.lazy } src={ imageLink() } alt="" />
   </a>
 
   <script>
@@ -10,10 +10,4 @@
     const _scope = this._scope;
     this.imageLink = () => _scope.image(_scope.productMeta().image);
   </script>
-
-  <style scoped>
-    /*.gb-product-image.gb-stylish img {
-      width: 380px;
-    }*/
-  </style>
 </gb-product-image>

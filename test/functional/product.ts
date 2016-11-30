@@ -42,6 +42,16 @@ suite<Product>('gb-product', {
       expect(model.price.textContent).to.eq(ALL_META.price);
       expect(model.image.getAttribute('src')).to.include(ALL_META.image);
       expect(model.link.href).to.include(`details.html?id=${ALL_META.id}`);
+
+      expect(model.lazyImage).to.not.be.ok;
+    });
+
+    it('should render lazy image', () => {
+      tag.update({ lazy: true });
+
+      expect(model.lazyImage.getAttribute('src')).to.include(ALL_META.image);
+
+      expect(model.image).to.not.be.ok;
     });
   });
 });
@@ -124,6 +134,10 @@ class Model extends BaseModel<Product> {
   }
 
   get image() {
+    return this.element<HTMLImageElement>(this.html, '.gb-product-image > img');
+  }
+
+  get lazyImage() {
     return this.element<HTMLImageElement>(this.html, 'gb-lazy-image');
   }
 

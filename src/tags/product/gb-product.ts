@@ -3,7 +3,19 @@ import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import oget = require('oget');
 
-export interface Product extends FluxTag<any> { }
+export interface ProductConfig {
+  lazy?: boolean;
+  infinite?: boolean;
+  tombstone?: boolean;
+}
+
+export const DEFAULT_CONFIG: ProductConfig = {
+  lazy: true,
+  infinite: false,
+  tombstone: false
+};
+
+export interface Product extends FluxTag<ProductConfig> { }
 
 export class Product {
 
@@ -16,7 +28,7 @@ export class Product {
   transformer: ProductTransformer;
 
   init() {
-    this.configure();
+    this.configure(DEFAULT_CONFIG);
 
     this.variantIndex = 0;
     this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
