@@ -7,6 +7,7 @@ module.exports = {
       logEntriesArray.forEach(function(log) {
         console.log('[' + log.level + '] ' + log.timestamp + ' : ' + log.message);
       });
+      console.log(logEntriesArray)
     });
     // .waitForElementVisible('.gb-pager__link.next', 100)
     // .pause(500); // wait for riot to render results
