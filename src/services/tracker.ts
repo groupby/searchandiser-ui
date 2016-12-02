@@ -30,15 +30,14 @@ export class Tracker {
     this._config = Object.assign({}, DEFAULT_CONFIG, this.config.tracker || {});
     this.tracker = new GbTracker(this.config.customerId, this.config.area);
     this.transformer = new ProductTransformer(this.config.structure || {});
-
-    if (!this._config.warnings) {
-      this.tracker.disableWarnings()
-    }
   }
 
   init() {
-    this.setVisitorInfo();
+    if (!this._config.warnings) {
+      this.tracker.disableWarnings();
+    }
 
+    this.setVisitorInfo();
     this.listenForViewProduct();
   }
 
@@ -99,7 +98,7 @@ export class Tracker {
       _id: record.id,
       _u: record.url,
       _t: record.title,
-    }, filterObject(record, '!{id,title}')));
+    }, filterObject(record, '!{id,url,title}')));
 
     this.tracker.sendSearchEvent({
       search: Object.assign({

@@ -18,15 +18,18 @@ suite('tracker', ({ spy, stub }) => {
       const service = new Tracker(<any>{}, TEST_CONFIG);
 
       expect(service.tracker).to.be.an.instanceof(GbTracker);
-      expect(service._config).to.eql({});
+      expect(service._config).to.eql({
+        warnings: true
+      });
     });
 
     it('should take global tracker config', () => {
-      const trackerConfig = { visitorId: 14523, sessionId: 512908 };
+      const visitorId = 14523;
+      const sessionId = 512908;
 
-      const service = new Tracker(<any>{}, Object.assign({ tracker: trackerConfig }, TEST_CONFIG));
+      const service = new Tracker(<any>{}, Object.assign({ tracker: { visitorId, sessionId } }, TEST_CONFIG));
 
-      expect(service._config).to.eq(trackerConfig);
+      expect(service._config).to.eql({ visitorId, sessionId, warnings: true });
     });
   });
 
@@ -34,6 +37,13 @@ suite('tracker', ({ spy, stub }) => {
     let service: Tracker;
 
     beforeEach(() => service = new Tracker(<any>{ on: () => null }, TEST_CONFIG));
+
+    it('should disable warnings', (done) => {
+      service._config = { warnings: false };
+      service.tracker.enableWarnings = () => done();
+
+      service.init();
+    });
 
     it('should set visitor information', (done) => {
       service.setVisitorInfo = () => done();
