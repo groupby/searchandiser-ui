@@ -4,9 +4,9 @@ module.exports = {
       .pause(1000);
     browser.getLog('browser', function(logEntriesArray) {
       console.log('Log length: ' + logEntriesArray.length);
-      logEntriesArray.forEach(function(log) {
+      for (var log of logEntriesArray) {
         console.log('[' + log.level + '] ' + log.timestamp + ' : ' + log.message);
-      });
+      }
     });
     // .waitForElementVisible('.gb-pager__link.next', 100)
     // .pause(500); // wait for riot to render results
