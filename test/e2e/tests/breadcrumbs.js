@@ -2,7 +2,9 @@ module.exports = {
   'initial state': (browser) => {
     browser.url('http://localhost:9090')
       .pause(1000);
-    console.log(browser.getLogTypes())
+    browser.getLogTypes(function(types) {
+      console.log(types)
+    })
     browser.isLogAvailable('browser', function(available) {
       if (available) {
         browser.getLog('browser', function(log) {
