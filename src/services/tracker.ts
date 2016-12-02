@@ -10,9 +10,14 @@ export const MAX_COOKIE_AGE = 365; // days
 export const VISITOR_COOKIE_KEY = 'visitor';
 export const SESSION_COOKIE_KEY = 'session';
 
+export const DEFAULT_CONFIG: TrackerConfig = {
+  warnings: true
+};
+
 export interface TrackerConfig {
   sessionId?: string;
   visitorId?: string;
+  warnings?: boolean;
 }
 
 export class Tracker {
@@ -22,9 +27,13 @@ export class Tracker {
   transformer: ProductTransformer;
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
-    this._config = this.config.tracker || {};
+    this._config = Object.assign({}, DEFAULT_CONFIG, this.config.tracker || {});
     this.tracker = new GbTracker(this.config.customerId, this.config.area);
     this.transformer = new ProductTransformer(this.config.structure || {});
+
+    if (!this._config.warnings) {
+      this.tracker.disableWarnings()
+    }
   }
 
   init() {
@@ -90,7 +99,7 @@ export class Tracker {
       _id: record.id,
       _u: record.url,
       _t: record.title,
-    }, filterObject(record, '!{id,url,title}')));
+    }, filterObject(record, '!{id,title}')));
 
     this.tracker.sendSearchEvent({
       search: Object.assign({
