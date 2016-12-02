@@ -1,13 +1,9 @@
-http-server -p 9090 test/e2e/demo & SERVER_PID=$!
+http-server -s -p 9090 test/e2e/demo & SERVER_PID=$!
 
 set -o pipefail
 
-EXIT_CODE=$(nightwatch "$@")
+nightwatch "$@"
 
-kill -9 $SERVER_PID
-
-echo $EXIT_CODE
-
-set +o pipefail
+kill -9 $?
 
 exit $EXIT_CODE

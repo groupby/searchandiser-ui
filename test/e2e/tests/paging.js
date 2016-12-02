@@ -1,6 +1,6 @@
 module.exports = {
   'initial state': (browser) => {
-    browser.url('http://localhost:8080')
+    browser.url('http://localhost:9090')
       // .waitForRiot()
       .waitForElementVisible('.gb-pager__link.next', 100)
       .pause(500) // wait for riot to render results
@@ -20,7 +20,7 @@ module.exports = {
   },
 
   'go to next page': (browser) => {
-    browser.url('http://localhost:8080')
+    browser.url('http://localhost:9090')
       .waitForElementVisible('.gb-pager__link.next', 100)
       .pause(500) // wait for riot to render results
       .click('.gb-pager__link.next')
@@ -31,7 +31,7 @@ module.exports = {
   },
 
   'go to previous page': '' + function(browser) {
-    browser.url('http://localhost:8080')
+    browser.url('http://localhost:9090')
       .waitForElementVisible('.gb-pager__link.prev', 100)
       .pause(500) // wait for riot to render results
       .click('.gb-pager__link.prev')
@@ -41,7 +41,7 @@ module.exports = {
   },
 
   'go to last page': (browser) => {
-    browser.url('http://localhost:8080')
+    browser.url('http://localhost:9090')
       .waitForElementVisible('.gb-terminal__link.last', 100)
       .pause(500) // wait for riot to render results
       .click('.gb-terminal__link.last')
@@ -54,7 +54,7 @@ module.exports = {
   },
 
   'go to first page': '' + function(browser) {
-    browser.url('http://localhost:8080')
+    browser.url('http://localhost:9090')
       .waitForElementVisible('.gb-terminal__link.first', 100)
       .pause(500) // wait for riot to render results
       .click('.gb-terminal__link.first')
@@ -64,7 +64,7 @@ module.exports = {
   },
 
   'jump to page': (browser) => {
-    browser.url('http://localhost:8080')
+    browser.url('http://localhost:9090')
       .waitForElementVisible('.gb-pages__page', 100)
       .pause(500) // wait for riot to render results
       .click('.gb-pages li:nth-of-type(4) .gb-pages__page')

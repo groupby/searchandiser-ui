@@ -1,6 +1,6 @@
 module.exports = {
   'initial state': (browser) => {
-    browser.url('http://localhost:8080')
+    browser.url('http://localhost:9090')
       .waitForElementVisible('.gb-pager__link.next', 100)
       .pause(500); // wait for riot to render results
     browser.expect.element('gb-breadcrumbs div.gb-breadcrumbs gb-query-crumb').to.be.visible;
@@ -11,7 +11,7 @@ module.exports = {
   },
 
   'from a link': (browser) => {
-    browser.url('http://localhost:8080/?q=table&refinements=%5B%7B%22type%22%3A%20%22Value%22%2C%20%22value%22%3A%20%22Household%20%26%20Grocery%22%2C%20%22navigationName%22%3A%20%22category1%22%7D%2C%20%7B%22type%22%3A%20%22Value%22%2C%20%22value%22%3A%20%22School%20%26%20Office%20Supplies%22%2C%20%22navigationName%22%3A%20%22category2%22%7D%2C%20%7B%22type%22%3A%20%22Value%22%2C%20%22value%22%3A%20%22Binders%20%26%20Folders%22%2C%20%22navigationName%22%3A%20%22category3%22%7D%5D')
+    browser.url('http://localhost:9090/?q=table&refinements=%5B%7B%22type%22%3A%20%22Value%22%2C%20%22value%22%3A%20%22Household%20%26%20Grocery%22%2C%20%22navigationName%22%3A%20%22category1%22%7D%2C%20%7B%22type%22%3A%20%22Value%22%2C%20%22value%22%3A%20%22School%20%26%20Office%20Supplies%22%2C%20%22navigationName%22%3A%20%22category2%22%7D%2C%20%7B%22type%22%3A%20%22Value%22%2C%20%22value%22%3A%20%22Binders%20%26%20Folders%22%2C%20%22navigationName%22%3A%20%22category3%22%7D%5D')
       // .waitForRiot()
       .waitForElementVisible('.gb-pager__link.next', 100)
       .pause(500); // wait for riot to render results
