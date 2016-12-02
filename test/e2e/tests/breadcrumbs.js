@@ -3,10 +3,10 @@ module.exports = {
     browser.url('http://localhost:9090')
       .pause(1000);
     browser.getLog(function(logEntriesArray) {
-      console.log('Log length: ' + logEntriesArray.length);
-      logEntriesArray.forEach(function(log) {
-        console.log('[' + log.level + '] ' + log.timestamp + ' : ' + log.message);
-      });
+      // console.log('Log length: ' + logEntriesArray.length);
+      // logEntriesArray.forEach(function(log) {
+      //   console.log('[' + log.level + '] ' + log.timestamp + ' : ' + log.message);
+      // });
       console.log(logEntriesArray)
     });
     // .waitForElementVisible('.gb-pager__link.next', 100)
