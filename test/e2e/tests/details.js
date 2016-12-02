@@ -1,7 +1,11 @@
 module.exports = {
   'initial state': (browser) => {
     browser.url('http://localhost:9090/details.html?id=234381')
-      .waitForElementVisible('div', 1000)
-      .pause()
+      .waitForElementVisible('gb-details', 1000)
+      .pause(500)
+    browser.expect.element('.gb-details h1').text.to.eq('CVS Travel Toothbrush With Colgate Toothpaste');
+    browser.expect.element('.gb-details h2').text.to.eq('1.99');
+    browser.assert.attributeEquals('.gb-details img', 'src', 'http://www.cvs.com/bizcontent/merchandising/productimages/large/5042804753.jpg');
+    browser.end();
   }
 };
