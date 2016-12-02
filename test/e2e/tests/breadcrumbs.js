@@ -25,4 +25,4 @@ module.exports = {
     browser.expect.element('gb-breadcrumbs div.gb-breadcrumbs li:nth-of-type(3) gb-refinement-crumb b').text.to.eq('Sub Category: Binders & Folders');
     browser.end();
   }
-}
+};
