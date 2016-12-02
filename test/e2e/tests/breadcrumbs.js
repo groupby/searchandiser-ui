@@ -1,8 +1,15 @@
 module.exports = {
   'initial state': (browser) => {
     browser.url('http://localhost:9090')
-      .waitForElementVisible('.gb-pager__link.next', 100)
-      .pause(500); // wait for riot to render results
+      .pause(1000);
+    browser.getLog('browser', function(logEntriesArray) {
+      console.log('Log length: ' + logEntriesArray.length);
+      logEntriesArray.forEach(function(log) {
+        console.log('[' + log.level + '] ' + log.timestamp + ' : ' + log.message);
+      });
+    });
+    // .waitForElementVisible('.gb-pager__link.next', 100)
+    // .pause(500); // wait for riot to render results
     browser.expect.element('gb-breadcrumbs div.gb-breadcrumbs gb-query-crumb').to.be.visible;
     browser.expect.element('gb-breadcrumbs div.gb-breadcrumbs gb-list ul').to.be.visible;
     browser.expect.element('gb-breadcrumbs .gb-query-label').to.not.be.present;
