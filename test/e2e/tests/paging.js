@@ -40,6 +40,16 @@ module.exports = {
     browser.end();
   },
 
+  'go to first page': '' + function(browser) {
+    browser.url('http://localhost:9090')
+      .waitForElementVisible('.gb-terminal__link.first', 100)
+      .pause(500) // wait for riot to render results
+      .click('.gb-terminal__link.first')
+      .expect.element('.gb-pager__link.prev.disabled').to.be.present.before(1000);
+    browser.expect.element('.gb-terminal__link.first.disabled').to.be.present;
+    browser.end();
+  },
+
   'go to last page': (browser) => {
     browser.url('http://localhost:9090')
       .waitForElementVisible('.gb-terminal__link.last', 100)
@@ -50,16 +60,6 @@ module.exports = {
     browser.expect.element('.gb-pages__page.selected').text.to.eq('833');
     browser.expect.element('.gb-pages__ellipsis:nth-child(1)').to.be.visible;
     browser.expect.element('.gb-pages__ellipsis:nth-child(6)').to.not.be.present;
-    browser.end();
-  },
-
-  'go to first page': '' + function(browser) {
-    browser.url('http://localhost:9090')
-      .waitForElementVisible('.gb-terminal__link.first', 100)
-      .pause(500) // wait for riot to render results
-      .click('.gb-terminal__link.first')
-      .expect.element('.gb-pager__link.prev.disabled').to.be.present.before(1000);
-    browser.expect.element('.gb-terminal__link.first.disabled').to.be.present;
     browser.end();
   },
 
