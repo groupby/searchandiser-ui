@@ -11,11 +11,16 @@ export const VISITOR_COOKIE_KEY = 'visitor';
 export const SESSION_COOKIE_KEY = 'session';
 
 export const DEFAULT_CONFIG: TrackerConfig = {
-  warnings: true
+  warnings: true,
+  metadata: {}
 };
 
 export interface TrackerConfig {
   warnings?: boolean;
+  metadata?: {
+    _search?: any;
+    _viewProduct?: any;
+  } & any;
 }
 
 export class Tracker {
@@ -54,6 +59,7 @@ export class Tracker {
     this.flux.on(Events.DETAILS, ({ allMeta }) => {
       const productMeta = this.transformer.transform(allMeta);
       this.tracker.sendViewProductEvent({
+        metadata: this.generateMetadata('viewProduct'),
         product: {
           productId: productMeta().id,
           title: productMeta().title,
@@ -91,6 +97,12 @@ export class Tracker {
     this.tracker.sendOrderEvent(productsInfo);
   }
 
+  generateMetadata(type?: 'search' | 'viewProduct') {
+    return Object.assign({},
+      filterObject(this._config.metadata, '!{_search,_viewProduct}'),
+      type ? this._config.metadata[`_${type}`] : {});
+  }
+
   sendSearchEvent(origin: string = 'search') {
     const convertedRecords = this.flux.results.records.map((record) => Object.assign({
       _id: record.id,
@@ -99,6 +111,7 @@ export class Tracker {
     }, filterObject(record, '!{id,url,title}')));
 
     this.tracker.sendSearchEvent({
+      metadata: this.generateMetadata('search'),
       search: Object.assign({
         origin: { [origin]: true },
         query: this.flux.results.originalQuery || ''

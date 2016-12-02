@@ -19,7 +19,8 @@ suite('tracker', ({ spy, stub }) => {
 
       expect(service.tracker).to.be.an.instanceof(GbTracker);
       expect(service._config).to.eql({
-        warnings: true
+        warnings: true,
+        metadata: {}
       });
     });
 
@@ -29,7 +30,7 @@ suite('tracker', ({ spy, stub }) => {
 
       const service = new Tracker(<any>{}, Object.assign({ tracker: { visitorId, sessionId } }, TEST_CONFIG));
 
-      expect(service._config).to.eql({ visitorId, sessionId, warnings: true });
+      expect(service._config).to.eql({ visitorId, sessionId, warnings: true, metadata: {} });
     });
   });
 
@@ -135,11 +136,25 @@ suite('tracker', ({ spy, stub }) => {
       service.sendSearchEvent();
 
       expect(sendSearchEvent).to.have.been.calledWith({
+        metadata: {},
         search: Object.assign({
           origin: { search: true },
           query: ''
         }, results)
       });
+    });
+
+    it('should include metadata', () => {
+      const metadata = { a: 'b' };
+      const flux: any = { results: { a: 'b', c: 'd', records: [] } };
+      const sendSearchEvent = spy();
+      const service = new Tracker(flux, TEST_CONFIG);
+      service.tracker = <any>{ sendSearchEvent };
+      service.generateMetadata = () => metadata;
+
+      service.sendSearchEvent();
+
+      expect(sendSearchEvent).to.have.been.calledWithMatch({ metadata });
     });
 
     it('should use originalQuery', () => {
@@ -224,6 +239,7 @@ suite('tracker', ({ spy, stub }) => {
       service.listenForViewProduct();
 
       expect(sendViewProductEvent).to.have.been.calledWith({
+        metadata: {},
         product: {
           productId: 125123,
           title: 'Shoes',
@@ -231,6 +247,23 @@ suite('tracker', ({ spy, stub }) => {
           category: 'NONE'
         }
       });
+    });
+
+    it('should include metadata', () => {
+      const metadata = { a: 'b' };
+      const flux: any = { on: (event, cb) => cb({ allMeta: { id: 125123, shortTitle: 'Shoes', cost: 113.49 } }) };
+      const sendViewProductEvent = spy();
+      const service = new Tracker(flux, Object.assign({
+        structure: {
+          title: 'shortTitle', price: 'cost'
+        }
+      }, TEST_CONFIG));
+      service.tracker = <any>{ sendViewProductEvent };
+      service.generateMetadata = () => metadata;
+
+      service.listenForViewProduct();
+
+      expect(sendViewProductEvent).to.have.been.calledWithMatch({ metadata });
     });
   });
 
@@ -290,6 +323,26 @@ suite('tracker', ({ spy, stub }) => {
       service.sayt();
 
       expect(sendSearchEvent).to.have.been.calledWith('sayt');
+    });
+  });
+
+  describe('generateMetadata', () => {
+    it('should mixin root metadata', () => {
+      const service = new Tracker(<any>{}, TEST_CONFIG);
+      service._config = { metadata: { a: 'b' } };
+
+      const metadata = service.generateMetadata();
+
+      expect(metadata).to.eql({ a: 'b' });
+    });
+
+    it('should mixin event-specific metadata', () => {
+      const service = new Tracker(<any>{}, TEST_CONFIG);
+      service._config = { metadata: { a: 'b', _search: { c: 'd' } } };
+
+      const metadata = service.generateMetadata('search');
+
+      expect(metadata).to.eql({ a: 'b', c: 'd' });
     });
   });
 });
