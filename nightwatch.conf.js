@@ -36,7 +36,8 @@ module.exports = {
 
     firefox: {
       desiredCapabilities: {
-        browserName: 'firefox'
+        browserName: 'firefox',
+        marionette: true
       }
     },
 
@@ -46,6 +47,13 @@ module.exports = {
         chromeOptions: {
           args: ['--no-sandbox']
         }
+      }
+    },
+
+    phantomjs: {
+      desiredCapabilities: {
+        browserName: 'phantomjs',
+        'phantomjs.binary.path': './node_modules/.bin/phantomjs'
       }
     }
   }
