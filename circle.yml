@@ -20,6 +20,7 @@ deployment:
       - echo "//registry.npmjs.org/:_authToken=${NPM_API_KEY}" > ~/.npmrc
       - sudo apt-get update && sudo apt-get install jq
       - npm run prod
+      - npm run e2e:ci
       - ./shipit.sh
       - npm run package
       - npm publish

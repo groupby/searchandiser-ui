@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Searchandiser UI Demo</title>
+    <meta name="description" content="Searchandiser UI Demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css" charset="utf-8">
+    <script src="lib/searchandiser-ui-0.2.35.min.js"></script>
+    <script src="searchandiser-instance.js"></script>
+  </head>
+
+  <body>
+
+    <gb-query></gb-query>
+    <div class="gb-bar">
+      <span class="collections-label">Collections:</span>
+      <gb-collections></gb-collections>
+    </div>
+    <div class="gb-bar">
+      <gb-breadcrumbs></gb-breadcrumbs>
+    </div>
+    <div class="gb-bar">
+      <span class="did-you-mean-label">Did you mean:</span>
+      <gb-did-you-mean></gb-did-you-mean>
+      <span class="related-queries-label">Related:</span>
+      <gb-related-queries></gb-related-queries>
+    </div>
+    <div class="gb-main">
+      <gb-navigation></gb-navigation>
+      <div class="products">
+        <gb-template target="Product Spotlight"></gb-template>
+        <div class="gb-bar">
+          <gb-record-count></gb-record-count>
+          <gb-filter></gb-filter>
+          <gb-sort></gb-sort>
+          <gb-page-size></gb-page-size>
+        </div>
+        <div class="gb-bar">
+          <gb-paging></gb-paging>
+        </div>
+        <gb-results></gb-results>
+      </div>
+    </div>
+
+    <script>
+      configureSearchandiser();
+    </script>
+
+  </body>
+
+</html>
