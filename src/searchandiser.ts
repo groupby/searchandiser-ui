@@ -18,7 +18,7 @@ import { ProductStructure } from './utils/product-transformer';
 import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
-export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection}'; // tslint:disable:max-line-length
+export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection,visitorId,sessionId}'; // tslint:disable:max-line-length
 
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig = <any>{}) {
@@ -101,6 +101,9 @@ export interface SearchandiserConfig {
   pageSize?: number;
   pageSizes?: number[];
   sort?: Sort[];
+  visitorId?: string;
+  sessionId?: string;
+
   tags?: {
     breadcrumbs?: BreadcrumbsConfig;
     collections?: CollectionsConfig;
