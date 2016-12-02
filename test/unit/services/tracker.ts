@@ -40,7 +40,7 @@ suite('tracker', ({ spy, stub }) => {
 
     it('should disable warnings', (done) => {
       service._config = { warnings: false };
-      service.tracker.enableWarnings = () => done();
+      service.tracker.disableWarnings = () => done();
 
       service.init();
     });
