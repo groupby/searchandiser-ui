@@ -4,13 +4,10 @@ import { expect } from 'chai';
 
 suite('gb-raw', Raw, ({
   tag,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure();
-
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
         update: tag().updateContent,
@@ -23,7 +20,7 @@ suite('gb-raw', Raw, ({
     it('should update innerHTML', () => {
       const content = '<div>red sneakers</div>';
       tag().root = <any>{ innerHTML: '' };
-      tag()._config = { content };
+      tag().opts = { content };
 
       tag().updateContent();
 
