@@ -2,12 +2,13 @@ module.exports = {
   'initial state': (browser) => {
     browser.url('http://localhost:9090')
       .pause(1000);
-    browser.getLog(function(logEntriesArray) {
-      // console.log('Log length: ' + logEntriesArray.length);
-      // logEntriesArray.forEach(function(log) {
-      //   console.log('[' + log.level + '] ' + log.timestamp + ' : ' + log.message);
-      // });
-      console.log(logEntriesArray)
+    console.log(browser.getLogTypes())
+    browser.isLogAvailable('browser', function(available) {
+      if (available) {
+        browser.getLog('browser', function(log) {
+          console.log(log)
+        });
+      }
     });
     // .waitForElementVisible('.gb-pager__link.next', 100)
     // .pause(500); // wait for riot to render results
