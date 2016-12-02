@@ -1,19 +1,8 @@
 module.exports = {
   'initial state': (browser) => {
     browser.url('http://localhost:9090')
-      .pause(1000);
-    browser.getLogTypes(function(types) {
-      console.log(types)
-    })
-    browser.isLogAvailable('browser', function(available) {
-      if (available) {
-        browser.getLog('browser', function(log) {
-          console.log(log)
-        });
-      }
-    });
-    // .waitForElementVisible('.gb-pager__link.next', 100)
-    // .pause(500); // wait for riot to render results
+      .waitForElementVisible('.gb-pager__link.next', 100)
+      .pause(500); // wait for riot to render results
     browser.expect.element('gb-breadcrumbs div.gb-breadcrumbs gb-query-crumb').to.be.visible;
     browser.expect.element('gb-breadcrumbs div.gb-breadcrumbs gb-list ul').to.be.visible;
     browser.expect.element('gb-breadcrumbs .gb-query-label').to.not.be.present;
