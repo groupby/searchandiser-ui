@@ -15,8 +15,6 @@ export const DEFAULT_CONFIG: TrackerConfig = {
 };
 
 export interface TrackerConfig {
-  sessionId?: string;
-  visitorId?: string;
   warnings?: boolean;
 }
 
@@ -26,7 +24,7 @@ export class Tracker {
   tracker: TrackerClient;
   transformer: ProductTransformer;
 
-  constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
+  constructor(private flux: FluxCapacitor, public config: SearchandiserConfig) {
     this._config = Object.assign({}, DEFAULT_CONFIG, this.config.tracker || {});
     this.tracker = new GbTracker(this.config.customerId, this.config.area);
     this.transformer = new ProductTransformer(this.config.structure || {});
@@ -42,10 +40,10 @@ export class Tracker {
   }
 
   setVisitorInfo() {
-    const visitorId = this._config.visitorId
+    const visitorId = this.config.visitorId
       || Cookies.get(VISITOR_COOKIE_KEY)
       || uuid.v1();
-    const sessionId = this._config.sessionId
+    const sessionId = this.config.sessionId
       || Cookies.get(SESSION_COOKIE_KEY)
       || uuid.v1();
 

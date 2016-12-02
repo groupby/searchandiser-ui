@@ -68,7 +68,7 @@ suite('tracker', ({ spy, stub }) => {
       const visitorId = '1faslkdj';
       const sessionId = 'lk15k3j4';
       const setVisitor = stub(service, 'setVisitor');
-      service._config = { visitorId, sessionId };
+      service.config = <any>{ visitorId, sessionId };
 
       service.setVisitorInfo();
 
