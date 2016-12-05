@@ -468,11 +468,14 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call createTombstone() if no tombstones exist', () => {
       const newTombstone = { a: 'b' };
-      sandbox.stub(Renderer, 'createTombstone').returns(newTombstone);
+      const structure = { c: 'd' };
+      const createTombstone = sandbox.stub(Renderer, 'createTombstone').returns(newTombstone);
+      renderer.tag = <any>{ config: { structure } };
 
       const tombstone = renderer.getTombstone();
 
       expect(tombstone).to.eq(newTombstone);
+      expect(createTombstone).to.have.been.calledWith(structure);
     });
   });
 
@@ -492,18 +495,21 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should update content on new node', (done) => {
       const record = { allMeta: { a: 'b' } };
+      const structure = { c: 'd' };
       const remove = sinon.spy();
       const transformRecord = sinon.spy();
       const one = sinon.spy((event, cb) => cb());
-      sandbox.stub(Renderer, 'createTombstone').resolves({
+      const createTombstone = sandbox.stub(Renderer, 'createTombstone').resolves({
         _tag: { transformRecord, one },
         classList: { remove }
       });
+      renderer.tag = <any>{ config: { structure } };
 
       renderer.render(record, null)
         .then(() => {
           expect(remove).to.have.been.calledWith('tombstone');
           expect(transformRecord).to.have.been.calledWith(record.allMeta);
+          expect(createTombstone).to.have.been.calledWith(structure);
           done();
         });
     });
@@ -738,17 +744,21 @@ describe('gb-infinite-scroll renderer', () => {
   describe('static', () => {
     describe('createTombstone()', () => {
       it('should create a tombstone', (done) => {
+        const structure = {a:'b'};
         const add = sinon.spy();
         const node = { classList: { add } };
         const createElement = sandbox.stub(document, 'createElement').returns(node);
         const one = sinon.spy((event, cb) => cb());
         const mount = sandbox.stub(riot, 'mount').returns([{ one }]);
 
-        Renderer.createTombstone()
+        Renderer.createTombstone(structure)
           .then((elem) => {
             expect(elem).to.eq(node);
             expect(createElement).to.have.been.calledWith('li');
-            expect(mount).to.have.been.calledWith(node, 'gb-product', { tombstone: true, infinite: true });
+            expect(mount).to.have.been.calledWith(node, 'gb-product', {
+              structure,
+              tombstone: true,
+              infinite: true });
             expect(one).to.have.been.calledWith('updated');
             done();
           });
