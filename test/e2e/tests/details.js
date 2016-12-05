@@ -1,5 +1,5 @@
 module.exports = {
-  'initial state': (browser) => {
+  'initial state': '' + function(browser) {
     browser.url('http://localhost:9090/details.html?id=234381')
       .waitForElementVisible('gb-details', 1000)
       .pause(500)
