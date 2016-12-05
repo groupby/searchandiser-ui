@@ -114,20 +114,23 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
     it('should add and remove tombstone from DOM', (done) => {
       const unmount = spy();
+      const structure = { a: 'b' };
       const node = {
         offsetWidth: 1,
         offsetHeight: 13,
         _tag: { unmount }
       };
       const appendChild = spy();
+      const createTombstone = stub(renderer.Renderer, 'createTombstone').resolves(node);
+      tag().config = { structure };
       tag().scroller = <any>{ appendChild };
       tag().items = [];
-      stub(renderer.Renderer, 'createTombstone').resolves(node);
 
       tag().onResize()
         .then(() => {
           expect(appendChild).to.have.been.calledWith(node);
           expect(unmount).to.have.been.called;
+          expect(createTombstone).to.have.been.calledWith(structure);
           done();
         });
     });

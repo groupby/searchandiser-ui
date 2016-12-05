@@ -32,7 +32,7 @@ export class Product {
 
     this.variantIndex = 0;
     this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
-    this.struct = this.config.structure || this._scope.struct || this.config.structure || {};
+    this.struct = this.opts.structure || this._scope.struct || this.config.structure || {};
     this.transformer = new ProductTransformer(this.struct);
 
     this.styleProduct();

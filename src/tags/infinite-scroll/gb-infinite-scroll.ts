@@ -64,7 +64,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   }
 
   onResize() {
-    return Renderer.createTombstone()
+    return Renderer.createTombstone(this.config.structure)
       .then((tombstone) => {
         this.scroller.appendChild(tombstone);
         this.tombstoneLayout = {

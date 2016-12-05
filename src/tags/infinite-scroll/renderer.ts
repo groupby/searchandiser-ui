@@ -88,23 +88,10 @@ export class Renderer {
     return { index, offset: delta };
   }
 
-  printNodes() {
-    const blankNodes = {};
-    for (let i = this.firstItem; i < this.lastItem; i++) {
-      if (!this.tag.items[i].node) {
-        blankNodes[i + this.firstItem] = this.tag.items[i];
-      }
-    }
-    if (Object.keys(blankNodes).length) {
-      console.log(blankNodes);
-    }
-  }
-
   attachToView() {
     this.findUnusedNodes();
     this.generateNodes()
       .then((animations) => {
-        // this.printNodes();
         this.dropUnusedNodes();
         this.measureNodes();
         this.calculateScrollTop();
@@ -262,13 +249,6 @@ export class Renderer {
     }
 
     return Promise.all(promisedNodes)
-      // .then(() => {
-      //   for (let i = this.firstItem; i < this.lastItem; i++) {
-      //     if (!this.tag.items[i].node) {
-      //       console.log(this.tag.items[i]);
-      //     }
-      //   }
-      // })
       .then(() => animations);
   }
 
@@ -281,15 +261,16 @@ export class Renderer {
       tombstone.style.transition = '';
       return Promise.resolve(tombstone);
     } else {
-      return Renderer.createTombstone();
+      return Renderer.createTombstone(this.tag.config.structure);
     }
   }
 
   render(data: any, elem: HTMLElement): Promise<HTMLElement> {
-    return Promise.resolve(elem || Renderer.createTombstone().then((tombstone) => {
-      tombstone.classList.remove('tombstone');
-      return tombstone;
-    }))
+    return Promise.resolve(elem || Renderer.createTombstone(this.tag.config.structure)
+      .then((tombstone) => {
+        tombstone.classList.remove('tombstone');
+        return tombstone;
+      }))
       .then((node: riot.TagElement) => {
         const tag: any = node._tag;
         tag.transformRecord(data.allMeta);
@@ -298,9 +279,13 @@ export class Renderer {
       });
   }
 
-  static createTombstone(): Promise<HTMLElement> {
+  static createTombstone(structure: any): Promise<HTMLElement> {
     const node = document.createElement('li');
-    const [tag] = riot.mount(node, 'gb-product', { infinite: true, tombstone: true });
+    const [tag] = riot.mount(node, 'gb-product', {
+      structure,
+      infinite: true,
+      tombstone: true
+    });
 
     return new Promise((resolve) => tag.one('updated', () => resolve(node)));
   }

@@ -50,6 +50,15 @@ suite('gb-product', Product, ({
     });
 
     describe('struct', () => {
+      it('should inherit from opts', () => {
+        const structure = { a: 'b' };
+        tag().opts = { structure };
+
+        tag().init();
+
+        expect(tag().struct).to.eq(structure);
+      });
+
       it('should inherit from _scope', () => {
         const struct = { a: 'b' };
         tag()._scope = { struct };
