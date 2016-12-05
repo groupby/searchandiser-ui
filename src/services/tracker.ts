@@ -98,9 +98,11 @@ export class Tracker {
   }
 
   generateMetadata(type?: 'search' | 'viewProduct') {
-    return Object.assign({},
+    const metadata = Object.assign({},
       filterObject(this._config.metadata, '!{_search,_viewProduct}'),
       type ? this._config.metadata[`_${type}`] : {});
+    return Object.keys(metadata)
+      .map((key) => ({ [key]: metadata[key] }));
   }
 
   sendSearchEvent(origin: string = 'search') {
