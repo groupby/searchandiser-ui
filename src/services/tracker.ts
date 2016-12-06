@@ -102,7 +102,7 @@ export class Tracker {
       filterObject(this._config.metadata, '!{_search,_viewProduct}'),
       type ? this._config.metadata[`_${type}`] : {});
     return Object.keys(metadata)
-      .map((key) => ({ [key]: metadata[key] }));
+      .map((key) => ({ key, value: metadata[key] }));
   }
 
   sendSearchEvent(origin: string = 'search') {

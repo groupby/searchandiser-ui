@@ -145,7 +145,7 @@ suite('tracker', ({ spy, stub }) => {
     });
 
     it('should include metadata', () => {
-      const metadata = [{ a: 'b' }];
+      const metadata = [{ key: 'a', value: 'b' }];
       const flux: any = { results: { a: 'b', c: 'd', records: [] } };
       const sendSearchEvent = spy();
       const service = new Tracker(flux, TEST_CONFIG);
@@ -250,7 +250,7 @@ suite('tracker', ({ spy, stub }) => {
     });
 
     it('should include metadata', () => {
-      const metadata = [{ a: 'b' }];
+      const metadata = [{ key: 'a', value: 'b' }];
       const flux: any = { on: (event, cb) => cb({ allMeta: { id: 125123, shortTitle: 'Shoes', cost: 113.49 } }) };
       const sendViewProductEvent = spy();
       const service = new Tracker(flux, Object.assign({
@@ -333,7 +333,7 @@ suite('tracker', ({ spy, stub }) => {
 
       const metadata = service.generateMetadata();
 
-      expect(metadata).to.eql([{ a: 'b' }]);
+      expect(metadata).to.eql([{ key: 'a', value: 'b' }]);
     });
 
     it('should mixin event-specific metadata', () => {
@@ -342,7 +342,7 @@ suite('tracker', ({ spy, stub }) => {
 
       const metadata = service.generateMetadata('search');
 
-      expect(metadata).to.eql([{ a: 'b' }, { c: 'd' }]);
+      expect(metadata).to.eql([{ key: 'a', value: 'b' }, { key: 'c', value: 'd' }]);
     });
   });
 });
