@@ -8,6 +8,7 @@ import {
   getParam,
   getPath,
   remap,
+  scopeCss,
   toRefinement,
   unless,
   LOCATION
@@ -183,6 +184,13 @@ describe('utils', () => {
       LOCATION.assign(url);
 
       expect(assign).to.have.been.calledWith(url);
+    });
+  });
+
+  describe('scopeCss()', () => {
+    it('should generate multiple scoped CSS selectors', () => {
+      const scopedSelector = scopeCss('gb-target', '.my > #selector');
+      expect(scopedSelector).to.eq('gb-target .my > #selector, [data-is="gb-target"] .my > #selector, [riot-tag="gb-target"] .my > #selector'); // tslint:disable-line:max-line-length
     });
   });
 });
