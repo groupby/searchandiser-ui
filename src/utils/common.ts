@@ -88,3 +88,7 @@ export function checkBooleanAttr(attribute: string, opts: any) {
     && opts[attribute] != 'false' // tslint:disable-line:triple-equals
     && opts[attribute] !== false;
 }
+
+export function scopeCss(tag: string, selector: string) {
+  return `${tag} ${selector}, [data-is="${tag}"] ${selector}, [riot-tag="${tag}"] ${selector}`;
+}
