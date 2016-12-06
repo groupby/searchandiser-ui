@@ -256,7 +256,6 @@ export class Renderer {
     const tombstone = this.tombstones.pop();
     if (tombstone) {
       tombstone.classList.remove('invisible');
-      tombstone.style.opacity = '1';
       tombstone.style.transform = '';
       tombstone.style.transition = '';
       return Promise.resolve(tombstone);
