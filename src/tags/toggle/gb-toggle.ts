@@ -31,6 +31,7 @@ export class Toggle {
         height: ${height}px;
         width: ${height * 2}px;
       }
+
       ${scopeCss('gb-toggle', 'span')} {
         height: ${diameter}px;
         width: ${diameter}px;
@@ -39,7 +40,7 @@ export class Toggle {
       }
 
       ${scopeCss('gb-toggle', 'input:checked + div > span')} {
-        transform: translateX(${diameter}px);
+        transform: translateX(${diameter + padding * 2}px);
       }
     `;
     this.root.appendChild(node);
