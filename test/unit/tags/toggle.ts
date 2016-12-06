@@ -20,12 +20,33 @@ suite('gb-toggle', Toggle, ({
   });
 
   describe('addStyleTag()', () => {
+    it('should calculate switchHeight', () => {
+      const node: any = {};
+      stub(document, 'createElement').returns(node);
+      tag().root = <any>{ appendChild: () => null };
+      tag()._config = { switchHeight: 50, height: 30, animationSpeed: 0 };
+
+      tag().addStyleTag();
+
+      expectCss(node.textContent, `
+        gb-toggle span,
+        [data-is="gb-toggle"] span,
+        [riot-tag="gb-toggle"] span {
+          height: 30px;
+          width: 30px;
+          left: 0px;
+          bottom: 0px;
+          transition: 0s;
+        }
+      `);
+    });
+
     it('should add style tag', () => {
       const node: any = {};
       const appendChild = spy();
       const createElement = stub(document, 'createElement').returns(node);
       tag().root = <any>{ appendChild };
-      tag()._config = { diameter: 20, height: 30, animationSpeed: 0.5 };
+      tag()._config = { switchHeight: 20, height: 30, animationSpeed: 0.5 };
 
       tag().addStyleTag();
 

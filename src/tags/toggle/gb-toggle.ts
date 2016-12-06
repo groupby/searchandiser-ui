@@ -3,13 +3,13 @@ import { FluxTag } from '../tag';
 
 export const DEFAULT_CONFIG: ToggleConfig = {
   height: 30,
-  diameter: 22,
+  switchHeight: 22,
   animationSpeed: 0.4
 };
 
 export interface ToggleConfig {
   height?: number;
-  diameter?: number;
+  switchHeight?: number;
   animationSpeed?: number;
 }
 
@@ -24,9 +24,9 @@ export class Toggle {
   }
 
   addStyleTag() {
-    const diameter = this._config.diameter;
     const height = this._config.height;
-    const padding = (height - diameter) / 2;
+    const switchHeight = Math.min(this._config.switchHeight, height);
+    const padding = (height - switchHeight) / 2;
     const speed = this._config.animationSpeed;
     const node = document.createElement('style');
     node.textContent = `
@@ -40,15 +40,15 @@ export class Toggle {
       }
 
       ${scopeCss('gb-toggle', 'span')} {
-        height: ${diameter}px;
-        width: ${diameter}px;
+        height: ${switchHeight}px;
+        width: ${switchHeight}px;
         left: ${padding}px;
         bottom: ${padding}px;
         transition: ${speed}s;
       }
 
       ${scopeCss('gb-toggle', 'input:checked + div > span')} {
-        transform: translateX(${diameter + padding * 2}px);
+        transform: translateX(${switchHeight + padding * 2}px);
       }
     `;
     this.root.appendChild(node);
