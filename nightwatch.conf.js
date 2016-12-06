@@ -15,6 +15,7 @@ module.exports = {
     }
   },
   test_workers: true,
+  detailed_output: false,
   test_settings: {
     default: {
       launch_url: 'localhost:9090',
