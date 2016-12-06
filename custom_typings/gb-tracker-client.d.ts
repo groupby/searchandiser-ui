@@ -1,6 +1,9 @@
 declare interface TrackerClient {
   enableWarnings(): void;
   disableWarnings(): void;
+  setStrictMode(): void;
+
+  sendAutoSearchEvent(data: any): void;
   sendAddToCartEvent(data: any): void;
   sendOrderEvent(data: any): void;
   sendSearchEvent(data: any): void;
