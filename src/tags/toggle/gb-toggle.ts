@@ -23,9 +23,15 @@ export class Toggle {
     this.addStyleTag();
   }
 
+  calculateSwitchHeight(height: number) {
+    const heightDiff = height - this._config.switchHeight;
+    const switchHeight = Math.min(this._config.switchHeight, height);
+    return switchHeight - heightDiff % 2;
+  }
+
   addStyleTag() {
     const height = this._config.height;
-    const switchHeight = Math.min(this._config.switchHeight, height);
+    const switchHeight = this.calculateSwitchHeight(height);
     const padding = (height - switchHeight) / 2;
     const speed = this._config.animationSpeed;
     const node = document.createElement('style');

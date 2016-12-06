@@ -19,28 +19,33 @@ suite('gb-toggle', Toggle, ({
     });
   });
 
-  describe('addStyleTag()', () => {
-    it('should calculate switchHeight', () => {
-      const node: any = {};
-      stub(document, 'createElement').returns(node);
-      tag().root = <any>{ appendChild: () => null };
-      tag()._config = { switchHeight: 50, height: 30, animationSpeed: 0 };
+  describe('calculateSwitchHeight()', () => {
+    it('should force height difference to be even', () => {
+      tag()._config = { switchHeight: 40 };
 
-      tag().addStyleTag();
+      const switchHeight = tag().calculateSwitchHeight(41);
 
-      expectCss(node.textContent, `
-        gb-toggle span,
-        [data-is="gb-toggle"] span,
-        [riot-tag="gb-toggle"] span {
-          height: 30px;
-          width: 30px;
-          left: 0px;
-          bottom: 0px;
-          transition: 0s;
-        }
-      `);
+      expect(switchHeight).to.eq(39);
     });
 
+    it('should not alter switchHeight', () => {
+      tag()._config = { switchHeight: 40 };
+
+      const switchHeight = tag().calculateSwitchHeight(42);
+
+      expect(switchHeight).to.eq(40);
+    });
+
+    it('should not allow switchHeight > height', () => {
+      tag()._config = { switchHeight: 50 };
+
+      const switchHeight = tag().calculateSwitchHeight(40);
+
+      expect(switchHeight).to.eq(40);
+    });
+  });
+
+  describe('addStyleTag()', () => {
     it('should add style tag', () => {
       const node: any = {};
       const appendChild = spy();
