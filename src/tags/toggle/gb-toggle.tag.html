@@ -1,0 +1,56 @@
+<gb-toggle>
+  <label>
+    <input type="checkbox">
+    <div></div>
+  </label>
+
+  <script>
+    import { Toggle } from './gb-toggle';
+    this._mixin(Toggle);
+  </script>
+
+  <style scoped>
+    label {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    input {
+      display: none;
+    }
+
+    div {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: .4s;
+    }
+
+    div:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      transition: .4s;
+    }
+
+    input:checked + div:before {
+      transform: translateX(26px);
+    }
+
+    div {
+      border-radius: 17px;
+    }
+
+    div:before {
+      border-radius: 50%;
+    }
+  </style>
+</gb-toggle>

@@ -25,3 +25,4 @@ import './snippet/gb-snippet.tag.html';
 import './sort/gb-sort.tag.html';
 import './submit/gb-submit.tag.html';
 import './template/gb-template.tag.html';
+import './toggle/gb-toggle.tag.html';
