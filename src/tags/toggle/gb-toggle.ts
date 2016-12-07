@@ -35,22 +35,22 @@ export class Toggle {
     }
   }
 
-  calculateSwitchHeight(height: number) {
-    const heightDiff = height - this._config.switchHeight;
-    const switchHeight = Math.min(this._config.switchHeight, height);
-    return switchHeight - heightDiff % 2;
+  calculateSwitchHeight(toggleHeight: number) {
+    const heightDifference = toggleHeight - this._config.switchHeight;
+    const switchHeight = Math.min(this._config.switchHeight, toggleHeight);
+    return switchHeight - heightDifference % 2;
   }
 
   addStyleTag() {
-    const height = this._config.height;
-    const switchHeight = this.calculateSwitchHeight(height);
-    const padding = (height - switchHeight) / 2;
+    const toggleHeight = this._config.height;
+    const switchHeight = this.calculateSwitchHeight(toggleHeight);
+    const padding = (toggleHeight - switchHeight) / 2;
     const speed = this._config.animationSpeed;
     const node = document.createElement('style');
     node.textContent = `
       ${scopeCss('gb-toggle', 'label')} {
-        height: ${height}px;
-        width: ${height * 2}px;
+        height: ${toggleHeight}px;
+        width: ${toggleHeight * 2}px;
       }
 
       ${scopeCss('gb-toggle', 'div')} {
