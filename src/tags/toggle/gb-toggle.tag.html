@@ -1,0 +1,35 @@
+<gb-toggle>
+  <label>
+    <input name="input" type="checkbox" onclick={ onClick }>
+    <div><span></span></div>
+  </label>
+
+  <script>
+    import { Toggle } from './gb-toggle';
+    this._mixin(Toggle);
+  </script>
+
+  <style scoped>
+    label {
+      position: relative;
+      display: inline-block;
+    }
+
+    input {
+      display: none;
+    }
+
+    div {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    span {
+      position: absolute;
+    }
+  </style>
+</gb-toggle>
