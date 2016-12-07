@@ -11,6 +11,7 @@ suite<Toggle>('gb-toggle', ({ mount, itMountsTag }) => {
       const model = new Model(mount());
 
       expect(model.input).to.be.ok;
+      expect((<HTMLInputElement>model.input).checked).to.be.false;
       expect(model.slider).to.be.ok;
       expect(model.style).to.be.ok;
     });
@@ -23,6 +24,12 @@ suite<Toggle>('gb-toggle', ({ mount, itMountsTag }) => {
       expect(model.label.clientWidth).to.eq(80);
       expect(sliderInner.clientWidth).to.eq(30);
       expect(sliderInner.clientHeight).to.eq(30);
+    });
+
+    it('should set the input checked to true', () => {
+      const model = new Model(mount({ checked: true }));
+
+      expect((<HTMLInputElement>model.input).checked).to.be.true;
     });
   });
 });

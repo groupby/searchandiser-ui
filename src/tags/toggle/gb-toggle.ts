@@ -4,23 +4,35 @@ import { FluxTag } from '../tag';
 export const DEFAULT_CONFIG: ToggleConfig = {
   height: 30,
   switchHeight: 22,
-  animationSpeed: 0.4
+  animationSpeed: 0.4,
+  checked: false
 };
 
 export interface ToggleConfig {
   height?: number;
   switchHeight?: number;
   animationSpeed?: number;
+  checked?: boolean;
 }
 
 export interface Toggle extends FluxTag<ToggleConfig> { }
 
 export class Toggle {
 
+  input: HTMLInputElement;
+
   init() {
     this.configure(DEFAULT_CONFIG);
 
+    this.input.checked = this._config.checked;
+
     this.addStyleTag();
+  }
+
+  onClick() {
+    if (this.opts.trigger) {
+      this.opts.trigger(this.input.checked);
+    }
   }
 
   calculateSwitchHeight(height: number) {

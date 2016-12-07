@@ -12,10 +12,37 @@ suite('gb-toggle', Toggle, ({
 
     itShouldConfigure(DEFAULT_CONFIG);
 
+    it('should set input checked', () => {
+      const input = tag().input = <any>{};
+      tag().addStyleTag = () => null;
+      tag().configure = () => tag()._config = { checked: true };
+
+      tag().init();
+
+      expect(input.checked).to.be.true;
+    });
+
     it('should call addStyleTag()', (done) => {
+      tag().input = <any>{};
       tag().addStyleTag = () => done();
 
       tag().init();
+    });
+  });
+
+  describe('onClick()', () => {
+    it('should not error on missing trigger method', () => {
+      expect(() => tag().onClick()).not.to.throw();
+    });
+
+    it('should call the configured trigger method', () => {
+      const trigger = spy();
+      tag().opts = { trigger };
+      tag().input = <any>{ checked: true };
+
+      tag().onClick();
+
+      expect(trigger).to.have.been.calledWith(true);
     });
   });
 
