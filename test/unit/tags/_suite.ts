@@ -1,4 +1,4 @@
-import { FluxTag } from '../../../src/tags/tag';
+import { configure, FluxTag } from '../../../src/tags/tag';
 import { expectSubscriptions } from '../../utils/expectations';
 import { baseSuite, buildSuite, SuiteModifier } from '../../utils/suite';
 import { expect } from 'chai';
@@ -75,7 +75,7 @@ export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: 
     opts: {},
     config: {},
     _config: {},
-    configure: (cfg = {}) => tag._config = Object.assign({}, cfg, tag.opts),
+    configure: (cfg = {}) => configure(cfg, tag),
     on: () => null
   }, obj);
   return { flux, tag };

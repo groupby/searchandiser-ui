@@ -1,6 +1,6 @@
 import '../../src/tags/index';
 import { SelectTag } from '../../src/tags/select/gb-select';
-import { FluxTag, MixinFlux } from '../../src/tags/tag';
+import { configure, FluxTag, MixinFlux } from '../../src/tags/tag';
 import { baseSuite, buildSuite, SuiteModifier } from '../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
@@ -69,7 +69,7 @@ export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
   riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), {
     configure(cfg: any = {}) {
-      this._config = Object.assign({}, cfg, this.opts['__proto__'], this.opts);
+      configure(cfg, this);
     }
   }, obj));
   return flux;
