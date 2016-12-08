@@ -1,7 +1,11 @@
-import { setParents, setScope, setTagName, FluxTag, MixinFlux } from '../../../src/tags/tag';
+import { configure, setParents, setScope, setTagName, FluxTag, MixinFlux } from '../../../src/tags/tag';
 import { expect } from 'chai';
 
 describe('base tag logic', () => {
+  let sandbox: Sinon.SinonSandbox;
+
+  beforeEach(() => sandbox = sinon.sandbox.create());
+  afterEach(() => sandbox.restore());
 
   describe('FluxTag', () => {
     describe('init()', () => {
@@ -208,6 +212,75 @@ describe('base tag logic', () => {
 
       expect(tag._scope).to.eq(topParent);
       expect(tag._top).to.eq(topParent);
+    });
+  });
+
+  describe('configure()', () => {
+    it('should mix together configuration sources', () => {
+      const tag: any = {
+        _camelTagName: 'myTag',
+        config: { tags: { myTag: { a: 'B', i: 'j', k: 'l', m: 'n' } } },
+        opts: {
+          __proto__: { c: 'D', i: 'J', o: 'p', q: 'r' },
+          e: 'F',
+          k: 'L',
+          o: 'P',
+          s: 't'
+        }
+      };
+
+      configure({ a: 'b', c: 'd', e: 'f', g: 'h' }, tag);
+
+      expect(tag._config).to.eql({
+        a: 'B',
+        c: 'D',
+        e: 'F',
+        g: 'h',
+        i: 'J',
+        k: 'L',
+        m: 'n',
+        o: 'P',
+        q: 'r',
+        s: 't'
+      });
+    });
+
+    it('should convert boolean values', () => {
+      const tag: any = { opts: {} };
+
+      configure({
+        a: 'false',
+        b: false,
+        c: 'true',
+        d: true,
+        e: undefined,
+        f: null,
+        g: [],
+        h: {},
+        i: '',
+        j: ' ',
+        k: 'other',
+        l: -1,
+        m: 0,
+        n: 1
+      }, tag);
+
+      expect(tag._config).to.eql({
+        a: 'false',
+        b: false,
+        c: 'true',
+        d: true,
+        e: undefined,
+        f: null,
+        g: [],
+        h: {},
+        i: true,
+        j: true,
+        k: 'other',
+        l: -1,
+        m: true,
+        n: true
+      });
     });
   });
 

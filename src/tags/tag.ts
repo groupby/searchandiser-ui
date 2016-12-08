@@ -49,20 +49,7 @@ export class FluxTag<T> {
   }
 
   configure(defaultConfig: any = {}) {
-    const rawConfig = Object.assign(
-      {},
-      defaultConfig,
-      getPath(this.config, `tags.${this._camelTagName}`),
-      this.opts.__proto__,
-      this.opts);
-    for (let key of Object.keys(rawConfig)) {
-      if (typeof defaultConfig[key] === 'boolean'
-        || rawConfig[key] == true // tslint:disable-line:triple-equals
-        || rawConfig[key] == false) { // tslint:disable-line:triple-equals
-        rawConfig[key] = checkBooleanAttr(key, rawConfig);
-      }
-    }
-    this._config = rawConfig;
+    configure(defaultConfig, this);
   }
 }
 
@@ -114,6 +101,23 @@ export function setScope(tag: FluxTag<any>) {
     while (parent.parent) tag._scope = parent = parent.parent;
     tag._top = tag._scope;
   }
+}
+
+export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
+  const rawConfig = Object.assign(
+    {},
+    defaultConfig,
+    getPath(tag.config, `tags.${tag._camelTagName}`),
+    tag.opts.__proto__,
+    tag.opts);
+  for (let key of Object.keys(rawConfig)) {
+    if (typeof defaultConfig[key] === 'boolean'
+      || rawConfig[key] == true // tslint:disable-line:triple-equals
+      || (!Array.isArray(rawConfig[key]) && rawConfig[key] == false)) { // tslint:disable-line:triple-equals
+      rawConfig[key] = checkBooleanAttr(key, rawConfig);
+    }
+  }
+  tag._config = rawConfig;
 }
 
 export function MixinFlux(flux: FluxCapacitor, config: any, services: any): FluxTag<any> {

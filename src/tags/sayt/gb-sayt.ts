@@ -122,7 +122,9 @@ export class Sayt {
   notifier(query: string, refinement?: string, field?: string) {
     const isRefinement = refinement && refinement !== this._config.allCategoriesLabel;
     const refinementString = `~${field || this._config.categoryField}=${refinement}`;
-    if (this._config.autoSearch) this.searchProducts(field ? '' : query, isRefinement ? refinementString : undefined);
+    if (this._config.autoSearch) {
+      this.searchProducts(field ? '' : query, isRefinement ? refinementString : undefined);
+    }
     this.rewriteQuery(query);
   }
 
