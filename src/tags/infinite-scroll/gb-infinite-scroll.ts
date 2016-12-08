@@ -85,8 +85,16 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
       });
   }
 
+  capRecords(items: number) {
+    if (this.flux.results) {
+      return Math.min(items, this.flux.results.totalRecordCount);
+    } else {
+      return items;
+    }
+  }
+
   maybeRequestContent(renderer: Renderer) {
-    const itemsNeeded = renderer.lastItem - this.loadedItems;
+    const itemsNeeded = this.capRecords(renderer.lastItem) - this.loadedItems;
     if (itemsNeeded <= 0) { return; }
 
     if (this.updating) { return; }
@@ -117,7 +125,6 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
     renderer.attachToView();
   }
 
-  // new blank item
   addBlankItem() {
     this.items.push({
       data: null,

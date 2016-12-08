@@ -86,7 +86,10 @@ describe('gb-infinite-scroll renderer', () => {
   });
 
   describe('calculateVisibleItems()', () => {
-    beforeEach(() => calculateVisibleItems.restore());
+    beforeEach(() => {
+      calculateVisibleItems.restore();
+      renderer.tag.capRecords = (val) => val;
+    });
 
     it('should calculate view boundaries when delta < 0', () => {
       const getAnchoredItem = renderer.getAnchoredItem = sinon.spy(() => ({ index: 40 }));
@@ -113,13 +116,23 @@ describe('gb-infinite-scroll renderer', () => {
     });
 
     it('first item cannot be lower than 0', () => {
-      renderer.getAnchoredItem = sinon.spy(() => ({ index: 6 }));
+      renderer.getAnchoredItem = () => (<any>{ index: 6 });
       renderer.tag.anchor = <any>{ index: 2 };
       renderer.tag.scroller = <any>{ offsetHeight: 20 };
 
       renderer.calculateVisibleItems(-10);
 
       expect(renderer.firstItem).to.eq(0);
+    });
+
+    it('should call tag.capRecords()', () => {
+      const capRecords = renderer.tag.capRecords = sinon.spy();
+      renderer.getAnchoredItem = () => (<any>{ index: 6 });
+      renderer.tag.anchor = <any>{};
+
+      renderer.calculateVisibleItems(-10);
+
+      expect(capRecords).to.have.been.calledWith(16);
     });
   });
 

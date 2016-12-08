@@ -47,10 +47,10 @@ export class Renderer {
     let firstItem: number;
     if (delta < 0) {
       firstItem = this.tag.anchor.index - RUNWAY_ITEMS_BELOW;
-      this.lastItem = lastScreenItem.index + RUNWAY_ITEMS_ABOVE;
+      this.lastItem = this.tag.capRecords(lastScreenItem.index + RUNWAY_ITEMS_ABOVE);
     } else {
       firstItem = this.tag.anchor.index - RUNWAY_ITEMS_ABOVE;
-      this.lastItem = lastScreenItem.index + RUNWAY_ITEMS_BELOW;
+      this.lastItem = this.tag.capRecords(lastScreenItem.index + RUNWAY_ITEMS_BELOW);
     }
 
     this.firstItem = Math.max(0, firstItem);

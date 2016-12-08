@@ -254,11 +254,13 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
     it('should call updateItems() with the fetched records', (done) => {
       const records = [{ a: 'b' }, { c: 'd' }];
       const renderer: any = { lastItem: 1 };
+      const capRecords = tag().capRecords = spy(() => 20);
       tag().loadedItems = 0;
       tag().fetch = (): any => Promise.resolve(records);
       tag().updateItems = (newRecords, currRenderer) => {
         expect(newRecords).to.eq(records);
         expect(currRenderer).to.eq(renderer);
+        expect(capRecords).to.have.been.calledWith(1);
         done();
       };
 
@@ -336,6 +338,18 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
       expect(tag().items).to.have.length(4);
       expect(tag().items[3]).to.eql({ data: null, node: null, height: 0, width: 0, top: 0 });
+    });
+  });
+
+  describe('capRecords()', () => {
+    it('should return the original value if no results', () => {
+      expect(tag().capRecords(20)).to.eq(20);
+    });
+
+    it('should not return more than totalRecordCount', () => {
+      tag().flux.results = <any>{ totalRecordCount: 30 };
+
+      expect(tag().capRecords(50)).to.eq(30);
     });
   });
 });
