@@ -40,19 +40,21 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       expect(addEventListener).to.have.been.calledWith('resize', tag().onResize);
     });
 
-    it('should call onResultsChanged() for events', () => {
+    it('should call reset() for events', () => {
       expectSubscriptions(() => tag().init(), {
-        [Events.QUERY_CHANGED]: tag().onResultsChanged,
-        [Events.REFINEMENTS_CHANGED]: tag().onResultsChanged,
-        [Events.COLLECTION_CHANGED]: tag().onResultsChanged,
-        [Events.SORT]: tag().onResultsChanged
+        [Events.QUERY_CHANGED]: tag().reset,
+        [Events.REFINEMENTS_CHANGED]: tag().reset,
+        [Events.COLLECTION_CHANGED]: tag().reset,
+        [Events.SORT]: tag().reset
       });
     });
 
-    it('should call reset()', (done) => {
-      tag().reset = () => done();
-
+    it('should set initial values', () => {
       tag().init();
+
+      expect(tag().items).to.eql([]);
+      expect(tag().loadedItems).to.eq(0);
+      expect(tag().runwayEnd).to.eq(0);
     });
 
     it('should call onResize()', (done) => {
@@ -63,17 +65,23 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
   });
 
   describe('reset()', () => {
-    it('should reset values', () => {
+    it('should reset values and call attachRenderer()', () => {
       tag().scroller = <any>{ hasChildNodes: () => false };
       tag().items = <any[]>['a', 'b'];
       tag().loadedItems = 3;
       tag().runwayEnd = 100;
+      tag().anchorScrollTop = 20;
+      tag().oldScroll = 100;
+      const attachRenderer = tag().attachRenderer = spy();
 
       tag().reset();
 
       expect(tag().items).to.eql([]);
       expect(tag().loadedItems).to.eq(0);
       expect(tag().runwayEnd).to.eq(0);
+      expect(tag().anchorScrollTop).to.eq(0);
+      expect(tag().oldScroll).to.eq(0);
+      expect(attachRenderer).to.be.called;
     });
 
     it('should remove nodes from scroller', () => {
@@ -84,6 +92,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       hasChildNodes.onSecondCall().returns(true);
       hasChildNodes.onThirdCall().returns(true);
       tag().scroller = <any>{ removeChild, lastChild, hasChildNodes };
+      tag().attachRenderer = () => null;
 
       tag().reset();
 
@@ -92,24 +101,12 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
     });
   });
 
-  describe('onResultsChanged()', () => {
-    it('should call reset() and onScroll()', () => {
-      const reset = tag().reset = spy();
-      const onScroll = tag().onScroll = spy();
-
-      tag().onResultsChanged();
-
-      expect(reset).to.have.been.called;
-      expect(onScroll).to.have.been.called;
-    });
-  });
-
   describe('onResize()', () => {
     const TAG = { unmount: () => null };
     const SCROLLER: any = { appendChild: () => null };
 
     beforeEach(() => {
-      stub(tag(), 'onScroll');
+      stub(tag(), 'attachRenderer');
     });
 
     it('should add and remove tombstone from DOM', (done) => {
@@ -172,10 +169,10 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
         });
     });
 
-    it('should call onScroll()', (done) => {
+    it('should call attachRenderer()', (done) => {
       tag().scroller = SCROLLER;
       tag().items = [];
-      tag().onScroll = () => done();
+      tag().attachRenderer = () => done();
       stub(renderer.Renderer, 'createTombstone').resolves({ _tag: TAG });
 
       tag().onResize();
@@ -183,11 +180,35 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
   });
 
   describe('onScroll()', () => {
+    it('should set oldScroll equal to scroller.scrollTop and call attachRenderer()', () => {
+      tag().oldScroll = 1;
+      tag().scroller = <any>{ scrollTop: 10 };
+      const attachRenderer = tag().attachRenderer = spy();
+
+      tag().onScroll();
+
+      expect(tag().oldScroll).to.eq(10);
+      expect(attachRenderer).to.be.called;
+    });
+
+    it('should set oldScroll equal to scroller.scrollTop and not call attachRenderer()', () => {
+      tag().oldScroll = 10;
+      tag().scroller = <any>{ scrollTop: 10 };
+      const attachRenderer = tag().attachRenderer = spy();
+
+      tag().onScroll();
+
+      expect(tag().oldScroll).to.eq(10);
+      expect(attachRenderer).to.not.be.called;
+    });
+  });
+
+  describe('attachRenderer()', () => {
     it('should create a Renderer and call attachToView()', () => {
       const attachToView = spy();
       const rendererStub = stub(renderer, 'Renderer').returns({ attachToView });
 
-      tag().onScroll();
+      tag().attachRenderer();
 
       expect(rendererStub).to.have.been.calledWith(tag());
       expect(attachToView).to.have.been.called;
@@ -283,9 +304,9 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
   describe('updateItems()', () => {
     it('should set updating to false', () => {
       tag().updating = true;
-      stub(renderer, 'Renderer').returns({ attachToView: () => null });
+      const renderer: any = { attachToView: () => null };
 
-      tag().updateItems([], undefined);
+      tag().updateItems([], renderer);
 
       expect(tag().updating).to.be.false;
     });
@@ -293,11 +314,11 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
     it('should call addItem() until there are enough items', () => {
       const addItem = stub(tag(), 'addBlankItem', () => tag().items.push(<any>{}));
       const attachToView = spy();
-      stub(renderer, 'Renderer').returns({ attachToView });
+      const renderer: any = { attachToView };
       tag().items = <any[]>[{}, {}, {}];
       tag().loadedItems = 3;
 
-      tag().updateItems(<any[]>[{}, {}, {}, {}, {}], undefined);
+      tag().updateItems(<any[]>[{}, {}, {}, {}, {}], renderer);
 
       expect(tag().items).to.have.length(8);
       expect(tag().items[1]).to.eql({});

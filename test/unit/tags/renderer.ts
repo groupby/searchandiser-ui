@@ -458,7 +458,7 @@ describe('gb-infinite-scroll renderer', () => {
       const promise = renderer.getTombstone();
 
       promise.then((tombstone) => {
-        expect(tombstone.style.opacity).to.eq('1');
+        expect(tombstone.style.opacity).to.eq(undefined);
         expect(tombstone.style.transform).to.eq('');
         expect(tombstone.style.transition).to.eq('');
         expect(remove).to.have.been.calledWith('invisible');
@@ -744,7 +744,7 @@ describe('gb-infinite-scroll renderer', () => {
   describe('static', () => {
     describe('createTombstone()', () => {
       it('should create a tombstone', (done) => {
-        const structure = {a:'b'};
+        const structure = { a: 'b' };
         const add = sinon.spy();
         const node = { classList: { add } };
         const createElement = sandbox.stub(document, 'createElement').returns(node);
@@ -758,7 +758,8 @@ describe('gb-infinite-scroll renderer', () => {
             expect(mount).to.have.been.calledWith(node, 'gb-product', {
               structure,
               tombstone: true,
-              infinite: true });
+              infinite: true
+            });
             expect(one).to.have.been.calledWith('updated');
             done();
           });

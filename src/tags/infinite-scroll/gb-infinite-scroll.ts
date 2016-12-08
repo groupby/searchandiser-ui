@@ -25,6 +25,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   items: ScrollItem[];
   loadedItems: number;
   updating: boolean;
+  oldScroll: number;
 
   // must be kept here to preserve state
   runwayEnd: number;
@@ -36,12 +37,14 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
 
     this.scroller.addEventListener('scroll', this.onScroll);
     WINDOW.addEventListener('resize', this.onResize);
-    this.flux.on(Events.QUERY_CHANGED, this.onResultsChanged);
-    this.flux.on(Events.REFINEMENTS_CHANGED, this.onResultsChanged);
-    this.flux.on(Events.SORT, this.onResultsChanged);
-    this.flux.on(Events.COLLECTION_CHANGED, this.onResultsChanged);
+    this.flux.on(Events.QUERY_CHANGED, this.reset);
+    this.flux.on(Events.REFINEMENTS_CHANGED, this.reset);
+    this.flux.on(Events.SORT, this.reset);
+    this.flux.on(Events.COLLECTION_CHANGED, this.reset);
 
-    this.reset();
+    this.items = [];
+    this.loadedItems = 0;
+    this.runwayEnd = 0;
     this.onResize();
   }
 
@@ -49,17 +52,22 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
     this.items = [];
     this.loadedItems = 0;
     this.runwayEnd = 0;
+    this.anchorScrollTop = 0;
+    this.oldScroll = 0;
     while (this.scroller.hasChildNodes()) {
       this.scroller.removeChild(this.scroller.lastChild);
     }
-  }
-
-  onResultsChanged() {
-    this.reset();
-    this.onScroll();
+    this.attachRenderer();
   }
 
   onScroll() {
+    if (this.oldScroll !== this.scroller.scrollTop) {
+      this.attachRenderer();
+    }
+    this.oldScroll = this.scroller.scrollTop;
+  }
+
+  attachRenderer() {
     new Renderer(this).attachToView();
   }
 
@@ -73,7 +81,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
         };
         (<riot.TagElement>tombstone)._tag.unmount();
         this.items.forEach((item) => item.height = item.width = 0);
-        this.onScroll();
+        this.attachRenderer();
       });
   }
 
@@ -106,9 +114,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
       this.items[this.loadedItems++].data = record;
     });
     this.updating = false;
-    // renderer.attachToView();
-    // This makes things better (no overlap) but should use the above for memory efficiency
-    new Renderer(this).attachToView();
+    renderer.attachToView();
   }
 
   // new blank item
