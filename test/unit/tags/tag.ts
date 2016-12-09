@@ -278,8 +278,8 @@ describe('base tag logic', () => {
         j: true,
         k: 'other',
         l: -1,
-        m: true,
-        n: true
+        m: 0,
+        n: 1
       });
     });
   });
