@@ -1,6 +1,7 @@
 <gb-results>
   <yield>
-    <gb-list items={ records }>
+    <gb-list items={ records } class={ gb-grid: _config.grid }>
+      {console.log(_config.lazy)}
       <gb-product all_meta={ item.allMeta } lazy={ _config.lazy }></gb-product>
     </gb-list>
   </yield>
@@ -27,6 +28,17 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+    }
+
+    gb-list.gb-grid ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    gb-list.gb-grid ul > li {
+      flex-shrink: 1;
+      flex-basis: 25%;
     }
   </style>
 </gb-results>

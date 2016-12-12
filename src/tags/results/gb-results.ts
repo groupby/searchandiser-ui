@@ -4,11 +4,13 @@ import { FluxTag } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
 export const DEFAULT_CONFIG: ResultsConfig = {
-  lazy: false
+  lazy: false,
+  grid: false
 };
 
 export interface ResultsConfig {
   lazy?: boolean;
+  grid?: boolean;
 }
 
 export interface Results extends FluxTag<ResultsConfig> { }

@@ -29,6 +29,7 @@ export class Product {
 
   init() {
     this.configure(DEFAULT_CONFIG);
+    // console.log(this._config);
 
     this.variantIndex = 0;
     this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
