@@ -5,9 +5,7 @@
   </a>
 
   <script>
-    import '../lazy-image/gb-lazy-image.tag.html';
-    this._scopeTo('gb-product');
-    const _scope = this._scope;
-    this.imageLink = () => _scope.image(_scope.productMeta().image);
+    import { ProductImage } from './gb-product-image';
+    this._mixin(ProductImage);
   </script>
 </gb-product-image>

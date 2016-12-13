@@ -113,7 +113,7 @@ export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
   for (let key of Object.keys(rawConfig)) {
     if (typeof defaultConfig[key] === 'boolean'
       || (typeof defaultConfig[key] !== 'number' && rawConfig[key] == true) // tslint:disable-line:triple-equals
-      || (!Array.isArray(rawConfig[key]) && typeof defaultConfig[key] !== 'number' && rawConfig[key] == false)) { // tslint:disable-line:triple-equals:max-line-length
+      || (!Array.isArray(rawConfig[key]) && typeof defaultConfig[key] !== 'number' && rawConfig[key] == false)) { // tslint:disable-line:triple-equals max-line-length
       rawConfig[key] = checkBooleanAttr(key, rawConfig);
     }
   }

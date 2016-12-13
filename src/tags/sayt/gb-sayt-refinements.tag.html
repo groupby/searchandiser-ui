@@ -1,8 +1,7 @@
 <gb-sayt-refinements>
   <h4>{ displayName }</h4>
   <gb-list items={ values }>
-    <gb-sayt-link send={ _scope.searchRefinement } data-value="{ displayName }: { item }"
-        data-refinement={ item } data-field={ name }>
+    <gb-sayt-link send={ _scope.searchRefinement } data-value="{ displayName }: { item }" data-refinement={ item } data-field={ name }>
       <yield>
         <gb-raw content={ _scope.highlightCurrentQuery(item, '<b>$&</b>') }></gb-raw>
       </yield>
@@ -10,10 +9,6 @@
   </gb-list>
 
   <script>
-    import '../list/gb-list.tag.html';
-    import './gb-sayt-link.tag.html';
-    import '../raw/gb-raw.tag.html';
-
     this._scopeTo('gb-sayt');
   </script>
 

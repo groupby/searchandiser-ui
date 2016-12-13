@@ -21,7 +21,7 @@ npm run 'riot:build' >> package.log
 
 # remove references to .tag.html files
 echo ' |-- updating require statements for tags' | tee -a package.log
-sed -i.bak 's/\.tag\.html/\.tag/g' dist/src/tags/**/*.tag.js dist/src/tags/index{.d.ts,.js}
+sed -i.bak 's/\.tag\.html/\.tag/g' dist/src/tags/**/index{.d.ts,.js}
 sed -i.bak 's/\.png/\.datauri/g' dist/src/tags/**/*.js
 
 # add riot to tag files
