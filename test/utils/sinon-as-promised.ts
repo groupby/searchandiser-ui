@@ -1,10 +1,10 @@
-function resolves(value: any) {
+export function resolves(value: any) {
   return this.returns(Promise.resolve(value));
 }
 
 sinon.stub.resolves = resolves;
 
-function rejects(err: any) {
+export function rejects(err: any) {
   if (typeof err === 'string') {
     err = new Error(err);
   }
