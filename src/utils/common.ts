@@ -3,6 +3,7 @@ import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
 import * as queryString from 'query-string';
 import filterObject = require('filter-object');
 import oget = require('oget');
+import * as riot from 'riot';
 
 export { debounce }
 
@@ -26,10 +27,9 @@ export function findSearchBox() {
   return <HTMLInputElement>oget(findTag('gb-query'), '_tag.searchBox');
 }
 
-export function findTag(tagName: string): Element {
-  return document.querySelector(tagName)
-    || document.querySelector(`[data-is="${tagName}"]`)
-    || document.querySelector(`[riot-tag="${tagName}"]`);
+export function findTag(tagName: string) {
+  return <riot.TagElement>(document.querySelector(tagName)
+    || document.querySelector(`[data-is="${tagName}"]`));
 }
 
 export function toRefinement(ref: Refinement, nav: Navigation) {
@@ -90,5 +90,5 @@ export function checkBooleanAttr(attribute: string, opts: any) {
 }
 
 export function scopeCss(tag: string, selector: string) {
-  return `${tag} ${selector}, [data-is="${tag}"] ${selector}, [riot-tag="${tag}"] ${selector}`;
+  return `${tag} ${selector}, [data-is="${tag}"] ${selector}`;
 }

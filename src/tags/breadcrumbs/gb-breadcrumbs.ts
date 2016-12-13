@@ -45,7 +45,7 @@ export class Breadcrumbs {
     this.update({ originalQuery, selected: selectedNavigation, correctedQuery });
   }
 
-  remove(ref: any, nav: any) {
-    this.flux.unrefine(toRefinement(ref, nav));
+  remove(refinement: any, navigation: any) {
+    this.flux.unrefine(toRefinement(refinement, navigation));
   }
 }

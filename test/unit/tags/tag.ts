@@ -97,24 +97,6 @@ describe('base tag logic', () => {
       expect(tag._simpleTagName).to.eq('test-tag');
       expect(tag._camelTagName).to.eq('testTag');
     });
-
-    it('should set tag names from riot-tag', () => {
-      const getAttribute = sinon.spy(() => 'gb-test-tag');
-      const tag: FluxTag<any> = <any>{
-        root: {
-          tagName: 'SOMENAME',
-          dataset: {},
-          getAttribute
-        }
-      };
-
-      setTagName(tag);
-
-      expect(tag._tagName).to.eq('gb-test-tag');
-      expect(tag._simpleTagName).to.eq('test-tag');
-      expect(tag._camelTagName).to.eq('testTag');
-      expect(getAttribute).to.have.been.calledWith('riot-tag');
-    });
   });
 
   describe('setParents()', () => {

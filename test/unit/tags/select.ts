@@ -147,7 +147,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
   describe('nativeSelect()', () => {
     it('should return selector', () => {
       const selector = { a: 'b' };
-      tag().tags = <any>{ 'gb-native-select': { selector } };
+      tag().tags = <any>{ 'gb-native-select': { refs: { selector } } };
 
       const select = tag().nativeSelect();
 
@@ -191,7 +191,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const blur = spy();
       tag()._config = {};
       tag().focused = true;
-      tag().selectButton = () => ({ blur });
+      tag().selectButton = () => <any>({ blur });
 
       tag().unfocus();
 
@@ -246,7 +246,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const options = [{ disabled: true }];
       const update = tag().update = spy();
       const selectOption = stub(tag(), 'selectOption');
-      tag().nativeSelect = () => ({ options });
+      tag().nativeSelect = () => <any>({ options });
 
       tag().selectNative(<any>{
         target: {
@@ -280,7 +280,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const option = { value: 'hat', label: 'Hat' };
       const selectOption = stub(tag(), 'selectOption');
       const blur = spy();
-      tag().selectButton = () => ({ blur });
+      tag().selectButton = () => <any>({ blur });
 
       tag().selectCustom(option);
 

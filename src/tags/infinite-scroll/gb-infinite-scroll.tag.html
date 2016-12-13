@@ -1,6 +1,6 @@
 <gb-infinite-scroll>
-  <ul id="scroller">
-    <div id="runway"> </div>
+  <ul ref="scroller" class="gb-scroller">
+    <div ref="runway" class="gb-runway"></div>
   </ul>
 
   <script>
@@ -9,7 +9,7 @@
   </script>
 
   <style scoped>
-    #scroller {
+    .gb-scroller {
       margin: 0;
       padding: 0;
       overflow-x: hidden;
@@ -22,7 +22,7 @@
       contain: layout;
       will-change: transform;
     }
-    #runway {
+    .gb-runway {
       position: absolute;
       height: 1px;
       width: 1px;

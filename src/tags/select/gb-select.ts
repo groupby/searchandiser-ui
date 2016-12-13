@@ -1,4 +1,5 @@
 import { FluxTag } from '../tag';
+import * as riot from 'riot'; // tslint:disable-line:no-unused-variable
 
 export interface SelectConfig {
   label?: string;
@@ -13,6 +14,18 @@ export interface SelectTag<T extends SelectConfig> extends FluxTag<T> {
 }
 
 export interface Select<T extends SelectConfig> extends FluxTag<T> {
+  tags: {
+    'gb-native-select': FluxTag<any> & {
+      refs: {
+        selector: HTMLSelectElement;
+      };
+    };
+    'gb-custom-select': FluxTag<any> & {
+      tags: {
+        'gb-select-button': FluxTag<any>;
+      };
+    };
+  };
   _scope: SelectTag<T>;
 }
 
@@ -56,12 +69,13 @@ export class Select<T extends SelectConfig> {
   }
 
   selectButton() {
-    return this.tags['gb-custom-select'].tags['gb-select-button'].root;
+    const customSelect = this.tags['gb-custom-select'];
+    return customSelect.tags['gb-select-button'].root;
   }
 
   nativeSelect() {
     if (this.tags['gb-native-select']) {
-      return this.tags['gb-native-select'].selector;
+      return this.tags['gb-native-select'].refs.selector;
     } else {
       return this.root.querySelector('select');
     }
@@ -83,8 +97,8 @@ export class Select<T extends SelectConfig> {
     }
   }
 
-  selectNative(event: Event) {
-    const [option] = Array.from((<HTMLSelectElement>event.target).selectedOptions);
+  selectNative(event: Event & { target: HTMLSelectElement; }) {
+    const [option] = Array.from(event.target.selectedOptions);
     const selected = option.value;
     this.nativeSelect().options[0].disabled = !selected;
     this.update({ selected });

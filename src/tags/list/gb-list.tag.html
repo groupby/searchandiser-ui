@@ -1,11 +1,11 @@
 <gb-list>
   <ul class="{ _style } { inline: 'inline' in opts }">
-    <li each={ item, i in opts.items } class={ active: opts.activation(i) }>
+    <li each={ item, i in opts.items } class={ active: opts.activation && opts.activation(i) }>
       <yield/>
     </li>
   </ul>
 
-  <style>
+  <style scoped>
     gb-list > ul.gb-stylish {
       list-style: none;
       margin: 0;

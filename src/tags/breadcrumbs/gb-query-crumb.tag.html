@@ -1,12 +1,12 @@
 <gb-query-crumb>
-  <div if={ originalQuery }>
+  <div if={ parent.originalQuery }>
     <span if={ !_scope.correctedQuery && _scope._config.labels } class="gb-query-label">{ _scope._config.resultsLabel }</span>
     <span if={ _scope.correctedQuery && _scope._config.labels } class="gb-query-label">{ _scope._config.noResultsLabel }</span>
-    <span class="gb-original-query">{originalQuery}</span>
+    <span class="gb-original-query">{ parent.originalQuery }</span>
   </div>
-  <div if={ correctedQuery }>
+  <div if={ parent.correctedQuery }>
     <span if={ _scope._config.labels } class="gb-query-label">{ _scope._config.correctedResultsLabel }</span>
-    <span class="gb-corrected-query">{correctedQuery}</span>
+    <span class="gb-corrected-query">{ parent.correctedQuery }</span>
   </div>
 
   <script>

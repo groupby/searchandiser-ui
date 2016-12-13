@@ -1,12 +1,13 @@
 import { displayRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface Refinement extends FluxTag<any> { }
+export interface Refinement extends FluxTag<any> {
+  parent: FluxTag<any> & { navigation: any; };
+}
 
 export class Refinement {
 
-  ref: any;
-  nav: any;
+  refinement: any;
   toView: typeof displayRefinement;
 
   init() {
@@ -17,12 +18,12 @@ export class Refinement {
 
 export class AvailableRefinement extends Refinement {
   send() {
-    return this._scope.send(this.ref, this.nav);
+    return this._scope.send(this.refinement, this.parent.navigation);
   }
 }
 
 export class SelectedRefinement extends Refinement {
   remove() {
-    return this._scope.remove(this.ref, this.nav);
+    return this._scope.remove(this.refinement, this.parent.navigation);
   }
 }

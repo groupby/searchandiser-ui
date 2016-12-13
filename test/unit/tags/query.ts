@@ -34,11 +34,11 @@ suite('gb-query', Query, ({
   });
 
   describe('attachListeners()', () => {
-    beforeEach(() => tag().findSearchBox = () => ({ addEventListener: () => null }));
+    beforeEach(() => tag().findSearchBox = () => <any>({ addEventListener: () => null }));
 
     it('should find the search box', () => {
       const addEventListener = spy();
-      const searchBox = { addEventListener };
+      const searchBox: any = { addEventListener };
       tag().listenForSubmit = () => null;
       tag().findSearchBox = () => searchBox;
 
@@ -225,7 +225,7 @@ suite('gb-query', Query, ({
   describe('findSearchBox()', () => {
     it('should return from gb-search-box', () => {
       const searchBox = { a: 'b' };
-      tag().tags = <any>{ 'gb-search-box': { searchBox } };
+      tag().tags = <any>{ 'gb-search-box': { refs: { searchBox } } };
 
       const input = tag().findSearchBox();
 

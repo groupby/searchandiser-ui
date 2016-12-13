@@ -4,7 +4,7 @@
       <gb-query-crumb if={ !_config.hideQuery }></gb-query-crumb>
       <gb-list items={ selected } if={ !_config.hideRefinements } scope="gb-breadcrumbs">
         <gb-list class="gb-navigation-crumb" items={ item.refinements } inline>
-          <gb-refinement-crumb nav={ parent.item } ref={ item }></gb-refinement-crumb>
+          <gb-refinement-crumb navigation={ _parent.item } refinement={ item }></gb-refinement-crumb>
         </gb-list>
       </gb-list>
     </div>

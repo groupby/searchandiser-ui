@@ -12,13 +12,13 @@ describe('gb-infinite-scroll renderer', () => {
     sandbox = sinon.sandbox.create();
     calculateVisibleItems = sandbox.stub(Renderer.prototype, 'calculateVisibleItems');
     initAnchorScrollTop = sandbox.stub(Renderer.prototype, 'initAnchorScrollTop');
-    renderer = new Renderer(<any>{ scroller: {}, tombstoneLayout: {} });
+    renderer = new Renderer(<any>{ refs: { scroller: {} }, tombstoneLayout: {} });
   });
   afterEach(() => sandbox.restore());
 
   describe('on construction', () => {
     it('should set tag', () => {
-      const tag: any = { scroller: {}, tombstoneLayout: {} };
+      const tag: any = { refs: { scroller: {} }, tombstoneLayout: {} };
 
       renderer = new Renderer(tag);
 
@@ -35,7 +35,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should set tombstoneHeight & tombstoneWidth', () => {
       const tag: any = {
-        scroller: {},
+        refs: { scroller: {} },
         tombstoneLayout: {
           height: 13,
           width: 15
@@ -53,7 +53,7 @@ describe('gb-infinite-scroll renderer', () => {
     beforeEach(() => initAnchorScrollTop.restore());
 
     it('should reset anchor if at top', () => {
-      renderer.tag = <any>{ scroller: { scrollTop: 0 } };
+      renderer.tag = <any>{ refs: { scroller: { scrollTop: 0 } } };
       renderer.getAnchoredItem = () => null;
 
       renderer.initAnchorScrollTop(10);
@@ -65,7 +65,7 @@ describe('gb-infinite-scroll renderer', () => {
       const newAnchor = { a: 'b' };
       const anchor = renderer.tag.anchor = <any>{ c: 'd' };
       const getAnchoredItem = sandbox.stub(renderer, 'getAnchoredItem').returns(newAnchor);
-      renderer.tag.scroller = <any>{ scrollTop: 12 };
+      renderer.tag.refs.scroller = <any>{ scrollTop: 12 };
       renderer.tag.anchorScrollTop = 5;
 
       renderer.initAnchorScrollTop(7);
@@ -76,7 +76,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should calculate new anchorScrollTop', () => {
       renderer.getAnchoredItem = () => null;
-      renderer.tag.scroller = <any>{ scrollTop: 12 };
+      renderer.tag.refs.scroller = <any>{ scrollTop: 12 };
       renderer.tag.anchorScrollTop = 5;
 
       renderer.initAnchorScrollTop(10);
@@ -94,7 +94,7 @@ describe('gb-infinite-scroll renderer', () => {
     it('should calculate view boundaries when delta < 0', () => {
       const getAnchoredItem = renderer.getAnchoredItem = sinon.spy(() => ({ index: 40 }));
       const anchor = renderer.tag.anchor = <any>{ index: 56 };
-      renderer.tag.scroller = <any>{ offsetHeight: 20 };
+      renderer.tag.refs.scroller = <any>{ offsetHeight: 20 };
 
       renderer.calculateVisibleItems(-15);
 
@@ -106,7 +106,7 @@ describe('gb-infinite-scroll renderer', () => {
     it('should create a view boundaries when delta > 0', () => {
       const getAnchoredItem = renderer.getAnchoredItem = sinon.spy(() => ({ index: 14 }));
       const anchor = renderer.tag.anchor = <any>{ index: 12 };
-      renderer.tag.scroller = <any>{ offsetHeight: 39 };
+      renderer.tag.refs.scroller = <any>{ offsetHeight: 39 };
 
       renderer.calculateVisibleItems(30);
 
@@ -118,7 +118,7 @@ describe('gb-infinite-scroll renderer', () => {
     it('first item cannot be lower than 0', () => {
       renderer.getAnchoredItem = () => (<any>{ index: 6 });
       renderer.tag.anchor = <any>{ index: 2 };
-      renderer.tag.scroller = <any>{ offsetHeight: 20 };
+      renderer.tag.refs.scroller = <any>{ offsetHeight: 20 };
 
       renderer.calculateVisibleItems(-10);
 
@@ -204,7 +204,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call dropUnusedNodes()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => done();
 
       renderer.attachToView();
@@ -212,7 +212,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call measureNodes()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => null;
       renderer.measureNodes = () => done();
 
@@ -221,7 +221,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call calculateScrollTop()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => null;
       renderer.measureNodes = () => null;
       renderer.calculateScrollTop = () => done();
@@ -231,7 +231,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call calculateCurrentPosition()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => null;
       renderer.measureNodes = () => null;
       renderer.calculateScrollTop = () => null;
@@ -242,7 +242,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call preAnimateNodes()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => null;
       renderer.measureNodes = () => null;
       renderer.calculateScrollTop = () => null;
@@ -254,7 +254,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call animateNodes()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => null;
       renderer.measureNodes = () => null;
       renderer.calculateScrollTop = () => null;
@@ -267,7 +267,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call animateScroller()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => null;
       renderer.measureNodes = () => null;
       renderer.calculateScrollTop = () => null;
@@ -281,7 +281,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call collectTombstones()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => null;
       renderer.measureNodes = () => null;
       renderer.calculateScrollTop = () => null;
@@ -296,7 +296,7 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call maybeRequestContent()', (done) => {
       renderer.findUnusedNodes = () => null;
-      renderer.generateNodes = () => Promise.resolve({});
+      renderer.generateNodes = () => ({});
       renderer.dropUnusedNodes = () => null;
       renderer.measureNodes = () => null;
       renderer.calculateScrollTop = () => null;
@@ -373,7 +373,6 @@ describe('gb-infinite-scroll renderer', () => {
 
   describe('generateNodes()', () => {
     const SCROLLER = { appendChild: () => null };
-    const nodePromise = () => Promise.resolve({ style: {} });
 
     beforeEach(() => {
       renderer.firstItem = 0;
@@ -382,8 +381,8 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should call addBlankItem() for each item in items + 1', () => {
       const addBlankItem = sinon.spy(() => renderer.tag.items.push(<any>{}));
-      renderer.tag = <any>{ items: [{}, {}], scroller: SCROLLER, addBlankItem };
-      sandbox.stub(renderer, 'getTombstone').returns(nodePromise());
+      renderer.tag = <any>{ items: [{}, {}], refs: { scroller: SCROLLER }, addBlankItem };
+      sandbox.stub(renderer, 'getTombstone').returns({ style: {} });
 
       renderer.generateNodes();
 
@@ -399,23 +398,23 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.tag = <any>{
         anchorScrollTop: 20,
         items: [{}, {}, item1, item2],
-        scroller: SCROLLER
+        refs: { scroller: SCROLLER }
       };
-      sandbox.stub(renderer, 'getTombstone').returns(nodePromise());
-      sandbox.stub(renderer, 'render').returns(nodePromise());
+      sandbox.stub(renderer, 'getTombstone').returns({ style: {} });
+      sandbox.stub(renderer, 'render').returns({ style: {} });
 
-      renderer.generateNodes().then((nodes) => {
-        expect(nodes).to.eql({
-          2: [node1, 10],
-          3: [node2, 26]
-        });
-        expect(item1.node).to.not.eq(node1);
-        expect(item2.node).to.not.eq(node2);
-        expect(node1.style.zIndex).to.eq('1');
-        expect(node2.style.zIndex).to.eq('1');
-        expect(contains).to.have.been.calledTwice;
-        expect(contains).to.always.have.been.calledWith('tombstone');
+      const nodes = renderer.generateNodes();
+
+      expect(nodes).to.eql({
+        2: { node: node1, delta: 10 },
+        3: { node: node2, delta: 26 }
       });
+      expect(item1.node).to.not.eq(node1);
+      expect(item2.node).to.not.eq(node2);
+      expect(node1.style.zIndex).to.eq('1');
+      expect(node2.style.zIndex).to.eq('1');
+      expect(contains).to.have.been.calledTwice;
+      expect(contains).to.always.have.been.calledWith('tombstone');
     });
 
     it('should not animate non-tombstones', () => {
@@ -425,58 +424,53 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.tag = <any>{
         anchorScrollTop: 20,
         items: [{}, {}, {}, item],
-        scroller: SCROLLER
+        refs: { scroller: SCROLLER }
       };
-      sandbox.stub(renderer, 'getTombstone').returns(nodePromise());
+      sandbox.stub(renderer, 'getTombstone').returns({ style: {} });
 
-      renderer.generateNodes().then((nodes) => {
-        expect(contains).to.have.been.calledWith('tombstone');
-        expect(nodes).to.eql({});
-      });
+      const nodes = renderer.generateNodes();
+
+      expect(contains).to.have.been.calledWith('tombstone');
+      expect(nodes).to.eql({});
     });
 
-    it('should render and style items and tombstones', (done) => {
+    it('should render and style items and tombstones', () => {
       const items: any[] = [{}, {}, { data: 1 }, { data: 2 }];
       const appendChild = sinon.spy();
-      const getTombstone = sandbox.stub(renderer, 'getTombstone').resolves({ a: 'b', style: {} });
-      const render = sandbox.stub(renderer, 'render').resolves({ c: 'd', style: {} });
+      const getTombstone = sandbox.stub(renderer, 'getTombstone').returns({ a: 'b', style: {} });
+      const render = sandbox.stub(renderer, 'render').returns({ c: 'd', style: {} });
       const unused1 = { e: 'f' };
       const unused2 = { g: 'h' };
-      renderer.tag = <any>{ items, scroller: { appendChild }, anchorScrollTop: 20 };
+      renderer.tag = <any>{ items, refs: { scroller: { appendChild } }, anchorScrollTop: 20 };
       renderer.unusedNodes = <any[]>[unused2, unused1];
 
-      renderer.generateNodes()
-        .then(() => {
-          expect(items).to.have.length(4);
-          items.slice(0, 2).forEach((item) => expect(item.node).to.eql({ a: 'b', style: { position: 'absolute' } }));
-          items.slice(2).forEach((item) => expect(item.node).to.eql({ c: 'd', style: { position: 'absolute' } }));
-          items.forEach((item) => {
-            expect(item.top).to.eq(-1);
-            expect(appendChild).to.have.been.calledWith(item.node);
-          });
-          expect(getTombstone).to.have.been.calledTwice;
-          expect(render).to.have.been.calledTwice;
-          expect(render).to.have.been.calledWith(1, unused1);
-          expect(render).to.have.been.calledWith(2, unused2);
-          done();
-        });
+      renderer.generateNodes();
+
+      expect(items).to.have.length(4);
+      items.slice(0, 2).forEach((item) => expect(item.node).to.eql({ a: 'b', style: { position: 'absolute' } }));
+      items.slice(2).forEach((item) => expect(item.node).to.eql({ c: 'd', style: { position: 'absolute' } }));
+      items.forEach((item) => {
+        expect(item.top).to.eq(-1);
+        expect(appendChild).to.have.been.calledWith(item.node);
+      });
+      expect(getTombstone).to.have.been.calledTwice;
+      expect(render).to.have.been.calledTwice;
+      expect(render).to.have.been.calledWith(1, unused1);
+      expect(render).to.have.been.calledWith(2, unused2);
     });
   });
 
   describe('getTombstone()', () => {
-    it('should remove class invisible and transform style', (done) => {
+    it('should remove class invisible and transform style', () => {
       const remove = sinon.spy();
       renderer.tombstones = <any[]>[{ classList: { remove }, style: {} }];
 
-      const promise = renderer.getTombstone();
+      const tombstone = renderer.getTombstone();
 
-      promise.then((tombstone) => {
-        expect(tombstone.style.opacity).to.eq(undefined);
-        expect(tombstone.style.transform).to.eq('');
-        expect(tombstone.style.transition).to.eq('');
-        expect(remove).to.have.been.calledWith('invisible');
-        done();
-      });
+      expect(tombstone.style.opacity).to.eq(undefined);
+      expect(tombstone.style.transform).to.eq('');
+      expect(tombstone.style.transition).to.eq('');
+      expect(remove).to.have.been.calledWith('invisible');
     });
 
     it('should call createTombstone() if no tombstones exist', () => {
@@ -493,38 +487,34 @@ describe('gb-infinite-scroll renderer', () => {
   });
 
   describe('render()', () => {
-    it('should update content on existing node', (done) => {
+    it('should update content on existing node', () => {
       const record = { allMeta: { a: 'b' } };
       const transformRecord = sinon.spy();
       const one = sinon.spy((event, cb) => cb());
       const node: any = { _tag: { transformRecord, one } };
 
-      renderer.render(record, node)
-        .then(() => {
-          expect(transformRecord).to.have.been.calledWith(record.allMeta);
-          done();
-        });
+      renderer.render(record, node);
+
+      expect(transformRecord).to.have.been.calledWith(record.allMeta);
     });
 
-    it('should update content on new node', (done) => {
+    it('should update content on new node', () => {
       const record = { allMeta: { a: 'b' } };
       const structure = { c: 'd' };
       const remove = sinon.spy();
       const transformRecord = sinon.spy();
       const one = sinon.spy((event, cb) => cb());
-      const createTombstone = sandbox.stub(Renderer, 'createTombstone').resolves({
+      const createTombstone = sandbox.stub(Renderer, 'createTombstone').returns({
         _tag: { transformRecord, one },
         classList: { remove }
       });
       renderer.tag = <any>{ config: { structure } };
 
-      renderer.render(record, null)
-        .then(() => {
-          expect(remove).to.have.been.calledWith('tombstone');
-          expect(transformRecord).to.have.been.calledWith(record.allMeta);
-          expect(createTombstone).to.have.been.calledWith(structure);
-          done();
-        });
+      renderer.render(record, null);
+
+      expect(remove).to.have.been.calledWith('tombstone');
+      expect(transformRecord).to.have.been.calledWith(record.allMeta);
+      expect(createTombstone).to.have.been.calledWith(structure);
     });
   });
 
@@ -534,7 +524,7 @@ describe('gb-infinite-scroll renderer', () => {
       const node2 = { a: 'b' };
       const node3 = { a: 'b' };
       const removeChild = sinon.spy();
-      renderer.tag = <any>{ scroller: { removeChild } };
+      renderer.tag = <any>{ refs: { scroller: { removeChild } } };
       renderer.unusedNodes = <any[]>[node3, node2, node1];
 
       renderer.dropUnusedNodes();
@@ -711,7 +701,7 @@ describe('gb-infinite-scroll renderer', () => {
     it('should set tag.runwayEnd', () => {
       const runway: any = { style: {} };
       const scroller: any = {};
-      renderer.tag = <any>{ runway, scroller, anchorScrollTop: 54, runwayEnd: 0 };
+      renderer.tag = <any>{ refs: { runway, scroller }, anchorScrollTop: 54, runwayEnd: 0 };
       renderer.currentPosition = 34;
 
       renderer.animateScroller();
@@ -723,8 +713,10 @@ describe('gb-infinite-scroll renderer', () => {
 
     it('should set to previous tag.runwayEnd', () => {
       renderer.tag = <any>{
-        runway: { style: {} },
-        scroller: {},
+        refs: {
+          runway: { style: {} },
+          scroller: {}
+        },
         anchorScrollTop: 54,
         runwayEnd: 3000
       };
@@ -756,26 +748,22 @@ describe('gb-infinite-scroll renderer', () => {
 
   describe('static', () => {
     describe('createTombstone()', () => {
-      it('should create a tombstone', (done) => {
+      it('should create a tombstone', () => {
         const structure = { a: 'b' };
         const add = sinon.spy();
         const node = { classList: { add } };
         const createElement = sandbox.stub(document, 'createElement').returns(node);
-        const one = sinon.spy((event, cb) => cb());
-        const mount = sandbox.stub(riot, 'mount').returns([{ one }]);
+        const mount = sandbox.stub(riot, 'mount');
 
-        Renderer.createTombstone(structure)
-          .then((elem) => {
-            expect(elem).to.eq(node);
-            expect(createElement).to.have.been.calledWith('li');
-            expect(mount).to.have.been.calledWith(node, 'gb-product', {
-              structure,
-              tombstone: true,
-              infinite: true
-            });
-            expect(one).to.have.been.calledWith('updated');
-            done();
-          });
+        const elem = Renderer.createTombstone(structure);
+
+        expect(elem).to.eq(node);
+        expect(createElement).to.have.been.calledWith('li');
+        expect(mount).to.have.been.calledWith(node, 'gb-product', {
+          structure,
+          tombstone: true,
+          infinite: true
+        });
       });
     });
   });

@@ -4,6 +4,7 @@ import { expect } from 'chai';
 
 suite('gb-toggle', Toggle, ({
   tag, stub, spy,
+  expectSubscriptions,
   itShouldConfigure
 }) => {
 
@@ -12,21 +13,30 @@ suite('gb-toggle', Toggle, ({
 
     itShouldConfigure(DEFAULT_CONFIG);
 
-    it('should set input checked', () => {
-      const input = tag().input = <any>{};
+    it('should listen for mount', () => {
       tag().addStyleTag = () => null;
-      tag().configure = () => tag()._config = { checked: true };
 
-      tag().init();
-
-      expect(input.checked).to.be.true;
+      expectSubscriptions(() => tag().init(), {
+        mount: tag().onMount
+      }, tag());
     });
 
     it('should call addStyleTag()', (done) => {
-      tag().input = <any>{};
+      tag().refs.input = <any>{};
       tag().addStyleTag = () => done();
 
       tag().init();
+    });
+  });
+
+  describe('onMount()', () => {
+    it('should set input checked', () => {
+      const input = tag().refs.input = <any>{};
+      tag()._config = { checked: true };
+
+      tag().onMount();
+
+      expect(input.checked).to.be.true;
     });
   });
 
@@ -38,7 +48,7 @@ suite('gb-toggle', Toggle, ({
     it('should call the configured trigger method', () => {
       const trigger = spy();
       tag().opts = { trigger };
-      tag().input = <any>{ checked: true };
+      tag().refs.input = <any>{ checked: true };
 
       tag().onClick();
 
@@ -84,23 +94,20 @@ suite('gb-toggle', Toggle, ({
 
       expectCss(node.textContent, `
         gb-toggle label,
-        [data-is="gb-toggle"] label,
-        [riot-tag="gb-toggle"] label {
+        [data-is="gb-toggle"] label {
           height: 30px;
           width: 60px;
         }
       `);
       expectCss(node.textContent, `
          gb-toggle div,
-         [data-is="gb-toggle"] div,
-         [riot-tag="gb-toggle"] div {
+         [data-is="gb-toggle"] div {
            transition: 0.5s;
          }
       `);
       expectCss(node.textContent, `
          gb-toggle span,
-         [data-is="gb-toggle"] span,
-         [riot-tag="gb-toggle"] span {
+         [data-is="gb-toggle"] span {
            height: 20px;
            width: 20px;
            left: 5px;
@@ -110,8 +117,7 @@ suite('gb-toggle', Toggle, ({
       `);
       expectCss(node.textContent, `
          gb-toggle input:checked + div > span,
-         [data-is="gb-toggle"] input:checked + div > span,
-         [riot-tag="gb-toggle"] input:checked + div > span {
+         [data-is="gb-toggle"] input:checked + div > span {
            transform: translateX(30px);
          }
       `);

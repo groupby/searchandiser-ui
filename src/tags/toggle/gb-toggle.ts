@@ -15,23 +15,29 @@ export interface ToggleConfig {
   checked?: boolean;
 }
 
-export interface Toggle extends FluxTag<ToggleConfig> { }
+export interface Toggle extends FluxTag<ToggleConfig> {
+  refs: {
+    input: HTMLInputElement;
+  };
+}
 
 export class Toggle {
-
-  input: HTMLInputElement;
 
   init() {
     this.configure(DEFAULT_CONFIG);
 
-    this.input.checked = this._config.checked;
-
     this.addStyleTag();
+
+    this.on('mount', this.onMount);
+  }
+
+  onMount() {
+    this.refs.input.checked = this._config.checked;
   }
 
   onClick() {
     if (this.opts.trigger) {
-      this.opts.trigger(this.input.checked);
+      this.opts.trigger(this.refs.input.checked);
     }
   }
 

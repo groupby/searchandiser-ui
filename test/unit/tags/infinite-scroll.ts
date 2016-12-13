@@ -15,29 +15,26 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
     const SCROLLER: any = { addEventListener: () => null };
 
     beforeEach(() => {
-      tag().scroller = SCROLLER;
+      tag().refs.scroller = SCROLLER;
       tag().onResize = () => null;
       tag().reset = () => null;
     });
 
     itShouldConfigure(DEFAULT_CONFIG);
 
-    it('should listen for scroll events on scroller', () => {
-      const addEventListener = spy();
-      tag().scroller = <any>{ addEventListener };
-
-      tag().init();
-
-      expect(addEventListener.calledWith('scroll', tag().onScroll)).to.be.true;
-    });
-
     it('should listen for resize events on window', () => {
       const addEventListener = stub(WINDOW, 'addEventListener');
-      tag().scroller = <any>{ addEventListener };
+      tag().refs.scroller = <any>{ addEventListener };
 
       tag().init();
 
       expect(addEventListener).to.have.been.calledWith('resize', tag().onResize);
+    });
+
+    it('should call onMount() on mount', () => {
+      expectSubscriptions(() => tag().init(), {
+        mount: tag().onMount
+      }, tag());
     });
 
     it('should call reset() for events', () => {
@@ -56,17 +53,11 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       expect(tag().loadedItems).to.eq(0);
       expect(tag().runwayEnd).to.eq(0);
     });
-
-    it('should call onResize()', (done) => {
-      tag().onResize = () => done();
-
-      tag().init();
-    });
   });
 
   describe('reset()', () => {
     it('should reset values and call attachRenderer()', () => {
-      tag().scroller = <any>{ hasChildNodes: () => false };
+      tag().refs.scroller = <any>{ hasChildNodes: () => false };
       tag().items = <any[]>['a', 'b'];
       tag().loadedItems = 3;
       tag().runwayEnd = 100;
@@ -91,13 +82,26 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       hasChildNodes.onFirstCall().returns(true);
       hasChildNodes.onSecondCall().returns(true);
       hasChildNodes.onThirdCall().returns(true);
-      tag().scroller = <any>{ removeChild, lastChild, hasChildNodes };
+      tag().refs.scroller = <any>{ removeChild, lastChild, hasChildNodes };
       tag().attachRenderer = () => null;
 
       tag().reset();
 
       expect(removeChild).to.have.been.calledThrice;
       expect(removeChild).to.have.always.been.calledWith(lastChild);
+    });
+  });
+
+  describe('onMount()', () => {
+    it('should listen for scroll events on scroller', () => {
+      const addEventListener = spy();
+      const onResize = tag().onResize = spy();
+      tag().refs.scroller = <any>{ addEventListener };
+
+      tag().onMount();
+
+      expect(addEventListener).to.have.been.calledWith('scroll', tag().onScroll);
+      expect(onResize).to.have.been.called;
     });
   });
 
@@ -109,7 +113,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       stub(tag(), 'attachRenderer');
     });
 
-    it('should add and remove tombstone from DOM', (done) => {
+    it('should add and remove tombstone from DOM', () => {
       const unmount = spy();
       const structure = { a: 'b' };
       const node = {
@@ -118,62 +122,56 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
         _tag: { unmount }
       };
       const appendChild = spy();
-      const createTombstone = stub(renderer.Renderer, 'createTombstone').resolves(node);
+      const createTombstone = stub(renderer.Renderer, 'createTombstone').returns(node);
       tag().config = { structure };
-      tag().scroller = <any>{ appendChild };
+      tag().refs.scroller = <any>{ appendChild };
       tag().items = [];
 
-      tag().onResize()
-        .then(() => {
-          expect(appendChild).to.have.been.calledWith(node);
-          expect(unmount).to.have.been.called;
-          expect(createTombstone).to.have.been.calledWith(structure);
-          done();
-        });
+      tag().onResize();
+
+      expect(appendChild).to.have.been.calledWith(node);
+      expect(unmount).to.have.been.called;
+      expect(createTombstone).to.have.been.calledWith(structure);
     });
 
-    it('should set the height & width of a tombstone', (done) => {
+    it('should set the height & width of a tombstone', () => {
       const node = {
         offsetHeight: 10,
         offsetWidth: 11,
         _tag: TAG
       };
-      tag().scroller = SCROLLER;
+      tag().refs.scroller = SCROLLER;
       tag().items = [];
-      stub(renderer.Renderer, 'createTombstone').resolves(node);
+      stub(renderer.Renderer, 'createTombstone').returns(node);
 
-      tag().onResize()
-        .then(() => {
-          expect(tag().tombstoneLayout).to.eql({ height: 10, width: 11 });
-          done();
-        });
+      tag().onResize();
+
+      expect(tag().tombstoneLayout).to.eql({ height: 10, width: 11 });
     });
 
-    it('should clear the height and width of items', (done) => {
-      tag().scroller = SCROLLER;
+    it('should clear the height and width of items', () => {
+      tag().refs.scroller = SCROLLER;
       tag().items = <any>[
         { height: 1, width: 2 },
         { height: 11, width: 20 },
         { height: 21, width: 12 }
       ];
-      stub(renderer.Renderer, 'createTombstone').resolves({ _tag: TAG });
+      stub(renderer.Renderer, 'createTombstone').returns({ _tag: TAG });
 
-      tag().onResize()
-        .then(() => {
-          expect(tag().items).to.have.length(3);
-          tag().items.forEach((item) => {
-            expect(item.height).to.eq(0);
-            expect(item.width).to.eq(0);
-          });
-          done();
-        });
+      tag().onResize();
+
+      expect(tag().items).to.have.length(3);
+      tag().items.forEach((item) => {
+        expect(item.height).to.eq(0);
+        expect(item.width).to.eq(0);
+      });
     });
 
     it('should call attachRenderer()', (done) => {
-      tag().scroller = SCROLLER;
+      tag().refs.scroller = SCROLLER;
       tag().items = [];
       tag().attachRenderer = () => done();
-      stub(renderer.Renderer, 'createTombstone').resolves({ _tag: TAG });
+      stub(renderer.Renderer, 'createTombstone').returns({ _tag: TAG });
 
       tag().onResize();
     });
@@ -182,7 +180,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
   describe('onScroll()', () => {
     it('should set oldScroll equal to scroller.scrollTop and call attachRenderer()', () => {
       tag().oldScroll = 1;
-      tag().scroller = <any>{ scrollTop: 10 };
+      tag().refs.scroller = <any>{ scrollTop: 10 };
       const attachRenderer = tag().attachRenderer = spy();
 
       tag().onScroll();
@@ -193,7 +191,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
     it('should set oldScroll equal to scroller.scrollTop and not call attachRenderer()', () => {
       tag().oldScroll = 10;
-      tag().scroller = <any>{ scrollTop: 10 };
+      tag().refs.scroller = <any>{ scrollTop: 10 };
       const attachRenderer = tag().attachRenderer = spy();
 
       tag().onScroll();

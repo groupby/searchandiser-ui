@@ -5,15 +5,18 @@ export interface LazyImageConfig {
   src: string;
 }
 
-export interface LazyImage extends FluxTag<LazyImageConfig> { }
+export interface LazyImage extends FluxTag<LazyImageConfig> {
+  refs: {
+    lazyImage: HTMLImageElement;
+  };
+}
 
 export class LazyImage extends FluxTag<LazyImageConfig> {
-
-  lazyImage: HTMLImageElement;
 
   init() {
     this.configure();
 
+    this._scope.on('mount', this.maybeLoadImage);
     this._scope.on('update', this.maybeLoadImage);
 
     if (this._config.src) {
@@ -23,7 +26,7 @@ export class LazyImage extends FluxTag<LazyImageConfig> {
 
   maybeLoadImage() {
     const imageUrl = this._scope.productMeta().image;
-    if (imageUrl && (!this.lazyImage || this.lazyImage.src !== imageUrl)) {
+    if (imageUrl && (!this.refs.lazyImage || this.refs.lazyImage.src !== imageUrl)) {
       this.lazyLoad(imageUrl);
     }
   }
@@ -38,8 +41,8 @@ export class LazyImage extends FluxTag<LazyImageConfig> {
   }
 
   processImage(image: HTMLImageElement) {
-    this.lazyImage.src = image.src;
-    this.lazyImage.height = image.height;
-    this.lazyImage.width = image.width;
+    this.refs.lazyImage.src = image.src;
+    this.refs.lazyImage.height = image.height;
+    this.refs.lazyImage.width = image.width;
   }
 }

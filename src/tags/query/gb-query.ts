@@ -21,6 +21,14 @@ export const DEFAULT_CONFIG: QueryConfig = {
 
 export interface Query extends FluxTag<QueryConfig> {
   root: riot.TagElement & HTMLInputElement;
+  tags: {
+    'gb-sayt': Sayt;
+    'gb-search-box': FluxTag<any> & {
+      refs: {
+        searchBox: HTMLInputElement;
+      };
+    };
+  };
 }
 
 export class Query {
@@ -40,7 +48,9 @@ export class Query {
   attachListeners() {
     this.searchBox = this.findSearchBox();
     this.searchBox.addEventListener('keydown', this.keydownListener);
-    if (this._config.sayt) this.tags['gb-sayt'].listenForInput(this);
+    if (this._config.sayt) {
+      this.tags['gb-sayt'].listenForInput(this);
+    }
 
     if (this._config.autoSearch) {
       this.listenForInput();
@@ -75,7 +85,7 @@ export class Query {
   keydownListener(event: KeyboardEvent) {
     const sayt = findTag('gb-sayt');
     if (sayt) {
-      const autocomplete = (<Sayt>sayt['_tag']).autocomplete;
+      const autocomplete = (<Sayt>sayt._tag).autocomplete;
       autocomplete.keyboardListener(event, this.onSubmit);
     } else if (event.keyCode === KEY_ENTER) {
       this.onSubmit();
@@ -89,7 +99,7 @@ export class Query {
 
   findSearchBox() {
     if (this.tags['gb-search-box']) {
-      return this.tags['gb-search-box'].searchBox;
+      return this.tags['gb-search-box'].refs.searchBox;
     } else {
       return this.root.querySelector('input');
     }

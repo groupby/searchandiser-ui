@@ -15,8 +15,8 @@ export type AnimationMap = {
 
 export class Renderer {
 
-  tombstones: HTMLElement[] = [];
-  unusedNodes: HTMLElement[] = [];
+  tombstones: riot.TagElement[] = [];
+  unusedNodes: riot.TagElement[] = [];
   tombstoneHeight: number;
   tombstoneWidth: number;
   currentPosition: number;
@@ -27,22 +27,22 @@ export class Renderer {
     this.tombstoneHeight = tag.tombstoneLayout.height;
     this.tombstoneWidth = tag.tombstoneLayout.width;
 
-    const delta = this.tag.scroller.scrollTop - this.tag.anchorScrollTop;
+    const delta = this.tag.refs.scroller.scrollTop - this.tag.anchorScrollTop;
     this.initAnchorScrollTop(delta);
     this.calculateVisibleItems(delta);
   }
 
   initAnchorScrollTop(delta: number) {
-    if (this.tag.scroller.scrollTop === 0) {
+    if (this.tag.refs.scroller.scrollTop === 0) {
       this.tag.anchor = { index: 0, offset: 0 };
     } else {
       this.tag.anchor = this.getAnchoredItem(this.tag.anchor, delta);
     }
-    this.tag.anchorScrollTop = this.tag.scroller.scrollTop;
+    this.tag.anchorScrollTop = this.tag.refs.scroller.scrollTop;
   }
 
   calculateVisibleItems(delta: number) {
-    const lastScreenItem = this.getAnchoredItem(this.tag.anchor, this.tag.scroller.offsetHeight);
+    const lastScreenItem = this.getAnchoredItem(this.tag.anchor, this.tag.refs.scroller.offsetHeight);
 
     let firstItem: number;
     if (delta < 0) {
@@ -90,18 +90,17 @@ export class Renderer {
 
   attachToView() {
     this.findUnusedNodes();
-    this.generateNodes()
-      .then((animations) => {
-        this.dropUnusedNodes();
-        this.measureNodes();
-        this.calculateScrollTop();
-        this.calculateCurrentPosition();
-        this.preAnimateNodes(animations);
-        this.animateNodes(animations);
-        this.animateScroller();
-        this.collectTombstones(animations);
-        this.tag.maybeRequestContent(this);
-      });
+
+    const animations = this.generateNodes();
+    this.dropUnusedNodes();
+    this.measureNodes();
+    this.calculateScrollTop();
+    this.calculateCurrentPosition();
+    this.preAnimateNodes(animations);
+    this.animateNodes(animations);
+    this.animateScroller();
+    this.collectTombstones(animations);
+    this.tag.maybeRequestContent(this);
   }
 
   findUnusedNodes() {
@@ -122,12 +121,12 @@ export class Renderer {
 
   dropUnusedNodes() {
     while (this.unusedNodes.length) {
-      this.tag.scroller.removeChild(this.unusedNodes.pop());
+      this.tag.refs.scroller.removeChild(this.unusedNodes.pop());
       // TODO: also unmount nodes if mounted
     }
   }
 
-  sortNode(node: HTMLElement) {
+  sortNode(node: riot.TagElement) {
     if (node.classList.contains('tombstone')) {
       this.tombstones.push(node);
       this.tombstones[this.tombstones.length - 1].classList.add('invisible');
@@ -198,8 +197,8 @@ export class Renderer {
 
   animateScroller() {
     this.tag.runwayEnd = Math.max(this.tag.runwayEnd, this.currentPosition + RUNWAY_LENGTH);
-    this.tag.runway.style.transform = `translate(0, ${this.tag.runwayEnd}px)`;
-    this.tag.scroller.scrollTop = this.tag.anchorScrollTop;
+    this.tag.refs.runway.style.transform = `translate(0, ${this.tag.runwayEnd}px)`;
+    this.tag.refs.scroller.scrollTop = this.tag.anchorScrollTop;
   }
 
   collectTombstones(animations: AnimationMap) {
@@ -214,7 +213,6 @@ export class Renderer {
 
   generateNodes() {
     const animations: AnimationMap = {};
-    const promisedNodes: Promise<any>[] = [];
     for (let i = this.firstItem; i < this.lastItem; i++) {
       while (this.tag.items.length <= i) {
         this.tag.addBlankItem();
@@ -234,58 +232,53 @@ export class Renderer {
         }
       }
 
-      let promisedNode;
+      let node: riot.TagElement;
       if (item.data) {
-        promisedNode = this.render(item.data, this.unusedNodes.pop());
+        node = this.render(item.data, this.unusedNodes.pop());
       } else {
-        promisedNode = this.getTombstone();
+        node = this.getTombstone();
       }
-      promisedNodes.push(promisedNode.then((node) => {
-        node.style.position = 'absolute';
-        item.top = -1;
-        this.tag.scroller.appendChild(node);
-        return item.node = node;
-      }));
+
+      node.style.position = 'absolute';
+      item.top = -1;
+      this.tag.refs.scroller.appendChild(node);
+      item.node = node;
     }
 
-    return Promise.all(promisedNodes)
-      .then(() => animations);
+    return animations;
   }
 
-  getTombstone(): Promise<HTMLElement> {
+  getTombstone(): riot.TagElement {
     const tombstone = this.tombstones.pop();
     if (tombstone) {
       tombstone.classList.remove('invisible');
       tombstone.style.transform = '';
       tombstone.style.transition = '';
-      return Promise.resolve(tombstone);
+      return tombstone;
     } else {
       return Renderer.createTombstone(this.tag.config.structure);
     }
   }
 
-  render(data: any, elem: HTMLElement): Promise<HTMLElement> {
-    return Promise.resolve(elem || Renderer.createTombstone(this.tag.config.structure)
-      .then((tombstone) => {
-        tombstone.classList.remove('tombstone');
-        return tombstone;
-      }))
-      .then((node: riot.TagElement) => {
-        const tag: any = node._tag;
-        tag.transformRecord(data.allMeta);
+  render(data: any, elem?: riot.TagElement) {
+    if (!elem) {
+      elem = Renderer.createTombstone(this.tag.config.structure);
+      elem.classList.remove('tombstone');
+    }
+    const tag: any = (<riot.TagElement>elem)._tag;
+    tag.transformRecord(data.allMeta);
 
-        return new Promise((resolve) => tag.one('updated', () => resolve(node)));
-      });
+    return elem;
   }
 
-  static createTombstone(structure: any): Promise<HTMLElement> {
+  static createTombstone(structure: any) {
     const node = document.createElement('li');
-    const [tag] = riot.mount(node, 'gb-product', {
+    riot.mount(node, 'gb-product', {
       structure,
       infinite: true,
       tombstone: true
     });
 
-    return new Promise((resolve) => tag.one('updated', () => resolve(node)));
+    return <riot.TagElement & HTMLLIElement>node;
   }
 }
