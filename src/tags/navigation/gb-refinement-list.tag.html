@@ -11,10 +11,8 @@
   </div>
 
   <script>
-    this.moreRefinements = () => {
-      this.flux.refinements(this.nav.name);
-      this.nav.moreRefinements = false;
-    };
+    import { RefinementList } from './gb-refinement-list';
+    this._mixin(RefinementList);
   </script>
 
   <style scoped>
