@@ -2,10 +2,8 @@
   <div if={ isVisible() }></div>
 
   <script>
-    this.isVisible = () => this.root.nextElementSibling &&
-      this.root.nextElementSibling.querySelector('li') &&
-      this.root.previousElementSibling &&
-      this.root.previousElementSibling.querySelector('li');
+    import { SaytDivider } from './gb-sayt-divider';
+    this._mixin(SaytDivider);
   </script>
 
   <style scoped>
