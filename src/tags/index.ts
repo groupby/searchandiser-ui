@@ -5,6 +5,7 @@ import './collections/gb-collections.tag.html';
 import './details/gb-details.tag.html';
 import './did-you-mean/gb-did-you-mean.tag.html';
 import './filter/gb-filter.tag.html';
+import './grid-toggle/gb-grid-toggle.tag.html';
 import './infinite-scroll/gb-infinite-scroll.tag.html';
 import './lazy-image/gb-lazy-image.tag.html';
 import './navigation/gb-navigation.tag.html';
