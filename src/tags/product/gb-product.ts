@@ -50,16 +50,18 @@ export class Product {
 
   transformRecord(allMeta: any = {}) {
     const productMeta = this.transformer.transform(clone(allMeta, false));
+    console.log(productMeta().id);
     this.update({
       productMeta: () => productMeta(this.variantIndex),
+      link: productMeta().url || `${this.detailsUrl}?id=${productMeta().id}`,
       variants: productMeta.variants || [],
       allMeta: productMeta.transformedMeta
     });
   }
 
-  link() {
-    return this.productMeta().url || `${this.detailsUrl}?id=${this.productMeta().id}`;
-  }
+  // link() {
+  //   return this.productMeta().url || `${this.detailsUrl}?id=${this.productMeta().id}`;
+  // }
 
   image(imageObj: string | string[]) {
     return Array.isArray(imageObj) ? imageObj[0] : imageObj;
