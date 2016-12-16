@@ -1,12 +1,12 @@
 <gb-select-button>
   <yield>
-    <span class="gb-button__label">{ _scope.selectLabel() }</span>
-    <img src={ _scope.iconUrl } alt="" />
+    <span class="gb-button__label">{ $scope.selectLabel() }</span>
+    <img src={ $scope.iconUrl } alt="" />
   </yield>
 
   <script>
-    this.root.addEventListener('focus', this._scope.prepFocus);
-    this.root.addEventListener('click', this._scope.unFocus);
+    this.root.addEventListener('focus', this.$scope.prepFocus);
+    this.root.addEventListener('click', this.$scope.unFocus);
   </script>
 
   <style scoped>

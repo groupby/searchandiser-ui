@@ -18,7 +18,7 @@ suite('tracker', ({ spy, stub }) => {
       const service = new Tracker(<any>{}, TEST_CONFIG);
 
       expect(service.tracker).to.be.an.instanceof(GbTracker);
-      expect(service._config).to.eql({
+      expect(service.$config).to.eql({
         warnings: true,
         metadata: {}
       });
@@ -30,7 +30,7 @@ suite('tracker', ({ spy, stub }) => {
 
       const service = new Tracker(<any>{}, Object.assign({ tracker: { visitorId, sessionId } }, TEST_CONFIG));
 
-      expect(service._config).to.eql({ visitorId, sessionId, warnings: true, metadata: {} });
+      expect(service.$config).to.eql({ visitorId, sessionId, warnings: true, metadata: {} });
     });
   });
 
@@ -40,7 +40,7 @@ suite('tracker', ({ spy, stub }) => {
     beforeEach(() => service = new Tracker(<any>{ on: () => null }, TEST_CONFIG));
 
     it('should disable warnings', (done) => {
-      service._config = { warnings: false };
+      service.$config = { warnings: false };
       service.tracker.disableWarnings = () => done();
 
       service.init();
@@ -329,7 +329,7 @@ suite('tracker', ({ spy, stub }) => {
   describe('generateMetadata', () => {
     it('should mixin root metadata', () => {
       const service = new Tracker(<any>{}, TEST_CONFIG);
-      service._config = { metadata: { a: 'b' } };
+      service.$config = { metadata: { a: 'b' } };
 
       const metadata = service.generateMetadata();
 
@@ -338,7 +338,7 @@ suite('tracker', ({ spy, stub }) => {
 
     it('should mixin event-specific metadata', () => {
       const service = new Tracker(<any>{}, TEST_CONFIG);
-      service._config = { metadata: { a: 'b', _search: { c: 'd' } } };
+      service.$config = { metadata: { a: 'b', _search: { c: 'd' } } };
 
       const metadata = service.generateMetadata('search');
 

@@ -1,51 +1,46 @@
 <gb-pager>
-  <div class="gb-pager { _style }">
-    <a class="gb-pager__link prev { disabled: _scope.backDisabled }" onclick={ _scope.pager.prev }>
-      <gb-icon if={ _config.icons } value={ _config.prev_icon }></gb-icon>
-      <span if={ _config.labels }>{ _config.prev_label }</span>
-    </a>
-    <yield/>
-    <a class="gb-pager__link next { disabled: _scope.forwardDisabled }" onclick={ _scope.pager.next }>
-      <span if={ _config.labels }>{ _config.next_label }</span>
-      <gb-icon if={ _config.icons } value={ _config.next_icon }></gb-icon>
-    </a>
-  </div>
+  <a class="gb-pager__link prev { disabled: $scope.backDisabled }" onclick={ $scope.pager.prev }>
+    <gb-icon if={ $config.icons } value={ $config.prev_icon }></gb-icon>
+    <span if={ $config.labels }>{ $config.prev_label }</span>
+  </a>
+  <yield/>
+  <a class="gb-pager__link next { disabled: $scope.forwardDisabled }" onclick={ $scope.pager.next }>
+    <span if={ $config.labels }>{ $config.next_label }</span>
+    <gb-icon if={ $config.icons } value={ $config.next_icon }></gb-icon>
+  </a>
 
   <script>
     import { Pager } from './gb-pager';
-    this._mixin(Pager);
+    this.$mixin(Pager);
   </script>
 
   <style scoped>
-    .gb-stylish a {
-      cursor: pointer;
-    }
-
-    .gb-stylish.gb-pager {
+    :scope.gb-stylish {
       display: flex;
     }
 
-    .gb-stylish .gb-pager__link {
+    :scope.gb-stylish .gb-pager__link {
+      cursor: pointer;
       display: flex;
       text-decoration: none;
       color: #888;
       padding: 5px 14px;
     }
 
-    .gb-stylish .gb-pager__link:hover {
+    :scope.gb-stylish .gb-pager__link:hover {
       color: black;
     }
 
-    .gb-stylish .gb-pager__link.disabled {
+    :scope.gb-stylish .gb-pager__link.disabled {
       color: #ddd;
       cursor: not-allowed;
     }
 
-    .gb-stylish gb-pages {
+    :scope.gb-stylish gb-pages {
       flex: 1;
     }
 
-    .gb-stylish gb-icon img {
+    :scope.gb-stylish gb-icon img {
       width: 20px;
     }
   </style>

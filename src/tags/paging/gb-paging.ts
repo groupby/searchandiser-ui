@@ -74,7 +74,7 @@ export class Paging {
   }
 
   pageInfo() {
-    const pageNumbers = this.flux.page.pageNumbers(this._config.limit);
+    const pageNumbers = this.flux.page.pageNumbers(this.$config.limit);
     const lastPage = this.flux.page.finalPage;
     const currentPage = this.flux.page.currentPage;
     this.updatePageInfo(pageNumbers, currentPage, lastPage);

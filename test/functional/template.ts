@@ -29,7 +29,7 @@ suite<Template>('gb-template', ({ mount, itMountsTag }) => {
       const richContent = '<h1>my content</h1>';
       const tag = mount();
       const model = new Model(tag);
-      tag._config = { target: templateName };
+      tag.$config = { target: templateName };
 
       tag.updateActive(<any>{
         template: {

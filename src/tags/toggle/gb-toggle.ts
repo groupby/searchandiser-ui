@@ -27,12 +27,10 @@ export class Toggle {
     this.configure(DEFAULT_CONFIG);
 
     this.addStyleTag();
-
-    this.on('mount', this.onMount);
   }
 
   onMount() {
-    this.refs.input.checked = this._config.checked;
+    this.refs.input.checked = this.$config.checked;
   }
 
   onClick() {
@@ -42,16 +40,16 @@ export class Toggle {
   }
 
   calculateSwitchHeight(toggleHeight: number) {
-    const heightDifference = toggleHeight - this._config.switchHeight;
-    const switchHeight = Math.min(this._config.switchHeight, toggleHeight);
+    const heightDifference = toggleHeight - this.$config.switchHeight;
+    const switchHeight = Math.min(this.$config.switchHeight, toggleHeight);
     return switchHeight - heightDifference % 2;
   }
 
   addStyleTag() {
-    const toggleHeight = this._config.height;
+    const toggleHeight = this.$config.height;
     const switchHeight = this.calculateSwitchHeight(toggleHeight);
     const padding = (toggleHeight - switchHeight) / 2;
-    const speed = this._config.animationSpeed;
+    const speed = this.$config.animationSpeed;
     const node = document.createElement('style');
     node.textContent = `
       ${scopeCss('gb-toggle', 'label')} {

@@ -2,17 +2,9 @@ import { Reset } from '../../../src/tags/reset/gb-reset';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-reset', Reset, ({ flux, tag, spy, expectSubscriptions }) => {
+suite('gb-reset', Reset, ({ flux, tag, spy }) => {
 
   describe('init()', () => {
-    it('should listen for mount event', () => {
-      tag().root = <any>{ addEventListener: () => null };
-
-      expectSubscriptions(() => tag().init(), {
-        mount: tag().setSearchBox
-      }, tag());
-    });
-
     it('should register click listener', () => {
       const addEventListener = spy();
       tag().root = <any>{ addEventListener };

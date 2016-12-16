@@ -32,7 +32,7 @@ export class Product {
 
     this.variantIndex = 0;
     this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
-    this.struct = this.opts.structure || this._scope.struct || this.config.structure || {};
+    this.struct = this.opts.structure || this.$scope.struct || this.config.structure || {};
     this.transformer = new ProductTransformer(this.struct);
 
     this.styleProduct();
@@ -40,10 +40,10 @@ export class Product {
   }
 
   styleProduct() {
-    if (this._config.infinite) {
+    if (this.$config.infinite) {
       this.root.classList.add('gb-infinite');
     }
-    if (this._config.tombstone) {
+    if (this.$config.tombstone) {
       this.root.classList.add('tombstone');
     }
   }

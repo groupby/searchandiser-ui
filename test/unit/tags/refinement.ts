@@ -8,7 +8,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 
 const TAG = 'gb-refinement';
-const MIXIN = { _scopeTo: () => null };
+const MIXIN = { $scopeTo: () => null };
 
 describe(`${TAG} logic`, () => {
 
@@ -28,7 +28,7 @@ describe(`${TAG} logic`, () => {
         const refinement = tag().refinement = { type: 'Range', low: 4, high: 6 };
         const parent = tag().parent = <any>{ navigation: { name: 'price' } };
         const send = spy();
-        tag()._scope = { send };
+        tag().$scope = { send };
 
         tag().send();
 
@@ -43,7 +43,7 @@ describe(`${TAG} logic`, () => {
         const refinement = tag().refinement = { type: 'Range', low: 4, high: 6 };
         const parent = tag().parent = <any>{ navigation: { name: 'price' } };
         const remove = spy();
-        tag()._scope = { remove };
+        tag().$scope = { remove };
 
         tag().remove();
 

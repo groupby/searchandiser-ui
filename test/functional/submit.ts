@@ -29,6 +29,6 @@ suite<Submit>('gb-submit', ({ flux, mount, itMountsTag }) => {
 
 class Model extends BaseModel<Submit>  {
   get link() {
-    return this.element(this.html, '.gb-submit');
+    return this.element(this.html, 'a');
   }
 }

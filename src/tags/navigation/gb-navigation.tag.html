@@ -1,17 +1,15 @@
 <gb-navigation>
   <yield>
-    <div class="gb-side-nav { _style }">
-      <gb-refinement-list each={ navigation in processed }></gb-refinement-list>
-    </div>
+    <gb-refinement-list each={ navigation in processed }></gb-refinement-list>
   </yield>
 
   <script>
     import { Navigation } from './gb-navigation';
-    this._mixin(Navigation);
+    this.$mixin(Navigation);
   </script>
 
   <style scoped>
-    .gb-stylish.gb-side-nav {
+    :scope.gb-stylish {
       padding: 12px;
     }
   </style>

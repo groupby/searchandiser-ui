@@ -54,7 +54,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
     });
 
     it('should not render query-crumb if configured', () => {
-      tag._config.hideQuery = true;
+      tag.$config.hideQuery = true;
 
       tag.update();
 
@@ -71,7 +71,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
       });
 
       it('should not render', () => {
-        tag._config = { labels: false };
+        tag.$config = { labels: false };
 
         tag.update();
 
@@ -82,7 +82,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
         const noResultsLabel = 'No available results for: ';
         const correctedResultsLabel = 'Here are the results for: ';
         const resultsLabel = 'Showing current results for: ';
-        tag._config = {
+        tag.$config = {
           noResultsLabel,
           correctedResultsLabel,
           resultsLabel,
@@ -146,7 +146,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
     });
 
     it('should not render refinements if configured', () => {
-      tag._config.hideRefinements = true;
+      tag.$config.hideRefinements = true;
 
       tag.update();
 
@@ -175,7 +175,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
 export class Model extends BaseModel<Breadcrumbs> {
 
   get queryCrumb() {
-    return this.element(this.html, 'div gb-query-crumb');
+    return this.element(this.html, 'gb-query-crumb');
   }
 
   get originalQuery() {
@@ -191,11 +191,11 @@ export class Model extends BaseModel<Breadcrumbs> {
   }
 
   get navigationList() {
-    return this.element(this.html, 'div > gb-list > ul');
+    return this.element(this.html, 'gb-list > ul');
   }
 
   get navigationCrumbs() {
-    return this.list(this.html, 'div > gb-list gb-list.gb-navigation-crumb');
+    return this.list(this.html, 'gb-list gb-list.gb-navigation-crumb');
   }
 
   refinementCrumbs(parent: HTMLElement = this.html) {

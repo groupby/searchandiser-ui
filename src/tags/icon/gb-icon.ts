@@ -16,10 +16,10 @@ export class Icon {
 
   init() {
     this.configure();
-    if (this.isImage(this._config.value)) {
-      this.url = this._config.value;
+    if (this.isImage(this.$config.value)) {
+      this.url = this.$config.value;
     } else {
-      this.classes = this._config.value;
+      this.classes = this.$config.value;
     }
   }
 

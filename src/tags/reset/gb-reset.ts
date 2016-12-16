@@ -8,11 +8,10 @@ export class Reset {
   searchBox: HTMLInputElement;
 
   init() {
-    this.on('mount', this.setSearchBox);
     this.root.addEventListener('click', this.clearQuery);
   }
 
-  setSearchBox() {
+  onMount() {
     this.searchBox = findSearchBox();
   }
 

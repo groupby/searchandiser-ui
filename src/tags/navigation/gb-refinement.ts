@@ -11,19 +11,19 @@ export class Refinement {
   toView: typeof displayRefinement;
 
   init() {
-    this._scopeTo('gb-navigation');
+    this.$scopeTo('gb-navigation');
     this.toView = displayRefinement;
   }
 }
 
 export class AvailableRefinement extends Refinement {
   send() {
-    return this._scope.send(this.refinement, this.parent.navigation);
+    return this.$scope.send(this.refinement, this.parent.navigation);
   }
 }
 
 export class SelectedRefinement extends Refinement {
   remove() {
-    return this._scope.remove(this.refinement, this.parent.navigation);
+    return this.$scope.remove(this.refinement, this.parent.navigation);
   }
 }

@@ -1,10 +1,10 @@
 <gb-variant-switcher>
-  <a if={ _scope.variants.length > 1 } each={ variant, i in _scope.variants }
-    class="gb-product__variant-link" onclick={ _scope.switchVariant } data-index={ i }>
+  <a if={ $scope.variants.length > 1 } each={ variant, i in $scope.variants }
+    class="gb-product__variant-link" onclick={ $scope.switchVariant } data-index={ i }>
     { i }
   </a>
 
   <script>
-    this._scopeTo('gb-product');
+    this.$scopeTo('gb-product');
   </script>
 </gb-variant-switcher>

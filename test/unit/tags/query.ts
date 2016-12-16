@@ -20,12 +20,6 @@ suite('gb-query', Query, ({
       expect(tag().enterKeyHandlers).to.eql([]);
     });
 
-    it('should attachListeners on mount', () => {
-      expectSubscriptions(() => tag().init(), {
-        mount: tag().attachListeners
-      }, tag());
-    });
-
     it('should listen for flux events', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.REWRITE_QUERY]: tag().rewriteQuery
@@ -33,7 +27,7 @@ suite('gb-query', Query, ({
     });
   });
 
-  describe('attachListeners()', () => {
+  describe('onMount()', () => {
     beforeEach(() => tag().findSearchBox = () => <any>({ addEventListener: () => null }));
 
     it('should find the search box', () => {
@@ -42,14 +36,14 @@ suite('gb-query', Query, ({
       tag().listenForSubmit = () => null;
       tag().findSearchBox = () => searchBox;
 
-      tag().attachListeners();
+      tag().onMount();
 
       expect(tag().searchBox).to.eq(searchBox);
       expect(addEventListener).to.have.been.calledWith('keydown', tag().keydownListener);
     });
 
     it('should attach sayt listeners', (done) => {
-      tag()._config = { sayt: true };
+      tag().$config = { sayt: true };
       tag().tags = <any>{
         'gb-sayt': {
           listenForInput: (queryTag) => {
@@ -59,32 +53,32 @@ suite('gb-query', Query, ({
         }
       };
 
-      tag().attachListeners();
+      tag().onMount();
     });
 
     it('should listen for input event', () => {
       const listenForInput = sinon.stub(tag(), 'listenForInput');
-      tag()._config = { autoSearch: true };
+      tag().$config = { autoSearch: true };
 
-      tag().attachListeners();
+      tag().onMount();
 
       expect(listenForInput).to.have.been.called;
     });
 
     it('should listen for enter keypress event', () => {
       const listenForStaticSearch = stub(tag(), 'listenForStaticSearch');
-      tag()._config = { autoSearch: false, staticSearch: true };
+      tag().$config = { autoSearch: false, staticSearch: true };
 
-      tag().attachListeners();
+      tag().onMount();
 
       expect(listenForStaticSearch).to.have.been.called;
     });
 
     it('should listen for submit event', () => {
       const listenForInput = stub(tag(), 'listenForSubmit');
-      tag()._config = { autoSearch: false, staticSearch: false };
+      tag().$config = { autoSearch: false, staticSearch: false };
 
-      tag().attachListeners();
+      tag().onMount();
 
       expect(listenForInput).to.have.been.called;
     });

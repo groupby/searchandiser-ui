@@ -16,17 +16,13 @@ export class LazyImage extends FluxTag<LazyImageConfig> {
   init() {
     this.configure();
 
-    this._scope.on('mount', this.maybeLoadImage);
-    this._scope.on('update', this.maybeLoadImage);
-
-    if (this._config.src) {
-      this.lazyLoad(this._config.src);
-    }
+    this.$scope.on('mount', this.maybeLoadImage);
+    this.$scope.on('update', this.maybeLoadImage);
   }
 
   maybeLoadImage() {
-    const imageUrl = this._scope.productMeta().image;
-    if (imageUrl && (!this.refs.lazyImage || this.refs.lazyImage.src !== imageUrl)) {
+    const imageUrl = this.$config.src || this.$scope.productMeta().image;
+    if (imageUrl) {
       this.lazyLoad(imageUrl);
     }
   }
@@ -34,15 +30,26 @@ export class LazyImage extends FluxTag<LazyImageConfig> {
   lazyLoad(imageUrl: string) {
     return new Promise((resolve, reject) => {
       const image = WINDOW.Image();
+      const onLoad = () => resolve(image);
+      const onError = () => resolve('');
+
       image.src = imageUrl;
-      image.addEventListener('load', () => resolve(image));
-      image.addEventListener('error', () => resolve(''));
+      image.addEventListener('load', onLoad);
+      image.addEventListener('error', onError);
+
+      this.on('unmount', () => {
+        image.removeEventListener('load', onLoad);
+        image.removeEventListener('error', onError);
+        resolve('');
+      });
     }).then(this.processImage);
   }
 
   processImage(image: HTMLImageElement) {
-    this.refs.lazyImage.src = image.src;
-    this.refs.lazyImage.height = image.height;
-    this.refs.lazyImage.width = image.width;
+    if (image && this.refs.lazyImage && this.refs.lazyImage.src !== image.src) {
+      this.refs.lazyImage.src = image.src;
+      this.refs.lazyImage.height = image.height;
+      this.refs.lazyImage.width = image.width;
+    }
   }
 }

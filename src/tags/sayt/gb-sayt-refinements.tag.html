@@ -1,19 +1,19 @@
 <gb-sayt-refinements>
   <h4>{ displayName }</h4>
   <gb-list items={ values }>
-    <gb-sayt-link send={ _scope.searchRefinement } data-value="{ parent.parent.displayName }: { item }" data-refinement={ item } data-field={ parent.parent.name }>
+    <gb-sayt-link send={ $scope.searchRefinement } data-value="{ parent.parent.displayName }: { item }" data-refinement={ item } data-field={ parent.parent.name }>
       <yield>
-        <gb-raw content={ _scope.highlightCurrentQuery(_parent.item, '<b>$&</b>') }></gb-raw>
+        <gb-raw content={ $scope.highlightCurrentQuery(_parent.item, '<b>$&</b>') }></gb-raw>
       </yield>
     </gb-sayt-link>
   </gb-list>
 
   <script>
-    this._scopeTo('gb-sayt');
+    this.$scopeTo('gb-sayt');
   </script>
 
   <style scoped>
-    .gb-stylish :scope h4 {
+    :scope.gb-stylish h4 {
       margin: 4px;
     }
   </style>

@@ -26,6 +26,6 @@ suite<Reset>('gb-reset', ({ flux, mount, itMountsTag }) => {
 
 class Model extends BaseModel<Reset> {
   get link() {
-    return this.element(this.html, '.gb-reset');
+    return this.element(this.html, 'a');
   }
 }

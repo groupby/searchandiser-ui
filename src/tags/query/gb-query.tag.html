@@ -1,30 +1,34 @@
 <gb-query>
   <yield>
-    <div class="gb-query { _style }">
-      <gb-search-box></gb-search-box>
-      <gb-submit></gb-submit>
-      <gb-reset></gb-reset>
-      <gb-sayt if={ _config.sayt }></gb-sayt>
-    </div>
+    <gb-search-box></gb-search-box>
+    <gb-submit></gb-submit>
+    <gb-reset></gb-reset>
+    <gb-sayt if={ $config.sayt }></gb-sayt>
   </yield>
 
   <script>
     import { Query } from './gb-query';
-    this._mixin(Query);
+    this.$mixin(Query);
   </script>
 
   <style scoped>
-    .gb-stylish.gb-query {
+    :scope {
       position: relative;
+    }
+
+    :scope.gb-stylish {
       display: flex;
       align-items: baseline;
     }
 
-    .gb-stylish.gb-query gb-sayt {
+    gb-sayt {
+      position: absolute;
+    }
+
+    :scope.gb-stylish gb-sayt {
       top: 31px;
       left: 0;
       z-index: 10;
-      position: absolute;
       min-width: 175px;
       background-color: #fff;
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);

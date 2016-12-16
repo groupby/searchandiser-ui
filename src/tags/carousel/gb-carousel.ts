@@ -15,7 +15,7 @@ export class Carousel {
   init() {
     this.configure();
     this.currentIndex = 0;
-    this.options = unless(this._config.options, this._scope.options, []);
+    this.options = unless(this.$config.options, this.$scope.options, []);
   }
 
   isSelected(index: number) {

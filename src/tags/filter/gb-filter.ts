@@ -21,7 +21,7 @@ export interface Filter extends SelectTag<FilterConfig> {
 
 export class Filter {
 
-  _config: FilterConfig;
+  $config: FilterConfig;
   selected: any;
 
   init() {
@@ -49,7 +49,7 @@ export class Filter {
     if (value === '*') {
       this.flux.reset();
     } else {
-      this.flux.refine(this.selected = toRefinement(value, <any>{ name: this._config.field }));
+      this.flux.refine(this.selected = toRefinement(value, <any>{ name: this.$config.field }));
     }
   }
 }

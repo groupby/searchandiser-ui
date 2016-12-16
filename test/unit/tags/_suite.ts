@@ -16,7 +16,7 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
     beforeEach(() => {
       // TODO: should be this vvv
       // ({ tag: _tag, flux: _flux } = fluxTag(new clazz(), mixin));
-      let { tag, flux } = fluxTag(new clazz(), mixin);
+      let { tag, flux } = fluxTag(tagName, new clazz(), mixin);
       _tag = tag;
       _flux = flux;
       init();
@@ -68,14 +68,16 @@ const suite = buildSuite<BaseSuite>(_suite);
 
 export default suite;
 
-export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
+// tslint:disable-next-line:max-line-length
+export function fluxTag<T extends FluxTag<any>>(tagName: string, tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
   const flux = new FluxCapacitor('');
   Object.assign(tag, {
     flux,
     opts: {},
     refs: {},
     config: {},
-    _config: {},
+    $tagName: tagName,
+    $config: {},
     configure: (cfg = {}) => configure(cfg, tag),
     on: () => null
   }, obj);

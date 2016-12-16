@@ -12,40 +12,47 @@ export interface FluxTag<T> extends riot.Tag.Instance {
   flux: FluxCapacitor;
   services: Services;
   config: any;
+
+  onMount(): void;
 }
 
 export class FluxTag<T> {
-  _tagName: string;
-  _simpleTagName: string;
-  _camelTagName: string;
-  _parents: any;
-  _parentsList: any[];
-  _scope: FluxTag<any> & any;
-  _top: FluxTag<any> & any;
-  _style: string;
-  _config: T;
+  $stylish: boolean;
+  $tagName: string;
+  $parents: any;
+  $scope: FluxTag<any> & any;
+  $scopes: { [key: string]: any };
+  $config: T;
 
   init() {
-    this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
     setParents(this);
     setScope(this);
+
+    this.on('mount', this.$onMount);
   }
 
-  _mixin(...mixins: any[]) {
+  $onMount() {
+    let stylish = checkBooleanAttr('stylish', this.config);
+    if ('stylish' in this.opts) {
+      stylish = checkBooleanAttr('stylish', this.opts);
+    } else if (this.parent) {
+      stylish = this.parent.$stylish;
+    }
+
+    if (stylish) {
+      this.$stylish = stylish;
+      this.root.classList.add('gb-stylish');
+    }
+    if (typeof this.onMount === 'function') { this.onMount(); }
+  }
+
+  $mixin(...mixins: any[]) {
     this.mixin(...mixins.map((mixin) => new mixin().__proto__));
   }
 
-  _scopeTo(scope: string) {
-    this._scope = this._parents[scope];
-  }
-
-  findParent(tag: FluxTag<any>, name: string) {
-    let parentTag = tag;
-    while (parentTag.root.localName !== name && parentTag.parent) {
-      parentTag = parentTag.parent;
-    }
-    return parentTag;
+  $scopeTo(scope: string) {
+    this.$scope = this.$parents[scope];
   }
 
   configure(defaultConfig: any = {}) {
@@ -73,33 +80,26 @@ export function setTagName(tag: FluxTag<any>) {
   }
 
   if (tagName) {
-    tag._tagName = tagName;
-    tag._simpleTagName = tag._tagName.replace(/^[a-z]*?-/, '');
-    tag._camelTagName = tag._simpleTagName.replace(/-([a-z])/g, (match) => match[1].toUpperCase());
+    tag.$tagName = tagName;
   }
 }
 
 export function setParents(tag: FluxTag<any>) {
-  tag._parents = tag.parent ? Object.assign({}, tag.parent['_parents']) : {};
-  if (tag._tagName) {
-    tag._parents[tag._tagName] = tag;
+  tag.$parents = tag.parent ? Object.assign({}, tag.parent['$parents']) : {};
+  if (tag.$tagName) {
+    tag.$parents[tag.$tagName] = tag;
   }
-
-  tag._parentsList = [];
-  let currTag = tag;
-  while (currTag = currTag.parent) tag._parentsList.push(currTag);
 }
 
 // somehow this function isn't working for the gb-select inside gb-sort
 export function setScope(tag: FluxTag<any>) {
-  if (tag._parents && tag._parents[tag.opts.scope]) {
-    tag._scope = tag._parents[tag.opts.scope];
-  } else if (tag.parent && tag.parent._scope) {
-    tag._scope = tag.parent._scope;
+  if (tag.$parents && tag.$parents[tag.opts.scope]) {
+    tag.$scope = tag.$parents[tag.opts.scope];
+  } else if (tag.parent && tag.parent.$scope) {
+    tag.$scope = tag.parent.$scope;
   } else {
     let parent: any = tag;
-    while (parent.parent) tag._scope = parent = parent.parent;
-    tag._top = tag._scope;
+    while (parent.parent) tag.$scope = parent = parent.parent;
   }
 }
 
@@ -107,7 +107,7 @@ export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
   const rawConfig = Object.assign(
     {},
     defaultConfig,
-    getPath(tag.config, `tags.${tag._camelTagName}`),
+    getPath(tag.config, `tags.${camelizeTagName(tag.$tagName)}`),
     tag.opts.__proto__,
     tag.opts);
   for (let key of Object.keys(rawConfig)) {
@@ -117,7 +117,12 @@ export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
       rawConfig[key] = checkBooleanAttr(key, rawConfig);
     }
   }
-  tag._config = rawConfig;
+  tag.$config = rawConfig;
+}
+
+export function camelizeTagName(tagName: string) {
+  return tagName.replace(/^[a-z]*?-/, '')
+    .replace(/-([a-z])/g, (match) => match[1].toUpperCase());
 }
 
 export function MixinFlux(flux: FluxCapacitor, config: any, services: any): FluxTag<any> {

@@ -17,21 +17,19 @@ export class Snippet {
 
   init() {
     this.configure(DEFAULT_CONFIG);
-
-    this.on('mount', this.loadFile);
   }
 
-  loadFile() {
+  onMount() {
     const req = new XMLHttpRequest();
     req.onload = () => {
       const { responseText } = req;
-      if (this._config.raw) {
+      if (this.$config.raw) {
         this.root.innerHTML = responseText;
       } else {
         this.update({ responseText });
       }
     };
-    req.open('get', this._config.url, true);
+    req.open('get', this.$config.url, true);
     req.send();
   }
 }

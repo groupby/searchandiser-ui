@@ -64,7 +64,7 @@ suite<Collections>('gb-collections', MIXIN, ({
     });
 
     it('renders collections as dropdown', () => {
-      tag._config = <any>{ dropdown: true };
+      tag.$config = <any>{ dropdown: true };
       tag.labels = LABELS;
 
       tag.update({ options: OPTIONS });
@@ -96,7 +96,7 @@ suite<Collections>('gb-collections', MIXIN, ({
     });
 
     it('renders without collection counts', () => {
-      tag._config = <any>{ counts: false };
+      tag.$config = <any>{ counts: false };
 
       tag.update();
 
@@ -119,7 +119,7 @@ suite<Collections>('gb-collections', MIXIN, ({
     describe('gb-collection-dropdown-item', () => {
       it('switches dropdown collection on click', () => {
         const switchCollection = stub(flux(), 'switchCollection');
-        tag._config = <any>{ dropdown: true };
+        tag.$config = <any>{ dropdown: true };
         tag.update({ options: OPTIONS });
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('gb-collection-dropdown-item a')[1]).click();
@@ -141,7 +141,7 @@ class Model extends BaseModel<Collections> {
   }
 
   get collectionList() {
-    return this.element(this.html, '.gb-collections');
+    return this.element(this.html, 'gb-list');
   }
 
   get collectionSelect() {

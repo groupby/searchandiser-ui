@@ -57,33 +57,32 @@ export class Sayt {
   init() {
     this.configure(DEFAULT_CONFIG);
 
-    this.struct = Object.assign({}, this.config.structure, this._config.structure);
-    this.showProducts = this._config.products > 0;
+    this.struct = Object.assign({}, this.config.structure, this.$config.structure);
+    this.showProducts = this.$config.products > 0;
 
     this.sayt.configure(this.generateSaytConfig());
 
-    this.on('mount', this.initializeAutocomplete);
     this.flux.on(AUTOCOMPLETE_HIDE_EVENT, this.reset);
   }
 
-  initializeAutocomplete() {
+  onMount() {
     this.autocomplete = new Autocomplete(this);
   }
 
   generateSaytConfig() {
     return {
       subdomain: this.config.customerId,
-      collection: this._config.collection || this.config.collection,
+      collection: this.$config.collection || this.config.collection,
       autocomplete: {
-        numSearchTerms: this._config.queries,
-        language: this._config.language
+        numSearchTerms: this.$config.queries,
+        language: this.$config.language
       },
       productSearch: {
-        area: this._config.area || this.config.area,
-        numProducts: this._config.products,
-        language: this._config.language
+        area: this.$config.area || this.config.area,
+        numProducts: this.$config.products,
+        language: this.$config.language
       },
-      https: this._config.https
+      https: this.$config.https
     };
   }
 
@@ -120,9 +119,9 @@ export class Sayt {
   }
 
   notifier(query: string, refinement?: string, field?: string) {
-    const isRefinement = refinement && refinement !== this._config.allCategoriesLabel;
-    const refinementString = `~${field || this._config.categoryField}=${refinement}`;
-    if (this._config.autoSearch) {
+    const isRefinement = refinement && refinement !== this.$config.allCategoriesLabel;
+    const refinementString = `~${field || this.$config.categoryField}=${refinement}`;
+    if (this.$config.autoSearch) {
       this.searchProducts(field ? '' : query, isRefinement ? refinementString : undefined);
     }
     this.rewriteQuery(query);
@@ -140,8 +139,8 @@ export class Sayt {
     }
 
     const navigations = result.navigations ? result.navigations
-      .map((nav) => Object.assign(nav, { displayName: this._config.navigationNames[nav.name] || nav.name }))
-      .filter(({name}) => this._config.allowedNavigations.includes(name)) : [];
+      .map((nav) => Object.assign(nav, { displayName: this.$config.navigationNames[nav.name] || nav.name }))
+      .filter(({name}) => this.$config.allowedNavigations.includes(name)) : [];
     this.update({
       results: result,
       navigations,
@@ -152,12 +151,12 @@ export class Sayt {
 
   extractCategoryResults({ additionalInfo, value }: any) {
     let categoryResults = [];
-    const categoryField = this._config.categoryField;
+    const categoryField = this.$config.categoryField;
     if (additionalInfo && categoryField && categoryField in additionalInfo) {
       categoryResults = additionalInfo[categoryField]
         .map((category) => ({ category, value }))
         .slice(0, 3);
-      categoryResults.unshift({ category: this._config.allCategoriesLabel, value, noRefine: true });
+      categoryResults.unshift({ category: this.$config.allCategoriesLabel, value, noRefine: true });
     }
     return categoryResults;
   }
@@ -173,7 +172,7 @@ export class Sayt {
   }
 
   highlightCurrentQuery(value: string, regexReplacement: string) {
-    return this._config.highlight
+    return this.$config.highlight
       ? value.replace(new RegExp(escapeStringRegexp(this.originalQuery), 'i'), regexReplacement)
       : value;
   }
@@ -187,12 +186,12 @@ export class Sayt {
 
     const doRefinement = !node.dataset['norefine'];
     const refinement: SelectedValueRefinement = {
-      navigationName: node.dataset['field'] || this._config.categoryField,
+      navigationName: node.dataset['field'] || this.$config.categoryField,
       value: node.dataset['refinement'],
       type: 'Value'
     };
 
-    if (this._config.staticSearch && this.services.url.isActive()) {
+    if (this.$config.staticSearch && this.services.url.isActive()) {
       return Promise.resolve(this.services.url.update(this.flux.query.withQuery(queryString)
         .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] })));
     } else if (doRefinement) {
@@ -211,7 +210,7 @@ export class Sayt {
 
     const query = node.dataset['value'];
 
-    if (this._config.staticSearch && this.services.url.isActive()) {
+    if (this.$config.staticSearch && this.services.url.isActive()) {
       return Promise.resolve(this.services.url.update(this.flux.query
         .withConfiguration(<any>{ query, refinements: [] })));
     } else {
@@ -224,14 +223,14 @@ export class Sayt {
   listenForInput(tag: Query) {
     const input = <HTMLInputElement>tag.searchBox;
     input.autocomplete = 'off';
-    const debouncedSearch = debounce(this.debouncedSearch(input), Math.max(this._config.delay, MIN_DELAY));
+    const debouncedSearch = debounce(this.debouncedSearch(input), Math.max(this.$config.delay, MIN_DELAY));
     input.addEventListener('input', debouncedSearch);
     document.addEventListener('click', this.reset);
   }
 
   debouncedSearch(input: HTMLInputElement) {
     return () => {
-      if (input.value.length >= this._config.minimumCharacters) {
+      if (input.value.length >= this.$config.minimumCharacters) {
         this.fetchSuggestions(input.value);
       } else {
         this.reset();

@@ -1,27 +1,27 @@
 <gb-list>
-  <ul class="{ _style } { inline: 'inline' in opts }">
+  <ul class="{ inline: 'inline' in opts }">
     <li each={ item, i in opts.items } class={ active: opts.activation && opts.activation(i) }>
       <yield/>
     </li>
   </ul>
 
   <style scoped>
-    gb-list > ul.gb-stylish {
+    :scope.gb-stylish > ul {
       list-style: none;
       margin: 0;
       padding: 0;
     }
-    gb-list > ul.gb-stylish > li {
+    :scope.gb-stylish > ul > li {
       margin: 0 10px;
     }
-    gb-list > ul.gb-stylish.inline > li {
+    :scope.gb-stylish > ul.inline > li {
       display: inline-block;
     }
-    gb-list > ul.gb-stylish a {
+    :scope.gb-stylish a {
       color: #888;
       cursor: pointer;
     }
-    gb-list > ul.gb-stylish a:hover {
+    :scope.gb-stylish a:hover {
       color: black;
     }
   </style>

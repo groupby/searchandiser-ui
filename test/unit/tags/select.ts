@@ -6,7 +6,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
-      const scope = tag()._scope = <any>{ _config: {} };
+      const scope = tag().$scope = <any>{ $config: {} };
 
       tag().init();
 
@@ -19,12 +19,12 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       expect(tag().selected).to.be.undefined;
       expect(tag().focused).to.be.undefined;
       expect(tag().default).to.be.true;
-      expect(tag()._scope).to.eq(scope);
-      expect(tag()._config).to.eql({});
+      expect(tag().$scope).to.eq(scope);
+      expect(tag().$config).to.eql({});
     });
 
-    it('should accept override from _scope', () => {
-      const _config = {
+    it('should accept override from $scope', () => {
+      const $config = {
         hover: true,
         native: false,
         clear: 'None selected',
@@ -32,7 +32,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       };
       const options = [{ a: 'b' }, { c: 'd' }];
       const onselect = () => null;
-      tag()._scope = <any>{ _config, options, onselect };
+      tag().$scope = <any>{ $config, options, onselect };
 
       tag().init();
 
@@ -40,7 +40,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       expect(tag().clearOption).to.eql({ label: 'None selected', clear: true });
       expect(tag().options).to.eql(options);
       expect(tag().callback).to.eq(onselect);
-      expect(tag()._config).to.eq(_config);
+      expect(tag().$config).to.eq($config);
     });
 
     it('should override selectedOption with first label when options set and clear undefined', () => {
@@ -48,7 +48,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
         { label: 'Value Descending' },
         { label: 'Value Ascending' }
       ];
-      tag()._scope = <any>{ options, _config: {} };
+      tag().$scope = <any>{ options, $config: {} };
 
       tag().init();
 
@@ -58,7 +58,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
     it('should override selectedOption with first option when options set and clear undefined', () => {
       const options = ['first', 'second'];
-      tag()._scope = <any>{ options, _config: {} };
+      tag().$scope = <any>{ options, $config: {} };
 
       tag().init();
 
@@ -172,7 +172,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
   describe('unfocus()', () => {
     it('should set focused true', () => {
-      tag()._config = { hover: true };
+      tag().$config = { hover: true };
 
       tag().unfocus();
 
@@ -180,7 +180,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
     });
 
     it('should set switch focused to true', () => {
-      tag()._config = {};
+      tag().$config = {};
 
       tag().unfocus();
 
@@ -189,7 +189,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
     it('should set switch focused to false and blur button', () => {
       const blur = spy();
-      tag()._config = {};
+      tag().$config = {};
       tag().focused = true;
       tag().selectButton = () => <any>({ blur });
 

@@ -13,7 +13,7 @@ const STRUCTURE_WITH_VARIANTS = {
 
 suite<Product>('gb-product', {
   config: { structure: STRUCTURE },
-  _scope: { on: () => null }
+  $scope: { on: () => null }
 }, ({ mount, itMountsTag }) => {
 
   itMountsTag();
@@ -59,7 +59,7 @@ suite<Product>('gb-product', {
 
 suite<Product>('gb-product with variants', {
   config: { structure: STRUCTURE_WITH_VARIANTS },
-  _scope: { on: () => null }
+  $scope: { on: () => null }
 }, ({
   mount, itMountsTag
 }) => {

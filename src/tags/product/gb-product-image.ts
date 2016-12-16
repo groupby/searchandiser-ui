@@ -5,10 +5,10 @@ export interface ProductImage extends FluxTag<any> { }
 export class ProductImage {
 
   init() {
-    this._scopeTo('gb-product');
+    this.$scopeTo('gb-product');
   }
 
   imageLink() {
-    return this._scope.image(this._scope.productMeta().image);
+    return this.$scope.image(this.$scope.productMeta().image);
   }
 }

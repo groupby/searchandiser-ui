@@ -45,7 +45,7 @@ suite('gb-paging', Paging, ({
       const pageNumbers = [1, 2, 3, 4, 5];
       const limit = 7;
       const updatePageInfo = stub(tag(), 'updatePageInfo');
-      tag()._config = { limit };
+      tag().$config = { limit };
       flux().page = <any>{
         pageNumbers: (pages) => {
           expect(pages).to.eq(limit);

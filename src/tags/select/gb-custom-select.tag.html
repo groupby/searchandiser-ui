@@ -1,15 +1,15 @@
 <gb-custom-select>
-  <div class="gb-select { _scope._config.hover ? 'hoverable' : 'clickable' } { _style }">
+  <div class="gb-select { $scope.$config.hover ? 'hoverable' : 'clickable' }">
     <button data-is="gb-select-button" type="button"></button>
     <gb-option-list>
       <yield>
-        <gb-option option={ option } send={ option.clear ? _scope.clearSelection : _scope.selectCustom }/>
+        <gb-option option={ option } send={ option.clear ? $scope.clearSelection : $scope.selectCustom }/>
       </yield>
     </gb-option-list>
   </div>
 
   <script>
-    this._scopeTo('gb-select');
+    this.$scopeTo('gb-select');
   </script>
 
   <style scoped>
@@ -32,8 +32,8 @@
     gb-option-list:hover {
       display: block;
     }
-    .gb-stylish.gb-select:hover button,
-    .gb-stylish.gb-select button:focus {
+    :scope.gb-stylish .gb-select:hover button,
+    :scope.gb-stylish .gb-select button:focus {
       border-color: #aaa;
     }
     button {
@@ -50,7 +50,7 @@
       border-radius: 4px;
       white-space: nowrap;
     }
-    .gb-stylish button:focus {
+    :scope.gb-stylish button:focus {
       outline: none;
     }
   </style>

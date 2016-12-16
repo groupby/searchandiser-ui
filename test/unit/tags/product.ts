@@ -12,7 +12,7 @@ suite('gb-product', Product, ({
     itShouldConfigure(DEFAULT_CONFIG);
 
     beforeEach(() => {
-      tag()._scope = {};
+      tag().$scope = {};
       tag().transformRecord = () => null;
     });
 
@@ -59,9 +59,9 @@ suite('gb-product', Product, ({
         expect(tag().struct).to.eq(structure);
       });
 
-      it('should inherit from _scope', () => {
+      it('should inherit from $scope', () => {
         const struct = { a: 'b' };
-        tag()._scope = { struct };
+        tag().$scope = { struct };
 
         tag().init();
 
@@ -71,7 +71,7 @@ suite('gb-product', Product, ({
       it('should default to config', () => {
         const structure = { b: 'e', d: 'f' };
 
-        tag()._scope = {};
+        tag().$scope = {};
         tag().config = <any>{ structure };
 
         tag().init();
@@ -80,7 +80,7 @@ suite('gb-product', Product, ({
       });
 
       it('should fallback to empty object', () => {
-        tag()._scope = {};
+        tag().$scope = {};
         tag().config = <any>{};
 
         tag().init();
@@ -94,7 +94,7 @@ suite('gb-product', Product, ({
     it('should add class gb-infinite', () => {
       const add = spy();
       tag().root = <any>{ classList: { add } };
-      tag()._config = { infinite: true };
+      tag().$config = { infinite: true };
 
       tag().styleProduct();
 
@@ -104,7 +104,7 @@ suite('gb-product', Product, ({
     it('should add class tombstone', () => {
       const add = spy();
       tag().root = <any>{ classList: { add } };
-      tag()._config = { tombstone: true };
+      tag().$config = { tombstone: true };
 
       tag().styleProduct();
 

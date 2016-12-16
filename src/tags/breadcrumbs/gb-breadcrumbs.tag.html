@@ -1,22 +1,20 @@
 <gb-breadcrumbs>
   <yield>
-    <div class="gb-breadcrumbs { _style }">
-      <gb-query-crumb if={ !_config.hideQuery }></gb-query-crumb>
-      <gb-list items={ selected } if={ !_config.hideRefinements } scope="gb-breadcrumbs">
-        <gb-list class="gb-navigation-crumb" items={ item.refinements } inline>
-          <gb-refinement-crumb navigation={ _parent.item } refinement={ item }></gb-refinement-crumb>
-        </gb-list>
+    <gb-query-crumb if={ !$config.hideQuery }></gb-query-crumb>
+    <gb-list items={ selected } if={ !$config.hideRefinements } scope="gb-breadcrumbs">
+      <gb-list class="gb-navigation-crumb" items={ item.refinements } inline>
+        <gb-refinement-crumb navigation={ _parent.item } refinement={ item }></gb-refinement-crumb>
       </gb-list>
-    </div>
+    </gb-list>
   </yield>
 
   <script>
     import { Breadcrumbs } from './gb-breadcrumbs';
-    this._mixin(Breadcrumbs);
+    this.$mixin(Breadcrumbs);
   </script>
 
   <style scoped>
-    .gb-stylish.gb-breadcrumbs {
+    :scope.gb-stylish {
       display: flex;
       justify-content: flex-start;
       align-items: baseline;

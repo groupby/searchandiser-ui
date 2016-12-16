@@ -25,18 +25,18 @@ export interface TrackerConfig {
 
 export class Tracker {
 
-  _config: TrackerConfig;
+  $config: TrackerConfig;
   tracker: TrackerClient;
   transformer: ProductTransformer;
 
   constructor(private flux: FluxCapacitor, public config: SearchandiserConfig) {
-    this._config = Object.assign({}, DEFAULT_CONFIG, this.config.tracker || {});
+    this.$config = Object.assign({}, DEFAULT_CONFIG, this.config.tracker || {});
     this.tracker = new GbTracker(this.config.customerId, this.config.area);
     this.transformer = new ProductTransformer(this.config.structure || {});
   }
 
   init() {
-    if (!this._config.warnings) {
+    if (!this.$config.warnings) {
       this.tracker.disableWarnings();
     }
 
@@ -99,8 +99,8 @@ export class Tracker {
 
   generateMetadata(type?: 'search' | 'viewProduct') {
     const metadata = Object.assign({},
-      filterObject(this._config.metadata, '!{_search,_viewProduct}'),
-      type ? this._config.metadata[`_${type}`] : {});
+      filterObject(this.$config.metadata, '!{_search,_viewProduct}'),
+      type ? this.$config.metadata[`_${type}`] : {});
     return Object.keys(metadata)
       .map((key) => ({ key, value: metadata[key] }));
   }

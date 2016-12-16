@@ -6,7 +6,6 @@ import { Query } from 'groupby-api';
 
 suite('gb-submit', Submit, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
   itShouldConfigure
 }) => {
 
@@ -31,12 +30,6 @@ suite('gb-submit', Submit, ({
       expect(tag().root.value).to.be.undefined;
     });
 
-    it('should listen for mount event', () => {
-      expectSubscriptions(() => tag().init(), {
-        mount: tag().setSearchBox
-      }, tag());
-    });
-
     it('should register click listener', () => {
       const addEventListener = spy();
       tag().root = <any>{ addEventListener };
@@ -52,7 +45,7 @@ suite('gb-submit', Submit, ({
       const searchBox = { a: 'b' };
       stub(utils, 'findSearchBox').returns(searchBox);
 
-      tag().setSearchBox();
+      tag().onMount();
 
       expect(tag().searchBox).to.eq(searchBox);
     });
@@ -101,7 +94,7 @@ suite('gb-submit', Submit, ({
       flux().query = new Query('other')
         .withSelectedRefinements({ navigationName: 'colour', type: 'Value', value: 'blue' })
         .skip(20);
-      tag()._config.staticSearch = true;
+      tag().$config.staticSearch = true;
       tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{ url: { update, isActive: () => true } };
 

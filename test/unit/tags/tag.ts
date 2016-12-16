@@ -18,24 +18,18 @@ describe('base tag logic', () => {
         tag.config = {};
       });
 
-      it('should not set _style empty', () => {
-        tag.init();
-
-        expect(tag._style).to.eq('');
-      });
-
-      it('should set _style', () => {
-        tag.config = { stylish: true };
+      it('should listen for mount', () => {
+        const on = tag.on = sinon.spy();
 
         tag.init();
 
-        expect(tag._style).to.eq('gb-stylish');
+        expect(on).to.have.been.calledWith('mount', tag.$onMount);
       });
     });
   });
 
   describe('setTagName()', () => {
-    it('should not set tag names', () => {
+    it('should not set tag name', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'SOMENAME',
@@ -46,9 +40,7 @@ describe('base tag logic', () => {
 
       setTagName(tag);
 
-      expect(tag._tagName).to.not.be.ok;
-      expect(tag._simpleTagName).to.not.be.ok;
-      expect(tag._camelTagName).to.not.be.ok;
+      expect(tag.$tagName).to.not.be.ok;
     });
 
     it('should fall back to root.tagName', () => {
@@ -62,9 +54,7 @@ describe('base tag logic', () => {
 
       setTagName(tag);
 
-      expect(tag._tagName).to.eq('my-some-name');
-      expect(tag._simpleTagName).to.eq('some-name');
-      expect(tag._camelTagName).to.eq('someName');
+      expect(tag.$tagName).to.eq('my-some-name');
     });
 
     it('should set tag names from root.tagName', () => {
@@ -76,9 +66,7 @@ describe('base tag logic', () => {
 
       setTagName(tag);
 
-      expect(tag._tagName).to.eq('gb-test-tag');
-      expect(tag._simpleTagName).to.eq('test-tag');
-      expect(tag._camelTagName).to.eq('testTag');
+      expect(tag.$tagName).to.eq('gb-test-tag');
     });
 
     it('should set tag names from dataset.is', () => {
@@ -93,63 +81,56 @@ describe('base tag logic', () => {
 
       setTagName(tag);
 
-      expect(tag._tagName).to.eq('gb-test-tag');
-      expect(tag._simpleTagName).to.eq('test-tag');
-      expect(tag._camelTagName).to.eq('testTag');
+      expect(tag.$tagName).to.eq('gb-test-tag');
     });
   });
 
   describe('setParents()', () => {
-    it('should set empty _parents and _parentsList', () => {
+    it('should set empty $parents', () => {
       const tag: FluxTag<any> = <any>{};
 
       setParents(tag);
 
-      expect(tag._parents).to.eql({});
-      expect(tag._parentsList).to.eql([]);
+      expect(tag.$parents).to.eql({});
     });
 
-    it('should inherit _parents', () => {
-      const _parents = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ parent: { _parents } };
+    it('should inherit $parents', () => {
+      const $parents = { a: 'b' };
+      const tag: FluxTag<any> = <any>{ parent: { $parents } };
 
       setParents(tag);
 
-      expect(tag._parents).to.eql(_parents);
-      expect(tag._parentsList).to.eql([{ _parents }]);
+      expect(tag.$parents).to.eql($parents);
     });
 
-    it('should register self in _parents', () => {
-      const _tagName = 'gb-test-tag';
-      const tag: FluxTag<any> = <any>{ _tagName };
+    it('should register self in $parents', () => {
+      const $tagName = 'gb-test-tag';
+      const tag: FluxTag<any> = <any>{ $tagName };
 
       setParents(tag);
 
-      expect(tag._parents).to.eql({ [_tagName]: tag });
-      expect(tag._parentsList).to.eql([]);
+      expect(tag.$parents).to.eql({ [$tagName]: tag });
     });
 
-    it('should register self and inherit _parents', () => {
-      const _tagName = 'gb-test-tag';
-      const _parents = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ _tagName, parent: { _parents } };
+    it('should register self and inherit $parents', () => {
+      const $tagName = 'gb-test-tag';
+      const $parents = { a: 'b' };
+      const tag: FluxTag<any> = <any>{ $tagName, parent: { $parents } };
 
       setParents(tag);
 
-      expect(tag._parents).to.eql(Object.assign({ [_tagName]: tag }, _parents));
-      expect(tag._parentsList).to.eql([{ _parents }]);
+      expect(tag.$parents).to.eql(Object.assign({ [$tagName]: tag }, $parents));
     });
 
-    it('should add all parents to _parentsList', () => {
+    it('should add all parents to $parents', () => {
       const parent3 = { a: 'b' };
       const parent2 = { parent: parent3 };
-      const parent1 = { _parents: { e: 'e' }, parent: parent2 };
+      const parent1 = { $parents: { e: 'e' }, parent: parent2 };
       const tag: FluxTag<any> = <any>{ parent: parent1 };
 
       setParents(tag);
 
-      expect(tag._parents).to.eql(parent1._parents);
-      expect(tag._parentsList).to.eql([parent1, parent2, parent3]);
+      expect(tag.$parents).to.eql(parent1.$parents);
     });
   });
 
@@ -157,50 +138,29 @@ describe('base tag logic', () => {
     it('should set scope from the configured parent tag', () => {
       const parentScope = { a: 'b' };
       const tag: FluxTag<any> = <any>{
-        _parents: { parentScope },
+        $parents: { parentScope },
         opts: { scope: 'parentScope' }
       };
 
       setScope(tag);
 
-      expect(tag._scope).to.eq(parentScope);
+      expect(tag.$scope).to.eq(parentScope);
     });
 
     it('should set scope from parent tag', () => {
       const parentScope = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ _scope: parentScope, opts: {} };
+      const tag: FluxTag<any> = <any>{ $scope: parentScope, opts: {} };
 
       setScope(tag);
 
-      expect(tag._scope).to.eq(parentScope);
-    });
-
-    it('should search for the highest _scope', () => {
-      const topParent = { a: 'b' };
-      const tag: FluxTag<any> = <any>{
-        opts: {},
-        parent: {
-          parent: {
-            parent: {
-              parent: {
-                parent: topParent
-              }
-            }
-          }
-        }
-      };
-
-      setScope(tag);
-
-      expect(tag._scope).to.eq(topParent);
-      expect(tag._top).to.eq(topParent);
+      expect(tag.$scope).to.eq(parentScope);
     });
   });
 
   describe('configure()', () => {
     it('should mix together configuration sources', () => {
       const tag: any = {
-        _camelTagName: 'myTag',
+        $tagName: 'gb-my-tag',
         config: { tags: { myTag: { a: 'B', i: 'j', k: 'l', m: 'n' } } },
         opts: {
           __proto__: { c: 'D', i: 'J', o: 'p', q: 'r' },
@@ -213,7 +173,7 @@ describe('base tag logic', () => {
 
       configure({ a: 'b', c: 'd', e: 'f', g: 'h' }, tag);
 
-      expect(tag._config).to.eql({
+      expect(tag.$config).to.eql({
         a: 'B',
         c: 'D',
         e: 'F',
@@ -228,7 +188,7 @@ describe('base tag logic', () => {
     });
 
     it('should convert boolean values', () => {
-      const tag: any = { opts: {} };
+      const tag: any = { opts: {}, $tagName: 'gb-my-tag' };
 
       configure({
         a: 'false',
@@ -247,7 +207,7 @@ describe('base tag logic', () => {
         n: 1
       }, tag);
 
-      expect(tag._config).to.eql({
+      expect(tag.$config).to.eql({
         a: 'false',
         b: false,
         c: 'true',

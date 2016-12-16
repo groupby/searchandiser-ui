@@ -21,7 +21,7 @@ suite('gb-sort', Sort, ({
         { label: 'Value Descending', value: { field: 'value', order: 'Descending' } },
         { label: 'Value Ascending', value: { field: 'value', order: 'Ascending' } }
       ];
-      tag().configure = () => tag()._config = { options };
+      tag().configure = () => tag().$config = { options };
 
       tag().init();
 

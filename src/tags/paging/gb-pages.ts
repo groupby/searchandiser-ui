@@ -6,11 +6,11 @@ export interface Pages extends FluxTag<PagingConfig> { }
 export class Pages {
 
   init() {
-    this._scopeTo('gb-paging');
-    this._config = this._scope._config;
+    this.$scopeTo('gb-paging');
+    this.$config = this.$scope.$config;
   }
 
   jumpTo({ target }: any) {
-    this._scope.pager.switchPage(Number(target.text));
+    this.$scope.pager.switchPage(Number(target.text));
   }
 }

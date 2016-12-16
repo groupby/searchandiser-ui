@@ -1,15 +1,15 @@
 <gb-query-crumb>
   <div if={ parent.originalQuery }>
-    <span if={ !_scope.correctedQuery && _scope._config.labels } class="gb-query-label">{ _scope._config.resultsLabel }</span>
-    <span if={ _scope.correctedQuery && _scope._config.labels } class="gb-query-label">{ _scope._config.noResultsLabel }</span>
+    <span if={ !$scope.correctedQuery && $scope.$config.labels } class="gb-query-label">{ $scope.$config.resultsLabel }</span>
+    <span if={ $scope.correctedQuery && $scope.$config.labels } class="gb-query-label">{ $scope.$config.noResultsLabel }</span>
     <span class="gb-original-query">{ parent.originalQuery }</span>
   </div>
   <div if={ parent.correctedQuery }>
-    <span if={ _scope._config.labels } class="gb-query-label">{ _scope._config.correctedResultsLabel }</span>
+    <span if={ $scope.$config.labels } class="gb-query-label">{ $scope.$config.correctedResultsLabel }</span>
     <span class="gb-corrected-query">{ parent.correctedQuery }</span>
   </div>
 
   <script>
-    this._scopeTo('gb-breadcrumbs');
+    this.$scopeTo('gb-breadcrumbs');
   </script>
 </gb-query-crumb>

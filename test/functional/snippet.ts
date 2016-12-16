@@ -2,7 +2,7 @@ import { Snippet } from '../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<Snippet>('gb-snippet', ({ mount, tagName, itMountsTag }) => {
+suite<Snippet>('gb-snippet', ({ mount, itMountsTag }) => {
 
   itMountsTag();
 
@@ -10,7 +10,7 @@ suite<Snippet>('gb-snippet', ({ mount, tagName, itMountsTag }) => {
     it('should render snippet', () => {
       const tag = mount();
 
-      expect(tag.root.querySelector(`div.${tagName}`)).to.be.ok;
+      expect(tag.root.querySelector(`span`)).to.be.ok;
     });
   });
 });
