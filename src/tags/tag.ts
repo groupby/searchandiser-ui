@@ -28,6 +28,7 @@ export class FluxTag<T> {
     setTagName(this);
     setParents(this);
     setScope(this);
+    setMixin(this);
 
     this.on('mount', this.$onMount);
   }
@@ -127,4 +128,16 @@ export function camelizeTagName(tagName: string) {
 
 export function MixinFlux(flux: FluxCapacitor, config: any, services: any): FluxTag<any> {
   return Object.assign(new FluxTag()['__proto__'], { flux, config, services });
+}
+
+export function setMixin(tag: FluxTag<any>) {
+  if (tag.$tagName === 'gb-submit' || tag.$tagName === 'gb-available-refinement') {
+    const tagPath = tag.$tagName.replace(/^[a-z]*?-/, '');
+    const tagModule = require(`./${tagPath}/${tag.$tagName}.ts`);
+    const tagClassName = tagPath.replace(/\b(\w)/g, (match) => match.toUpperCase())
+      .replace(/-/g, '');
+    if (tagClassName in tagModule) {
+      tag.$mixin(tagModule[tagClassName]);
+    }
+  }
 }
