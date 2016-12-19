@@ -29,29 +29,13 @@ export class FluxTag<T> {
     setParents(this);
     setScope(this);
 
-    this.on('mount', this.$onMount);
-  }
-
-  $onMount() {
-    let stylish = checkBooleanAttr('stylish', this.config);
-    if ('stylish' in this.opts) {
-      stylish = checkBooleanAttr('stylish', this.opts);
-    } else if (this.parent) {
-      stylish = this.parent.$stylish;
-    }
-
-    if (stylish) {
-      this.$stylish = stylish;
-      this.root.classList.add('gb-stylish');
-    }
-    if (typeof this.onMount === 'function') { this.onMount(); }
+    this.on('mount', () => onMount(this));
   }
 
   $mixin(...mixins: any[]) {
     if (mixins.length === 0) {
       const tagDir = this.$tagName.replace(/^[a-z]*?-/, '');
-      const tagPath = `./${tagDir}/${this.$tagName}.ts`;
-      const tagModule = require(tagPath);
+      const tagModule = require(`./${tagDir}/${this.$tagName}.ts`);
       const tagClassName = tagDir.replace(/\b(\w)/g, (match) => match.toUpperCase())
         .replace(/-/g, '');
       if (tagClassName in tagModule) {
@@ -133,6 +117,21 @@ export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
 
 export function mixin(tag: FluxTag<any>, ...mixins: any[]) {
   tag.mixin(...mixins.map((mixin) => new mixin().__proto__));
+}
+
+export function onMount(tag: FluxTag<any>) {
+  let stylish = checkBooleanAttr('stylish', tag.config);
+  if ('stylish' in tag.opts) {
+    stylish = checkBooleanAttr('stylish', tag.opts);
+  } else if (tag.parent) {
+    stylish = tag.parent.$stylish;
+  }
+
+  if (stylish) {
+    tag.$stylish = stylish;
+    tag.root.classList.add('gb-stylish');
+  }
+  if (typeof tag.onMount === 'function') { tag.onMount(); }
 }
 
 export function camelizeTagName(tagName: string) {

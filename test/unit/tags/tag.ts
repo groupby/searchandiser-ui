@@ -1,4 +1,11 @@
-import { configure, setParents, setScope, setTagName, FluxTag, MixinFlux } from '../../../src/tags/tag';
+import {
+  configure,
+  setParents,
+  setScope,
+  setTagName,
+  FluxTag,
+  MixinFlux
+} from '../../../src/tags/tag';
 import { expect } from 'chai';
 
 describe('base tag logic', () => {
@@ -23,7 +30,7 @@ describe('base tag logic', () => {
 
         tag.init();
 
-        expect(on).to.have.been.calledWith('mount', tag.$onMount);
+        expect(on).to.have.been.calledWithMatch('mount', sinon.match.func);
       });
     });
   });
