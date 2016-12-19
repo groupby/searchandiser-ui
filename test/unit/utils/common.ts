@@ -40,15 +40,9 @@ describe('utils', () => {
       const el2 = document.createElement('div');
       document.body.appendChild(el2);
       el2.dataset['is'] = 'gb-sayt';
-      const el3 = document.createElement('div');
-      document.body.appendChild(el3);
-      const attr = document.createAttribute('riot-tag');
-      attr.value = 'gb-breadcrumbs';
-      el3.setAttributeNode(attr);
 
       expect(findTag('gb-test')).to.eq(el);
       expect(findTag('gb-sayt')).to.eq(el2);
-      expect(findTag('gb-breadcrumbs')).to.eq(el3);
     });
   });
 
@@ -190,7 +184,7 @@ describe('utils', () => {
   describe('scopeCss()', () => {
     it('should generate multiple scoped CSS selectors', () => {
       const scopedSelector = scopeCss('gb-target', '.my > #selector');
-      expect(scopedSelector).to.eq('gb-target .my > #selector, [data-is="gb-target"] .my > #selector, [riot-tag="gb-target"] .my > #selector'); // tslint:disable-line:max-line-length
+      expect(scopedSelector).to.eq('gb-target .my > #selector, [data-is="gb-target"] .my > #selector'); // tslint:disable-line:max-line-length
     });
   });
 });

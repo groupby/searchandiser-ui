@@ -15,12 +15,15 @@ export const DEFAULT_CONFIG: InfiniteScrollConfig = {
   maxRecords: 500
 };
 
-export interface InfiniteScroll extends FluxTag<InfiniteScrollConfig> { }
+export interface InfiniteScroll extends FluxTag<InfiniteScrollConfig> {
+  refs: {
+    scroller: HTMLUListElement;
+    runway: HTMLElement;
+  };
+}
 
 export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
 
-  scroller: HTMLUListElement;
-  runway: HTMLElement;
   tombstoneLayout: { height: number; width: number; };
   items: ScrollItem[];
   loadedItems: number;
@@ -35,16 +38,20 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   init() {
     this.configure(DEFAULT_CONFIG);
 
-    this.scroller.addEventListener('scroll', this.onScroll);
     WINDOW.addEventListener('resize', this.onResize);
     this.flux.on(Events.QUERY_CHANGED, this.reset);
     this.flux.on(Events.REFINEMENTS_CHANGED, this.reset);
     this.flux.on(Events.SORT, this.reset);
     this.flux.on(Events.COLLECTION_CHANGED, this.reset);
+    this.on('mount', this.onMount);
 
     this.items = [];
     this.loadedItems = 0;
     this.runwayEnd = 0;
+  }
+
+  onMount() {
+    this.refs.scroller.addEventListener('scroll', this.onScroll);
     this.onResize();
   }
 
@@ -54,17 +61,17 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
     this.runwayEnd = 0;
     this.anchorScrollTop = 0;
     this.oldScroll = 0;
-    while (this.scroller.hasChildNodes()) {
-      this.scroller.removeChild(this.scroller.lastChild);
+    while (this.refs.scroller.hasChildNodes()) {
+      this.refs.scroller.removeChild(this.refs.scroller.lastChild);
     }
     this.attachRenderer();
   }
 
   onScroll() {
-    if (this.oldScroll !== this.scroller.scrollTop) {
+    if (this.oldScroll !== this.refs.scroller.scrollTop) {
       this.attachRenderer();
     }
-    this.oldScroll = this.scroller.scrollTop;
+    this.oldScroll = this.refs.scroller.scrollTop;
   }
 
   attachRenderer() {
@@ -72,17 +79,15 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   }
 
   onResize() {
-    return Renderer.createTombstone(this.config.structure)
-      .then((tombstone) => {
-        this.scroller.appendChild(tombstone);
-        this.tombstoneLayout = {
-          height: tombstone.offsetHeight,
-          width: tombstone.offsetWidth
-        };
-        (<riot.TagElement>tombstone)._tag.unmount();
-        this.items.forEach((item) => item.height = item.width = 0);
-        this.attachRenderer();
-      });
+    const tombstone = Renderer.createTombstone(this.config.structure);
+    this.refs.scroller.appendChild(tombstone);
+    this.tombstoneLayout = {
+      height: tombstone.offsetHeight,
+      width: tombstone.offsetWidth
+    };
+    tombstone._tag.unmount();
+    this.items.forEach((item) => item.height = item.width = 0);
+    this.attachRenderer();
   }
 
   capRecords(items: number) {
@@ -137,7 +142,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
 }
 
 export interface ScrollItem {
-  node: HTMLElement;
+  node: riot.TagElement;
   data: any;
   top: number;
   height: number;

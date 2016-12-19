@@ -25,14 +25,14 @@ describe(`${TAG} logic`, () => {
   suite('gb-available-refinement', AvailableRefinement, MIXIN, ({ tag, spy }) => {
     describe('send()', () => {
       it('should make refinement', () => {
-        const refinement = tag().ref = { type: 'Range', low: 4, high: 6 };
-        const navigation = tag().nav = { name: 'price' };
+        const refinement = tag().refinement = { type: 'Range', low: 4, high: 6 };
+        const parent = tag().parent = <any>{ navigation: { name: 'price' } };
         const send = spy();
         tag()._scope = { send };
 
         tag().send();
 
-        expect(send).to.have.been.calledWith(refinement, navigation);
+        expect(send).to.have.been.calledWith(refinement, parent.navigation);
       });
     });
   });
@@ -40,14 +40,14 @@ describe(`${TAG} logic`, () => {
   suite('gb-selected-refinement', SelectedRefinement, MIXIN, ({ tag, spy }) => {
     describe('remove()', () => {
       it('should remove refinement', () => {
-        const refinement = tag().ref = { type: 'Range', low: 4, high: 6 };
-        const navigation = tag().nav = { name: 'price' };
+        const refinement = tag().refinement = { type: 'Range', low: 4, high: 6 };
+        const parent = tag().parent = <any>{ navigation: { name: 'price' } };
         const remove = spy();
         tag()._scope = { remove };
 
         tag().remove();
 
-        expect(remove).to.have.been.calledWith(refinement, navigation);
+        expect(remove).to.have.been.calledWith(refinement, parent.navigation);
       });
     });
   });

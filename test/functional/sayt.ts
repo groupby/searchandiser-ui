@@ -18,6 +18,7 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
     it('should render category suggestions', () => {
       const tag = mount();
       const allCategoriesLabel = 'All Categories';
+      tag.originalQuery = 'shoe';
 
       tag.update({
         queries: [{ value: 'a' }],
@@ -46,6 +47,7 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
       stub(utils, 'findSearchBox', () => searchBox);
       tag = mount();
       tag.listenForInput(<any>{ searchBox });
+      tag.originalQuery = 'shoe';
       searchBox.addEventListener('keydown', (event) => tag.autocomplete.keyboardListener(event, () => null));
       model = new Model(tag);
     });
@@ -174,8 +176,7 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
         categoryResults: [
           { value: 'four', category: 'the category' }
         ],
-        // this is necessary in order to have autocomplete be visible
-        queries: ['four']
+        queries: [{ value: 'four' }]
       });
 
       (<HTMLElement>tag.root.querySelectorAll('gb-sayt-link a')[0]).click();
@@ -185,7 +186,6 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
       model.searchBox.value = 'original';
       tag.refine = (target, query): any => {
         expect(query).to.eq('');
-        expect(target.parentElement.dataset['field']).to.eq('brand000');
         expect(target.parentElement.dataset['value']).to.eq('Brand: 3');
         expect(target.parentElement.dataset['refinement']).to.eq('3');
         done();
@@ -195,7 +195,7 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
           {
             displayName: 'Brand',
             name: 'brand000',
-            values: [0, 1, 2, 3]
+            values: ['0', '1', '2', '3']
           }
         ]
       });
@@ -206,7 +206,7 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
     it('shows navigations when there are no queries', () => {
       tag.update({
         navigations: [{
-          values: [{}, {}, {}]
+          values: ['0', '1', '2']
         }]
       });
 
@@ -232,6 +232,7 @@ describe(`${TAG} tag with sayt:true`, () => {
       mount();
       const saytTag = html.querySelector('gb-sayt')['_tag'];
       const searchBox = html.querySelector('input');
+      saytTag.originalQuery = 'shoe';
       searchBox.value = 'original';
       saytTag.update({
         queries: [

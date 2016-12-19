@@ -65,7 +65,7 @@ suite('gb-lazy-image', LazyImage, ({
       const image = 'example.com/image.png';
       const lazyLoad = stub(tag(), 'lazyLoad');
       tag()._scope = { productMeta: () => ({ image }) };
-      tag().lazyImage = <any>{ src: image };
+      tag().refs.lazyImage = <any>{ src: image };
 
       tag().maybeLoadImage();
 

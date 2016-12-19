@@ -7,7 +7,7 @@ import { Sayt } from 'sayt';
 const sayt = new Sayt();
 
 export interface FluxTag<T> extends riot.Tag.Instance {
-  parent: riot.Tag.Instance & FluxTag<any> & any;
+  parent: FluxTag<any> & any;
 
   flux: FluxCapacitor;
   services: Services;
@@ -40,8 +40,8 @@ export class FluxTag<T> {
     this._scope = this._parents[scope];
   }
 
-  findParent(tag: riot.Tag.Instance, name: string) {
-    let parentTag: riot.Tag.Instance = tag;
+  findParent(tag: FluxTag<any>, name: string) {
+    let parentTag = tag;
     while (parentTag.root.localName !== name && parentTag.parent) {
       parentTag = parentTag.parent;
     }
@@ -69,7 +69,7 @@ export function setTagName(tag: FluxTag<any>) {
   let tagName = htmlTagName;
 
   if (htmlTagName.indexOf('-') === -1) {
-    tagName = tag.root.dataset['is'] || tag.root.getAttribute('riot-tag');
+    tagName = tag.root.dataset['is'];
   }
 
   if (tagName) {

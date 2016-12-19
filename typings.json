@@ -7,7 +7,7 @@
     "filter-object": "registry:npm/filter-object#2.1.0+20160816021609",
     "oget": "registry:npm/oget#1.0.6+20161004214750",
     "parseUri": "registry:npm/parseUri#1.2.3-2+20161005205200",
-    "riot": "registry:npm/riot#2.6.0+20160825063327",
+    "riot": "registry:npm/riot#3.0.1+20161130094052",
     "uuid": "registry:npm/uuid#3.0.1+20161206160008"
   },
   "globalDevDependencies": {

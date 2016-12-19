@@ -1,6 +1,6 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
 import { toRefinement } from '../../utils/common';
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { Select, SelectConfig, SelectTag } from '../select/gb-select';
 import { Results } from 'groupby-api';
 
 export interface FilterConfig extends SelectConfig {
@@ -13,7 +13,11 @@ export const DEFAULT_CONFIG: FilterConfig = {
   clear: 'Unfiltered'
 };
 
-export interface Filter extends SelectTag<FilterConfig> { }
+export interface Filter extends SelectTag<FilterConfig> {
+  tags: {
+    'gb-select': Select<FilterConfig>;
+  };
+}
 
 export class Filter {
 

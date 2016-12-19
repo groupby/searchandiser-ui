@@ -73,6 +73,7 @@ export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: 
   Object.assign(tag, {
     flux,
     opts: {},
+    refs: {},
     config: {},
     _config: {},
     configure: (cfg = {}) => configure(cfg, tag),

@@ -57,12 +57,12 @@ export class Navigation {
     return processed;
   }
 
-  send(ref: any, nav: any) {
-    return this.flux.refine(toRefinement(ref, nav));
+  send(refinement: any, navigation: any) {
+    return this.flux.refine(toRefinement(refinement, navigation));
   }
 
-  remove(ref: any, nav: any) {
-    return this.flux.unrefine(toRefinement(ref, nav));
+  remove(refinement: any, navigation: any) {
+    return this.flux.unrefine(toRefinement(refinement, navigation));
   }
 }
 
