@@ -48,17 +48,17 @@ export class FluxTag<T> {
   }
 
   $mixin(...mixins: any[]) {
-    this.mixin(...mixins.map((mixin) => new mixin().__proto__));
-  }
-
-  $mixin2() {
-    const tagDir = this.$tagName.replace(/^[a-z]*?-/, '');
-    const tagPath = `./${tagDir}/${this.$tagName}.ts`;
-    const tagModule = require(tagPath);
-    const tagClassName = tagDir.replace(/\b(\w)/g, (match) => match.toUpperCase())
-      .replace(/-/g, '');
-    if (tagClassName in tagModule) {
-      this.$mixin(tagModule[tagClassName]);
+    if (mixins.length === 0) {
+      const tagDir = this.$tagName.replace(/^[a-z]*?-/, '');
+      const tagPath = `./${tagDir}/${this.$tagName}.ts`;
+      const tagModule = require(tagPath);
+      const tagClassName = tagDir.replace(/\b(\w)/g, (match) => match.toUpperCase())
+        .replace(/-/g, '');
+      if (tagClassName in tagModule) {
+        mixin(this, tagModule[tagClassName]);
+      }
+    } else {
+      mixin(this, ...mixins);
     }
   }
 
@@ -129,6 +129,10 @@ export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
     }
   }
   tag.$config = rawConfig;
+}
+
+export function mixin(tag: FluxTag<any>, ...mixins: any[]) {
+  tag.mixin(...mixins.map((mixin) => new mixin().__proto__));
 }
 
 export function camelizeTagName(tagName: string) {
