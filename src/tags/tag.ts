@@ -1,5 +1,6 @@
 import { Services } from '../services/init';
 import { checkBooleanAttr, getPath } from '../utils/common';
+import * as cssWhat from 'css-what';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
@@ -56,7 +57,7 @@ export class FluxTag<T> {
       cssSelectors.filter((cssSelector) => {
         // truncate cssSelectors
         // if it's just a solitary selector, put it through
-
+        const selectorParts = cssWhat(cssSelector);
       });
     }
 
@@ -185,4 +186,16 @@ export function camelizeTagName(tagName: string) {
 
 export function MixinFlux(flux: FluxCapacitor, config: any, services: any): FluxTag<any> {
   return Object.assign(new FluxTag()['__proto__'], { flux, config, services });
+}
+
+export function invalidateSelectors(tag: FluxTag<any>, selectorObject: ExposedScope): ExposedScope {
+  // invalidate selectors (simple for now)
+  const cssSelectors = Object.keys(selectorObject);
+  cssSelectors.filter((cssSelector) => {
+    // truncate cssSelectors
+    // if it's just a solitary selector, put it through
+    const selectorParts = cssWhat(cssSelector);
+    console.log(selectorParts);
+  });
+  return selectorObject;
 }
