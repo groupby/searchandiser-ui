@@ -6,6 +6,19 @@ import { Sayt } from 'sayt';
 
 const sayt = new Sayt();
 
+export interface FluxSchema {
+  [key: string]: {
+    value: any;
+    for?: string;
+  };
+}
+
+export interface ExposedScope {
+  [cssSelector: string]: {
+    [key: string]: any;
+  };
+}
+
 export interface FluxTag<T> extends riot.Tag.Instance {
   parent: FluxTag<any> & any;
 
@@ -20,6 +33,7 @@ export class FluxTag<T> {
   $stylish: boolean;
   $tagName: string;
   $parents: any;
+  $exposed: ExposedScope;
   $scope: FluxTag<any> & any;
   $scopes: { [key: string]: any };
   $config: T;
@@ -30,6 +44,24 @@ export class FluxTag<T> {
     setScope(this);
 
     this.on('mount', () => onMount(this));
+  }
+
+  $schema(schema: FluxSchema) {
+    // climb the parent chain looking for exposed scopes
+    const exposedScope = findClosestScope(this);
+
+    if (exposedScope) {
+      // invalidate selectors (simple for now)
+      const cssSelectors = Object.keys(exposedScope);
+      cssSelectors.filter((cssSelector) => {
+        // truncate cssSelectors
+        // if it's just a solitary selector, put it through
+
+      });
+    }
+
+    // re-scope selectors
+    this.$exposed = null;
   }
 
   $mixin(...mixins: any[]) {
@@ -64,6 +96,18 @@ export class SaytTag<T> {
   init() {
     this.sayt = sayt;
   }
+}
+
+export function findClosestScope(tag: FluxTag<any>) {
+  let parent = tag;
+  let exposedScope = null;
+  do {
+    if (parent.$exposed) {
+      exposedScope = parent.$exposed;
+      break;
+    }
+  } while (parent = parent.parent);
+  return exposedScope;
 }
 
 export function setTagName(tag: FluxTag<any>) {

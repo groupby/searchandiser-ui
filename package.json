@@ -105,6 +105,7 @@
     "array.of": "^0.1.1",
     "clone": "^1.0.2",
     "debounce": "^1.0.0",
+    "element-closest": "^2.0.2",
     "escape-string-regexp": "^1.0.5",
     "filter-object": "^2.1.0",
     "gb-tracker-client": "^3.3.1",
