@@ -15,7 +15,9 @@ export interface FluxSchema {
 }
 
 export interface ExposedScope {
-  [cssSelector: string]: {
+  cssSelector: string;
+  from: riot.TagElement;
+  values: {
     [key: string]: any;
   };
 }
@@ -34,7 +36,8 @@ export class FluxTag<T> {
   $stylish: boolean;
   $tagName: string;
   $parents: any;
-  $exposed: ExposedScope;
+  $exposed: ExposedScope[];
+  $computed: any;
   $scope: FluxTag<any> & any;
   $scopes: { [key: string]: any };
   $config: T;
@@ -51,18 +54,12 @@ export class FluxTag<T> {
     // climb the parent chain looking for exposed scopes
     const exposedScope = findClosestScope(this);
 
-    if (exposedScope) {
-      // invalidate selectors (simple for now)
-      const cssSelectors = Object.keys(exposedScope);
-      cssSelectors.filter((cssSelector) => {
-        // truncate cssSelectors
-        // if it's just a solitary selector, put it through
-        const selectorParts = cssWhat(cssSelector);
-      });
-    }
+    this.$exposed = [...convertSchema(this, schema), ...(exposedScope || [])];
+  }
 
-    // re-scope selectors
-    this.$exposed = null;
+  $inherit() {
+    // validate every selector!
+    this.$computed = findClosestScope(this).reduce((scope, exposed) => Array.from(exposed.from.querySelectorAll(exposed.cssSelector)).includes(this.root) && Object.assign(scope, exposed.values), {});
   }
 
   $mixin(...mixins: any[]) {
@@ -99,7 +96,7 @@ export class SaytTag<T> {
   }
 }
 
-export function findClosestScope(tag: FluxTag<any>) {
+export function findClosestScope(tag: FluxTag<any>): ExposedScope[] {
   let parent = tag;
   let exposedScope = null;
   do {
@@ -188,14 +185,22 @@ export function MixinFlux(flux: FluxCapacitor, config: any, services: any): Flux
   return Object.assign(new FluxTag()['__proto__'], { flux, config, services });
 }
 
-export function invalidateSelectors(tag: FluxTag<any>, selectorObject: ExposedScope): ExposedScope {
-  // invalidate selectors (simple for now)
-  const cssSelectors = Object.keys(selectorObject);
-  cssSelectors.filter((cssSelector) => {
-    // truncate cssSelectors
-    // if it's just a solitary selector, put it through
-    const selectorParts = cssWhat(cssSelector);
-    console.log(selectorParts);
-  });
-  return selectorObject;
+export function convertSchema(tag: FluxTag<any>, schema: FluxSchema): ExposedScope[] {
+  const scopeObject = Object.keys(schema)
+    .reduce((converted, key) => {
+      const cssSelector = schema[key].for;
+      if (cssSelector) {
+        if (!converted[cssSelector]) {
+          converted[cssSelector] = {
+            cssSelector,
+            from: tag.root,
+            values: { [key]: schema[key].value }
+          };
+        } else {
+          Object.assign(converted[cssSelector].values, { [key]: schema[key].value });
+        }
+      }
+      return converted;
+    }, {});
+  return Object.values(scopeObject);
 }
