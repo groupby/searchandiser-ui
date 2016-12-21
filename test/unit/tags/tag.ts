@@ -1,6 +1,5 @@
 import {
   configure,
-  invalidateSelectors,
   setParents,
   setScope,
   setTagName,
@@ -246,13 +245,6 @@ describe('base tag logic', () => {
       expect(fluxTag.flux).to.be.eq(flux);
       expect(fluxTag.config).to.be.eq(config);
       expect(fluxTag.services).to.be.eq(services);
-    });
-  });
-
-  describe.only('invalidateSelectors()', () => {
-    it('should return object', () => {
-      const selectors: any = { 'div > p:first-child': {} };
-      expect(invalidateSelectors(<any>{}, selectors)).to.eql({});
     });
   });
 });

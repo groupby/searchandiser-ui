@@ -46,7 +46,6 @@ export class FluxTag<T> {
     setTagName(this);
     setParents(this);
     setScope(this);
-    this.$inherit();
 
     this.on('mount', () => onMount(this));
   }
@@ -56,23 +55,6 @@ export class FluxTag<T> {
     const exposedScope = findClosestScope(this);
 
     this.$exposed = [...convertSchema(this, schema), ...(exposedScope || [])];
-  }
-
-  $inherit() {
-    // validate every selector!
-    const closestScope = findClosestScope(this);
-    if (closestScope) {
-      this.$computed = closestScope
-        .reduce((scope, exposed) => {
-          const matchedElements = Array.from(exposed.from.querySelectorAll(exposed.cssSelector));
-          if (matchedElements.includes(this.root)) {
-            Object.assign(scope, exposed.values);
-          }
-          return scope;
-        }, {});
-    } else {
-      this.$computed = {};
-    }
   }
 
   $mixin(...mixins: any[]) {
@@ -186,6 +168,7 @@ export function onMount(tag: FluxTag<any>) {
     tag.$stylish = stylish;
     tag.root.classList.add('gb-stylish');
   }
+  inherit(tag);
   if (typeof tag.onMount === 'function') { tag.onMount(); }
 }
 
@@ -216,4 +199,21 @@ export function convertSchema(tag: FluxTag<any>, schema: FluxSchema): ExposedSco
       return converted;
     }, {});
   return Object.values(scopeObject);
+}
+
+export function inherit(tag: FluxTag<any>) {
+  // validate every selector!
+  const closestScope = findClosestScope(tag);
+  if (closestScope) {
+    tag.$computed = closestScope
+      .reduce((scope, exposed) => {
+        const matchedElements = Array.from(exposed.from.querySelectorAll(exposed.cssSelector));
+        if (matchedElements.includes(tag.root)) {
+          Object.assign(scope, exposed.values);
+        }
+        return scope;
+      }, {});
+  } else {
+    tag.$computed = {};
+  }
 }
