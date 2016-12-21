@@ -79,6 +79,7 @@ export function fluxTag<T extends FluxTag<any>>(tagName: string, tag: T, obj: an
     $tagName: tagName,
     $config: {},
     configure: (cfg = {}) => configure(cfg, tag),
+    $schema: () => null,
     on: () => null
   }, obj);
   return { flux, tag };

@@ -1,5 +1,6 @@
 import {
   configure,
+  convertSchema,
   setParents,
   setScope,
   setTagName,
@@ -230,6 +231,65 @@ describe('base tag logic', () => {
         m: 0,
         n: 1
       });
+    });
+  });
+
+  describe('convertSchema()', () => {
+    it('should convert schema into scoped buckets', () => {
+      const root = { a: 'b' };
+
+      const converted = convertSchema(<any>{ root }, {
+        height: {
+          value: 23,
+          for: 'some-tag'
+        },
+        width: {
+          value: 12,
+          for: 'other-tag'
+        }
+      });
+
+      expect(converted).to.eql([
+        {
+          cssSelector: 'some-tag',
+          from: root,
+          values: {
+            height: 23
+          }
+        }, {
+          cssSelector: 'other-tag',
+          from: root,
+          values: {
+            width: 12
+          }
+        }
+      ]);
+    });
+
+    it('should add multiple values to the same bucket', () => {
+      const root = { a: 'b' };
+
+      const converted = convertSchema(<any>{ root }, {
+        height: {
+          value: 23,
+          for: 'some-tag'
+        },
+        width: {
+          value: 12,
+          for: 'some-tag'
+        }
+      });
+
+      expect(converted).to.eql([
+        {
+          cssSelector: 'some-tag',
+          from: root,
+          values: {
+            height: 23,
+            width: 12
+          }
+        }
+      ]);
     });
   });
 
