@@ -1,12 +1,14 @@
 import {
   configure,
   convertSchema,
+  inherit,
   setParents,
   setScope,
   setTagName,
   FluxTag,
   MixinFlux
 } from '../../../src/tags/tag';
+import * as utils from '../../../src/utils/common';
 import { expect } from 'chai';
 
 describe('base tag logic', () => {
@@ -290,6 +292,45 @@ describe('base tag logic', () => {
           }
         }
       ]);
+    });
+
+    it('should not expose internals', () => {
+      const root = { a: 'b' };
+
+      const converted = convertSchema(<any>{ root }, {
+        height: {
+          value: 23,
+          for: 'some-tag'
+        },
+        width: {
+          value: 12
+        }
+      });
+
+      expect(converted).to.eql([
+        {
+          cssSelector: 'some-tag',
+          from: root,
+          values: {
+            height: 23
+          }
+        }
+      ]);
+    });
+  });
+
+  describe.only('inherit()', () => {
+    it('should set computed to empty object if no scope found', () => {
+      const tag: any = {};
+      sandbox.stub(utils, 'findClosestScope').returns(null);
+
+      inherit(tag);
+
+      expect(tag.$computed).to.eql({});
+    });
+
+    it('should', () => {
+
     });
   });
 

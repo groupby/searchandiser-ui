@@ -1,3 +1,4 @@
+import { ExposedScope, FluxTag } from '../tags/tag';
 import * as debounce from 'debounce';
 import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
 import * as queryString from 'query-string';
@@ -91,4 +92,16 @@ export function checkBooleanAttr(attribute: string, opts: any) {
 
 export function scopeCss(tag: string, selector: string) {
   return `${tag} ${selector}, [data-is="${tag}"] ${selector}`;
+}
+
+export function findClosestScope(tag: FluxTag<any>): ExposedScope[] {
+  let parent = tag;
+  let exposedScope = null;
+  do {
+    if (parent.$exposed) {
+      exposedScope = parent.$exposed;
+      break;
+    }
+  } while (parent = parent.parent);
+  return exposedScope;
 }

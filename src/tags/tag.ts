@@ -1,6 +1,5 @@
 import { Services } from '../services/init';
-import { checkBooleanAttr, getPath } from '../utils/common';
-import * as cssWhat from 'css-what';
+import { checkBooleanAttr, findClosestScope, getPath } from '../utils/common';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
@@ -89,18 +88,6 @@ export class SaytTag<T> {
   init() {
     this.sayt = sayt;
   }
-}
-
-export function findClosestScope(tag: FluxTag<any>): ExposedScope[] {
-  let parent = tag;
-  let exposedScope = null;
-  do {
-    if (parent.$exposed) {
-      exposedScope = parent.$exposed;
-      break;
-    }
-  } while (parent = parent.parent);
-  return exposedScope;
 }
 
 export function setTagName(tag: FluxTag<any>) {
