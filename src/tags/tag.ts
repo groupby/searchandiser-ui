@@ -46,6 +46,7 @@ export class FluxTag<T> {
     setTagName(this);
     setParents(this);
     setScope(this);
+    this.$inherit();
 
     this.on('mount', () => onMount(this));
   }
@@ -59,7 +60,19 @@ export class FluxTag<T> {
 
   $inherit() {
     // validate every selector!
-    this.$computed = findClosestScope(this).reduce((scope, exposed) => Array.from(exposed.from.querySelectorAll(exposed.cssSelector)).includes(this.root) && Object.assign(scope, exposed.values), {});
+    const closestScope = findClosestScope(this);
+    if (closestScope) {
+      this.$computed = closestScope
+        .reduce((scope, exposed) => {
+          const matchedElements = Array.from(exposed.from.querySelectorAll(exposed.cssSelector));
+          if (matchedElements.includes(this.root)) {
+            Object.assign(scope, exposed.values);
+          }
+          return scope;
+        }, {});
+    } else {
+      this.$computed = {};
+    }
   }
 
   $mixin(...mixins: any[]) {
