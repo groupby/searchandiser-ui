@@ -63,7 +63,6 @@ export class Paging {
   init() {
     this.configure(DEFAULT_CONFIG);
     this.$schema({ forwardDisabled: { value: true, for: 'gb-pager' } });
-    console.log(this.$exposed);
 
     // default initial state
     this.backDisabled = true;

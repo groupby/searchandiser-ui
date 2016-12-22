@@ -9,8 +9,4 @@ export class Pager {
     this.$scopeTo('gb-paging');
     this.$config = this.$scope.$config;
   }
-
-  onMount() {
-    console.log(this.$computed);
-  }
 }

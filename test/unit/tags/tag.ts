@@ -319,7 +319,7 @@ describe('base tag logic', () => {
     });
   });
 
-  describe.only('inherit()', () => {
+  describe('inherit()', () => {
     it('should set computed to empty object if no scope found', () => {
       const tag: any = {};
       sandbox.stub(utils, 'findClosestScope').returns(null);
@@ -329,8 +329,65 @@ describe('base tag logic', () => {
       expect(tag.$computed).to.eql({});
     });
 
-    it('should', () => {
+    it('should test css selectors', () => {
+      const self = { a: 'b' };
+      const tag: any = { root: self };
+      const querySelectorAll = sinon.spy(() => []);
+      const root1 = { querySelectorAll };
+      const root2 = { querySelectorAll };
+      sandbox.stub(utils, 'findClosestScope').returns([
+        {
+          cssSelector: 'gb-my-tag',
+          from: root1,
+          values: {
+            height: 12,
+            width: 14
+          }
+        }, {
+          cssSelector: 'gb-other-tag',
+          from: root2,
+          values: { colour: 'blue' }
+        }, {
+          cssSelector: 'gb-this-one-tag',
+          from: root2,
+          values: { colour: 'red' }
+        }
+      ]);
 
+      inherit(tag);
+
+      expect(querySelectorAll).to.have.been.calledThrice;
+      expect(querySelectorAll).to.have.been.calledWith('gb-my-tag');
+      expect(querySelectorAll).to.have.been.calledWith('gb-other-tag');
+      expect(querySelectorAll).to.have.been.calledWith('gb-this-one-tag');
+    });
+
+    it('should only add values whose css selector matches', () => {
+      const self = { a: 'b' };
+      const tag: any = { root: self };
+      const root1 = { querySelectorAll: () => [self] };
+      const root2 = { querySelectorAll: () => [] };
+      sandbox.stub(utils, 'findClosestScope').returns([
+        {
+          cssSelector: 'gb-my-tag',
+          from: root1,
+          values: {
+            height: 12,
+            width: 14
+          }
+        }, {
+          cssSelector: 'gb-other-tag',
+          from: root2,
+          values: { colour: 'blue' }
+        }
+      ]);
+
+      inherit(tag);
+
+      expect(tag.$computed).to.eql({
+        height: 12,
+        width: 14
+      });
     });
   });
 
