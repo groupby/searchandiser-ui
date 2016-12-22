@@ -29,6 +29,7 @@ export interface FluxTag<T> extends riot.Tag.Instance {
   config: any;
 
   onMount(): void;
+  onUpdate(): void;
 }
 
 export class FluxTag<T> {
@@ -42,11 +43,13 @@ export class FluxTag<T> {
   $config: T;
 
   init() {
+    this.$computed = {};
     setTagName(this);
     setParents(this);
     setScope(this);
 
     this.on('mount', () => onMount(this));
+    this.on('update', () => onUpdate(this));
   }
 
   $schema(schema: FluxSchema) {
@@ -155,8 +158,16 @@ export function onMount(tag: FluxTag<any>) {
     tag.$stylish = stylish;
     tag.root.classList.add('gb-stylish');
   }
+
   inherit(tag);
+
   if (typeof tag.onMount === 'function') { tag.onMount(); }
+}
+
+export function onUpdate(tag: FluxTag<any>) {
+  inherit(tag);
+
+  if (typeof tag.onUpdate === 'function') { tag.onUpdate(); }
 }
 
 export function camelizeTagName(tagName: string) {

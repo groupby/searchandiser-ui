@@ -5,8 +5,11 @@ export interface Pager extends FluxTag<PagingConfig> { }
 
 export class Pager {
 
-  init() {
-    this.$scopeTo('gb-paging');
-    this.$config = this.$scope.$config;
+  onMount() {
+    console.log(this.$computed);
+  }
+
+  onUpdate() {
+    console.log(this.$computed);
   }
 }

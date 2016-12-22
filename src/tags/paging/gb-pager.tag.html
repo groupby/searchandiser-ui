@@ -1,12 +1,12 @@
 <gb-pager>
-  <a class="gb-pager__link prev { disabled: $scope.backDisabled }" onclick={ $scope.pager.prev }>
-    <gb-icon if={ $config.icons } value={ $config.prev_icon }></gb-icon>
-    <span if={ $config.labels }>{ $config.prev_label }</span>
+  <a class="gb-pager__link prev { disabled: $computed.backDisabled }" onclick={ $computed.pager && $computed.pager.prev }>
+    <gb-icon if={ $computed.icons } value={ $computed.prevIcon }></gb-icon>
+    <span if={ $computed.labels }>{ $computed.prevLabel }</span>
   </a>
   <yield/>
-  <a class="gb-pager__link next { disabled: $scope.forwardDisabled }" onclick={ $scope.pager.next }>
-    <span if={ $config.labels }>{ $config.next_label }</span>
-    <gb-icon if={ $config.icons } value={ $config.next_icon }></gb-icon>
+  <a class="gb-pager__link next { disabled: $computed.forwardDisabled }" onclick={ $computed.pager && $computed.pager.next }>
+    <span if={ $computed.labels }>{ $computed.nextLabel }</span>
+    <gb-icon if={ $computed.icons } value={ $computed.nextIcon }></gb-icon>
   </a>
 
   <script>

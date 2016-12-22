@@ -20,6 +20,17 @@ export interface PagingConfig {
   last_icon?: string;
 }
 
+export const SCHEMA = {
+  forwardDisabled: { value: false, for: 'gb-pager' },
+  backDisabled: { value: true, for: 'gb-pager' },
+  icons: { value: true, for: 'gb-pager' },
+  labels: { value: true, for: 'gb-pager' },
+  nextLabel: { value: 'Next', for: 'gb-pager' },
+  prevLabel: { value: 'Prev', for: 'gb-pager' },
+  nextIcon: { value: require('./arrow-right.png'), for: 'gb-pager' },
+  prevIcon: { value: require('./arrow-left.png'), for: 'gb-pager' },
+};
+
 export const DEFAULT_CONFIG: PagingConfig = {
   limit: 5,
   pages: false,
@@ -62,13 +73,13 @@ export class Paging {
 
   init() {
     this.configure(DEFAULT_CONFIG);
-    this.$schema({ forwardDisabled: { value: true, for: 'gb-pager' } });
+
+    const pager = this.pager = this.wrapPager(this.flux.page);
+    this.$schema(Object.assign({ pager: { value: pager, for: 'gb-pager' } }, SCHEMA));
 
     // default initial state
     this.backDisabled = true;
     this.currentPage = 1;
-
-    this.pager = this.wrapPager(this.flux.page);
 
     this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
     this.flux.on(Events.RESULTS, this.pageInfo);
@@ -83,13 +94,15 @@ export class Paging {
 
   updatePageInfo(pageNumbers: number[], currentPage: number, lastPage: number) {
     this.update({
-      pageNumbers,
-      currentPage,
-      lastPage,
-      lowOverflow: pageNumbers[0] !== 1,
-      highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
-      backDisabled: currentPage === 1,
-      forwardDisabled: currentPage === lastPage
+      $computed: Object.assign(this.$computed, {
+        pageNumbers,
+        currentPage,
+        lastPage,
+        lowOverflow: pageNumbers[0] !== 1,
+        highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
+        backDisabled: currentPage === 1,
+        forwardDisabled: currentPage === lastPage
+      })
     });
   }
 
