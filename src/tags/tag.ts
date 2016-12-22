@@ -1,5 +1,6 @@
 import { Services } from '../services/init';
 import { checkBooleanAttr, findClosestScope, getPath } from '../utils/common';
+import * as clone from 'clone';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
@@ -41,6 +42,8 @@ export class FluxTag<T> {
   $scope: FluxTag<any> & any;
   $scopes: { [key: string]: any };
   $config: T;
+  $internal: any;
+  $internalSchema: FluxSchema;
 
   init() {
     this.$computed = {};
@@ -57,6 +60,16 @@ export class FluxTag<T> {
     const exposedScope = findClosestScope(this);
 
     this.$exposed = [...convertSchema(this, schema), ...(exposedScope || [])];
+    this.$internalSchema = clone(schema, false);
+    this.$internal = collapseSchema(this.$internalSchema);
+  }
+
+  $update(data: any) {
+    const exposedScope = findClosestScope(this);
+    updateSchema(this.$internalSchema, data);
+    this.$internal = collapseSchema(this.$internalSchema);
+    this.$exposed = [...convertSchema(this, this.$internalSchema), ...(exposedScope || [])];
+    this.update();
   }
 
   $mixin(...mixins: any[]) {
@@ -214,4 +227,23 @@ export function inherit(tag: FluxTag<any>) {
   } else {
     tag.$computed = {};
   }
+}
+
+export function collapseSchema(schema: FluxSchema) {
+  return Object.keys(schema)
+    .reduce((collapsed, key) => {
+      if (schema[key].value) {
+        return Object.assign(collapsed, { [key]: schema[key].value });
+      } else {
+        return collapsed;
+      }
+    }, {});
+}
+
+export function updateSchema(schema: FluxSchema, data: any) {
+  Object.keys(data).forEach((key) => {
+    if (schema[key]) {
+      schema[key].value = data[key];
+    }
+  });
 }

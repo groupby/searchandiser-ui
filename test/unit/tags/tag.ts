@@ -1,10 +1,12 @@
 import {
+  collapseSchema,
   configure,
   convertSchema,
   inherit,
   setParents,
   setScope,
   setTagName,
+  updateSchema,
   FluxTag,
   MixinFlux
 } from '../../../src/tags/tag';
@@ -403,6 +405,61 @@ describe('base tag logic', () => {
       expect(fluxTag.flux).to.be.eq(flux);
       expect(fluxTag.config).to.be.eq(config);
       expect(fluxTag.services).to.be.eq(services);
+    });
+  });
+
+  describe('collapseSchema()', () => {
+    it('should return an object containing the default values', () => {
+      const schema: any = {
+        height: {
+          value: 23,
+          for: 'some-tag'
+        },
+        width: {
+          value: 12
+        }
+      };
+
+      expect(collapseSchema(schema)).to.eql({
+        height: 23,
+        width: 12
+      });
+    });
+
+    it('should ignore falsy values', () => {
+      const schema: any = {
+        height: {
+          value: 23,
+          for: 'some-tag'
+        },
+        width: {},
+        colour: {
+          value: false
+        }
+      };
+
+      expect(collapseSchema(schema)).to.eql({ height: 23 });
+    });
+  });
+
+  describe('updateSchema()', () => {
+    it('should update schema', () => {
+      const schema: any = {
+        height: {
+          value: 23,
+          for: 'some-tag'
+        },
+        width: {
+          value: 12
+        }
+      };
+      const data: any = {
+        height: 26
+      };
+
+      updateSchema(schema, data);
+
+      expect(schema.height.value).to.eq(26);
     });
   });
 });
