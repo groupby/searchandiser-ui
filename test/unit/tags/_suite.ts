@@ -30,6 +30,7 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       spy,
       stub,
       itShouldConfigure,
+      itShouldSchema,
       tagName
     });
 
@@ -45,6 +46,17 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
           } else {
             expect(config).to.be.undefined;
           }
+          done();
+        };
+
+        _tag.init();
+      });
+    }
+
+    function itShouldSchema(schema: any) {
+      it('should expose a schema', (done) => {
+        _tag.$schema = (config) => {
+          expect(config).to.eq(schema);
           done();
         };
 
@@ -92,5 +104,6 @@ export interface UnitUtils<T> {
   stub: Sinon.SinonStubStatic;
   expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
   itShouldConfigure: (defaultConfig?: any) => void;
+  itShouldSchema: (schema: any) => void;
   tagName: string;
 }

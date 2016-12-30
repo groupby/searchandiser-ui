@@ -144,7 +144,8 @@ export function setScope(tag: FluxTag<any>) {
 
 export function collectOpts(tag: FluxTag<any>) {
   return Object.assign(
-    getPath(tag.config, `tags.${camelizeTagName(tag.$tagName)}`),
+    {},
+    getPath(tag.config, `tags.${camelizeTagName(tag.$tagName)}`) || {},
     tag.opts.__proto__ || {},
     tag.opts
   );

@@ -1,22 +1,22 @@
-import { DEFAULT_CONFIG, Paging } from '../../../src/tags/paging/gb-paging';
+import { Paging, SCHEMA } from '../../../src/tags/paging/gb-paging';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-paging', Paging, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    it('should expose a schema', (done) => {
+      tag().$schema = (config) => {
+        Object.keys(SCHEMA)
+          .forEach((key) => expect(config).to.have.property(key, SCHEMA[key]));
+        done();
+      };
 
-    it('should have default initial state', () => {
       tag().init();
-
-      expect(tag().currentPage).to.eq(1);
-      expect(tag().backDisabled).to.be.true;
     });
 
     it('should wrap flux.page as pager', () => {
@@ -28,8 +28,6 @@ suite('gb-paging', Paging, ({
       };
 
       tag().init();
-
-      expect(tag().pager).to.eq(wrappedPager);
     });
 
     it('should listen for events', () => {
@@ -45,7 +43,7 @@ suite('gb-paging', Paging, ({
       const pageNumbers = [1, 2, 3, 4, 5];
       const limit = 7;
       const updatePageInfo = stub(tag(), 'updatePageInfo');
-      tag().$config = { limit };
+      tag().$internal = { limit };
       flux().page = <any>{
         pageNumbers: (pages) => {
           expect(pages).to.eq(limit);
@@ -64,7 +62,7 @@ suite('gb-paging', Paging, ({
   describe('updatePageInfo()', () => {
     it('should update page info', () => {
       const pageNumbers = [1, 2, 3, 4, 5, 6];
-      const update = tag().update = spy();
+      const update = tag().$update = spy();
 
       tag().updatePageInfo(pageNumbers, 43, 43);
 
@@ -74,13 +72,13 @@ suite('gb-paging', Paging, ({
         forwardDisabled: true,
         lowOverflow: false,
         highOverflow: true,
-        lastPage: 43,
+        finalPage: 43,
         currentPage: 43
       })).to.be.true;
     });
 
     it('should set lowOverflow and highOverflow true', () => {
-      const update = tag().update = spy();
+      const update = tag().$update = spy();
 
       tag().updatePageInfo([2, 3, 4], 1, 6);
 
@@ -91,7 +89,7 @@ suite('gb-paging', Paging, ({
     });
 
     it('should set lowOverflow and highOverflow to false', () => {
-      const update = tag().update = spy();
+      const update = tag().$update = spy();
 
       tag().updatePageInfo([1, 2, 3, 4], 1, 4);
 
@@ -102,7 +100,7 @@ suite('gb-paging', Paging, ({
     });
 
     it('should set backDisabled and forwardDisabled to true', () => {
-      const update = tag().update = spy();
+      const update = tag().$update = spy();
 
       tag().updatePageInfo([1], 1, 1);
 
@@ -113,7 +111,7 @@ suite('gb-paging', Paging, ({
     });
 
     it('should set backDisabled and forwardDisabled to false', () => {
-      const update = tag().update = spy();
+      const update = tag().$update = spy();
 
       tag().updatePageInfo([1, 2, 3], 2, 3);
 
@@ -126,7 +124,7 @@ suite('gb-paging', Paging, ({
 
   describe('updateCurrentPage()', () => {
     it('should update current page', () => {
-      const update = tag().update = spy();
+      const update = tag().$update = spy();
 
       tag().updateCurrentPage({ pageNumber: 10 });
 
@@ -135,7 +133,9 @@ suite('gb-paging', Paging, ({
   });
 
   describe('wrapPager()', () => {
-    it('first()', (done) => {
+    beforeEach(() => tag().$internal = {});
+
+    it('firstPage()', (done) => {
       const reset = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ reset });
       tag().emitEvent = () => {
@@ -143,10 +143,10 @@ suite('gb-paging', Paging, ({
         done();
       };
 
-      pager.first();
+      pager.firstPage.value();
     });
 
-    it('prev()', (done) => {
+    it('prevPage()', (done) => {
       const prev = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ prev });
       tag().emitEvent = () => {
@@ -154,10 +154,10 @@ suite('gb-paging', Paging, ({
         done();
       };
 
-      pager.prev();
+      pager.prevPage.value();
     });
 
-    it('next()', (done) => {
+    it('nextPage()', (done) => {
       const next = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ next });
       tag().emitEvent = () => {
@@ -165,10 +165,10 @@ suite('gb-paging', Paging, ({
         done();
       };
 
-      pager.next();
+      pager.nextPage.value();
     });
 
-    it('last()', (done) => {
+    it('lastPage()', (done) => {
       const last = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ last });
       tag().emitEvent = () => {
@@ -176,7 +176,7 @@ suite('gb-paging', Paging, ({
         done();
       };
 
-      pager.last();
+      pager.lastPage.value();
     });
 
     it('switchPage()', (done) => {
@@ -188,31 +188,31 @@ suite('gb-paging', Paging, ({
         done();
       };
 
-      pager.switchPage(newPage);
+      pager.switchPage.value(newPage);
     });
 
     it('should not allow page forward', () => {
-      tag().forwardDisabled = true;
+      tag().$internal.forwardDisabled = true;
 
       const pager = tag().wrapPager(<any>{
         next: () => expect.fail(),
         last: () => expect.fail()
       });
 
-      pager.next();
-      pager.last();
+      pager.nextPage.value();
+      pager.lastPage.value();
     });
 
     it('should not allow page backward', () => {
-      tag().backDisabled = true;
+      tag().$internal.backDisabled = true;
 
       const pager = tag().wrapPager(<any>{
         prev: () => expect.fail(),
         first: () => expect.fail()
       });
 
-      pager.prev();
-      pager.first();
+      pager.prevPage.value();
+      pager.firstPage.value();
     });
   });
 
