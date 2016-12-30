@@ -1,16 +1,11 @@
 <gb-available-refinement>
   <li>
-    <a class="gb-ref__link" onclick={ send }>
-      <span class="gb-ref__title">{ toView(refinement) }</span>
+    <a class="gb-ref__link" onclick="{ $computed.selectRefinement }">
+      <span class="gb-ref__title">{ $computed.toView(refinement) }</span>
       <span class="gb-filler"></span>
-      <gb-badge if={ parent.parent.$config.badge }>{ parent.refinement.count }</gb-badge>
+      <gb-badge if="{ $computed.badge }">{ parent.refinement.count }</gb-badge>
     </a>
   </li>
-
-  <script>
-    import { AvailableRefinement } from './gb-refinement';
-    this.$mixin(AvailableRefinement);
-  </script>
 
   <style scoped>
     :scope.gb-stylish {

@@ -1,0 +1,11 @@
+<gb-more-refinements>
+  <li if="{ parent.navigation.moreRefinements }">
+    <a href="#" onclick="{ $computed.fetchRefinements }">More</a>
+  </li>
+
+  <style scoped>
+    :scope.gb-stylish li {
+      list-style: none;
+    }
+  </style>
+</gb-more-refinements>

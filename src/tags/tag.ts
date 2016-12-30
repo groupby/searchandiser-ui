@@ -51,6 +51,8 @@ export class FluxTag<T> {
     setParents(this);
     setScope(this);
 
+    simpleInherit(this);
+
     this.on('mount', () => onMount(this));
     this.on('update', () => onUpdate(this));
   }
@@ -185,13 +187,13 @@ export function onMount(tag: FluxTag<any>) {
     tag.root.classList.add('gb-stylish');
   }
 
-  inherit(tag);
+  cssInherit(tag);
 
   if (typeof tag.onMount === 'function') { tag.onMount(); }
 }
 
 export function onUpdate(tag: FluxTag<any>) {
-  inherit(tag);
+  cssInherit(tag);
 
   if (typeof tag.onUpdate === 'function') { tag.onUpdate(); }
 }
@@ -225,14 +227,26 @@ export function convertSchema(tag: FluxTag<any>, schema: FluxSchema): ExposedSco
   return Object.values(scopeObject);
 }
 
-export function inherit(tag: FluxTag<any>) {
+export function simpleInherit(tag: FluxTag<any>) {
+  inherit(tag, (exposed) => exposed.cssSelector.split(',')
+    .map((val) => val.trim())
+    .includes(tag.$tagName));
+}
+
+export function cssInherit(tag: FluxTag<any>) {
+  inherit(tag, (exposed) => {
+    const matchedElements = Array.from(exposed.from.querySelectorAll(exposed.cssSelector));
+    return matchedElements.includes(tag.root);
+  });
+}
+
+export function inherit(tag: FluxTag<any>, test: (scope: ExposedScope) => boolean) {
   // validate every selector!
   const closestScope = findClosestScope(tag);
   if (closestScope) {
     tag.$computed = closestScope
       .reduce((scope, exposed) => {
-        const matchedElements = Array.from(exposed.from.querySelectorAll(exposed.cssSelector));
-        if (matchedElements.includes(tag.root)) {
+        if (test(exposed)) {
           Object.assign(scope, exposed.values);
         }
         return scope;

@@ -1,19 +1,12 @@
 <gb-refinement-list>
-  <div id={ navigation.name }>
+  <div id="{ navigation.name }">
     <h4 class="gb-navigation-title">{ navigation.displayName }</h4>
     <ul>
-      <gb-selected-refinement if={ parent.$config.showSelected } each={ refinement in navigation.selected }></gb-selected-refinement>
-      <gb-available-refinement each={ refinement in navigation.refinements }></gb-available-refinement>
-      <li class="gb-more-refinements" if={ navigation.moreRefinements }>
-        <a href="#" onclick={ moreRefinements }>More</a>
-      </li>
+      <gb-selected-refinement if="{ $computed.showSelected }" each="{ refinement in navigation.selected }"></gb-selected-refinement>
+      <gb-available-refinement each="{ refinement in navigation.refinements }"></gb-available-refinement>
+      <gb-more-refinements></gb-more-refinements>
     </ul>
   </div>
-
-  <script>
-    import { RefinementList } from './gb-refinement-list';
-    this.$mixin(RefinementList);
-  </script>
 
   <style scoped>
     :scope.gb-stylish .gb-navigation-title {
@@ -24,10 +17,6 @@
     :scope.gb-stylish ul {
       margin: 0;
       padding-left: 8px;
-    }
-
-    :scope.gb-stylish .gb-more-refinements {
-      list-style: none;
     }
   </style>
 </gb-refinement-list>
