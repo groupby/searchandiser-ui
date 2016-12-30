@@ -21,103 +21,78 @@ export interface PagingConfig {
 }
 
 export const SCHEMA = {
-  forwardDisabled: { value: false, for: 'gb-pager' },
-  backDisabled: { value: true, for: 'gb-pager' },
-  icons: { value: true, for: 'gb-pager' },
-  labels: { value: true, for: 'gb-pager' },
-  nextLabel: { value: 'Next', for: 'gb-pager' },
+  limit: { value: 5 },
+
+  // TODO: should maybe allow array shorthand for multiple matches
+  forwardDisabled: { value: false, for: 'gb-pager, gb-terminal-pager' },
+  backDisabled: { value: true, for: 'gb-pager, gb-terminal-pager' },
+  icons: { value: true, for: 'gb-pager, gb-terminal-pager' },
+  labels: { value: true, for: 'gb-pager, gb-terminal-pager' },
+
   prevLabel: { value: 'Prev', for: 'gb-pager' },
-  nextIcon: { value: require('./arrow-right.png'), for: 'gb-pager' },
+  nextLabel: { value: 'Next', for: 'gb-pager' },
   prevIcon: { value: require('./arrow-left.png'), for: 'gb-pager' },
+  nextIcon: { value: require('./arrow-right.png'), for: 'gb-pager' },
+
+  finalPage: { value: 1, for: 'gb-terminal-pager' },
+  firstLabel: { value: 'First', for: 'gb-terminal-pager' },
+  lastLabel: { value: 'Last', for: 'gb-terminal-pager' },
+  firstIcon: { value: require('./double-arrow-left.png'), for: 'gb-terminal-pager' },
+  lastIcon: { value: require('./double-arrow-right.png'), for: 'gb-terminal-pager' },
+  terminals: { value: true, for: 'gb-terminal-pager' },
+  numeric: { value: false, for: 'gb-terminal-pager' },
+
+  pages: { value: false, for: 'gb-pages' },
+  lowOverflow: { value: true, for: 'gb-pages' },
+  highOverflow: { value: true, for: 'gb-pages' },
+  currentPage: { value: 1, for: 'gb-pages' },
+  pageNumbers: { value: [], for: 'gb-pages' },
 };
-
-export const DEFAULT_CONFIG: PagingConfig = {
-  limit: 5,
-  pages: false,
-  numeric: false,
-  terminals: true,
-  labels: true,
-  icons: true,
-
-  first_label: 'First',
-  prev_label: 'Prev',
-  next_label: 'Next',
-  last_label: 'Last',
-
-  first_icon: require('./double-arrow-left.png'),
-  prev_icon: require('./arrow-left.png'),
-  next_icon: require('./arrow-right.png'),
-  last_icon: require('./double-arrow-right.png')
-};
-
-export interface FluxPager {
-  first: () => void;
-  prev: () => void;
-  next: () => void;
-  last: () => void;
-  switchPage: (page: number) => void;
-}
 
 export interface Paging extends FluxTag<PagingConfig> { }
 
 export class Paging {
 
-  forwardDisabled: boolean;
-  backDisabled: boolean;
-  lowOverflow: boolean;
-  highOverflow: boolean;
-  currentPage: number;
-  lastPage: number;
-  pageNumbers: number[];
-  pager: FluxPager;
-
   init() {
-    this.configure(DEFAULT_CONFIG);
-
-    const pager = this.pager = this.wrapPager(this.flux.page);
-    this.$schema(Object.assign({ pager: { value: pager, for: 'gb-pager' } }, SCHEMA));
-
-    // default initial state
-    this.backDisabled = true;
-    this.currentPage = 1;
+    this.$schema(Object.assign(this.wrapPager(this.flux.page), SCHEMA));
 
     this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
     this.flux.on(Events.RESULTS, this.pageInfo);
   }
 
   pageInfo() {
-    const pageNumbers = this.flux.page.pageNumbers(this.$config.limit);
-    const lastPage = this.flux.page.finalPage;
+    const pageNumbers = this.flux.page.pageNumbers(this.$internal.limit);
+    const finalPage = this.flux.page.finalPage;
     const currentPage = this.flux.page.currentPage;
-    this.updatePageInfo(pageNumbers, currentPage, lastPage);
+    this.updatePageInfo(pageNumbers, currentPage, finalPage);
   }
 
-  updatePageInfo(pageNumbers: number[], currentPage: number, lastPage: number) {
-    this.update({
-      $computed: Object.assign(this.$computed, {
-        pageNumbers,
-        currentPage,
-        lastPage,
-        lowOverflow: pageNumbers[0] !== 1,
-        highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
-        backDisabled: currentPage === 1,
-        forwardDisabled: currentPage === lastPage
-      })
+  updatePageInfo(pageNumbers: number[], currentPage: number, finalPage: number) {
+    this.$update({
+      pageNumbers,
+      currentPage,
+      finalPage,
+      lowOverflow: pageNumbers[0] !== 1,
+      highOverflow: pageNumbers[pageNumbers.length - 1] !== finalPage,
+      backDisabled: currentPage === 1,
+      forwardDisabled: currentPage === finalPage
     });
   }
 
-  updateCurrentPage({ pageNumber }: { pageNumber: number }) {
-    this.update({ currentPage: pageNumber });
+  updateCurrentPage({ pageNumber: currentPage }: { pageNumber: number }) {
+    this.$update({ currentPage });
   }
 
   wrapPager(pager: Pager): any {
+    // tslint:disable:max-line-length
     return {
-      first: () => !this.backDisabled && pager.reset().then(this.emitEvent),
-      prev: () => !this.backDisabled && pager.prev().then(this.emitEvent),
-      next: () => !this.forwardDisabled && pager.next().then(this.emitEvent),
-      last: () => !this.forwardDisabled && pager.last().then(this.emitEvent),
-      switchPage: (page) => pager.switchPage(page).then(this.emitEvent)
+      prevPage: { value: () => !this.$internal.backDisabled && pager.prev().then(this.emitEvent), for: 'gb-pager' },
+      nextPage: { value: () => !this.$internal.forwardDisabled && pager.next().then(this.emitEvent), for: 'gb-pager' },
+      firstPage: { value: () => !this.$internal.backDisabled && pager.reset().then(this.emitEvent), for: 'gb-terminal-pager' },
+      lastPage: { value: () => !this.$internal.forwardDisabled && pager.last().then(this.emitEvent), for: 'gb-terminal-pager' },
+      switchPage: { value: (page) => pager.switchPage(page).then(this.emitEvent), for: 'gb-pages' }
     };
+    // tslint:enable:max-line-length
   }
 
   emitEvent() {

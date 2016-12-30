@@ -1,18 +1,13 @@
 <gb-terminal-pager>
-  <a class="gb-terminal__link first { disabled: $scope.backDisabled }" if={ $scope.$config.terminals } onclick={ $scope.pager.first }>
-    <gb-icon if={ $config.icons } value={ $config.first_icon }></gb-icon>
-    <span if={ $config.labels }>{ $config.numeric ? 1 : $config.first_label }</span>
+  <a class="gb-terminal__link first { disabled: $computed.backDisabled }" if="{ $computed.terminals }" onclick="{ $computed.firstPage }">
+    <gb-icon if="{ $computed.icons }" value="{ $computed.firstIcon }"></gb-icon>
+    <span if="{ $computed.labels }">{ $computed.numeric ? 1 : $computed.firstLabel }</span>
   </a>
   <yield/>
-  <a class="gb-terminal__link last { disabled: $scope.forwardDisabled }" if={ $config.terminals } onclick={ $scope.pager.last }>
-    <span if={ $config.labels }>{ $config.numeric ? $scope.lastPage : $config.last_label }</span>
-    <gb-icon if={ $config.icons } value={ $config.last_icon }></gb-icon>
+  <a class="gb-terminal__link last { disabled: $computed.forwardDisabled }" if="{ $computed.terminals }" onclick="{ $computed.lastPage }">
+    <span if="{ $computed.labels }">{ $computed.numeric ? $computed.finalPage : $computed.lastLabel }</span>
+    <gb-icon if="{ $computed.icons }" value="{ $computed.lastIcon }"></gb-icon>
   </a>
-
-  <script>
-    import { TerminalPager } from './gb-terminal-pager';
-    this.$mixin(TerminalPager);
-  </script>
 
   <style scoped>
     :scope.gb-stylish {

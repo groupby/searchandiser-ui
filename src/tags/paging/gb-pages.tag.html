@@ -1,10 +1,10 @@
 <gb-pages>
-  <ul if={ $config.pages }>
-    <span class="gb-pages__ellipsis" if={ $scope.lowOverflow }>&hellip;</span>
-    <li each={ pageNumber in $scope.pageNumbers }>
-      <a class="gb-pages__page { selected: $scope.currentPage === pageNumber }" onclick={ jumpTo }>{ pageNumber }</a>
+  <ul if="{ $computed.pages }">
+    <span class="gb-pages__ellipsis" if="{ $computed.lowOverflow }">&hellip;</span>
+    <li each="{ pageNumber in $computed.pageNumbers }">
+      <a class="gb-pages__page { selected: parent.$computed.currentPage === pageNumber }" onclick="{ jumpTo }">{ pageNumber }</a>
     </li>
-    <span class="gb-pages__ellipsis" if={ $scope.highOverflow }>&hellip;</span>
+    <span class="gb-pages__ellipsis" if="{ $computed.highOverflow }">&hellip;</span>
   </ul>
 
   <script>

@@ -58,17 +58,21 @@ export class FluxTag<T> {
   $schema(schema: FluxSchema) {
     // climb the parent chain looking for exposed scopes
     const exposedScope = findClosestScope(this);
+    const opts = collectOpts(this);
 
-    this.$exposed = [...convertSchema(this, schema), ...(exposedScope || [])];
     this.$internalSchema = clone(schema, false);
+    updateSchema(this.$internalSchema, opts);
+
+    this.$exposed = [...convertSchema(this, this.$internalSchema), ...(exposedScope || [])];
     this.$internal = collapseSchema(this.$internalSchema);
   }
 
   $update(data: any) {
     const exposedScope = findClosestScope(this);
     updateSchema(this.$internalSchema, data);
-    this.$internal = collapseSchema(this.$internalSchema);
+
     this.$exposed = [...convertSchema(this, this.$internalSchema), ...(exposedScope || [])];
+    this.$internal = collapseSchema(this.$internalSchema);
     this.update();
   }
 
@@ -136,6 +140,14 @@ export function setScope(tag: FluxTag<any>) {
     let parent: any = tag;
     while (parent.parent) tag.$scope = parent = parent.parent;
   }
+}
+
+export function collectOpts(tag: FluxTag<any>) {
+  return Object.assign(
+    getPath(tag.config, `tags.${camelizeTagName(tag.$tagName)}`),
+    tag.opts.__proto__ || {},
+    tag.opts
+  );
 }
 
 export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {

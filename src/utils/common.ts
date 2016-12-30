@@ -95,13 +95,14 @@ export function scopeCss(tag: string, selector: string) {
 }
 
 export function findClosestScope(tag: FluxTag<any>): ExposedScope[] {
-  let parent = tag;
+  let parent = tag.parent;
   let exposedScope = null;
-  do {
+  while (parent) {
     if (parent.$exposed) {
       exposedScope = parent.$exposed;
       break;
     }
-  } while (parent = parent.parent);
+    parent = parent.parent;
+  }
   return exposedScope;
 }
