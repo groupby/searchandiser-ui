@@ -1,9 +1,9 @@
 <gb-breadcrumbs>
   <yield>
-    <gb-query-crumb if={ !$config.hideQuery }></gb-query-crumb>
-    <gb-list items={ selected } if={ !$config.hideRefinements } scope="gb-breadcrumbs">
-      <gb-list class="gb-navigation-crumb" items={ item.refinements } inline>
-        <gb-refinement-crumb navigation={ _parent.item } refinement={ item }></gb-refinement-crumb>
+    <gb-query-crumb></gb-query-crumb>
+    <gb-list items="{ $internal.selected }" if="{ !$internal.hideRefinements }" inline>
+      <gb-list class="gb-navigation-crumb" items="{ item.refinements }">
+        <gb-refinement-crumb navigation="{ _parent.item }" refinement="{ item }"></gb-refinement-crumb>
       </gb-list>
     </gb-list>
   </yield>

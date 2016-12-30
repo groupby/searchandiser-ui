@@ -1,8 +1,7 @@
 <gb-refinement-crumb>
-  <a onclick={ remove }>&times;</a> <b>{ navigation.displayName }: { $scope.toView(refinement) }</b>
+  <a onclick="{ $computed.removeRefinement }">&times;</a> <b>{ navigation.displayName }: { $computed.toView(refinement) }</b>
 
   <script>
-    this.remove = () => this.$scope.remove(opts.refinement, opts.navigation);
     this.navigation = opts.navigation;
     this.refinement = opts.refinement;
   </script>

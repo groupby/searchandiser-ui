@@ -9,7 +9,7 @@ const sayt = new Sayt();
 
 export interface FluxSchema {
   [key: string]: {
-    value: any;
+    value?: any;
     for?: string;
   };
 }
