@@ -2,6 +2,7 @@ import {
   collapseSchema,
   configure,
   convertSchema,
+  cssInherit,
   inherit,
   setParents,
   setScope,
@@ -321,16 +322,7 @@ describe('base tag logic', () => {
     });
   });
 
-  describe('inherit()', () => {
-    it('should set computed to empty object if no scope found', () => {
-      const tag: any = {};
-      sandbox.stub(utils, 'findClosestScope').returns(null);
-
-      inherit(tag);
-
-      expect(tag.$computed).to.eql({});
-    });
-
+  describe('cssInherit()', () => {
     it('should test css selectors', () => {
       const self = { a: 'b' };
       const tag: any = { root: self };
@@ -356,7 +348,7 @@ describe('base tag logic', () => {
         }
       ]);
 
-      inherit(tag);
+      cssInherit(tag);
 
       expect(querySelectorAll).to.have.been.calledThrice;
       expect(querySelectorAll).to.have.been.calledWith('gb-my-tag');
@@ -364,27 +356,35 @@ describe('base tag logic', () => {
       expect(querySelectorAll).to.have.been.calledWith('gb-this-one-tag');
     });
 
+  });
+
+  describe('inherit()', () => {
+    it('should set computed to empty object if no scope found', () => {
+      const tag: any = {};
+      sandbox.stub(utils, 'findClosestScope').returns(null);
+
+      inherit(tag, null);
+
+      expect(tag.$computed).to.eql({});
+    });
+
     it('should only add values whose css selector matches', () => {
       const self = { a: 'b' };
       const tag: any = { root: self };
-      const root1 = { querySelectorAll: () => [self] };
-      const root2 = { querySelectorAll: () => [] };
       sandbox.stub(utils, 'findClosestScope').returns([
         {
           cssSelector: 'gb-my-tag',
-          from: root1,
           values: {
             height: 12,
             width: 14
           }
         }, {
           cssSelector: 'gb-other-tag',
-          from: root2,
           values: { colour: 'blue' }
         }
       ]);
 
-      inherit(tag);
+      inherit(tag, (exposed) => exposed.cssSelector === 'gb-my-tag');
 
       expect(tag.$computed).to.eql({
         height: 12,

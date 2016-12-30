@@ -1,5 +1,5 @@
 import { displayRefinement } from '../../utils/common';
-import { toRefinement, Refinement } from '../../utils/common';
+import { toRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import {
@@ -10,37 +10,23 @@ import {
   Results
 } from 'groupby-api';
 
-export { NavigationInfo, Refinement }
+export { NavigationInfo }
+
+export interface SelectionNavigation extends NavModel {
+  selected: any[];
+}
 
 export interface NavigationConfig {
   badge?: boolean;
   showSelected?: boolean;
 }
 
-export const DEFAULT_CONFIG: NavigationConfig = {
-  badge: true,
-  showSelected: true
-};
-
 export const SCHEMA = {
   badge: { value: true, for: 'gb-available-refinement' },
   showSelected: { value: true, for: 'gb-refinement-list' },
-  fetchRefinements: {
-    value() {
-      this.flux.refinements(this.parent.navigation.name);
-      this.parent.navigation.moreRefinements = false;
-    }, for: 'gb-more-refinements'
-  },
-  selectRefinement: {
-    value() {
-      return this.flux.refine(toRefinement(this.refinement, this.parent.navigation));
-    }, for: 'gb-available-refinement'
-  },
-  removeRefinement: {
-    value() {
-      return this.flux.unrefine(toRefinement(this.refinement, this.parent.navigation));
-    }, for: 'gb-selected-refinement'
-  },
+  fetchRefinements: { value: fetchRefinements, for: 'gb-more-refinements' },
+  selectRefinement: { value: selectRefinement, for: 'gb-available-refinement' },
+  removeRefinement: { value: removeRefinement, for: 'gb-selected-refinement' },
   toView: { value: displayRefinement, for: 'gb-available-refinement, gb-selected-refinement' }
 };
 
@@ -87,6 +73,15 @@ export class Navigation {
   }
 }
 
-export interface SelectionNavigation extends NavModel {
-  selected: any[];
+export function fetchRefinements() {
+  this.flux.refinements(this.parent.navigation.name);
+  this.parent.navigation.moreRefinements = false;
+}
+
+export function selectRefinement() {
+  return this.flux.refine(toRefinement(this.refinement, this.parent.navigation));
+}
+
+export function removeRefinement() {
+  return this.flux.unrefine(toRefinement(this.refinement, this.parent.navigation));
 }

@@ -1,0 +1,23 @@
+<gb-page-number>
+  <li>
+    <a class="{ selected: $computed.currentPage === pageNumber }" onclick="{ $computed.switchPage }">{ pageNumber }</a>
+  </li>
+
+  <style scoped>
+    :scope.gb-stylish li {
+      display: inline;
+    }
+
+    :scope.gb-stylish a {
+      padding: 0 4px;
+      color: #888;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    :scope.gb-stylish a:hover,
+    :scope.gb-stylish a.selected {
+      color: black;
+    }
+  </style>
+</gb-page-number>

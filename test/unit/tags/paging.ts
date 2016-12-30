@@ -180,15 +180,14 @@ suite('gb-paging', Paging, ({
     });
 
     it('switchPage()', (done) => {
-      const newPage = 7;
       const switchPage = spy(() => Promise.resolve());
       const pager = tag().wrapPager(<any>{ switchPage });
       tag().emitEvent = () => {
-        expect(switchPage).to.have.been.calledWith(newPage);
+        expect(switchPage).to.have.been.calledWith(7);
         done();
       };
 
-      pager.switchPage.value(newPage);
+      pager.switchPage.value({ target: { text: '7' } });
     });
 
     it('should not allow page forward', () => {

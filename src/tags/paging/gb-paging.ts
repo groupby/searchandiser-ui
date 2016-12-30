@@ -9,15 +9,15 @@ export interface PagingConfig {
   labels?: boolean;
   icons?: boolean;
 
-  prev_label?: string;
-  next_label?: string;
-  first_label?: string;
-  last_label?: string;
+  prevLabel?: string;
+  nextLabel?: string;
+  firstLabel?: string;
+  lastLabel?: string;
 
-  prev_icon?: string;
-  next_icon?: string;
-  first_icon?: string;
-  last_icon?: string;
+  prevIcon?: string;
+  nextIcon?: string;
+  firstIcon?: string;
+  lastIcon?: string;
 }
 
 export const SCHEMA = {
@@ -45,8 +45,9 @@ export const SCHEMA = {
   pages: { value: false, for: 'gb-pages' },
   lowOverflow: { value: true, for: 'gb-pages' },
   highOverflow: { value: true, for: 'gb-pages' },
-  currentPage: { value: 1, for: 'gb-pages' },
   pageNumbers: { value: [], for: 'gb-pages' },
+
+  currentPage: { value: 1, for: 'gb-page-number' }
 };
 
 export interface Paging extends FluxTag<PagingConfig> { }
@@ -90,7 +91,7 @@ export class Paging {
       nextPage: { value: () => !this.$internal.forwardDisabled && pager.next().then(this.emitEvent), for: 'gb-pager' },
       firstPage: { value: () => !this.$internal.backDisabled && pager.reset().then(this.emitEvent), for: 'gb-terminal-pager' },
       lastPage: { value: () => !this.$internal.forwardDisabled && pager.last().then(this.emitEvent), for: 'gb-terminal-pager' },
-      switchPage: { value: (page) => pager.switchPage(page).then(this.emitEvent), for: 'gb-pages' }
+      switchPage: { value: ({ target }) => pager.switchPage(Number(target.text)).then(this.emitEvent), for: 'gb-page-number' }
     };
     // tslint:enable:max-line-length
   }

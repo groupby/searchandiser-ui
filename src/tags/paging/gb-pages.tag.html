@@ -1,16 +1,9 @@
 <gb-pages>
   <ul if="{ $computed.pages }">
     <span class="gb-pages__ellipsis" if="{ $computed.lowOverflow }">&hellip;</span>
-    <li each="{ pageNumber in $computed.pageNumbers }">
-      <a class="gb-pages__page { selected: parent.$computed.currentPage === pageNumber }" onclick="{ jumpTo }">{ pageNumber }</a>
-    </li>
+    <gb-page-number each="{ pageNumber in $computed.pageNumbers }"></gb-page-number>
     <span class="gb-pages__ellipsis" if="{ $computed.highOverflow }">&hellip;</span>
   </ul>
-
-  <script>
-    import { Pages } from './gb-pages';
-    this.$mixin(Pages);
-  </script>
 
   <style scoped>
     :scope.gb-stylish ul {
@@ -23,24 +16,9 @@
       height: 100%;
     }
 
-    :scope.gb-stylish li {
-      display: inline;
-    }
-
-    :scope.gb-stylish .gb-pages__page,
     :scope.gb-stylish .gb-pages__ellipsis {
       text-decoration: none;
       color: #888;
-    }
-
-    :scope.gb-stylish .gb-pages__page {
-      cursor: pointer;
-      padding: 0 4px;
-    }
-
-    :scope.gb-stylish .gb-pages__page:hover,
-    :scope.gb-stylish .gb-pages__page.selected {
-      color: black;
     }
   </style>
 </gb-pages>

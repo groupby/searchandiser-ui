@@ -214,6 +214,6 @@ class Model extends BaseModel<Navigation> {
   }
 
   get moreRefinementsLink() {
-    return this.element(this.html, '.gb-more-refinements a');
+    return this.element(this.html, 'gb-more-refinements a');
   }
 }
