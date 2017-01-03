@@ -1,7 +1,7 @@
 <gb-related-queries>
   <yield>
-    <gb-list items={ relatedQueries } scope="gb-related-queries" inline>
-      <a onclick={ $scope.send }>{ item }</a>
+    <gb-list items="{ relatedQueries }" inline>
+      <a onclick="{ parent.$computed.send }">{ item }</a>
     </gb-list>
   </yield>
 

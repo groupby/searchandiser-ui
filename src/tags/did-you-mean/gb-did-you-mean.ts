@@ -3,18 +3,26 @@ import { Events, Results } from 'groupby-api';
 
 export interface DidYouMean extends FluxTag<any> { }
 
+export const SCHEMA = {
+  send: { value: send, for: 'gb-list' }
+};
+
 export class DidYouMean {
 
-  init() {
-    this.flux.on(Events.RESULTS, this.updateDidYouMean);
-  }
+  didYouMean: string[];
 
-  send(event: Event) {
-    return this.flux.rewrite((<HTMLAnchorElement>event.target).text)
-      .then(() => this.services.tracker && this.services.tracker.didYouMean());
+  init() {
+    this.$schema(SCHEMA);
+
+    this.flux.on(Events.RESULTS, this.updateDidYouMean);
   }
 
   updateDidYouMean({ didYouMean }: Results) {
     this.update({ didYouMean });
   }
+}
+
+export function send({ target }: any) {
+  return this.flux.rewrite(target.text)
+    .then(() => this.services.tracker && this.services.tracker.didYouMean());
 }

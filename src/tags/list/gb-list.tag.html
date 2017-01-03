@@ -1,9 +1,14 @@
 <gb-list>
-  <ul class="{ inline: 'inline' in opts }">
-    <li each={ item, i in opts.items } class={ active: opts.activation && opts.activation(i) }>
+  <ul ref="list">
+    <gb-list-item each="{ item, index in opts.items }">
       <yield/>
-    </li>
+    </gb-list-item>
   </ul>
+
+  <script>
+    import { List } from './gb-list';
+    this.$mixin(List);
+  </script>
 
   <style scoped>
     :scope.gb-stylish > ul {
@@ -11,18 +16,11 @@
       margin: 0;
       padding: 0;
     }
-    :scope.gb-stylish > ul > li {
+    :scope.gb-stylish > ul gb-list-item > li {
       margin: 0 10px;
     }
-    :scope.gb-stylish > ul.inline > li {
+    :scope.gb-stylish > ul.inline gb-list-item > li {
       display: inline-block;
-    }
-    :scope.gb-stylish a {
-      color: #888;
-      cursor: pointer;
-    }
-    :scope.gb-stylish a:hover {
-      color: black;
     }
   </style>
 </gb-list>

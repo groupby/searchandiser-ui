@@ -50,7 +50,6 @@ export class FluxTag<T> {
     setTagName(this);
     setParents(this);
     setScope(this);
-
     simpleInherit(this);
 
     this.on('mount', () => onMount(this));

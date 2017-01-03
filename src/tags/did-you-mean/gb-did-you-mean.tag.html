@@ -1,7 +1,7 @@
 <gb-did-you-mean>
   <yield>
-    <gb-list items={ didYouMean } scope="gb-did-you-mean" inline>
-      <a onclick={ $scope.send }>{ item }</a>
+    <gb-list items="{ didYouMean }" inline>
+      <a onclick="{ parent.$computed.send }">{ item }</a>
     </gb-list>
   </yield>
 
