@@ -1,4 +1,4 @@
-import { RelatedQueries } from '../../../src/tags/related-queries/gb-related-queries';
+import { send, RelatedQueries } from '../../../src/tags/related-queries/gb-related-queries';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
@@ -32,7 +32,7 @@ suite('gb-related-queries', RelatedQueries, ({
       const text = 'red sneakers';
       const rewrite = stub(flux(), 'rewrite');
 
-      tag().send(<any>{ target: { text } });
+      send.bind(tag())(<any>{ target: { text } });
 
       expect(rewrite).to.have.been.calledWith(text);
     });

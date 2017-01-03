@@ -3,7 +3,7 @@
     <gb-query-crumb></gb-query-crumb>
     <gb-list items="{ $internal.selected }" if="{ !$internal.hideRefinements }" inline>
       <gb-list class="gb-navigation-crumb" items="{ item.refinements }">
-        <gb-refinement-crumb navigation="{ _parent.item }" refinement="{ item }"></gb-refinement-crumb>
+        <gb-refinement-crumb navigation="{ parent.parent.item }" refinement="{ item }"></gb-refinement-crumb>
       </gb-list>
     </gb-list>
   </yield>
