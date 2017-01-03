@@ -1,51 +1,41 @@
 <gb-pager>
-  <div class="gb-pager { _style }">
-    <a class="gb-pager__link prev { disabled: _scope.backDisabled }" onclick={ _scope.pager.prev }>
-      <gb-icon if={ _config.icons } value={ _config.prev_icon }></gb-icon>
-      <span if={ _config.labels }>{ _config.prev_label }</span>
-    </a>
-    <yield/>
-    <a class="gb-pager__link next { disabled: _scope.forwardDisabled }" onclick={ _scope.pager.next }>
-      <span if={ _config.labels }>{ _config.next_label }</span>
-      <gb-icon if={ _config.icons } value={ _config.next_icon }></gb-icon>
-    </a>
-  </div>
-
-  <script>
-    import { Pager } from './gb-pager';
-    this._mixin(Pager);
-  </script>
+  <a class="gb-pager__link prev { disabled: $computed.backDisabled }" onclick="{ $computed.prevPage }">
+    <gb-icon if="{ $computed.icons }" value="{ $computed.prevIcon }"></gb-icon>
+    <span if="{ $computed.labels }">{ $computed.prevLabel }</span>
+  </a>
+  <yield/>
+  <a class="gb-pager__link next { disabled: $computed.forwardDisabled }" onclick="{ $computed.nextPage }">
+    <span if="{ $computed.labels }">{ $computed.nextLabel }</span>
+    <gb-icon if="{ $computed.icons }" value="{ $computed.nextIcon }"></gb-icon>
+  </a>
 
   <style scoped>
-    .gb-stylish a {
-      cursor: pointer;
-    }
-
-    .gb-stylish.gb-pager {
+    :scope.gb-stylish {
       display: flex;
     }
 
-    .gb-stylish .gb-pager__link {
+    :scope.gb-stylish .gb-pager__link {
+      cursor: pointer;
       display: flex;
       text-decoration: none;
       color: #888;
       padding: 5px 14px;
     }
 
-    .gb-stylish .gb-pager__link:hover {
+    :scope.gb-stylish .gb-pager__link:hover {
       color: black;
     }
 
-    .gb-stylish .gb-pager__link.disabled {
+    :scope.gb-stylish .gb-pager__link.disabled {
       color: #ddd;
       cursor: not-allowed;
     }
 
-    .gb-stylish gb-pages {
+    :scope.gb-stylish gb-pages {
       flex: 1;
     }
 
-    .gb-stylish gb-icon img {
+    :scope.gb-stylish gb-icon img {
       width: 20px;
     }
   </style>

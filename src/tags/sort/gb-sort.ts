@@ -17,7 +17,7 @@ export class Sort {
   init() {
     this.configure();
 
-    this.options = this._config.options || DEFAULT_SORTS;
+    this.options = this.$config.options || DEFAULT_SORTS;
   }
 
   sortValues() {

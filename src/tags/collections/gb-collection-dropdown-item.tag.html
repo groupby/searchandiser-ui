@@ -1,11 +1,11 @@
 <gb-collection-dropdown-item>
   <a class="gb-collection" onclick={ selectDropdown }>
     <span class="gb-collection__name">{ _parent.option.label || _parent.option }</span>
-    <gb-badge>{ _scope._scope.counts && _scope._scope.counts[parent._parent.option.value || parent._parent.option] }</gb-badge>
+    <gb-badge>{ $scope.$scope.counts && $scope.$scope.counts[parent._parent.option.value || parent._parent.option] }</gb-badge>
   </a>
 
   <script>
     import { CollectionDropdownItem } from './gb-collection-dropdown-item';
-    this._mixin(CollectionDropdownItem);
+    this.$mixin(CollectionDropdownItem);
   </script>
 </gb-collection-dropdown-item>

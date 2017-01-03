@@ -1,23 +1,18 @@
 <gb-selected-refinement>
-  <li class="gb-ref { _style }">
-    <a class="gb-ref__link" onclick={ remove }>&times;</a>
-    <span class="gb-ref__value">{ toView(refinement) }</span>
+  <li>
+    <a class="gb-ref__link" onclick="{ $computed.removeRefinement }">&times;</a>
+    <span class="gb-ref__value">{ $computed.toView(refinement) }</span>
   </li>
 
-  <script>
-    import { SelectedRefinement } from './gb-refinement';
-    this._mixin(SelectedRefinement);
-  </script>
-
   <style scoped>
-    .gb-stylish {
+    :scope.gb-stylish li {
       position: relative;
       list-style: none;
       padding: 4px 6px;
       font-size: 14px;
     }
 
-    .gb-stylish .gb-ref__link {
+    :scope.gb-stylish .gb-ref__link {
       cursor: pointer;
       left: -8px;
       position: absolute;
@@ -25,7 +20,7 @@
       text-decoration: none;
     }
 
-    .gb-stylish .gb-ref__link:hover {
+    :scope.gb-stylish .gb-ref__link:hover {
       color: red;
       font-weight: bold;
     }

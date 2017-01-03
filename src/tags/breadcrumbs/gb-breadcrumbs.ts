@@ -11,41 +11,42 @@ export interface BreadcrumbsConfig {
   correctedResultsLabel?: string;
 }
 
-export const DEFAULT_CONFIG: BreadcrumbsConfig = {
-  hideQuery: false,
-  hideRefinements: false,
-  labels: true,
-  resultsLabel: 'Results for:',
-  noResultsLabel: 'No results for:',
-  correctedResultsLabel: 'Showing results for:'
+export const SCHEMA = {
+  hideRefinements: { value: false },
+  selected: { value: [] },
+
+  hideQuery: { value: false, for: 'gb-query-crumb' },
+  labels: { value: true, for: 'gb-query-crumb' },
+  resultsLabel: { value: 'Results for:', for: 'gb-query-crumb' },
+  noResultsLabel: { value: 'No results for:', for: 'gb-query-crumb' },
+  correctedResultsLabel: { value: 'Showing results for:', for: 'gb-query-crumb' },
+  originalQuery: { for: 'gb-query-crumb' },
+  correctedQuery: { for: 'gb-query-crumb' },
+
+  toView: { value: displayRefinement, for: 'gb-refinement-crumb' },
+  removeRefinement: { value: removeRefinement, for: 'gb-refinement-crumb' }
 };
 
 export interface Breadcrumbs extends FluxTag<BreadcrumbsConfig> { }
 
 export class Breadcrumbs {
 
-  selected: any[];
-  originalQuery: string;
-  toView: typeof displayRefinement;
-  correctedQuery: string;
-
   init() {
-    this.configure(DEFAULT_CONFIG);
-    this.toView = displayRefinement;
+    this.$schema(SCHEMA);
 
     this.flux.on(Events.RESULTS, this.updateQueryState);
     this.flux.on(Events.RESET, this.clearRefinements);
   }
 
   clearRefinements() {
-    this.update({ selected: [] });
+    this.$update({ selected: [] });
   }
 
-  updateQueryState({ originalQuery, selectedNavigation, correctedQuery }: Results) {
-    this.update({ originalQuery, selected: selectedNavigation, correctedQuery });
+  updateQueryState({ originalQuery, selectedNavigation: selected, correctedQuery }: Results) {
+    this.$update({ originalQuery, selected, correctedQuery });
   }
+}
 
-  remove(refinement: any, navigation: any) {
-    this.flux.unrefine(toRefinement(refinement, navigation));
-  }
+export function removeRefinement() {
+  this.flux.unrefine(toRefinement(this.refinement, this.navigation));
 }

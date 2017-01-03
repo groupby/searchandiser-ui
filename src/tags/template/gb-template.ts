@@ -21,7 +21,7 @@ export class Template {
 
   updateActive({ template }: Results) {
     this.update({
-      isActive: template.name === this._config.target,
+      isActive: template.name === this.$config.target,
       zoneMap: template.zones,
       zones: this.sortZones(template.zones)
     });

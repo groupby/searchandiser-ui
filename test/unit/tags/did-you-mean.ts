@@ -1,4 +1,4 @@
-import { DidYouMean } from '../../../src/tags/did-you-mean/gb-did-you-mean';
+import { send, DidYouMean } from '../../../src/tags/did-you-mean/gb-did-you-mean';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
@@ -24,7 +24,7 @@ suite('gb-did-you-mean', DidYouMean, ({
         done();
       };
 
-      tag().send(<any>{ target: { text: newQuery } });
+      send.bind(tag())(<any>{ target: { text: newQuery } });
     });
 
     it('should emit tracker event', (done) => {
@@ -32,7 +32,7 @@ suite('gb-did-you-mean', DidYouMean, ({
       const rewrite = stub(flux(), 'rewrite').resolves();
       tag().services = <any>{ tracker: { didYouMean } };
 
-      tag().send(<any>{ target: {} })
+      send.bind(tag())(<any>{ target: {} })
         .then(() => {
           expect(didYouMean).to.have.been.called;
           expect(rewrite).to.have.been.called;
@@ -44,7 +44,7 @@ suite('gb-did-you-mean', DidYouMean, ({
       stub(flux(), 'rewrite').resolves();
       tag().services = <any>{};
 
-      tag().send(<any>{ target: {} })
+      send.bind(tag())(<any>{ target: {} })
         .then(() => done());
     });
   });

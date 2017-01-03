@@ -77,7 +77,7 @@ suite('gb-filter', Filter, ({
       const selection = { type: 'Value', value: 'DeWalt' };
       const navigationName = 'brand';
       const refine = stub(flux(), 'refine');
-      tag()._config = { field: navigationName };
+      tag().$config = { field: navigationName };
 
       tag().onselect(selection);
 

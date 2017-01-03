@@ -33,7 +33,7 @@ suite('gb-template', Template, ({
       const zoneList = [{ a: 'b' }];
       const zoneMap = { a: 'b' };
       const update = tag().update = spy();
-      tag()._config = { target };
+      tag().$config = { target };
       tag().sortZones = (zones) => {
         expect(zones).to.eq(zoneMap);
         return zoneList;

@@ -45,7 +45,7 @@ suite('gb-page-size', PageSize, ({
         done();
       };
       flux().query.skip(43);
-      tag()._config = { resetOffset: true };
+      tag().$config = { resetOffset: true };
 
       tag().onselect(20);
     });

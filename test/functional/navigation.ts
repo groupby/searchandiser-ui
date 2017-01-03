@@ -11,14 +11,6 @@ suite<Navigation>('gb-navigation', ({
 
   itMountsTag();
 
-  describe('render', () => {
-    it('should render side-nav', () => {
-      mount();
-
-      expect(html().querySelector('.gb-side-nav')).to.be.ok;
-    });
-  });
-
   describe('render with refinements', () => {
     const NAVIGATIONS = [{
       name: 'main',
@@ -53,14 +45,14 @@ suite<Navigation>('gb-navigation', ({
       expect(html().querySelector('gb-selected-refinement')).to.be.ok;
       expect(html().querySelectorAll('.gb-navigation-title')[0].textContent).to.eq('Main');
       expect(html().querySelectorAll('.gb-ref__title')[0].textContent).to.eq('Pick up');
-      expect(html().querySelectorAll('gb-badge span')[0].textContent).to.eq('12345');
+      expect(html().querySelectorAll('gb-badge')[0].textContent).to.eq('12345');
       expect(html().querySelectorAll('.gb-ref__title')[1].textContent).to.eq('Deliver');
-      expect(html().querySelectorAll('gb-badge span')[1].textContent).to.eq('123');
+      expect(html().querySelectorAll('gb-badge')[1].textContent).to.eq('123');
       expect(html().querySelectorAll('.gb-navigation-title')[1].textContent).to.eq('Category');
       expect(html().querySelectorAll('.gb-ref__title')[2].textContent).to.eq('Health');
-      expect(html().querySelectorAll('gb-badge span')[2].textContent).to.eq('200');
+      expect(html().querySelectorAll('gb-badge')[2].textContent).to.eq('200');
       expect(html().querySelectorAll('.gb-ref__title')[3].textContent).to.eq('Items');
-      expect(html().querySelectorAll('gb-badge span')[3].textContent).to.eq('59234');
+      expect(html().querySelectorAll('gb-badge')[3].textContent).to.eq('59234');
       expect(html().querySelector('.gb-ref__value').textContent).to.eq('Grocery');
     });
 
@@ -222,6 +214,6 @@ class Model extends BaseModel<Navigation> {
   }
 
   get moreRefinementsLink() {
-    return this.element(this.html, '.gb-more-refinements a');
+    return this.element(this.html, 'gb-more-refinements a');
   }
 }

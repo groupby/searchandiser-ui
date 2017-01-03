@@ -1,5 +1,5 @@
 <gb-sayt-products>
-  <ul class={ _style }>
+  <ul>
     <li class="gb-sayt-product" each={ parent.products }>
       <yield>
         <gb-product all_meta={ allMeta }>
@@ -10,15 +10,15 @@
   </ul>
 
   <script>
-    this._scopeTo('gb-sayt')
+    this.$scopeTo('gb-sayt')
   </script>
 
   <style scoped>
-    .gb-stylish :scope {
+    :scope.gb-stylish ul {
       min-width: 300px;
     }
 
-    ul.gb-stylish {
+    :scope.gb-stylish ul {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -26,11 +26,11 @@
       align-content: flex-start;
     }
 
-    .gb-stylish gb-product-image img {
+    :scope.gb-stylish gb-product-image img {
       vertical-align: bottom;
     }
 
-    .gb-stylish gb-product-image img:hover {
+    :scope.gb-stylish gb-product-image img:hover {
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     }
   </style>

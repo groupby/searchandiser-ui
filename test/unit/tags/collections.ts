@@ -16,7 +16,7 @@ suite('gb-collections', Collections, ({
 
     it('should set options from calculated config', () => {
       const options = [{ a: 'b' }];
-      tag().configure = () => tag()._config = <any>{ options };
+      tag().configure = () => tag().$config = <any>{ options };
 
       tag().init();
 
@@ -37,7 +37,7 @@ suite('gb-collections', Collections, ({
         { value: 'b', label: 'B' },
         { value: 'c', label: 'C' }];
       const collections = ['a', 'b', 'c'];
-      tag().configure = () => tag()._config = { options };
+      tag().configure = () => tag().$config = { options };
       tag().services = <any>{ collections: { collections, isLabeled: true } };
 
       tag().init();

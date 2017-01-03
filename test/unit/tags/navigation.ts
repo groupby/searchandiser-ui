@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { removeRefinement, selectRefinement, Navigation, SCHEMA } from '../../../src/tags/navigation/gb-navigation';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -7,11 +7,11 @@ import { Events } from 'groupby-api';
 suite('gb-navigation', Navigation, ({
   flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldSchema
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    itShouldSchema(SCHEMA);
 
     it('should listen for flux events', () => {
       expectSubscriptions(() => tag().init(), {
@@ -88,21 +88,29 @@ suite('gb-navigation', Navigation, ({
     });
   });
 
-  describe('send()', () => {
-    it('should refine on send()', () => {
+  describe('selectRefinement()', () => {
+    it('should refine on selectRefinement()', () => {
       const refine = stub(flux(), 'refine');
 
-      tag().send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
+      selectRefinement.bind({
+        flux: flux(),
+        refinement: { type: 'Range', low: 4, high: 6 },
+        parent: { navigation: { name: 'price' } }
+      })();
 
       expect(refine).to.have.been.calledWith(refinement('price', 4, 6));
     });
   });
 
-  describe('remove()', () => {
-    it('should unrefine on remove()', () => {
+  describe('removeRefinement()', () => {
+    it('should unrefine on removeRefinement()', () => {
       const unrefine = stub(flux(), 'unrefine');
 
-      tag().remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
+      removeRefinement.bind({
+        flux: flux(),
+        refinement: { type: 'Range', low: 4, high: 6 },
+        parent: { navigation: { name: 'price' } }
+      })();
 
       expect(unrefine).to.have.been.calledWith(refinement('price', 4, 6));
     });

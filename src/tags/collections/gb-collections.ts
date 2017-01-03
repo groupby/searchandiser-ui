@@ -29,11 +29,11 @@ export class Collections {
   init() {
     this.configure(DEFAULT_CONFIG);
 
-    this.options = this._config.options;
+    this.options = this.$config.options;
     const collectionsService = this.services.collections;
     this.collections = collectionsService.collections;
     this.labels = collectionsService.isLabeled
-      ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
+      ? (<CollectionOption[]>this.$config.options).reduce(this.extractLabels, {})
       : {};
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);

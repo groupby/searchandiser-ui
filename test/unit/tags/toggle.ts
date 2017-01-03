@@ -4,22 +4,13 @@ import { expect } from 'chai';
 
 suite('gb-toggle', Toggle, ({
   tag, stub, spy,
-  expectSubscriptions,
   itShouldConfigure
 }) => {
 
   describe('init()', () => {
-    beforeEach(() => tag()._scope = { on: () => null });
+    beforeEach(() => tag().$scope = { on: () => null });
 
     itShouldConfigure(DEFAULT_CONFIG);
-
-    it('should listen for mount', () => {
-      tag().addStyleTag = () => null;
-
-      expectSubscriptions(() => tag().init(), {
-        mount: tag().onMount
-      }, tag());
-    });
 
     it('should call addStyleTag()', (done) => {
       tag().refs.input = <any>{};
@@ -32,7 +23,7 @@ suite('gb-toggle', Toggle, ({
   describe('onMount()', () => {
     it('should set input checked', () => {
       const input = tag().refs.input = <any>{};
-      tag()._config = { checked: true };
+      tag().$config = { checked: true };
 
       tag().onMount();
 
@@ -58,7 +49,7 @@ suite('gb-toggle', Toggle, ({
 
   describe('calculateSwitchHeight()', () => {
     it('should force height difference to be even', () => {
-      tag()._config = { switchHeight: 40 };
+      tag().$config = { switchHeight: 40 };
 
       const switchHeight = tag().calculateSwitchHeight(41);
 
@@ -66,7 +57,7 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should not alter switchHeight', () => {
-      tag()._config = { switchHeight: 40 };
+      tag().$config = { switchHeight: 40 };
 
       const switchHeight = tag().calculateSwitchHeight(42);
 
@@ -74,7 +65,7 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should not allow switchHeight > height', () => {
-      tag()._config = { switchHeight: 50 };
+      tag().$config = { switchHeight: 50 };
 
       const switchHeight = tag().calculateSwitchHeight(40);
 
@@ -88,7 +79,7 @@ suite('gb-toggle', Toggle, ({
       const appendChild = spy();
       const createElement = stub(document, 'createElement').returns(node);
       tag().root = <any>{ appendChild };
-      tag()._config = { switchHeight: 20, height: 30, animationSpeed: 0.5 };
+      tag().$config = { switchHeight: 20, height: 30, animationSpeed: 0.5 };
 
       tag().addStyleTag();
 

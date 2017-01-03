@@ -26,7 +26,7 @@ export interface Select<T extends SelectConfig> extends FluxTag<T> {
       };
     };
   };
-  _scope: SelectTag<T>;
+  $scope: SelectTag<T>;
 }
 
 export class Select<T extends SelectConfig> {
@@ -42,14 +42,14 @@ export class Select<T extends SelectConfig> {
   focused: boolean;
 
   init(): void {
-    this._config = this._scope._config;
+    this.$config = this.$scope.$config;
 
     this.iconUrl = require('./arrow-down.png');
-    this.label = this._config.label || 'Select';
-    this.clearOption = { label: this._config.clear || 'Unselect', clear: true };
-    this.options = this._scope.options || [];
-    this.callback = this._scope.onselect;
-    this.default = !('clear' in this._config);
+    this.label = this.$config.label || 'Select';
+    this.clearOption = { label: this.$config.clear || 'Unselect', clear: true };
+    this.options = this.$scope.options || [];
+    this.callback = this.$scope.onselect;
+    this.default = !('clear' in this.$config);
 
     if (this.default) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
@@ -82,7 +82,7 @@ export class Select<T extends SelectConfig> {
   }
 
   unfocus() {
-    this.focused = this._config.hover || !this.focused;
+    this.focused = this.$config.hover || !this.focused;
     if (!this.focused) this.selectButton().blur();
   }
 

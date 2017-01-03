@@ -1,0 +1,20 @@
+<gb-list-item>
+  <li ref="listItem">
+    <yield/>
+  </li>
+
+  <script>
+    import { ListItem } from './gb-list-item';
+    this.$mixin(ListItem);
+  </script>
+
+  <style scoped>
+    :scope.gb-stylish a {
+      color: #888;
+      cursor: pointer;
+    }
+    :scope.gb-stylish a:hover {
+      color: black;
+    }
+  </style>
+</gb-list-item>

@@ -1,11 +1,10 @@
 <gb-select>
   <yield>
-    <gb-native-select if={ _config.native }></gb-native-select>
-    <gb-custom-select if={ !_config.native }></gb-custom-select>
+    <gb-native-select if={ $config.native }></gb-native-select>
+    <gb-custom-select if={ !$config.native }></gb-custom-select>
   </yield>
 
   <script>
-    import { Select } from './gb-select';
-    this._mixin(Select);
+    this.$mixin();
   </script>
 </gb-select>

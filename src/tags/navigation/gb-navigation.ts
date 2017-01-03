@@ -1,18 +1,33 @@
+import { displayRefinement } from '../../utils/common';
 import { toRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
-import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Results } from 'groupby-api';
+import {
+  Events,
+  Navigation as NavModel,
+  NavigationInfo,
+  RefinementResults,
+  Results
+} from 'groupby-api';
 
 export { NavigationInfo }
+
+export interface SelectionNavigation extends NavModel {
+  selected: any[];
+}
 
 export interface NavigationConfig {
   badge?: boolean;
   showSelected?: boolean;
 }
 
-export const DEFAULT_CONFIG: NavigationConfig = {
-  badge: true,
-  showSelected: true
+export const SCHEMA = {
+  badge: { value: true, for: 'gb-available-refinement' },
+  showSelected: { value: true, for: 'gb-refinement-list' },
+  fetchRefinements: { value: fetchRefinements, for: 'gb-more-refinements' },
+  selectRefinement: { value: selectRefinement, for: 'gb-available-refinement' },
+  removeRefinement: { value: removeRefinement, for: 'gb-selected-refinement' },
+  toView: { value: displayRefinement, for: 'gb-available-refinement, gb-selected-refinement' }
 };
 
 export interface Navigation extends FluxTag<NavigationConfig> { }
@@ -22,7 +37,7 @@ export class Navigation {
   processed: SelectionNavigation[];
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.$schema(SCHEMA);
 
     this.flux.on(Events.RESULTS, this.updateNavigations);
     this.flux.on(Events.REFINEMENT_RESULTS, this.updateRefinements);
@@ -56,16 +71,17 @@ export class Navigation {
     });
     return processed;
   }
-
-  send(refinement: any, navigation: any) {
-    return this.flux.refine(toRefinement(refinement, navigation));
-  }
-
-  remove(refinement: any, navigation: any) {
-    return this.flux.unrefine(toRefinement(refinement, navigation));
-  }
 }
 
-export interface SelectionNavigation extends NavModel {
-  selected: any[];
+export function fetchRefinements() {
+  this.flux.refinements(this.parent.navigation.name);
+  this.parent.navigation.moreRefinements = false;
+}
+
+export function selectRefinement() {
+  return this.flux.refine(toRefinement(this.refinement, this.parent.navigation));
+}
+
+export function removeRefinement() {
+  return this.flux.unrefine(toRefinement(this.refinement, this.parent.navigation));
 }

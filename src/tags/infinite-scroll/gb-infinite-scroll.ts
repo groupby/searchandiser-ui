@@ -43,7 +43,6 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
     this.flux.on(Events.REFINEMENTS_CHANGED, this.reset);
     this.flux.on(Events.SORT, this.reset);
     this.flux.on(Events.COLLECTION_CHANGED, this.reset);
-    this.on('mount', this.onMount);
 
     this.items = [];
     this.loadedItems = 0;

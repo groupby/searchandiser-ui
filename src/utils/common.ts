@@ -1,13 +1,11 @@
+import { ExposedScope, FluxTag } from '../tags/tag';
 import * as debounce from 'debounce';
-import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
 import * as queryString from 'query-string';
 import filterObject = require('filter-object');
 import oget = require('oget');
 import * as riot from 'riot';
 
 export { debounce }
-
-export type Refinement = ValueRefinement & RangeRefinement;
 
 export const LOCATION = {
   href: () => window.location.href,
@@ -32,11 +30,11 @@ export function findTag(tagName: string) {
     || document.querySelector(`[data-is="${tagName}"]`));
 }
 
-export function toRefinement(ref: Refinement, nav: Navigation) {
+export function toRefinement(ref: any, nav: any) {
   return Object.assign({}, filterObject(ref, '{type,value,low,high}'), { navigationName: nav.name });
 }
 
-export function displayRefinement(ref: Refinement) {
+export function displayRefinement(ref: any) {
   return ref.type === 'Value' ? ref.value : `${ref.low} - ${ref.high}`;
 }
 
@@ -91,4 +89,17 @@ export function checkBooleanAttr(attribute: string, opts: any) {
 
 export function scopeCss(tag: string, selector: string) {
   return `${tag} ${selector}, [data-is="${tag}"] ${selector}`;
+}
+
+export function findClosestScope(tag: FluxTag<any>): ExposedScope[] {
+  let parent = tag.parent;
+  let exposedScope = null;
+  while (parent) {
+    if (parent.$exposed) {
+      exposedScope = parent.$exposed;
+      break;
+    }
+    parent = parent.parent;
+  }
+  return exposedScope;
 }

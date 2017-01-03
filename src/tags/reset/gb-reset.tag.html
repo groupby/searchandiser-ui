@@ -1,19 +1,18 @@
 <gb-reset>
   <yield>
-    <a class="gb-reset { _style }">&times;</a>
+    <a>&times;</a>
   </yield>
 
   <script>
-    import { Reset } from './gb-reset';
-    this._mixin(Reset);
+    this.$mixin();
   </script>
 
   <style scoped>
-    .gb-stylish.gb-reset {
+    :scope.gb-stylish a {
       color: #888;
       padding: 4px;
     }
-    .gb-stylish.gb-reset:hover {
+    :scope.gb-stylish a:hover {
       color: black;
       cursor: pointer;
     }

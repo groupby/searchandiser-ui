@@ -31,12 +31,6 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       expect(addEventListener).to.have.been.calledWith('resize', tag().onResize);
     });
 
-    it('should call onMount() on mount', () => {
-      expectSubscriptions(() => tag().init(), {
-        mount: tag().onMount
-      }, tag());
-    });
-
     it('should call reset() for events', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.QUERY_CHANGED]: tag().reset,
