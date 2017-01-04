@@ -1,6 +1,7 @@
 import {
   addDollarSigns,
   configure,
+  setAliases,
   setParents,
   setScope,
   setTagName,
@@ -177,6 +178,70 @@ describe('base tag logic', () => {
       setScope(tag);
 
       expect(tag._scope).to.eq(topParent);
+    });
+  });
+
+  describe('setAliases()', () => {
+    it('should inherit parent aliases', () => {
+      const tag: any = {
+        parent: {
+          _aliases: {
+            c: 'd'
+          }
+        },
+        opts: {}
+      };
+
+      setAliases(tag);
+
+      expect(tag._aliases).to.eql({ c: 'd' });
+    });
+
+    it('should expose alias from opts', () => {
+      const tag: any = {
+        opts: {
+          alias: 'idk'
+        }
+      };
+
+      setAliases(tag);
+
+      expect(tag._aliases).to.eql({ idk: tag });
+    });
+
+    it('should override alias from parent', () => {
+      const tag: any = {
+        parent: {
+          _aliases: {
+            a: 'b',
+            c: 'd'
+          }
+        },
+        opts: {
+          alias: 'a'
+        }
+      };
+
+      setAliases(tag);
+
+      expect(tag._aliases).to.eql({ a: tag, c: 'd' });
+    });
+
+    it('should expose aliases on scope', () => {
+      const tag: any = {
+        parent: {
+          _aliases: {
+            a: 'b',
+            c: 'd'
+          }
+        },
+        opts: {}
+      };
+
+      setAliases(tag);
+
+      expect(tag.$a).to.eq('b');
+      expect(tag.$c).to.eq('d');
     });
   });
 
