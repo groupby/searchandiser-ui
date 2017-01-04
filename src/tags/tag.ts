@@ -16,17 +16,19 @@ export interface FluxTag<T> extends riot.Tag.Instance {
 
 export class FluxTag<T> {
   _tagName: string;
+  // TODO: should get rid of this
   _parents: any;
-  _parentsList: any[];
+  // TODO: should get rid of this
   _scope: FluxTag<any> & any;
-  _top: FluxTag<any> & any;
   _style: string;
   _config: T;
 
   init() {
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
+    // TODO: should get rid of this
     setParents(this);
+    // TODO: should get rid of this
     setScope(this);
   }
 
@@ -34,18 +36,12 @@ export class FluxTag<T> {
     this.mixin(...mixins.map((mixin) => new mixin().__proto__));
   }
 
+  // TODO: should get rid of this
   _scopeTo(scope: string) {
     this._scope = this._parents[scope];
   }
 
-  findParent(tag: FluxTag<any>, name: string) {
-    let parentTag = tag;
-    while (parentTag.root.localName !== name && parentTag.parent) {
-      parentTag = parentTag.parent;
-    }
-    return parentTag;
-  }
-
+  // TODO: should get rid of this
   configure(defaultConfig: any = {}) {
     configure(defaultConfig, this);
   }
@@ -80,10 +76,6 @@ export function setParents(tag: FluxTag<any>) {
   if (tag._tagName) {
     tag._parents[tag._tagName] = tag;
   }
-
-  tag._parentsList = [];
-  let currTag = tag;
-  while (currTag = currTag.parent) tag._parentsList.push(currTag);
 }
 
 // somehow this function isn't working for the gb-select inside gb-sort
@@ -95,7 +87,6 @@ export function setScope(tag: FluxTag<any>) {
   } else {
     let parent: any = tag;
     while (parent.parent) tag._scope = parent = parent.parent;
-    tag._top = tag._scope;
   }
 }
 

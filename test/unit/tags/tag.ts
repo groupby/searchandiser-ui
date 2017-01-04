@@ -35,7 +35,7 @@ describe('base tag logic', () => {
   });
 
   describe('setTagName()', () => {
-    it('should not set tagName', () => {
+    it('should not set _tagName', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'SOMENAME',
@@ -63,7 +63,7 @@ describe('base tag logic', () => {
       expect(tag._tagName).to.eq('my-some-name');
     });
 
-    it('should set tagName from root.tagName', () => {
+    it('should set _tagName from root.tagName', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'GB-TEST-TAG'
@@ -75,7 +75,7 @@ describe('base tag logic', () => {
       expect(tag._tagName).to.eq('gb-test-tag');
     });
 
-    it('should set tagName from dataset.is', () => {
+    it('should set _tagName from dataset.is', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'SOMENAME',
@@ -92,13 +92,12 @@ describe('base tag logic', () => {
   });
 
   describe('setParents()', () => {
-    it('should set empty _parents and _parentsList', () => {
+    it('should set empty _parents', () => {
       const tag: FluxTag<any> = <any>{};
 
       setParents(tag);
 
       expect(tag._parents).to.eql({});
-      expect(tag._parentsList).to.eql([]);
     });
 
     it('should inherit _parents', () => {
@@ -108,7 +107,6 @@ describe('base tag logic', () => {
       setParents(tag);
 
       expect(tag._parents).to.eql(_parents);
-      expect(tag._parentsList).to.eql([{ _parents }]);
     });
 
     it('should register self in _parents', () => {
@@ -118,7 +116,6 @@ describe('base tag logic', () => {
       setParents(tag);
 
       expect(tag._parents).to.eql({ [_tagName]: tag });
-      expect(tag._parentsList).to.eql([]);
     });
 
     it('should register self and inherit _parents', () => {
@@ -129,19 +126,6 @@ describe('base tag logic', () => {
       setParents(tag);
 
       expect(tag._parents).to.eql(Object.assign({ [_tagName]: tag }, _parents));
-      expect(tag._parentsList).to.eql([{ _parents }]);
-    });
-
-    it('should add all parents to _parentsList', () => {
-      const parent3 = { a: 'b' };
-      const parent2 = { parent: parent3 };
-      const parent1 = { _parents: { e: 'e' }, parent: parent2 };
-      const tag: FluxTag<any> = <any>{ parent: parent1 };
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql(parent1._parents);
-      expect(tag._parentsList).to.eql([parent1, parent2, parent3]);
     });
   });
 
@@ -185,7 +169,6 @@ describe('base tag logic', () => {
       setScope(tag);
 
       expect(tag._scope).to.eq(topParent);
-      expect(tag._top).to.eq(topParent);
     });
   });
 
