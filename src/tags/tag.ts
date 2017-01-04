@@ -18,6 +18,7 @@ export class FluxTag<T> {
   _tagName: string;
   // TODO: should get rid of this
   _parents: any;
+  _aliases: any;
   // TODO: should get rid of this
   _scope: FluxTag<any> & any;
   _style: string;
@@ -30,6 +31,11 @@ export class FluxTag<T> {
     setParents(this);
     // TODO: should get rid of this
     setScope(this);
+    setAliases(this);
+  }
+
+  alias(alias: string, obj: any = this) {
+    this._aliases = Object.assign({ [alias]: obj }, this._aliases);
   }
 
   _mixin(...mixins: any[]) {
@@ -88,6 +94,26 @@ export function setScope(tag: FluxTag<any>) {
     let parent: any = tag;
     while (parent.parent) tag._scope = parent = parent.parent;
   }
+}
+
+export function setAliases(tag: FluxTag<any>) {
+  let aliases = {};
+  if (tag.parent && tag.parent._aliases) {
+    Object.assign(aliases, tag.parent._aliases);
+  }
+
+  if (tag.opts.alias) {
+    aliases[tag.opts.alias] = tag;
+  }
+
+  Object.assign(tag, addDollarSigns(aliases));
+
+  tag._aliases = aliases;
+}
+
+export function addDollarSigns(obj: any) {
+  return Object.keys(obj)
+    .reduce((renamed, key) => Object.assign(renamed, { [`$${key}`]: obj[key] }), {});
 }
 
 export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {

@@ -1,4 +1,12 @@
-import { configure, setParents, setScope, setTagName, FluxTag, MixinFlux } from '../../../src/tags/tag';
+import {
+  addDollarSigns,
+  configure,
+  setParents,
+  setScope,
+  setTagName,
+  FluxTag,
+  MixinFlux
+} from '../../../src/tags/tag';
 import { expect } from 'chai';
 
 describe('base tag logic', () => {
@@ -169,6 +177,12 @@ describe('base tag logic', () => {
       setScope(tag);
 
       expect(tag._scope).to.eq(topParent);
+    });
+  });
+
+  describe('addDollarSigns()', () => {
+    it('should add dollar sign prefix to every key', () => {
+      expect(addDollarSigns({ a: 1, b: 2 })).to.eql({ $a: 1, $b: 2 });
     });
   });
 
