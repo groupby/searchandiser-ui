@@ -35,7 +35,7 @@ describe('base tag logic', () => {
   });
 
   describe('setTagName()', () => {
-    it('should not set tag names', () => {
+    it('should not set tagName', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'SOMENAME',
@@ -47,8 +47,6 @@ describe('base tag logic', () => {
       setTagName(tag);
 
       expect(tag._tagName).to.not.be.ok;
-      expect(tag._simpleTagName).to.not.be.ok;
-      expect(tag._camelTagName).to.not.be.ok;
     });
 
     it('should fall back to root.tagName', () => {
@@ -63,11 +61,9 @@ describe('base tag logic', () => {
       setTagName(tag);
 
       expect(tag._tagName).to.eq('my-some-name');
-      expect(tag._simpleTagName).to.eq('some-name');
-      expect(tag._camelTagName).to.eq('someName');
     });
 
-    it('should set tag names from root.tagName', () => {
+    it('should set tagName from root.tagName', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'GB-TEST-TAG'
@@ -77,11 +73,9 @@ describe('base tag logic', () => {
       setTagName(tag);
 
       expect(tag._tagName).to.eq('gb-test-tag');
-      expect(tag._simpleTagName).to.eq('test-tag');
-      expect(tag._camelTagName).to.eq('testTag');
     });
 
-    it('should set tag names from dataset.is', () => {
+    it('should set tagName from dataset.is', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'SOMENAME',
@@ -94,8 +88,6 @@ describe('base tag logic', () => {
       setTagName(tag);
 
       expect(tag._tagName).to.eq('gb-test-tag');
-      expect(tag._simpleTagName).to.eq('test-tag');
-      expect(tag._camelTagName).to.eq('testTag');
     });
   });
 
@@ -200,7 +192,7 @@ describe('base tag logic', () => {
   describe('configure()', () => {
     it('should mix together configuration sources', () => {
       const tag: any = {
-        _camelTagName: 'myTag',
+        _tagName: 'gb-my-tag',
         config: { tags: { myTag: { a: 'B', i: 'j', k: 'l', m: 'n' } } },
         opts: {
           __proto__: { c: 'D', i: 'J', o: 'p', q: 'r' },
@@ -228,7 +220,7 @@ describe('base tag logic', () => {
     });
 
     it('should convert boolean values', () => {
-      const tag: any = { opts: {} };
+      const tag: any = { opts: {}, _tagName: '' };
 
       configure({
         a: 'false',

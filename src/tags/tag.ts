@@ -16,8 +16,6 @@ export interface FluxTag<T> extends riot.Tag.Instance {
 
 export class FluxTag<T> {
   _tagName: string;
-  _simpleTagName: string;
-  _camelTagName: string;
   _parents: any;
   _parentsList: any[];
   _scope: FluxTag<any> & any;
@@ -74,8 +72,6 @@ export function setTagName(tag: FluxTag<any>) {
 
   if (tagName) {
     tag._tagName = tagName;
-    tag._simpleTagName = tag._tagName.replace(/^[a-z]*?-/, '');
-    tag._camelTagName = tag._simpleTagName.replace(/-([a-z])/g, (match) => match[1].toUpperCase());
   }
 }
 
@@ -107,7 +103,7 @@ export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
   const rawConfig = Object.assign(
     {},
     defaultConfig,
-    getPath(tag.config, `tags.${tag._camelTagName}`),
+    getPath(tag.config, `tags.${camelizeTagName(tag._tagName)}`),
     tag.opts.__proto__,
     tag.opts);
   for (let key of Object.keys(rawConfig)) {
@@ -118,6 +114,11 @@ export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
     }
   }
   tag._config = rawConfig;
+}
+
+export function camelizeTagName(tagName: string) {
+  return tagName.replace(/^[a-z]*?-/, '')
+    .replace(/-([a-z])/g, (match) => match[1].toUpperCase());
 }
 
 export function MixinFlux(flux: FluxCapacitor, config: any, services: any): FluxTag<any> {
