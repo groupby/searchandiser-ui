@@ -11,16 +11,7 @@ export interface BreadcrumbsConfig {
   correctedResultsLabel?: string;
 }
 
-export const DEFAULT_CONFIG: BreadcrumbsConfig = {
-  hideQuery: false,
-  hideRefinements: false,
-  labels: true,
-  resultsLabel: 'Results for:',
-  noResultsLabel: 'No results for:',
-  correctedResultsLabel: 'Showing results for:'
-};
-
-export interface Breadcrumbs extends FluxTag<BreadcrumbsConfig> { }
+export interface Breadcrumbs extends FluxTag<any> { }
 
 export class Breadcrumbs {
 

@@ -1,4 +1,4 @@
-import { Breadcrumbs, DEFAULT_CONFIG } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
+import { Breadcrumbs } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,12 +6,20 @@ import { Events } from 'groupby-api';
 
 suite('gb-breadcrumbs', Breadcrumbs, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    it('should set default values', () => {
+      tag().init();
+
+      expect(tag().hideQuery).to.be.false;
+      expect(tag().hideRefinements).to.be.false;
+      expect(tag().labels).to.be.true;
+      expect(tag().resultsLabel).to.eq('Results for:');
+      expect(tag().noResultsLabel).to.eq('No results for:');
+      expect(tag().correctedResultsLabel).to.eq('Showing results for:');
+    });
 
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {

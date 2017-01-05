@@ -1,4 +1,4 @@
-import { Breadcrumbs, DEFAULT_CONFIG } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
+import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
@@ -54,7 +54,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
     });
 
     it('should not render query-crumb if configured', () => {
-      tag._config.hideQuery = true;
+      tag.hideQuery = true;
 
       tag.update();
 
@@ -63,15 +63,15 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
 
     describe('render with labels', () => {
       it('should render with defaults', () => {
-        expect(model.labels[0].textContent).to.eq(DEFAULT_CONFIG.noResultsLabel);
-        expect(model.labels[1].textContent).to.eq(DEFAULT_CONFIG.correctedResultsLabel);
+        expect(model.labels[0].textContent).to.eq('No results for:');
+        expect(model.labels[1].textContent).to.eq('Showing results for:');
 
         tag.updateQueryState(<any>{ originalQuery: ORIGINAL_QUERY });
-        expect(model.labels[0].textContent).to.eq(DEFAULT_CONFIG.resultsLabel);
+        expect(model.labels[0].textContent).to.eq('Results for:');
       });
 
       it('should not render', () => {
-        tag._config = { labels: false };
+        tag.labels = false;
 
         tag.update();
 
@@ -82,12 +82,12 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
         const noResultsLabel = 'No available results for: ';
         const correctedResultsLabel = 'Here are the results for: ';
         const resultsLabel = 'Showing current results for: ';
-        tag._config = {
+        Object.assign(tag, {
           noResultsLabel,
           correctedResultsLabel,
           resultsLabel,
           labels: true
-        };
+        });
 
         tag.update();
         expect(model.labels[0].textContent).to.eq(noResultsLabel);
@@ -146,7 +146,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
     });
 
     it('should not render refinements if configured', () => {
-      tag._config.hideRefinements = true;
+      tag.hideRefinements = true;
 
       tag.update();
 

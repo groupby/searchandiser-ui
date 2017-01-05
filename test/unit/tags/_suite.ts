@@ -77,7 +77,9 @@ export function fluxTag<T extends FluxTag<any>>(tagName: string, tag: T, obj: an
     config: {},
     _config: {},
     _tagName: tagName,
+    alias: () => null,
     configure: (cfg = {}) => configure(cfg, tag),
+    mixin: () => null,
     on: () => null
   }, obj);
   return { flux, tag };
