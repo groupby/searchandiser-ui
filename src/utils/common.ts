@@ -82,11 +82,12 @@ export function remap(obj: any, mapping?: any) {
   }
 }
 
-export function checkBooleanAttr(attribute: string, opts: any) {
-  return typeof opts === 'object'
-    && attribute in opts
-    && opts[attribute] != 'false' // tslint:disable-line:triple-equals
-    && opts[attribute] !== false;
+export function checkBooleanAttr(attribute: string, opts: any, defaultValue: boolean = false) {
+  if (typeof opts === 'object' && attribute in opts) {
+    return opts[attribute] != 'false' && opts[attribute] !== false; // tslint:disable-line:triple-equals
+  } else {
+    return defaultValue;
+  }
 }
 
 export function scopeCss(tag: string, selector: string) {

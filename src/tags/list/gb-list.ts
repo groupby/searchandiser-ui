@@ -17,7 +17,7 @@ export class List {
   inline: boolean;
 
   init() {
-    this.inline = checkBooleanAttr(this.opts, 'inline');
+    this.inline = checkBooleanAttr('inline', this.opts);
     this.itemAlias = this.opts.itemAlias || 'item';
     this.indexAlias = this.opts.indexAlias || 'i';
     this.alias('list');
