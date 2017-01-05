@@ -1,9 +1,14 @@
 <gb-list>
-  <ul class="{ _style } { inline: 'inline' in opts }">
-    <li each={ item, i in opts.items } class={ active: opts.activation && opts.activation(i) }>
+  <ul class="{ _style } { inline: inline }">
+    <li data-is="gb-list-item" each="{ item, i in opts.items }" class="{ active: isActive(i) }" item-alias="{ itemAlias }">
       <yield/>
     </li>
   </ul>
+
+  <script>
+    import { List } from './gb-list';
+    this._mixin(List);
+  </script>
 
   <style scoped>
     gb-list > ul.gb-stylish {
