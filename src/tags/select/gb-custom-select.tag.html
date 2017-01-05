@@ -3,7 +3,7 @@
     <button data-is="gb-select-button" type="button"></button>
     <gb-option-list>
       <yield>
-        <gb-option option={ option } send={ option.clear ? _scope.clearSelection : _scope.selectCustom }/>
+        <gb-option option="{ option }" send="{ option.clear ? _scope.clearSelection : _scope.selectCustom }"></gb-option>
       </yield>
     </gb-option-list>
   </div>

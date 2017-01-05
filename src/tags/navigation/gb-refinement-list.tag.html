@@ -1,11 +1,11 @@
 <gb-refinement-list>
-  <div id={ navigation.name } class={ _style }>
+  <div id="{ navigation.name }" class="{ _style }">
     <h4 class="gb-navigation-title">{ navigation.displayName }</h4>
     <ul>
-      <gb-selected-refinement if={ parent._config.showSelected } each={ refinement in navigation.selected }></gb-selected-refinement>
-      <gb-available-refinement each={ refinement in navigation.refinements }></gb-available-refinement>
-      <li class="gb-more-refinements" if={ navigation.moreRefinements }>
-        <a href="#" onclick={ moreRefinements }>More</a>
+      <gb-selected-refinement if="{ parent._config.showSelected }" each="{ refinement in navigation.selected }"></gb-selected-refinement>
+      <gb-available-refinement each="{ refinement in navigation.refinements }"></gb-available-refinement>
+      <li class="gb-more-refinements" if="{ navigation.moreRefinements }">
+        <a href="#" onclick="{ moreRefinements }">More</a>
       </li>
     </ul>
   </div>
