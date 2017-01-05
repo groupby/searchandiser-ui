@@ -1,10 +1,10 @@
 <gb-breadcrumbs>
   <yield>
     <div class="gb-breadcrumbs { _style }">
-      <gb-query-crumb if={ !_config.hideQuery }></gb-query-crumb>
-      <gb-list items={ selected } if={ !_config.hideRefinements } scope="gb-breadcrumbs">
-        <gb-list class="gb-navigation-crumb" items={ item.refinements } inline>
-          <gb-refinement-crumb navigation={ _parent.item } refinement={ item }></gb-refinement-crumb>
+      <gb-query-crumb if="{ !_config.hideQuery }"></gb-query-crumb>
+      <gb-list items="{ selected }" if="{ !_config.hideRefinements }" item-alias="navigation">
+        <gb-list class="gb-navigation-crumb" items="{ $navigation.refinements }" item-alias="refinement" inline>
+          <gb-refinement-crumb navigation="{ $navigation }" refinement="{ $refinement }"></gb-refinement-crumb>
         </gb-list>
       </gb-list>
     </div>
