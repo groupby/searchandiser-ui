@@ -38,6 +38,10 @@ export class FluxTag<T> {
     this._aliases = Object.assign({ [alias]: obj }, this._aliases);
   }
 
+  unalias(alias: string) {
+    delete this._aliases[alias];
+  }
+
   _mixin(...mixins: any[]) {
     this.mixin(...mixins.map((mixin) => new mixin().__proto__));
   }
