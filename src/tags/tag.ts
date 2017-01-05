@@ -36,6 +36,7 @@ export class FluxTag<T> {
 
   alias(alias: string, obj: any = this) {
     this._aliases = Object.assign({ [alias]: obj }, this._aliases);
+    this[`$${alias}`] = obj;
   }
 
   unalias(alias: string) {

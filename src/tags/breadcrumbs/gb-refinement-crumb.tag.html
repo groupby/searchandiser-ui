@@ -2,6 +2,6 @@
   <a onclick="{ remove }">&times;</a> <b>{ $navigation.displayName }: { $breadcrumbs.toView($refinement) }</b>
 
   <script>
-    this.remove = () => this.$breadcrumbs.remove($refinement, $navigation);
+    this.remove = () => this.$breadcrumbs.remove(this.$refinement, this.$navigation);
   </script>
 </gb-refinement-crumb>
