@@ -16,15 +16,15 @@ suite('gb-did-you-mean', DidYouMean, ({
     });
   });
 
-  describe('send()', () => {
-    it('should rewrite on send', (done) => {
+  describe('onSelect()', () => {
+    it('should call flux.rewrite()', (done) => {
       const newQuery = 'red sneakers';
       flux().rewrite = (query): any => {
         expect(query).to.eq(newQuery);
         done();
       };
 
-      tag().send(<any>{ target: { text: newQuery } });
+      tag().onSelect(<any>{ target: { text: newQuery } });
     });
 
     it('should emit tracker event', (done) => {
@@ -32,7 +32,7 @@ suite('gb-did-you-mean', DidYouMean, ({
       const rewrite = stub(flux(), 'rewrite').resolves();
       tag().services = <any>{ tracker: { didYouMean } };
 
-      tag().send(<any>{ target: {} })
+      tag().onSelect(<any>{ target: {} })
         .then(() => {
           expect(didYouMean).to.have.been.called;
           expect(rewrite).to.have.been.called;
@@ -44,19 +44,19 @@ suite('gb-did-you-mean', DidYouMean, ({
       stub(flux(), 'rewrite').resolves();
       tag().services = <any>{};
 
-      tag().send(<any>{ target: {} })
+      tag().onSelect(<any>{ target: {} })
         .then(() => done());
     });
   });
 
   describe('updateDidYouMean()', () => {
     it('should call update() with didYouMean', () => {
-      const didYouMean = ['a', 'b', 'c'];
+      const items = ['a', 'b', 'c'];
       const update = tag().update = spy();
 
-      tag().updateDidYouMean(<any>{ didYouMean });
+      tag().updateDidYouMean(<any>{ didYouMean: items });
 
-      expect(update).to.have.been.calledWith({ didYouMean });
+      expect(update).to.have.been.calledWith({ items });
     });
   });
 });

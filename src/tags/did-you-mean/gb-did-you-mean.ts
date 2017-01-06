@@ -5,16 +5,20 @@ export interface DidYouMean extends FluxTag<any> { }
 
 export class DidYouMean {
 
+  items: string[];
+
   init() {
+    this.alias('linkable');
+
     this.flux.on(Events.RESULTS, this.updateDidYouMean);
   }
 
-  send(event: Event) {
+  onSelect(event: Event) {
     return this.flux.rewrite((<HTMLAnchorElement>event.target).text)
       .then(() => this.services.tracker && this.services.tracker.didYouMean());
   }
 
-  updateDidYouMean({ didYouMean }: Results) {
-    this.update({ didYouMean });
+  updateDidYouMean({ didYouMean: items }: Results) {
+    this.update({ items });
   }
 }

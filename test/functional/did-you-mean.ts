@@ -48,6 +48,6 @@ class Model extends BaseModel<DidYouMean> {
   }
 
   get links() {
-    return this.list(this.html, 'li > a');
+    return this.list(this.html, 'li[data-is="gb-list-item"] > a');
   }
 }
