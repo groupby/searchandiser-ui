@@ -30,6 +30,7 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       spy,
       stub,
       itShouldConfigure,
+      itShouldAlias,
       tagName
     });
 
@@ -44,6 +45,22 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
             expect(config).to.eq(defaultConfig);
           } else {
             expect(config).to.be.undefined;
+          }
+          done();
+        };
+
+        _tag.init();
+      });
+    }
+
+    function itShouldAlias(aliasList: string | string[], object?: any) {
+      it(`should alias object as ${aliasList}`, (done) => {
+        _tag.alias = (aliases, obj) => {
+          expect(aliases).to.eql(aliasList);
+          if (object) {
+            expect(obj).to.eq(object);
+          } else {
+            expect(obj).to.be.undefined;
           }
           done();
         };
@@ -92,5 +109,6 @@ export interface UnitUtils<T> {
   stub: Sinon.SinonStubStatic;
   expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
   itShouldConfigure: (defaultConfig?: any) => void;
+  itShouldAlias: (aliasList: string | string[], object?: any) => void;
   tagName: string;
 }

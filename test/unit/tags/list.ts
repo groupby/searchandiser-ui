@@ -2,10 +2,7 @@ import { List } from '../../../src/tags/list/gb-list';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-list', List, ({
-  tag, stub, spy,
-  itShouldConfigure
-}) => {
+suite('gb-list', List, ({ tag, spy }) => {
 
   describe('init()', () => {
     it('should alias self as list', () => {
@@ -48,6 +45,36 @@ suite('gb-list', List, ({
   });
 
   describe('isActive()', () => {
+    it('should call listable()', () => {
+      const listable = tag().listable = spy(() => ({}));
 
+      tag().isActive(1);
+
+      expect(listable).to.have.been.calledOnce;
+    });
+
+    it('should evaluate activation', () => {
+      const activation = spy(() => true);
+      tag().listable = () => ({ activation });
+
+      expect(tag().isActive(1)).to.be.true;
+
+      expect(activation).to.have.been.calledWith(1);
+    });
+
+    it('should default to falsy', () => {
+      tag().listable = () => ({});
+
+      expect(tag().isActive(1)).to.not.be.ok;
+    });
+  });
+
+  describe('listable()', () => {
+    it('should combine $listable and opts', () => {
+      tag().$listable = <any>{ a: 'b' };
+      tag().opts = { c: 'd' };
+
+      expect(tag().listable()).to.eql({ a: 'b', c: 'd' });
+    });
   });
 });
