@@ -17,11 +17,15 @@ describe('base tag logic', () => {
   afterEach(() => sandbox.restore());
 
   describe('FluxTag', () => {
+    let tag: FluxTag<any>;
+
+    beforeEach(() => {
+      tag = new FluxTag();
+    });
+
     describe('init()', () => {
-      let tag: FluxTag<any>;
 
       beforeEach(() => {
-        tag = new FluxTag();
         tag.root = <any>{ tagName: 'gb-test-tag' };
         tag.opts = {};
         tag.config = {};
@@ -39,6 +43,58 @@ describe('base tag logic', () => {
         tag.init();
 
         expect(tag._style).to.eq('gb-stylish');
+      });
+    });
+
+    describe('alias()', () => {
+
+      beforeEach(() => {
+        tag._aliases = {};
+      });
+
+      it('should accept alias name as a string', () => {
+        const alias = 'item';
+
+        tag.alias(alias);
+
+        expect(tag._aliases[alias]).to.eq(tag);
+      });
+
+      it('should accept alias name as a array of strings', () => {
+        const aliases = ['item', 'item2', 'item3'];
+
+        tag.alias(aliases);
+
+        aliases.forEach((alias) => expect(tag._aliases[alias]).to.eq(tag));
+      });
+
+      it('should alias provided object from name', () => {
+        const alias = 'item';
+        const obj = { a: 'b' };
+
+        tag.alias(alias, obj);
+
+        expect(tag._aliases[alias]).to.eq(obj);
+      });
+
+      it('should alias provided object from names', () => {
+        const aliases = ['item', 'item2', 'item3'];
+        const obj = { a: 'b' };
+
+        tag.alias(aliases, obj);
+
+        aliases.forEach((alias) => expect(tag._aliases[alias]).to.eq(obj));
+      });
+    });
+
+    describe('unalias()', () => {
+      it('should remove alias from _aliases', () => {
+        const alias = 'item';
+        tag._aliases = { [alias]: {} };
+
+        tag.unalias(alias);
+
+        expect(tag._aliases).to.not.have.property(alias);
       });
     });
   });
