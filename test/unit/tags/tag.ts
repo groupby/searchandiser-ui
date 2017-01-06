@@ -1,5 +1,6 @@
 import {
   addDollarSigns,
+  camelizeTagName,
   configure,
   setAliases,
   setParents,
@@ -401,6 +402,12 @@ describe('base tag logic', () => {
         m: 0,
         n: 1
       });
+    });
+  });
+
+  describe('camelizeTagName()', () => {
+    it('should remove prefix and camelcase string', () => {
+      expect(camelizeTagName('gb-my-tag')).to.eq('myTag');
     });
   });
 

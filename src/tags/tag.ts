@@ -4,6 +4,9 @@ import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
 
+const TAG_PREFIX_REGEX = /^[a-z]*?-/;
+const TAG_WORD_BREAK_REGEX = /-([a-z])/g;
+
 const sayt = new Sayt();
 
 export interface FluxTag<T> extends riot.Tag.Instance {
@@ -141,8 +144,8 @@ export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
 }
 
 export function camelizeTagName(tagName: string) {
-  return tagName.replace(/^[a-z]*?-/, '')
-    .replace(/-([a-z])/g, (match) => match[1].toUpperCase());
+  return tagName.replace(TAG_PREFIX_REGEX, '')
+    .replace(TAG_WORD_BREAK_REGEX, (match) => match[1].toUpperCase());
 }
 
 export function MixinFlux(flux: FluxCapacitor, config: any, services: any): FluxTag<any> {
