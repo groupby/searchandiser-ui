@@ -1,14 +1,17 @@
 import { checkBooleanAttr } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface ListConfig {
+export interface Listable {
+  items: any[];
   itemAlias?: string;
   indexAlias?: string;
   inline?: boolean;
   activation?: (index: number) => boolean;
 }
 
-export interface List extends FluxTag<any> { }
+export interface List extends FluxTag<any> {
+  $listable: Listable;
+}
 
 export class List {
 
@@ -17,13 +20,20 @@ export class List {
   inline: boolean;
 
   init() {
-    this.inline = checkBooleanAttr('inline', this.opts);
-    this.itemAlias = this.opts.itemAlias || 'item';
-    this.indexAlias = this.opts.indexAlias || 'i';
     this.alias('list');
+
+    const listable = this.listable();
+    this.inline = checkBooleanAttr('inline', listable);
+    this.itemAlias = listable.itemAlias || 'item';
+    this.indexAlias = listable.indexAlias || 'i';
   }
 
   isActive(index: number) {
-    return this.opts.activation && this.opts.activation(index);
+    const listable = this.listable();
+    return listable.activation && listable.activation(index);
+  }
+
+  listable() {
+    return Object.assign({}, this.$listable, this.opts);
   }
 }
