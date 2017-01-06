@@ -13,14 +13,9 @@ export interface LinkList extends FluxTag<any> {
 export class LinkList {
 
   init() {
-    // this is the shitty part...
-    // re-alias $linkable as $listable
     this.alias('listable', this.linkable());
 
-    // every time $linkable updates, update $listable
     this.on('update', this.updateListable);
-    // can't do this or it won't know 'items' has changed
-    // this.on('update', () => this.$listable = this.linkable());
   }
 
   updateListable() {
@@ -28,7 +23,6 @@ export class LinkList {
   }
 
   linkable(obj: any = {}) {
-    // mix onto empty object
     return Object.assign(obj, this.$linkable, this.opts);
   }
 }
