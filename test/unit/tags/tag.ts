@@ -97,6 +97,34 @@ describe('base tag logic', () => {
         expect(tag._aliases).to.not.have.property(alias);
       });
     });
+
+    describe('_mixin()', () => {
+      it('should call mixin() with the __proto__ of every new instance', () => {
+        const proto = { a: 'b' };
+        class Mixin {
+          constructor() {
+            return { __proto__: proto };
+          }
+        }
+        const mixin = tag.mixin = sinon.spy();
+
+        tag._mixin(Mixin, Mixin, Mixin);
+
+        expect(mixin).to.have.been.calledWith(proto, proto, proto);
+      });
+    });
+
+    describe('_scopeTo()', () => {
+      it('should set _scope to the parent specified', () => {
+        const scopeName = 'my-parent';
+        const scope = { a: 'b' };
+        tag._parents = { [scopeName]: scope };
+
+        tag._scopeTo(scopeName);
+
+        expect(tag._scope).to.eq(scope);
+      });
+    });
   });
 
   describe('setTagName()', () => {
