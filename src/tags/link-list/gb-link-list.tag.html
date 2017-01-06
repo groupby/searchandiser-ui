@@ -1,0 +1,10 @@
+<gb-link-list>
+  <gb-list>
+    <a onclick="{ $linkable.onSelect }">{ $item }</a>
+  </gb-list>
+
+  <script>
+    import { LinkList } from './gb-link-list';
+    this._mixin(LinkList);
+  </script>
+</gb-link-list>

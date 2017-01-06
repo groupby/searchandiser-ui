@@ -9,6 +9,8 @@ export function expectSubscriptions(func: Function, subscriptions: any, emitter:
     if (events.includes(event)) {
       if (subscriptions[event] === null) {
         listeners[event] = expect(handler).to.be.a('function');
+      } else if (typeof subscriptions[event] === 'object' && subscriptions[event].test) {
+        listeners[event] = subscriptions[event].test(handler);
       } else {
         listeners[event] = expect(handler).to.eq(subscriptions[event]);
       }

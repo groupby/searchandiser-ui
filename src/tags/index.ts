@@ -9,6 +9,7 @@ import './filter';
 import './icon';
 import './infinite-scroll';
 import './lazy-image';
+import './link-list';
 import './list';
 import './navigation';
 import './page-size';
