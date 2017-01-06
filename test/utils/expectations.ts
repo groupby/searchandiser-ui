@@ -23,15 +23,25 @@ export function expectSubscriptions(func: Function, subscriptions: any, emitter:
   expect(subscribedEvents).to.have.members(events);
 }
 
-export function expectAliases(func: Function, tag: FluxTag<any>, aliasList: string | string[], object?: any) {
+export function expectAliases(func: Function, tag: FluxTag<any>, aliasMap: { [key: string]: any }) {
+  const foundAliases = [];
+  const aliasKeys = Object.keys(aliasMap);
+
   tag.alias = (aliases, obj) => {
-    expect(aliases).to.eql(aliasList);
-    if (object) {
-      expect(obj).to.eq(object);
-    } else {
-      expect(obj).to.be.undefined;
+    if (!Array.isArray(aliases)) {
+      aliases = [aliases];
     }
+    foundAliases.push(...aliases);
+    aliases.forEach((alias) => {
+      if (aliasKeys.includes(alias)) {
+        expect(obj).to.eq(aliasMap[alias]);
+      } else {
+        expect.fail();
+      }
+    });
   };
 
   func();
+
+  expect(foundAliases).to.have.length(aliasKeys.length);
 }
