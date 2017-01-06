@@ -1,5 +1,5 @@
 import { configure, FluxTag } from '../../../src/tags/tag';
-import { expectSubscriptions } from '../../utils/expectations';
+import { expectAliases, expectSubscriptions } from '../../utils/expectations';
 import { baseSuite, buildSuite, SuiteModifier } from '../../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
@@ -27,6 +27,7 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       flux: () => _flux,
       tag: () => _tag,
       expectSubscriptions: _expectSubscriptions,
+      expectAliases,
       spy,
       stub,
       itShouldConfigure,
@@ -53,19 +54,9 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       });
     }
 
-    function itShouldAlias(aliasList: string | string[], object?: any) {
-      it(`should alias object as ${aliasList}`, (done) => {
-        _tag.alias = (aliases, obj) => {
-          expect(aliases).to.eql(aliasList);
-          if (object) {
-            expect(obj).to.eq(object);
-          } else {
-            expect(obj).to.be.undefined;
-          }
-          done();
-        };
-
-        _tag.init();
+    function itShouldAlias(aliases: string | string[], obj?: any) {
+      it(`should alias object as ${aliases}`, () => {
+        expectAliases(_tag.init, _tag, aliases, obj);
       });
     }
   });
@@ -108,6 +99,7 @@ export interface UnitUtils<T> {
   spy: Sinon.SinonSpyStatic;
   stub: Sinon.SinonStubStatic;
   expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
+  expectAliases: (func: Function, tag: FluxTag<any>, aliases: string | string[], obj?: any) => void;
   itShouldConfigure: (defaultConfig?: any) => void;
   itShouldAlias: (aliasList: string | string[], object?: any) => void;
   tagName: string;

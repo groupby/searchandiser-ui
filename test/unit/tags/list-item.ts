@@ -4,20 +4,17 @@ import { expect } from 'chai';
 
 suite.only('gb-list-item', ListItem, ({
   tag, stub, spy,
-  itShouldConfigure,
-  itShouldAlias
+  expectAliases,
+  itShouldConfigure
 }) => {
 
   describe('init()', () => {
 
     it('should alias item as $list.itemAlias', () => {
-      const alias = tag().alias = spy();
       const item = tag().item = { a: 'b' };
       tag().$list = <any>{ itemAlias: 'item', isActive: () => null };
 
-      tag().init();
-
-      expect(alias).to.be.calledWith('item', item);
+      expectAliases(tag().init, tag(), 'item', item);
     });
 
   });

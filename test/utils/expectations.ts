@@ -1,3 +1,4 @@
+import { FluxTag } from '../../src/tags/tag';
 import { expect } from 'chai';
 
 export function expectSubscriptions(func: Function, subscriptions: any, emitter: any) {
@@ -20,4 +21,17 @@ export function expectSubscriptions(func: Function, subscriptions: any, emitter:
 
   const subscribedEvents = Object.keys(listeners);
   expect(subscribedEvents).to.have.members(events);
+}
+
+export function expectAliases(func: Function, tag: FluxTag<any>, aliasList: string | string[], object?: any) {
+  tag.alias = (aliases, obj) => {
+    expect(aliases).to.eql(aliasList);
+    if (object) {
+      expect(obj).to.eq(object);
+    } else {
+      expect(obj).to.be.undefined;
+    }
+  };
+
+  func();
 }
