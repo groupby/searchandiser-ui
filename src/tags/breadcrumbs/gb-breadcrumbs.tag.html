@@ -2,7 +2,7 @@
   <yield>
     <div class="gb-breadcrumbs { _style }">
       <gb-query-crumb if="{ !$breadcrumbs.hideQuery }"></gb-query-crumb>
-      <gb-list if="{ !$breadcrumbs.hideRefinements }" items="{ selected }" item-alias="navigation">
+      <gb-list if="{ !$breadcrumbs.hideRefinements }" item-alias="navigation">
         <gb-list class="gb-navigation-crumb" items="{ $navigation.refinements }" item-alias="refinement" inline>
           <gb-refinement-crumb></gb-refinement-crumb>
         </gb-list>

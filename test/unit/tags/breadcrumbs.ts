@@ -34,7 +34,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
       const update = tag().update = spy();
       tag().clearRefinements();
 
-      expect(update).to.have.been.calledWith({ selected: [] });
+      expect(update).to.have.been.calledWith({ items: [] });
     });
   });
 
@@ -46,8 +46,8 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
       tag().updateQueryState(<any>{ originalQuery });
 
       expect(update).to.have.been.calledWith({
+        items: undefined,
         originalQuery,
-        selected: undefined,
         correctedQuery: undefined
       });
     });
@@ -59,8 +59,8 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
       tag().updateQueryState(<any>{ selectedNavigation });
 
       expect(update).to.have.been.calledWith({
+        items: selectedNavigation,
         originalQuery: undefined,
-        selected: selectedNavigation,
         correctedQuery: undefined
       });
     });
@@ -72,22 +72,22 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
       tag().updateQueryState(<any>{ correctedQuery });
 
       expect(update).to.have.been.calledWith({
+        items: undefined,
         originalQuery: undefined,
-        selected: undefined,
         correctedQuery
       });
     });
 
     it('should update the whole query state', () => {
       const originalQuery = 'tylenolt';
-      const selected = ['a', 'b', 'c'];
+      const items = ['a', 'b', 'c'];
       const correctedQuery = 'tylenol';
-      const queryState: any = { originalQuery, correctedQuery, selectedNavigation: selected };
+      const queryState: any = { originalQuery, correctedQuery, selectedNavigation: items };
       const update = tag().update = spy();
 
       tag().updateQueryState(<any>queryState);
 
-      expect(update).to.have.been.calledWith({ originalQuery, correctedQuery, selected });
+      expect(update).to.have.been.calledWith({ originalQuery, correctedQuery, items });
     });
   });
 

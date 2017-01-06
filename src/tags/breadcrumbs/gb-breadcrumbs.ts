@@ -3,6 +3,7 @@ import { FluxTag } from '../tag';
 import { Events, Results } from 'groupby-api';
 
 export interface BreadcrumbsConfig {
+  items: any[];
   hideQuery?: boolean;
   hideRefinements?: boolean;
   labels?: boolean;
@@ -15,6 +16,7 @@ export interface Breadcrumbs extends FluxTag<any> { }
 
 export class Breadcrumbs {
 
+  items: any[];
   hideQuery: boolean;
   hideRefinements: boolean;
   labels: boolean;
@@ -22,12 +24,11 @@ export class Breadcrumbs {
   noResultsLabel: string;
   correctedResultsLabel: string;
 
-  selected: any[];
   originalQuery: string;
   correctedQuery: string;
 
   init() {
-    this.alias('breadcrumbs');
+    this.alias(['breadcrumbs', 'listable']);
     this.mixin({ toView });
 
     this.hideQuery = checkBooleanAttr('hideQuery', this.opts);
@@ -42,11 +43,11 @@ export class Breadcrumbs {
   }
 
   clearRefinements() {
-    this.update({ selected: [] });
+    this.update({ items: [] });
   }
 
-  updateQueryState({ originalQuery, selectedNavigation, correctedQuery }: Results) {
-    this.update({ originalQuery, selected: selectedNavigation, correctedQuery });
+  updateQueryState({  selectedNavigation: items, originalQuery, correctedQuery }: Results) {
+    this.update({ items, originalQuery, correctedQuery });
   }
 
   remove(refinement: any, navigation: any) {
