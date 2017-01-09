@@ -1,11 +1,11 @@
 <gb-custom-select>
   <div class="gb-select { $select.hover ? 'hoverable' : 'clickable' } { _style }">
     <button data-is="gb-select-button" type="button"></button>
-    <gb-option-list>
+    <gb-list item-alias="option" should-render="{ $select.shouldRender }">
       <yield>
         <gb-option option="{ option }" send="{ option.clear ? $select.clearSelection : $select.selectCustom }"></gb-option>
       </yield>
-    </gb-option-list>
+    </gb-list>
   </div>
 
   <script>

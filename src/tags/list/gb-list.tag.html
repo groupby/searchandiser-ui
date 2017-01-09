@@ -1,6 +1,6 @@
 <gb-list>
   <ul class="{ _style } { inline: inline }">
-    <li data-is="gb-list-item" each="{ item, i in listable().items }">
+    <li data-is="gb-list-item" each="{ item, i in listable().items }" if="{ shouldRender(item) }">
       <yield/>
     </li>
   </ul>

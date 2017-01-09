@@ -2,7 +2,7 @@ import { List } from '../../../src/tags/list/gb-list';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-list', List, ({ tag, spy, expectAliases }) => {
+suite.only('gb-list', List, ({ tag, spy, expectAliases }) => {
 
   describe('init()', () => {
     it('should alias self as list', () => {
@@ -62,6 +62,20 @@ suite('gb-list', List, ({ tag, spy, expectAliases }) => {
       tag().listable = () => ({});
 
       expect(tag().isActive(1)).to.not.be.ok;
+    });
+  });
+
+  describe('shouldRender()', () => {
+    it('should return true', () => {
+      tag().listable = () => ({});
+
+      expect(tag().shouldRender('test')).to.be.true;
+    });
+
+    it('should return false', () => {
+      tag().listable = () => ({ shouldRender: () => false });
+
+      expect(tag().shouldRender('test')).to.be.false;
     });
   });
 

@@ -7,6 +7,7 @@ export interface Listable {
   indexAlias?: string;
   inline?: boolean;
   activation?: (index: number) => boolean;
+  shouldRender?: (option: any) => boolean;
 }
 
 export interface List extends FluxTag<any> {
@@ -35,5 +36,10 @@ export class List {
 
   listable() {
     return Object.assign({}, this.$listable, this.opts);
+  }
+
+  shouldRender(option: any) {
+    const listable = this.listable();
+    return !listable.shouldRender || listable.shouldRender(option);
   }
 }

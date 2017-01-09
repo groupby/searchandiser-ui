@@ -130,4 +130,8 @@ export class Select {
   optionLabel(option: any) {
     return typeof option === 'object' ? option.label : option;
   }
+
+  shouldRender(option: any) {
+    return option.clear ? this.selectedOption : true;
+  }
 }
