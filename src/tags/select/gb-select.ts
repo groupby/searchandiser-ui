@@ -1,19 +1,19 @@
+import { checkBooleanAttr } from '../../utils/common';
 import { FluxTag } from '../tag';
 import * as riot from 'riot'; // tslint:disable-line:no-unused-variable
 
-export interface SelectConfig {
+export interface Selectable {
+  options: any[];
+  onSelect: () => void;
+  iconUrl?: string;
   label?: string;
   clear?: string;
   hover?: boolean;
   native?: boolean;
 }
 
-export interface SelectTag<T extends SelectConfig> extends FluxTag<T> {
-  options: any[];
-  onselect: Function;
-}
-
-export interface Select<T extends SelectConfig> extends FluxTag<T> {
+export interface Select extends FluxTag<any> {
+  $selectable: Selectable;
   tags: {
     'gb-native-select': FluxTag<any> & {
       refs: {
@@ -26,34 +26,43 @@ export interface Select<T extends SelectConfig> extends FluxTag<T> {
       };
     };
   };
-  _scope: SelectTag<T>;
 }
 
-export class Select<T extends SelectConfig> {
-
+export class Select {
+  options: any[];
   iconUrl: string;
   label: string;
+  hover: boolean;
+  native: boolean;
+
   clearOption: { label: string, clear: boolean };
-  options: any[];
-  callback: Function;
+  onSelect: Function;
   selectedOption: any;
   default: boolean;
   selected: any;
   focused: boolean;
 
-  init(): void {
-    this._config = this._scope._config;
+  init() {
+    this.alias('select');
 
-    this.iconUrl = require('./arrow-down.png');
-    this.label = this._config.label || 'Select';
-    this.clearOption = { label: this._config.clear || 'Unselect', clear: true };
-    this.options = this._scope.options || [];
-    this.callback = this._scope.onselect;
-    this.default = !('clear' in this._config);
+    const selectable = this.selectable();
+    this.options = selectable.options || [];
+    this.iconUrl = selectable.iconUrl || require('./arrow-down.png');
+    this.label = selectable.label || 'Select';
+    this.hover = checkBooleanAttr('hover', selectable);
+    this.native = checkBooleanAttr('native', selectable);
+
+    this.clearOption = { label: selectable.clear || 'Unselect', clear: true };
+    this.onSelect = selectable.onSelect;
+    this.default = !('clear' in selectable);
 
     if (this.default) {
       this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
     }
+  }
+
+  selectable() {
+    return Object.assign({}, this.$selectable, this.opts);
   }
 
   updateOptions(options: any[]) {
@@ -88,11 +97,11 @@ export class Select<T extends SelectConfig> {
 
   selectOption(selectedOption: string, value: any): void {
     this.update({ selectedOption });
-    if (this.callback) {
+    if (this.onSelect) {
       try {
-        this.callback(JSON.parse(value));
+        this.onSelect(JSON.parse(value));
       } catch (e) {
-        this.callback(value || '*');
+        this.onSelect(value || '*');
       }
     }
   }

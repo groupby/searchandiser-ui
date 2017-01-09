@@ -2,25 +2,26 @@ import { Select } from '../../../src/tags/select/gb-select';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-select', Select, ({ tag, spy, stub }) => {
+suite.only('gb-select', Select, ({ tag, spy, stub }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
-      const scope = tag()._scope = <any>{ _config: {} };
+      tag().selectable = () => ({});
 
       tag().init();
 
-      expect(tag().iconUrl).to.eql(tag().iconUrl);
-      expect(tag().label).to.eql('Select');
-      expect(tag().clearOption).to.eql({ label: 'Unselect', clear: true });
       expect(tag().options).to.eql([]);
-      expect(tag().callback).to.be.undefined;
+      expect(tag().iconUrl).to.eq(tag().iconUrl);
+      expect(tag().label).to.eq('Select');
+      expect(tag().hover).to.be.false;
+      expect(tag().native).to.be.false;
+
+      expect(tag().clearOption).to.eql({ label: 'Unselect', clear: true });
+      expect(tag().onSelect).to.be.undefined;
+      expect(tag().default).to.be.true;
       expect(tag().selectedOption).to.be.undefined;
       expect(tag().selected).to.be.undefined;
       expect(tag().focused).to.be.undefined;
-      expect(tag().default).to.be.true;
-      expect(tag()._scope).to.eq(scope);
-      expect(tag()._config).to.eql({});
     });
 
     it('should accept override from _scope', () => {
@@ -39,7 +40,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       expect(tag().label).to.eql('Choice');
       expect(tag().clearOption).to.eql({ label: 'None selected', clear: true });
       expect(tag().options).to.eql(options);
-      expect(tag().callback).to.eq(onselect);
+      expect(tag().onSelect).to.eq(onselect);
       expect(tag()._config).to.eq(_config);
     });
 
@@ -212,7 +213,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
     it('should return JSON parsed value', () => {
       const opts = { a: 'b' };
-      const callback = tag().callback = spy();
+      const callback = tag().onSelect = spy();
       tag().update = () => null;
 
       tag().selectOption('', JSON.stringify(opts));
@@ -222,7 +223,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
     it('should return value', () => {
       const opts = { a: 'b' };
-      const callback = tag().callback = spy();
+      const callback = tag().onSelect = spy();
       tag().update = () => null;
 
       tag().selectOption('', opts);
@@ -231,7 +232,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
     });
 
     it('should return \'*\'', () => {
-      const callback = tag().callback = spy();
+      const callback = tag().onSelect = spy();
       tag().update = () => null;
 
       tag().selectOption('', undefined);
