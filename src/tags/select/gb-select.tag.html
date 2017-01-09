@@ -1,7 +1,7 @@
 <gb-select>
   <yield>
-    <gb-native-select if="{ _config.native }"></gb-native-select>
-    <gb-custom-select if="{ !_config.native }"></gb-custom-select>
+    <gb-native-select if="{ $select.native }"></gb-native-select>
+    <gb-custom-select if="{ !$select.native }"></gb-custom-select>
   </yield>
 
   <script>
