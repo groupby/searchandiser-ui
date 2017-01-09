@@ -1,10 +1,26 @@
-import { DEFAULT_CONFIG, Snippet } from '../../../src/tags/snippet/gb-snippet';
+import { Snippet } from '../../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
+import { expect } from 'chai';
 
-suite('gb-snippet', Snippet, ({ tag, expectSubscriptions, itShouldConfigure }) => {
+suite('gb-snippet', Snippet, ({ tag, spy, expectSubscriptions }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    it('should set defaults', () => {
+      tag().init();
+
+      expect(tag().raw).to.be.false;
+      expect(tag().url).to.be.undefined;
+    });
+
+    it('should set properties from opts', () => {
+      const url = 'example.com';
+      tag().opts = { raw: true, url };
+
+      tag().init();
+
+      expect(tag().raw).to.be.true;
+      expect(tag().url).to.eq(url);
+    });
 
     it('should listen for mount', () => {
       expectSubscriptions(() => tag().init(), {
@@ -14,6 +30,41 @@ suite('gb-snippet', Snippet, ({ tag, expectSubscriptions, itShouldConfigure }) =
   });
 
   describe('loadFile()', () => {
-    // TODO: add tests
+    const URL = 'http://example.com/tag.html';
+    let server: Sinon.SinonFakeServer;
+
+    beforeEach(() => {
+      server = sinon.fakeServer.create();
+      server.autoRespond = true;
+    });
+
+    afterEach(() => server.restore());
+
+    it('should not load the string raw', (done) => {
+      const responseText = 'my content';
+      const update = tag().update = spy();
+      server.respondWith([200, {}, responseText]);
+      tag().url = URL;
+
+      tag().loadFile()
+        .then(() => {
+          expect(update).to.have.been.calledWith({ responseText });
+          done();
+        });
+    });
+
+    it('should load the string raw', (done) => {
+      const responseText = '<div>my content</div>';
+      server.respondWith([200, {}, responseText]);
+      tag().root = <any>{};
+      tag().url = URL;
+      tag().raw = true;
+
+      tag().loadFile()
+        .then(() => {
+          expect(tag().root.innerHTML).to.eq(responseText);
+          done();
+        });
+    });
   });
 });
