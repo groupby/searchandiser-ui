@@ -1,4 +1,4 @@
-import { toRefinement } from '../../utils/common';
+import { checkBooleanAttr, displayRefinement as toView, toRefinement } from '../../utils/common';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Results } from 'groupby-api';
@@ -10,19 +10,25 @@ export interface NavigationConfig {
   showSelected?: boolean;
 }
 
-export const DEFAULT_CONFIG: NavigationConfig = {
-  badge: true,
-  showSelected: true
-};
+export interface SelectionNavigation extends NavModel {
+  selected: any[];
+}
 
-export interface Navigation extends FluxTag<NavigationConfig> { }
+export interface Navigation extends FluxTag<any> { }
 
 export class Navigation {
+
+  badge: boolean;
+  showSelected: boolean;
 
   processed: SelectionNavigation[];
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.alias('navigable');
+    this.mixin({ toView });
+
+    this.badge = checkBooleanAttr('badge', this.opts, true);
+    this.showSelected = checkBooleanAttr('showSelected', this.opts, true);
 
     this.flux.on(Events.RESULTS, this.updateNavigations);
     this.flux.on(Events.REFINEMENT_RESULTS, this.updateRefinements);
@@ -64,8 +70,4 @@ export class Navigation {
   remove(refinement: any, navigation: any) {
     return this.flux.unrefine(toRefinement(refinement, navigation));
   }
-}
-
-export interface SelectionNavigation extends NavModel {
-  selected: any[];
 }
