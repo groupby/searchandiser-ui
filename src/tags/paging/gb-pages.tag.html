@@ -2,15 +2,10 @@
   <ul class="gb-pages { _style }" if="{ $pageable.pages }">
     <span class="gb-pages__ellipsis" if="{ $pageable.lowOverflow }">&hellip;</span>
     <li each="{ pageNumber in $pageable.pageNumbers }">
-      <a class="gb-pages__page { selected: $pageable.currentPage === pageNumber }" onclick="{ jumpTo }">{ pageNumber }</a>
+      <a class="gb-pages__page { selected: $pageable.currentPage === pageNumber }" onclick="{ $pageable.switchPage }">{ pageNumber }</a>
     </li>
     <span class="gb-pages__ellipsis" if="{ $pageable.highOverflow }">&hellip;</span>
   </ul>
-
-  <script>
-    import { Pages } from './gb-pages';
-    this._mixin(Pages);
-  </script>
 
   <style scoped>
     .gb-stylish a {

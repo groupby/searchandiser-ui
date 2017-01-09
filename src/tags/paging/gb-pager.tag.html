@@ -1,11 +1,11 @@
 <gb-pager>
   <div class="gb-pager { _style }">
-    <a class="gb-pager__link prev { disabled: $pageable.backDisabled }" onclick="{ $pageable.pager.prev }">
+    <a class="gb-pager__link prev { disabled: $pageable.backDisabled }" onclick="{ $pageable.prevPage }">
       <gb-icon if="{ $pageable.icons }" value="{ $pageable.prev_icon }"></gb-icon>
       <span if="{ $pageable.labels }">{ $pageable.prev_label }</span>
     </a>
     <yield/>
-    <a class="gb-pager__link next { disabled: $pageable.forwardDisabled }" onclick="{ $pageable.pager.next }">
+    <a class="gb-pager__link next { disabled: $pageable.forwardDisabled }" onclick="{ $pageable.nextPage }">
       <span if="{ $pageable.labels }">{ $pageable.next_label }</span>
       <gb-icon if="{ $pageable.icons }" value="{ $pageable.next_icon }"></gb-icon>
     </a>

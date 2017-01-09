@@ -119,7 +119,7 @@ suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
     it('should go to first page', (done) => {
       const tag = mount();
       const model = new Model(tag);
-      tag.update({ pager: { first: () => done() } });
+      tag.update({ firstPage: () => done() });
 
       model.terminalLink('first').click();
     });
@@ -127,7 +127,7 @@ suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
     it('should go to previous page', (done) => {
       const tag = mount();
       const model = new Model(tag);
-      tag.update({ pager: { prev: () => done() } });
+      tag.update({ prevPage: () => done() });
 
       model.pagerLink('prev').click();
     });
@@ -135,7 +135,7 @@ suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
     it('should go to next page', (done) => {
       const tag = mount();
       const model = new Model(tag);
-      tag.update({ pager: { next: () => done() } });
+      tag.update({ nextPage: () => done() });
 
       model.pagerLink('next').click();
     });
@@ -143,7 +143,7 @@ suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
     it('should go to last page', (done) => {
       const tag = mount();
       const model = new Model(tag);
-      tag.update({ pager: { last: () => done() } });
+      tag.update({ lastPage: () => done() });
 
       model.terminalLink('last').click();
     });

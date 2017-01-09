@@ -1,11 +1,11 @@
 <gb-terminal-pager>
   <div class="gb-terminal-pager { _style }">
-    <a class="gb-terminal__link first { disabled: $pageable.backDisabled }" if="{ $pageable.terminals }" onclick="{ $pageable.pager.first }">
+    <a class="gb-terminal__link first { disabled: $pageable.backDisabled }" if="{ $pageable.terminals }" onclick="{ $pageable.firstPage }">
       <gb-icon if="{ $pageable.icons }" value="{ $pageable.first_icon }"></gb-icon>
       <span if="{ $pageable.labels }">{ $pageable.numeric ? 1 : $pageable.first_label }</span>
     </a>
     <yield/>
-    <a class="gb-terminal__link last { disabled: $pageable.forwardDisabled }" if="{ $pageable.terminals }" onclick="{ $pageable.pager.last }">
+    <a class="gb-terminal__link last { disabled: $pageable.forwardDisabled }" if="{ $pageable.terminals }" onclick="{ $pageable.lastPage }">
       <span if="{ $pageable.labels }">{ $pageable.numeric ? $pageable.finalPage : $pageable.last_label }</span>
       <gb-icon if="{ $pageable.icons }" value="{ $pageable.last_icon }"></gb-icon>
     </a>

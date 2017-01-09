@@ -1,6 +1,6 @@
 import { checkBooleanAttr } from '../../utils/common';
 import { FluxTag } from '../tag';
-import { Events, Pager } from 'groupby-api';
+import { Events } from 'groupby-api';
 
 export interface PagingConfig {
   limit?: number;
@@ -19,14 +19,6 @@ export interface PagingConfig {
   next_icon?: string;
   first_icon?: string;
   last_icon?: string;
-}
-
-export interface FluxPager {
-  first: () => void;
-  prev: () => void;
-  next: () => void;
-  last: () => void;
-  switchPage: (page: number) => void;
 }
 
 export interface Paging extends FluxTag<any> { }
@@ -54,7 +46,6 @@ export class Paging {
   currentPage: number;
   finalPage: number;
   pageNumbers: number[];
-  pager: FluxPager;
 
   init() {
     this.alias('pageable');
@@ -78,14 +69,12 @@ export class Paging {
     this.backDisabled = true;
     this.currentPage = 1;
 
-    this.pager = this.wrapPager(this.flux.page);
-
     this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
     this.flux.on(Events.RESULTS, this.pageInfo);
   }
 
   pageInfo() {
-    const pageNumbers = this.flux.page.pageNumbers(this._config.limit);
+    const pageNumbers = this.flux.page.pageNumbers(this.limit);
     const finalPage = this.flux.page.finalPage;
     const currentPage = this.flux.page.currentPage;
     this.updatePageInfo(pageNumbers, currentPage, finalPage);
@@ -105,16 +94,6 @@ export class Paging {
 
   updateCurrentPage({ pageNumber }: { pageNumber: number }) {
     this.update({ currentPage: pageNumber });
-  }
-
-  wrapPager(pager: Pager): any {
-    return {
-      first: () => !this.backDisabled && pager.reset().then(this.emitEvent),
-      prev: () => !this.backDisabled && pager.prev().then(this.emitEvent),
-      next: () => !this.forwardDisabled && pager.next().then(this.emitEvent),
-      last: () => !this.forwardDisabled && pager.last().then(this.emitEvent),
-      switchPage: (page) => pager.switchPage(page).then(this.emitEvent)
-    };
   }
 
   firstPage() {

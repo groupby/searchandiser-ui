@@ -70,19 +70,6 @@ suite('gb-paging', Paging, ({
       expect(tag().last_icon).to.eq('last_icon');
     });
 
-    it('should wrap flux.page as pager', () => {
-      const fluxPager = flux().page = <any>{ a: 'b' };
-      const wrappedPager = { c: 'd' };
-      tag().wrapPager = (pager) => {
-        expect(pager).to.eq(fluxPager);
-        return wrappedPager;
-      };
-
-      tag().init();
-
-      expect(tag().pager).to.eq(wrappedPager);
-    });
-
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.PAGE_CHANGED]: tag().updateCurrentPage,
@@ -94,9 +81,8 @@ suite('gb-paging', Paging, ({
   describe('pageInfo()', () => {
     it('should update page position', () => {
       const pageNumbers = [1, 2, 3, 4, 5];
-      const limit = 7;
+      const limit = tag().limit = 7;
       const updatePageInfo = stub(tag(), 'updatePageInfo');
-      tag()._config = { limit };
       flux().page = <any>{
         pageNumbers: (pages) => {
           expect(pages).to.eq(limit);
@@ -125,7 +111,7 @@ suite('gb-paging', Paging, ({
         forwardDisabled: true,
         lowOverflow: false,
         highOverflow: true,
-        lastPage: 43,
+        finalPage: 43,
         currentPage: 43
       })).to.be.true;
     });
@@ -185,85 +171,96 @@ suite('gb-paging', Paging, ({
     });
   });
 
-  describe('wrapPager()', () => {
-    it('first()', (done) => {
+  describe('firstPage()', () => {
+    it('should call flux.page.reset()', (done) => {
       const reset = spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ reset });
+      flux().page = <any>{ reset };
       tag().emitEvent = () => {
         expect(reset).to.have.been.called;
         done();
       };
 
-      pager.first();
+      tag().firstPage();
     });
 
-    it('prev()', (done) => {
+    it('should not allow paging back', () => {
+      tag().backDisabled = true;
+      flux().page = <any>{ reset: () => expect.fail() };
+
+      tag().firstPage();
+    });
+  });
+
+  describe('prevPage()', () => {
+    it('should call flux.page.prev()', (done) => {
       const prev = spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ prev });
+      flux().page = <any>{ prev };
       tag().emitEvent = () => {
         expect(prev).to.have.been.called;
         done();
       };
 
-      pager.prev();
+      tag().prevPage();
     });
 
-    it('next()', (done) => {
+    it('should not allow paging back', () => {
+      tag().backDisabled = true;
+      flux().page = <any>{ prev: () => expect.fail() };
+
+      tag().prevPage();
+    });
+  });
+
+  describe('nextPage()', () => {
+    it('should call flux.page.next()', (done) => {
       const next = spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ next });
+      flux().page = <any>{ next };
       tag().emitEvent = () => {
         expect(next).to.have.been.called;
         done();
       };
 
-      pager.next();
+      tag().nextPage();
     });
 
-    it('last()', (done) => {
+    it('should not allow paging forward', () => {
+      tag().forwardDisabled = true;
+      flux().page = <any>{ next: () => expect.fail() };
+
+      tag().nextPage();
+    });
+  });
+
+  describe('lastPage()', () => {
+    it('should call flux.page.last()', (done) => {
       const last = spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ last });
+      flux().page = <any>{ last };
       tag().emitEvent = () => {
         expect(last).to.have.been.called;
         done();
       };
 
-      pager.last();
+      tag().lastPage();
     });
 
-    it('switchPage()', (done) => {
-      const newPage = 7;
+    it('should not allow paging forward', () => {
+      tag().forwardDisabled = true;
+      flux().page = <any>{ last: () => expect.fail() };
+
+      tag().lastPage();
+    });
+  });
+
+  describe('switchPage()', () => {
+    it('should call flux.page.switchPage()', (done) => {
       const switchPage = spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ switchPage });
+      flux().page = <any>{ switchPage };
       tag().emitEvent = () => {
-        expect(switchPage).to.have.been.calledWith(newPage);
+        expect(switchPage).to.have.been.calledWith(8);
         done();
       };
 
-      pager.switchPage(newPage);
-    });
-
-    it('should not allow page forward', () => {
-      tag().forwardDisabled = true;
-
-      const pager = tag().wrapPager(<any>{
-        next: () => expect.fail(),
-        last: () => expect.fail()
-      });
-
-      pager.next();
-      pager.last();
-    });
-
-    it('should not allow page backward', () => {
-      tag().backDisabled = true;
-
-      const pager = tag().wrapPager(<any>{
-        prev: () => expect.fail(),
-        first: () => expect.fail()
-      });
-
-      pager.prev();
-      pager.first();
+      tag().switchPage(<any>{ target: { text: '8' } });
     });
   });
 
