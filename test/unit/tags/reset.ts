@@ -1,8 +1,9 @@
 import { Reset } from '../../../src/tags/reset/gb-reset';
+import * as common from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-reset', Reset, ({ flux, tag, spy, expectSubscriptions }) => {
+suite('gb-reset', Reset, ({ flux, tag, stub, spy, expectSubscriptions }) => {
 
   describe('init()', () => {
     it('should listen for mount event', () => {
@@ -20,6 +21,16 @@ suite('gb-reset', Reset, ({ flux, tag, spy, expectSubscriptions }) => {
       tag().init();
 
       expect(addEventListener).to.have.been.calledWith('click', tag().clearQuery);
+    });
+  });
+
+  describe('setSearchBox()', () => {
+    it('should call findSearchBox()', () => {
+      const findSearchBox = stub(common, 'findSearchBox');
+
+      tag().setSearchBox();
+
+      expect(findSearchBox).to.have.been.called;
     });
   });
 
