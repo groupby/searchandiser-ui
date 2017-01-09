@@ -3,14 +3,10 @@
     <button data-is="gb-select-button" type="button"></button>
     <gb-list item-alias="option" should-render="{ $select.shouldRender }">
       <yield>
-        <gb-option option="{ option }" send="{ option.clear ? $select.clearSelection : $select.selectCustom }"></gb-option>
+        <gb-option></gb-option>
       </yield>
     </gb-list>
   </div>
-
-  <script>
-    this._scopeTo('gb-select');
-  </script>
 
   <style scoped>
     .gb-select {

@@ -1,9 +1,8 @@
 <gb-option>
-  <a onclick="{ send }">{ $select.optionLabel($option) }</a>
+  <a onclick="{ onSelect }">{ label }</a>
 
   <script>
-    import { Select } from './gb-select';
-    this.value = Select.optionValue(opts.option);
-    this.send = () => opts.send(this);
+    import { Option } from './gb-option';
+    this._mixin(Option);
   </script>
 </gb-option>

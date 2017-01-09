@@ -2,7 +2,7 @@ import { List } from '../../../src/tags/list/gb-list';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite.only('gb-list', List, ({ tag, spy, expectAliases }) => {
+suite('gb-list', List, ({ tag, spy, expectAliases }) => {
 
   describe('init()', () => {
     it('should alias self as list', () => {
