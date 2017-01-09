@@ -5,13 +5,32 @@ import { Events } from 'groupby-api';
 
 suite('gb-paging', Paging, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions, expectAliases
 }) => {
 
   describe('init()', () => {
+    it.only('should alias self as pageable', () => {
+      console.log({ pageable: tag() });
+      // expectAliases(() => tag().init(), { pageable: tag() });
+    });
+
     it('should have default initial state', () => {
       tag().init();
 
+      expect(tag().limit).to.eq(5);
+      expect(tag().pages).to.be.false;
+      expect(tag().numeric).to.be.false;
+      expect(tag().terminals).to.be.true;
+      expect(tag().labels).to.be.true;
+      expect(tag().icons).to.be.true;
+      expect(tag().first_label).to.eq('First');
+      expect(tag().prev_label).to.eq('Prev');
+      expect(tag().next_label).to.eq('Next');
+      expect(tag().last_label).to.eq('Last');
+      expect(tag().first_icon).to.have.string('data:image/png');
+      expect(tag().prev_icon).to.have.string('data:image/png');
+      expect(tag().next_icon).to.have.string('data:image/png');
+      expect(tag().last_icon).to.have.string('data:image/png');
       expect(tag().currentPage).to.eq(1);
       expect(tag().backDisabled).to.be.true;
     });

@@ -31,7 +31,7 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       spy,
       stub,
       itShouldConfigure,
-      itShouldAlias,
+      // itShouldAlias,
       tagName
     });
 
@@ -58,11 +58,11 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       });
     }
 
-    function itShouldAlias(aliases: { [key: string]: any }) {
-      it(`should alias object as ${aliases}`, () => {
-        _expectAliases(() => _tag.init(), aliases);
-      });
-    }
+    // function itShouldAlias(aliases: { [key: string]: any }) {
+    //   it(`should alias object as ${Object.keys(aliases)}`, () => {
+    //     _expectAliases(() => _tag.init(), aliases);
+    //   });
+    // }
   });
 }
 
@@ -80,6 +80,7 @@ const suite = buildSuite<BaseSuite>(_suite);
 
 export default suite;
 
+// tslint:disable-next-line:max-line-length
 export function fluxTag<T extends FluxTag<any>>(tagName: string, tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
   const flux = new FluxCapacitor('');
   Object.assign(tag, {
@@ -106,6 +107,6 @@ export interface UnitUtils<T> {
   expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
   expectAliases: (func: Function, aliases: { [key: string]: any }) => void;
   itShouldConfigure: (defaultConfig?: any) => void;
-  itShouldAlias: (aliases: { [key: string]: any }) => void;
+  // itShouldAlias: (aliases: { [key: string]: any }) => void;
   tagName: string;
 }

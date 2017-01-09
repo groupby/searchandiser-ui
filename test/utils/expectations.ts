@@ -35,7 +35,11 @@ export function expectAliases(func: Function, tag: FluxTag<any>, aliasMap: { [ke
     }
     foundAliases.push(...aliases);
     aliases.forEach((alias) => {
-      if (aliasKeys.includes(alias)) {
+      if (obj === undefined) {
+        console.log(tag);
+        console.log(aliasMap);
+        expect(tag).to.eq(aliasMap[alias]);
+      } else if (aliasKeys.includes(alias)) {
         expect(obj).to.eq(aliasMap[alias]);
       } else {
         expect.fail();

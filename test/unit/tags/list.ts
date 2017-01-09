@@ -2,10 +2,12 @@ import { List } from '../../../src/tags/list/gb-list';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-list', List, ({ tag, spy, itShouldAlias }) => {
+suite('gb-list', List, ({ tag, spy, expectAliases }) => {
 
   describe('init()', () => {
-    itShouldAlias({ list: tag() });
+    it('should alias self as list', () => {
+      expectAliases(() => tag().init(), { list: tag() });
+    });
 
     it('should call listable()', () => {
       const listable = tag().listable = spy(() => ({}));

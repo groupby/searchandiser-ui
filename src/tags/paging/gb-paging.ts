@@ -57,6 +57,8 @@ export class Paging {
   pager: FluxPager;
 
   init() {
+    this.alias('p');
+
     this.limit = this.opts.limit || 5;
     this.pages = checkBooleanAttr('pages', this.opts);
     this.numeric = checkBooleanAttr('numeric', this.opts);
