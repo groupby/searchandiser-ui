@@ -2,7 +2,7 @@ import { PageSize } from '../../src/tags/page-size/gb-page-size';
 import suite, { SelectModel } from './_suite';
 import { expect } from 'chai';
 
-suite<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
+suite.only<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
 
   itMountsTag();
 
@@ -16,7 +16,7 @@ suite<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
     it('should render default page sizes', () => {
       const model = new Model(mount());
 
-      expect(html().querySelector('gb-option-list')).to.be.ok;
+      expect(model.optionList).to.be.ok;
       expect(model.label.textContent).to.eq('10');
       expect(model.options).to.have.length(4);
       expect(model.options[2].textContent).to.eq('50');
@@ -56,4 +56,9 @@ suite<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
   });
 });
 
-class Model extends SelectModel<PageSize> { }
+class Model extends SelectModel<PageSize> {
+
+  get optionList() {
+    return this.element(this.html, 'gb-list');
+  }
+}

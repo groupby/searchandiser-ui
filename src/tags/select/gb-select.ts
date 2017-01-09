@@ -70,6 +70,7 @@ export class Select {
   }
 
   selectLabel(): string {
+    console.log(this.label);
     return this.selectedOption || (this.selected ? this.clearOption : this.label);
   }
 
