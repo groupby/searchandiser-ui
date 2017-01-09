@@ -162,6 +162,7 @@ suite<Navigation>('gb-navigation', ({
         (<HTMLAnchorElement>model.selectedRefinement.querySelector('.gb-ref__link')).click();
 
         expect(model.selectedRefinement).to.not.be.ok;
+        // tslint:disable-next-line:max-line-length
         expect(html().querySelectorAll('li[data-is="gb-available-refinement"] .gb-ref__title')[2].textContent).to.eq('Random');
         expect(unrefine).to.have.been.called;
       });
