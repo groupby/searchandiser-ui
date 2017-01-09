@@ -1,22 +1,55 @@
-import { DEFAULT_CONFIG, Paging } from '../../../src/tags/paging/gb-paging';
+import { Paging } from '../../../src/tags/paging/gb-paging';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-paging', Paging, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
-
     it('should have default initial state', () => {
       tag().init();
 
       expect(tag().currentPage).to.eq(1);
       expect(tag().backDisabled).to.be.true;
+    });
+
+    it('should set properties from opts', () => {
+      tag().opts = {
+        limit: 10,
+        pages: true,
+        numeric: true,
+        terminals: false,
+        labels: false,
+        icons: false,
+        first_label: 'first',
+        prev_label: 'prev',
+        next_label: 'next',
+        last_label: 'last',
+        first_icon: 'first_icon',
+        prev_icon: 'prev_icon',
+        next_icon: 'next_icon',
+        last_icon: 'last_icon'
+      };
+
+      tag().init();
+
+      expect(tag().limit).to.eq(10);
+      expect(tag().pages).to.be.true;
+      expect(tag().numeric).to.be.true;
+      expect(tag().terminals).to.be.false;
+      expect(tag().labels).to.be.false;
+      expect(tag().icons).to.be.false;
+      expect(tag().first_label).to.eq('first');
+      expect(tag().prev_label).to.eq('prev');
+      expect(tag().next_label).to.eq('next');
+      expect(tag().last_label).to.eq('last');
+      expect(tag().first_icon).to.eq('first_icon');
+      expect(tag().prev_icon).to.eq('prev_icon');
+      expect(tag().next_icon).to.eq('next_icon');
+      expect(tag().last_icon).to.eq('last_icon');
     });
 
     it('should wrap flux.page as pager', () => {
