@@ -46,11 +46,11 @@ suite<Navigation>('gb-navigation', ({
     });
 
     it('should render refinements', () => {
-      expect(html().querySelector('gb-refinement-list')).to.be.ok;
+      expect(html().querySelector('li[data-is="gb-refinement-list"]')).to.be.ok;
       expect(html().querySelector('#main')).to.be.ok;
       expect(html().querySelector('#category')).to.be.ok;
-      expect(html().querySelector('gb-available-refinement')).to.be.ok;
-      expect(html().querySelector('gb-selected-refinement')).to.be.ok;
+      expect(html().querySelector('li[data-is="gb-available-refinement"]')).to.be.ok;
+      expect(html().querySelector('li[data-is="gb-selected-refinement"]')).to.be.ok;
       expect(html().querySelectorAll('.gb-navigation-title')[0].textContent).to.eq('Main');
       expect(html().querySelectorAll('.gb-ref__title')[0].textContent).to.eq('Pick up');
       expect(html().querySelectorAll('gb-badge span')[0].textContent).to.eq('12345');
@@ -156,13 +156,13 @@ suite<Navigation>('gb-navigation', ({
         tag.update();
 
         expect(model.selectedRefinement).to.be.ok;
-        expect(html().querySelector('gb-selected-refinement .gb-ref__value').textContent).to.eq('Random');
+        expect(model.selectedRefinement.querySelector('.gb-ref__value').textContent).to.eq('Random');
         expect(unrefine).to.not.have.been.called;
 
-        (<HTMLAnchorElement>html().querySelector('gb-selected-refinement .gb-ref__link')).click();
+        (<HTMLAnchorElement>model.selectedRefinement.querySelector('.gb-ref__link')).click();
 
         expect(model.selectedRefinement).to.not.be.ok;
-        expect(html().querySelectorAll('gb-available-refinement .gb-ref__title')[2].textContent).to.eq('Random');
+        expect(html().querySelectorAll('li[data-is="gb-available-refinement"] .gb-ref__title')[2].textContent).to.eq('Random');
         expect(unrefine).to.have.been.called;
       });
     });
@@ -218,10 +218,10 @@ class Model extends BaseModel<Navigation> {
   }
 
   get selectedRefinement() {
-    return this.element(this.html, 'gb-selected-refinement');
+    return this.element(this.html, 'li[data-is="gb-selected-refinement"]');
   }
 
   get moreRefinementsLink() {
-    return this.element(this.html, '.gb-more-refinements a');
+    return this.element(this.html, 'li[data-is="gb-more-refinements"] a');
   }
 }

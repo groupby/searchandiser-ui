@@ -4,6 +4,7 @@ import {
   SelectedRefinement
 } from '../../../src/tags/navigation/gb-refinement';
 import { displayRefinement } from '../../../src/utils/common';
+import { expectAliases } from '../../utils/expectations';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -14,10 +15,10 @@ describe(`${TAG} logic`, () => {
 
   suite('gb-refinement', Refinement, MIXIN, ({ tag }) => {
     describe('init()', () => {
-      it('should have default values', () => {
-        tag().init();
+      it('should alias refinement', () => {
+        const refinement = tag().refinement = { a: 'b' };
 
-        expect(tag().toView).to.eq(displayRefinement);
+        expectAliases(() => tag().init(), tag(), { refinement });
       });
     });
   });
@@ -26,13 +27,13 @@ describe(`${TAG} logic`, () => {
     describe('send()', () => {
       it('should make refinement', () => {
         const refinement = tag().refinement = { type: 'Range', low: 4, high: 6 };
-        const parent = tag().parent = <any>{ navigation: { name: 'price' } };
+        const navigation = tag().$navigation = { name: 'price' };
         const send = spy();
-        tag()._scope = { send };
+        tag().$navigable = <any>{ send };
 
         tag().send();
 
-        expect(send).to.have.been.calledWith(refinement, parent.navigation);
+        expect(send).to.have.been.calledWith(refinement, navigation);
       });
     });
   });
@@ -41,13 +42,13 @@ describe(`${TAG} logic`, () => {
     describe('remove()', () => {
       it('should remove refinement', () => {
         const refinement = tag().refinement = { type: 'Range', low: 4, high: 6 };
-        const parent = tag().parent = <any>{ navigation: { name: 'price' } };
+        const navigation = tag().$navigation = { name: 'price' };
         const remove = spy();
-        tag()._scope = { remove };
+        tag().$navigable = <any>{ remove };
 
         tag().remove();
 
-        expect(remove).to.have.been.calledWith(refinement, parent.navigation);
+        expect(remove).to.have.been.calledWith(refinement, navigation);
       });
     });
   });
