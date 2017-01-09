@@ -47,13 +47,13 @@ export class Select {
 
     const selectable = this.selectable();
     this.options = selectable.options || [];
+    this.onSelect = selectable.onSelect;
     this.iconUrl = selectable.iconUrl || require('./arrow-down.png');
     this.label = selectable.label || 'Select';
     this.hover = checkBooleanAttr('hover', selectable);
     this.native = checkBooleanAttr('native', selectable);
 
     this.clearOption = { label: selectable.clear || 'Unselect', clear: true };
-    this.onSelect = selectable.onSelect;
     this.default = !('clear' in selectable);
 
     if (this.default) {
@@ -91,7 +91,7 @@ export class Select {
   }
 
   unfocus() {
-    this.focused = this._config.hover || !this.focused;
+    this.focused = this.hover || !this.focused;
     if (!this.focused) this.selectButton().blur();
   }
 
@@ -123,11 +123,11 @@ export class Select {
     return this.selectOption(undefined, '*');
   }
 
-  static optionValue(option: any) {
+  optionValue(option: any) {
     return typeof option === 'object' ? JSON.stringify(option.value) : option;
   }
 
-  static optionLabel(option: any) {
+  optionLabel(option: any) {
     return typeof option === 'object' ? option.label : option;
   }
 }

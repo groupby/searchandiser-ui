@@ -1,9 +1,9 @@
 <gb-custom-select>
-  <div class="gb-select { _scope._config.hover ? 'hoverable' : 'clickable' } { _style }">
+  <div class="gb-select { $select.hover ? 'hoverable' : 'clickable' } { _style }">
     <button data-is="gb-select-button" type="button"></button>
     <gb-option-list>
       <yield>
-        <gb-option option="{ option }" send="{ option.clear ? _scope.clearSelection : _scope.selectCustom }"></gb-option>
+        <gb-option option="{ option }" send="{ option.clear ? $select.clearSelection : $select.selectCustom }"></gb-option>
       </yield>
     </gb-option-list>
   </div>

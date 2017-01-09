@@ -1,13 +1,6 @@
 <gb-native-select>
-  <select ref="selector" onchange="{ _scope.selectNative }">
-    <option if="{ !_scope.default }" value="" selected disabled>{ _scope.selectLabel() }</option>
-    <option each="{ option in _scope.options }" if="{ !option.clear }" value="{ optionValue(option) }">{ optionLabel(option) }</option>
+  <select ref="selector" onchange="{ $select.selectNative }">
+    <option if="{ !$select.default }" value="" selected disabled>{ $select.selectLabel() }</option>
+    <option each="{ option in $select.options }" if="{ !option.clear }" value="{ $select.optionValue(option) }">{ $select.optionLabel(option) }</option>
   </select>
-
-  <script>
-    import { Select } from './gb-select';
-    this.optionLabel = Select.optionLabel;
-    this.optionValue = Select.optionValue;
-    this._scopeTo('gb-select');
-  </script>
 </gb-native-select>

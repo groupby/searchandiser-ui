@@ -2,46 +2,53 @@ import { Select } from '../../../src/tags/select/gb-select';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite.only('gb-select', Select, ({ tag, spy, stub }) => {
+suite('gb-select', Select, ({ tag, spy, stub }) => {
 
   describe('init()', () => {
     it('should have default values', () => {
-      tag().selectable = () => ({});
-
       tag().init();
 
       expect(tag().options).to.eql([]);
+      expect(tag().onSelect).to.be.undefined;
       expect(tag().iconUrl).to.eq(tag().iconUrl);
       expect(tag().label).to.eq('Select');
       expect(tag().hover).to.be.false;
       expect(tag().native).to.be.false;
 
       expect(tag().clearOption).to.eql({ label: 'Unselect', clear: true });
-      expect(tag().onSelect).to.be.undefined;
       expect(tag().default).to.be.true;
       expect(tag().selectedOption).to.be.undefined;
       expect(tag().selected).to.be.undefined;
       expect(tag().focused).to.be.undefined;
     });
 
-    it('should accept override from _scope', () => {
-      const _config = {
-        hover: true,
-        native: false,
-        clear: 'None selected',
-        label: 'Choice'
-      };
+    it('should set properties from selectable', () => {
       const options = [{ a: 'b' }, { c: 'd' }];
-      const onselect = () => null;
-      tag()._scope = <any>{ _config, options, onselect };
+      const iconUrl = 'image.png';
+      const label = 'Choice';
+      const clear = 'None selected';
+      const onSelect = () => null;
+      tag().selectable = () => ({
+        options,
+        onSelect,
+        iconUrl,
+        label,
+        clear,
+        hover: true,
+        native: true
+      });
 
       tag().init();
 
-      expect(tag().label).to.eql('Choice');
-      expect(tag().clearOption).to.eql({ label: 'None selected', clear: true });
       expect(tag().options).to.eql(options);
-      expect(tag().onSelect).to.eq(onselect);
-      expect(tag()._config).to.eq(_config);
+      expect(tag().onSelect).to.eq(onSelect);
+      expect(tag().iconUrl).to.eq(iconUrl);
+      expect(tag().label).to.eq(label);
+      expect(tag().hover).to.be.true;
+      expect(tag().native).to.be.true;
+
+      expect(tag().clearOption).to.eql({ label: clear, clear: true });
+      expect(tag().default).to.be.false;
     });
 
     it('should override selectedOption with first label when options set and clear undefined', () => {
@@ -49,7 +56,7 @@ suite.only('gb-select', Select, ({ tag, spy, stub }) => {
         { label: 'Value Descending' },
         { label: 'Value Ascending' }
       ];
-      tag()._scope = <any>{ options, _config: {} };
+      tag().selectable = () => ({ options });
 
       tag().init();
 
@@ -59,7 +66,7 @@ suite.only('gb-select', Select, ({ tag, spy, stub }) => {
 
     it('should override selectedOption with first option when options set and clear undefined', () => {
       const options = ['first', 'second'];
-      tag()._scope = <any>{ options, _config: {} };
+      tag().selectable = () => ({ options });
 
       tag().init();
 
@@ -173,7 +180,7 @@ suite.only('gb-select', Select, ({ tag, spy, stub }) => {
 
   describe('unfocus()', () => {
     it('should set focused true', () => {
-      tag()._config = { hover: true };
+      tag().hover = true;
 
       tag().unfocus();
 
@@ -181,7 +188,6 @@ suite.only('gb-select', Select, ({ tag, spy, stub }) => {
     });
 
     it('should set switch focused to true', () => {
-      tag()._config = {};
 
       tag().unfocus();
 
@@ -190,7 +196,6 @@ suite.only('gb-select', Select, ({ tag, spy, stub }) => {
 
     it('should set switch focused to false and blur button', () => {
       const blur = spy();
-      tag()._config = {};
       tag().focused = true;
       tag().selectButton = () => <any>({ blur });
 
