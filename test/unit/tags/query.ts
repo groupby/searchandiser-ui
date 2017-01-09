@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, Query } from '../../../src/tags/query/gb-query';
+import { Query } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
@@ -7,17 +7,27 @@ import { Events, Query as FluxQuery } from 'groupby-api';
 
 suite('gb-query', Query, ({
   tag, flux, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
-
-    it('should have default values', () => {
+    it('should set default values', () => {
       tag().init();
 
+      expect(tag().sayt).to.be.true;
+      expect(tag().autoSearch).to.be.true;
+      expect(tag().staticSearch).to.be.false;
       expect(tag().enterKeyHandlers).to.eql([]);
+    });
+
+    it('should set properties from opts', () => {
+      tag().opts = { sayt: false, autoSearch: false, staticSearch: true };
+
+      tag().init();
+
+      expect(tag().sayt).to.be.false;
+      expect(tag().autoSearch).to.be.false;
+      expect(tag().staticSearch).to.be.true;
     });
 
     it('should attachListeners on mount', () => {
@@ -49,7 +59,7 @@ suite('gb-query', Query, ({
     });
 
     it('should attach sayt listeners', (done) => {
-      tag()._config = { sayt: true };
+      tag().sayt = true;
       tag().tags = <any>{
         'gb-sayt': {
           listenForInput: (queryTag) => {
@@ -64,7 +74,7 @@ suite('gb-query', Query, ({
 
     it('should listen for input event', () => {
       const listenForInput = sinon.stub(tag(), 'listenForInput');
-      tag()._config = { autoSearch: true };
+      tag().autoSearch = true;
 
       tag().attachListeners();
 
@@ -73,7 +83,8 @@ suite('gb-query', Query, ({
 
     it('should listen for enter keypress event', () => {
       const listenForStaticSearch = stub(tag(), 'listenForStaticSearch');
-      tag()._config = { autoSearch: false, staticSearch: true };
+      tag().autoSearch = false;
+      tag().staticSearch = true;
 
       tag().attachListeners();
 
@@ -82,7 +93,8 @@ suite('gb-query', Query, ({
 
     it('should listen for submit event', () => {
       const listenForInput = stub(tag(), 'listenForSubmit');
-      tag()._config = { autoSearch: false, staticSearch: false };
+      tag().autoSearch = false;
+      tag().staticSearch = false;
 
       tag().attachListeners();
 
@@ -279,6 +291,15 @@ suite('gb-query', Query, ({
       tag().setLocation();
 
       expect(reset).to.have.been.calledWith(query);
+    });
+  });
+
+  describe('inputValue()', () => {
+    it('should return searchBox.value', () => {
+      const query = 'red shoes';
+      tag().searchBox = <any>{ value: query };
+
+      expect(tag().inputValue()).to.eq(query);
     });
   });
 });
