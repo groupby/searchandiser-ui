@@ -22,14 +22,14 @@ suite('gb-paging', Paging, ({
       expect(tag().terminals).to.be.true;
       expect(tag().labels).to.be.true;
       expect(tag().icons).to.be.true;
-      expect(tag().first_label).to.eq('First');
-      expect(tag().prev_label).to.eq('Prev');
-      expect(tag().next_label).to.eq('Next');
-      expect(tag().last_label).to.eq('Last');
-      expect(tag().first_icon).to.have.string('data:image/png');
-      expect(tag().prev_icon).to.have.string('data:image/png');
-      expect(tag().next_icon).to.have.string('data:image/png');
-      expect(tag().last_icon).to.have.string('data:image/png');
+      expect(tag().fistLabel).to.eq('First');
+      expect(tag().prevLabel).to.eq('Prev');
+      expect(tag().nextLabel).to.eq('Next');
+      expect(tag().lastLabel).to.eq('Last');
+      expect(tag().firstIcon).to.have.string('data:image/png');
+      expect(tag().prevIcon).to.have.string('data:image/png');
+      expect(tag().nextIcon).to.have.string('data:image/png');
+      expect(tag().lastIcon).to.have.string('data:image/png');
       expect(tag().currentPage).to.eq(1);
       expect(tag().backDisabled).to.be.true;
     });
@@ -42,14 +42,14 @@ suite('gb-paging', Paging, ({
         terminals: false,
         labels: false,
         icons: false,
-        first_label: 'first',
-        prev_label: 'prev',
-        next_label: 'next',
-        last_label: 'last',
-        first_icon: 'first_icon',
-        prev_icon: 'prev_icon',
-        next_icon: 'next_icon',
-        last_icon: 'last_icon'
+        fistLabel: 'first',
+        prevLabel: 'prev',
+        nextLabel: 'next',
+        lastLabel: 'last',
+        firstIcon: 'firstIcon',
+        prevIcon: 'prevIcon',
+        nextIcon: 'nextIcon',
+        lastIcon: 'lastIcon'
       };
 
       tag().init();
@@ -60,14 +60,14 @@ suite('gb-paging', Paging, ({
       expect(tag().terminals).to.be.false;
       expect(tag().labels).to.be.false;
       expect(tag().icons).to.be.false;
-      expect(tag().first_label).to.eq('first');
-      expect(tag().prev_label).to.eq('prev');
-      expect(tag().next_label).to.eq('next');
-      expect(tag().last_label).to.eq('last');
-      expect(tag().first_icon).to.eq('first_icon');
-      expect(tag().prev_icon).to.eq('prev_icon');
-      expect(tag().next_icon).to.eq('next_icon');
-      expect(tag().last_icon).to.eq('last_icon');
+      expect(tag().fistLabel).to.eq('first');
+      expect(tag().prevLabel).to.eq('prev');
+      expect(tag().nextLabel).to.eq('next');
+      expect(tag().lastLabel).to.eq('last');
+      expect(tag().firstIcon).to.eq('firstIcon');
+      expect(tag().prevIcon).to.eq('prevIcon');
+      expect(tag().nextIcon).to.eq('nextIcon');
+      expect(tag().lastIcon).to.eq('lastIcon');
     });
 
     it('should listen for events', () => {

@@ -45,12 +45,12 @@ suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
   });
 
   it('should render alternate labels', () => {
-    const next_label = 'next page!';
-    const first_label = 'first page!';
-    const model = new Model(mount({ next_label, first_label }));
+    const nextLabel = 'next page!';
+    const fistLabel = 'first page!';
+    const model = new Model(mount({ nextLabel, fistLabel }));
 
-    expect(model.terminalSpan('first').textContent).to.eq(first_label);
-    expect(model.pagerSpan('next').textContent).to.eq(next_label);
+    expect(model.terminalSpan('first').textContent).to.eq(fistLabel);
+    expect(model.pagerSpan('next').textContent).to.eq(nextLabel);
   });
 
   it('should not render icons', () => {
@@ -60,25 +60,25 @@ suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
   });
 
   it('should render icons with classes', () => {
-    const prev_icon = 'fa fa-backward';
-    const last_icon = 'fa fa-double-forward';
-    const model = new Model(mount({ prev_icon, last_icon }));
+    const prevIcon = 'fa fa-backward';
+    const lastIcon = 'fa fa-double-forward';
+    const model = new Model(mount({ prevIcon, lastIcon }));
 
     expect(model.terminalImage('last')).to.not.be.ok;
-    expect(model.terminalIcon('last').className).to.eq(last_icon);
+    expect(model.terminalIcon('last').className).to.eq(lastIcon);
     expect(model.pagerImage('prev')).to.not.be.ok;
-    expect(model.pagerIcon('prev').className).to.eq(prev_icon);
+    expect(model.pagerIcon('prev').className).to.eq(prevIcon);
   });
 
   it('should render icons with URLs', () => {
-    const prev_icon = 'images/back.svg';
-    const last_icon = 'images/end.svg';
-    const model = new Model(mount({ prev_icon, last_icon }));
+    const prevIcon = 'images/back.svg';
+    const lastIcon = 'images/end.svg';
+    const model = new Model(mount({ prevIcon, lastIcon }));
 
     expect(model.terminalIcon('last')).to.not.be.ok;
-    expect(model.terminalImage('last').src).to.contain(last_icon);
+    expect(model.terminalImage('last').src).to.contain(lastIcon);
     expect(model.pagerIcon('prev')).to.not.be.ok;
-    expect(model.pagerImage('prev').src).to.contain(prev_icon);
+    expect(model.pagerImage('prev').src).to.contain(prevIcon);
   });
 
   describe('allowed paging behaviour', () => {

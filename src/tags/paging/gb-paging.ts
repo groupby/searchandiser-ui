@@ -10,15 +10,15 @@ export interface PagingConfig {
   labels?: boolean;
   icons?: boolean;
 
-  prev_label?: string;
-  next_label?: string;
-  first_label?: string;
-  last_label?: string;
+  prevLabel?: string;
+  nextLabel?: string;
+  fistLabel?: string;
+  lastLabel?: string;
 
-  prev_icon?: string;
-  next_icon?: string;
-  first_icon?: string;
-  last_icon?: string;
+  prevIcon?: string;
+  nextIcon?: string;
+  firstIcon?: string;
+  lastIcon?: string;
 }
 
 export interface Paging extends FluxTag<any> { }
@@ -30,14 +30,14 @@ export class Paging {
   terminals: boolean;
   labels: boolean;
   icons: boolean;
-  prev_label: string;
-  next_label: string;
-  first_label: string;
-  last_label: string;
-  prev_icon: string;
-  next_icon: string;
-  first_icon: string;
-  last_icon: string;
+  prevLabel: string;
+  nextLabel: string;
+  fistLabel: string;
+  lastLabel: string;
+  prevIcon: string;
+  nextIcon: string;
+  firstIcon: string;
+  lastIcon: string;
 
   forwardDisabled: boolean;
   backDisabled: boolean;
@@ -56,14 +56,14 @@ export class Paging {
     this.terminals = checkBooleanAttr('terminals', this.opts, true);
     this.labels = checkBooleanAttr('labels', this.opts, true);
     this.icons = checkBooleanAttr('icons', this.opts, true);
-    this.first_label = this.opts.first_label || 'First';
-    this.prev_label = this.opts.prev_label || 'Prev';
-    this.next_label = this.opts.next_label || 'Next';
-    this.last_label = this.opts.last_label || 'Last';
-    this.first_icon = this.opts.first_icon || require('./double-arrow-left.png');
-    this.prev_icon = this.opts.prev_icon || require('./arrow-left.png');
-    this.next_icon = this.opts.next_icon || require('./arrow-right.png');
-    this.last_icon = this.opts.last_icon || require('./double-arrow-right.png');
+    this.fistLabel = this.opts.fistLabel || 'First';
+    this.prevLabel = this.opts.prevLabel || 'Prev';
+    this.nextLabel = this.opts.nextLabel || 'Next';
+    this.lastLabel = this.opts.lastLabel || 'Last';
+    this.firstIcon = this.opts.firstIcon || require('./double-arrow-left.png');
+    this.prevIcon = this.opts.prevIcon || require('./arrow-left.png');
+    this.nextIcon = this.opts.nextIcon || require('./arrow-right.png');
+    this.lastIcon = this.opts.lastIcon || require('./double-arrow-right.png');
 
     // default initial state
     this.backDisabled = true;
