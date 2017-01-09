@@ -1,4 +1,4 @@
-import { findTag } from '../../utils/common';
+import { checkBooleanAttr, findTag } from '../../utils/common';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
 import { FluxTag } from '../tag';
@@ -13,13 +13,7 @@ export interface QueryConfig {
   staticSearch?: boolean;
 }
 
-export const DEFAULT_CONFIG: QueryConfig = {
-  sayt: true,
-  autoSearch: true,
-  staticSearch: false
-};
-
-export interface Query extends FluxTag<QueryConfig> {
+export interface Query extends FluxTag<any> {
   root: riot.TagElement & HTMLInputElement;
   tags: {
     'gb-sayt': Sayt;
@@ -33,12 +27,17 @@ export interface Query extends FluxTag<QueryConfig> {
 
 export class Query {
 
+  sayt: boolean;
+  autoSearch: boolean;
+  staticSearch: boolean;
+
   searchBox: HTMLInputElement;
   enterKeyHandlers: Function[];
 
   init() {
-    this.configure(DEFAULT_CONFIG);
-
+    this.sayt = checkBooleanAttr('sayt', this.opts, true);
+    this.autoSearch = checkBooleanAttr('autoSearch', this.opts, true);
+    this.staticSearch = checkBooleanAttr('staticSearch', this.opts);
     this.enterKeyHandlers = [];
 
     this.on('mount', this.attachListeners);
@@ -48,13 +47,13 @@ export class Query {
   attachListeners() {
     this.searchBox = this.findSearchBox();
     this.searchBox.addEventListener('keydown', this.keydownListener);
-    if (this._config.sayt) {
+    if (this.sayt) {
       this.tags['gb-sayt'].listenForInput(this);
     }
 
-    if (this._config.autoSearch) {
+    if (this.autoSearch) {
       this.listenForInput();
-    } else if (this._config.staticSearch) {
+    } else if (this.staticSearch) {
       this.listenForStaticSearch();
     } else {
       this.listenForSubmit();
@@ -114,7 +113,7 @@ export class Query {
     }
   }
 
-  private inputValue() {
+  inputValue() {
     return this.searchBox.value;
   }
 }
