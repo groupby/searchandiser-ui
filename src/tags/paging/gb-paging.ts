@@ -52,7 +52,7 @@ export class Paging {
   lowOverflow: boolean;
   highOverflow: boolean;
   currentPage: number;
-  lastPage: number;
+  finalPage: number;
   pageNumbers: number[];
   pager: FluxPager;
 
@@ -86,20 +86,20 @@ export class Paging {
 
   pageInfo() {
     const pageNumbers = this.flux.page.pageNumbers(this._config.limit);
-    const lastPage = this.flux.page.finalPage;
+    const finalPage = this.flux.page.finalPage;
     const currentPage = this.flux.page.currentPage;
-    this.updatePageInfo(pageNumbers, currentPage, lastPage);
+    this.updatePageInfo(pageNumbers, currentPage, finalPage);
   }
 
-  updatePageInfo(pageNumbers: number[], currentPage: number, lastPage: number) {
+  updatePageInfo(pageNumbers: number[], currentPage: number, finalPage: number) {
     this.update({
       pageNumbers,
       currentPage,
-      lastPage,
+      finalPage,
       lowOverflow: pageNumbers[0] !== 1,
-      highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
+      highOverflow: pageNumbers[pageNumbers.length - 1] !== finalPage,
       backDisabled: currentPage === 1,
-      forwardDisabled: currentPage === lastPage
+      forwardDisabled: currentPage === finalPage
     });
   }
 
@@ -115,6 +115,34 @@ export class Paging {
       last: () => !this.forwardDisabled && pager.last().then(this.emitEvent),
       switchPage: (page) => pager.switchPage(page).then(this.emitEvent)
     };
+  }
+
+  firstPage() {
+    if (!this.backDisabled) {
+      this.flux.page.reset().then(this.emitEvent);
+    }
+  }
+
+  prevPage() {
+    if (!this.backDisabled) {
+      this.flux.page.prev().then(this.emitEvent);
+    }
+  }
+
+  nextPage() {
+    if (!this.forwardDisabled) {
+      this.flux.page.next().then(this.emitEvent);
+    }
+  }
+
+  lastPage() {
+    if (!this.forwardDisabled) {
+      this.flux.page.last().then(this.emitEvent);
+    }
+  }
+
+  switchPage({ target }: { target: HTMLAnchorElement }) {
+    this.flux.page.switchPage(Number(target.text)).then(this.emitEvent);
   }
 
   emitEvent() {
