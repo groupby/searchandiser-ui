@@ -1,20 +1,15 @@
 <gb-terminal-pager>
   <div class="gb-terminal-pager { _style }">
-    <a class="gb-terminal__link first { disabled: _scope.backDisabled }" if="{ _scope._config.terminals }" onclick="{ _scope.pager.first }">
-      <gb-icon if="{ _config.icons }" value="{ _config.first_icon }"></gb-icon>
-      <span if="{ _config.labels }">{ _config.numeric ? 1 : _config.first_label }</span>
+    <a class="gb-terminal__link first { disabled: $pageable.backDisabled }" if="{ $pageable.terminals }" onclick="{ $pageable.pager.first }">
+      <gb-icon if="{ $pageable.icons }" value="{ $pageable.first_icon }"></gb-icon>
+      <span if="{ $pageable.labels }">{ $pageable.numeric ? 1 : $pageable.first_label }</span>
     </a>
     <yield/>
-    <a class="gb-terminal__link last { disabled: _scope.forwardDisabled }" if="{ _config.terminals }" onclick="{ _scope.pager.last }">
-      <span if="{ _config.labels }">{ _config.numeric ? _scope.lastPage : _config.last_label }</span>
-      <gb-icon if="{ _config.icons }" value="{ _config.last_icon }"></gb-icon>
+    <a class="gb-terminal__link last { disabled: $pageable.forwardDisabled }" if="{ $pageable.terminals }" onclick="{ $pageable.pager.last }">
+      <span if="{ $pageable.labels }">{ $pageable.numeric ? $pageable.lastPage : $pageable.last_label }</span>
+      <gb-icon if="{ $pageable.icons }" value="{ $pageable.last_icon }"></gb-icon>
     </a>
   </div>
-
-  <script>
-    import { TerminalPager } from './gb-terminal-pager';
-    this._mixin(TerminalPager);
-  </script>
 
   <style scoped>
     .gb-stylish a {

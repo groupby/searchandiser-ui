@@ -1,20 +1,15 @@
 <gb-pager>
   <div class="gb-pager { _style }">
-    <a class="gb-pager__link prev { disabled: _scope.backDisabled }" onclick="{ _scope.pager.prev }">
-      <gb-icon if="{ _config.icons }" value="{ _config.prev_icon }"></gb-icon>
-      <span if="{ _config.labels }">{ _config.prev_label }</span>
+    <a class="gb-pager__link prev { disabled: $pageable.backDisabled }" onclick="{ $pageable.pager.prev }">
+      <gb-icon if="{ $pageable.icons }" value="{ $pageable.prev_icon }"></gb-icon>
+      <span if="{ $pageable.labels }">{ $pageable.prev_label }</span>
     </a>
     <yield/>
-    <a class="gb-pager__link next { disabled: _scope.forwardDisabled }" onclick="{ _scope.pager.next }">
-      <span if="{ _config.labels }">{ _config.next_label }</span>
-      <gb-icon if="{ _config.icons }" value="{ _config.next_icon }"></gb-icon>
+    <a class="gb-pager__link next { disabled: $pageable.forwardDisabled }" onclick="{ $pageable.pager.next }">
+      <span if="{ $pageable.labels }">{ $pageable.next_label }</span>
+      <gb-icon if="{ $pageable.icons }" value="{ $pageable.next_icon }"></gb-icon>
     </a>
   </div>
-
-  <script>
-    import { Pager } from './gb-pager';
-    this._mixin(Pager);
-  </script>
 
   <style scoped>
     .gb-stylish a {

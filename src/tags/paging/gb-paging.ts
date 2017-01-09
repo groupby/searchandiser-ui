@@ -57,7 +57,7 @@ export class Paging {
   pager: FluxPager;
 
   init() {
-    this.alias('p');
+    this.alias('pageable');
 
     this.limit = this.opts.limit || 5;
     this.pages = checkBooleanAttr('pages', this.opts);

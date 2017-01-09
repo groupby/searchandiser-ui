@@ -9,9 +9,8 @@ suite('gb-paging', Paging, ({
 }) => {
 
   describe('init()', () => {
-    it.only('should alias self as pageable', () => {
-      console.log({ pageable: tag() });
-      // expectAliases(() => tag().init(), { pageable: tag() });
+    it('should alias self as pageable', () => {
+      expectAliases(() => tag().init(), { pageable: tag() });
     });
 
     it('should have default initial state', () => {
