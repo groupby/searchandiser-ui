@@ -1,4 +1,4 @@
-import { findSearchBox } from '../../utils/common';
+import { checkBooleanAttr, findSearchBox } from '../../utils/common';
 import { FluxTag } from '../tag';
 import * as riot from 'riot';
 
@@ -7,24 +7,23 @@ export interface SubmitConfig {
   staticSearch?: boolean;
 }
 
-export const DEFAULT_CONFIG: SubmitConfig = {
-  label: 'Search',
-  staticSearch: false
-};
-
-export interface Submit extends FluxTag<SubmitConfig> {
+export interface Submit extends FluxTag<any> {
   root: riot.TagElement & { value: any };
 }
 
 export class Submit {
 
+  label: string;
+  staticSearch: boolean;
+
   searchBox: HTMLInputElement;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.label = this.opts.label || 'Search';
+    this.staticSearch = checkBooleanAttr('staticSearch', this.opts);
 
     if (this.root.tagName === 'INPUT') {
-      this.root.value = this._config.label;
+      this.root.value = this.label;
     }
 
     this.on('mount', this.setSearchBox);
@@ -38,7 +37,7 @@ export class Submit {
   submitQuery() {
     const inputValue = this.searchBox.value;
 
-    if (this._config.staticSearch && this.services.url.isActive()) {
+    if (this.staticSearch && this.services.url.isActive()) {
       return Promise.resolve(this.services.url.update(this.flux.query.withQuery(inputValue)
         .withConfiguration(<any>{ refinements: [] })));
     } else {

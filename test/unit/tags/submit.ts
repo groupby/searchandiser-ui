@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, Submit } from '../../../src/tags/submit/gb-submit';
+import { Submit } from '../../../src/tags/submit/gb-submit';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,8 +6,7 @@ import { Query } from 'groupby-api';
 
 suite('gb-submit', Submit, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
@@ -15,7 +14,22 @@ suite('gb-submit', Submit, ({
 
     beforeEach(() => tag().root = ROOT);
 
-    itShouldConfigure(DEFAULT_CONFIG);
+    it('should set defaults', () => {
+      tag().init();
+
+      expect(tag().label).to.eq('Search');
+      expect(tag().staticSearch).to.be.false;
+    });
+
+    it('should set properties from opts', () => {
+      const label = 'Search here!';
+      tag().opts = { staticSearch: true, label };
+
+      tag().init();
+
+      expect(tag().label).to.eq(label);
+      expect(tag().staticSearch).to.be.true;
+    });
 
     it('should set label for input tag', () => {
       tag().root = Object.assign({}, ROOT, { tagName: 'INPUT' });
@@ -101,7 +115,7 @@ suite('gb-submit', Submit, ({
       flux().query = new Query('other')
         .withSelectedRefinements({ navigationName: 'colour', type: 'Value', value: 'blue' })
         .skip(20);
-      tag()._config.staticSearch = true;
+      tag().staticSearch = true;
       tag().searchBox = <HTMLInputElement>{ value: query };
       tag().services = <any>{ url: { update, isActive: () => true } };
 
