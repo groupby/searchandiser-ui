@@ -21,7 +21,6 @@ export class Collections {
   showCounts: boolean;
 
   counts: { [key: string]: number };
-  labels: { [key: string]: string };
 
   init() {
     this.alias(['collections', 'listable', 'selectable']);
@@ -31,7 +30,6 @@ export class Collections {
 
     const collectionsService = this.services.collections;
     this.items = collectionsService.items;
-    this.labels = collectionsService.isLabeled ? this.items.reduce(this.extractLabels, {}) : {};
     this.counts = {};
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
@@ -51,9 +49,5 @@ export class Collections {
 
   onSelect(collection: string) {
     this.flux.switchCollection(collection);
-  }
-
-  extractLabels(labels: any, collection: { value: string; label: string; }) {
-    return Object.assign(labels, { [collection.value]: collection.label });
   }
 }

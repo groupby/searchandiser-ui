@@ -18,8 +18,8 @@ suite('collections', ({ spy, stub }) => {
     });
 
     it('should take overrides for properties', () => {
-      const options = [{ value: 'b' }];
-      const collections = { collections: 'my collection', counts: false, options };
+      const items = [{ value: 'b' }];
+      const collections = { collections: 'my collection', showCounts: false, items };
       const config: any = { tags: { collections } };
 
       const service = new Collections(<any>{}, config);
@@ -28,7 +28,7 @@ suite('collections', ({ spy, stub }) => {
       expect(service.fetchCounts).to.be.false;
       expect(service.isLabeled).to.be.true;
       expect(service.collections).to.eql(['b']);
-      expect(service.items).to.eq(options);
+      expect(service.items).to.eq(items);
     });
   });
 

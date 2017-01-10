@@ -1,49 +1,43 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
-import { Collections, DEFAULT_CONFIG } from '../../../src/tags/collections/gb-collections';
+import { Collections } from '../../../src/tags/collections/gb-collections';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-collections', Collections, ({
   flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
     beforeEach(() => tag().services = <any>{ collections: {} });
 
-    itShouldConfigure(DEFAULT_CONFIG);
+    itShouldAlias(['collections', 'listable', 'selectable']);
 
-    it('should set options from calculated config', () => {
-      const options = [{ a: 'b' }];
-      tag().configure = () => tag()._config = <any>{ options };
-
+    it('should set default values', () => {
       tag().init();
 
-      expect(tag().items).to.eql(options);
+      expect(tag().showCounts).to.be.true;
+      expect(tag().dropdown).to.be.false;
+      expect(tag().counts).to.eql({});
     });
 
-    it('should get values from collections service', () => {
-      tag().services = <any>{ collections: { collections: [] } };
+    it('should set properties from opts', () => {
+      tag().opts = { showCounts: false, dropdown: true };
 
       tag().init();
 
-      expect(tag().collections).to.eql([]);
+      expect(tag().showCounts).to.be.false;
+      expect(tag().dropdown).to.be.true;
     });
 
-    it('should accept collections with labels', () => {
-      const options = [
-        { value: 'a', label: 'A' },
-        { value: 'b', label: 'B' },
-        { value: 'c', label: 'C' }];
-      const collections = ['a', 'b', 'c'];
-      tag().configure = () => tag()._config = { options };
-      tag().services = <any>{ collections: { collections, isLabeled: true } };
+    it('should set properties from collections service', () => {
+      const items = ['a', 'b'];
+      tag().services = <any>{ collections: { items } };
 
       tag().init();
 
-      expect(tag().collections).to.eq(collections);
-      expect(tag().labels).to.eql({ a: 'A', b: 'B', c: 'C' });
+      expect(tag().items).to.eq(items);
     });
 
     it('should listen for collections_updated event', () => {
@@ -54,9 +48,9 @@ suite('gb-collections', Collections, ({
   });
 
   describe('switchCollection()', () => {
-    it('should call onselect with collection', () => {
+    it('should call onSelect with collection', () => {
       const collection = 'my collection';
-      const onselect = stub(tag(), 'onselect');
+      const onSelect = stub(tag(), 'onSelect');
 
       tag().switchCollection(<any>{
         target: {
@@ -70,7 +64,7 @@ suite('gb-collections', Collections, ({
         }
       });
 
-      expect(onselect).to.have.been.calledWith(collection);
+      expect(onSelect).to.have.been.calledWith(collection);
     });
   });
 
@@ -85,12 +79,12 @@ suite('gb-collections', Collections, ({
     });
   });
 
-  describe('onselect()', () => {
+  describe('onSelect()', () => {
     it('should call flux.switchCollection()', () => {
       const collection = 'onsale';
       const switchCollection = stub(flux(), 'switchCollection');
 
-      tag().onselect(collection);
+      tag().onSelect(collection);
 
       expect(switchCollection).to.have.been.calledWith(collection);
     });

@@ -4,7 +4,7 @@ import { expect } from 'chai';
 
 const MIXIN = { services: { collections: {} } };
 
-suite.only<Collections>('gb-collections', MIXIN, ({
+suite<Collections>('gb-collections', MIXIN, ({
   flux, mount, spy, stub,
   itMountsTag
 }) => {
@@ -37,7 +37,7 @@ suite.only<Collections>('gb-collections', MIXIN, ({
   });
 
   describe('render with items', () => {
-    const OPTIONS = [
+    const ITEMS = [
       { label: '1', value: 'first' },
       { label: '2', value: 'second' },
       { label: '3', value: 'third' }
@@ -49,7 +49,7 @@ suite.only<Collections>('gb-collections', MIXIN, ({
     beforeEach(() => {
       tag = mount();
       model = new Model(tag);
-      tag.update({ items: OPTIONS });
+      tag.update({ items: ITEMS });
     });
 
     it('renders collections as list', () => {
@@ -72,8 +72,6 @@ suite.only<Collections>('gb-collections', MIXIN, ({
     it('renders collection labels and counts', () => {
       tag.update({ counts: COUNTS });
 
-      expect(model.labels).to.have.length(3);
-      expect(model.labels[1].textContent).to.eq('second');
       expect(model.counts[1].textContent).to.eq('453');
     });
 
@@ -91,25 +89,21 @@ suite.only<Collections>('gb-collections', MIXIN, ({
     describe('gb-collection-item', () => {
       it('switches collection on click', () => {
         const onSelect = spy(tag, 'onSelect');
-        const switchCollection = stub(flux(), 'switchCollection');
-        tag.update();
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('.gb-collection')[1]).click();
 
-        expect(onSelect).to.have.been.calledWith(OPTIONS[1]);
-        expect(switchCollection).to.have.been.calledWith(OPTIONS[1]);
+        expect(onSelect).to.have.been.calledWith(ITEMS[1].value);
       });
     });
 
     describe('gb-collection-dropdown-item', () => {
       it('switches dropdown collection on click', () => {
         const switchCollection = stub(flux(), 'switchCollection');
-        tag.dropdown = true;
-        tag.update({ items: OPTIONS });
+        tag.update({ dropdown: true });
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('gb-collection-dropdown-item a')[1]).click();
 
-        expect(switchCollection).to.have.been.calledWith(OPTIONS[1].value);
+        expect(switchCollection).to.have.been.calledWith(ITEMS[1].value);
       });
     });
   });
