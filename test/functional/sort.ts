@@ -20,22 +20,22 @@ suite<Sort>('gb-sort', ({ flux, mount, stub, itMountsTag }) => {
       const tag = mount();
       const model = new Model(tag);
 
-      expect(tag.root.querySelector('gb-option-list')).to.be.ok;
+      expect(tag.root.querySelector('gb-list')).to.be.ok;
       expect(model.label.textContent).to.eq('Name Descending');
-      expect(model.options).to.have.length(2);
-      expect(model.options[1].textContent).to.eq('Name Ascending');
+      expect(model.items).to.have.length(2);
+      expect(model.items[1].textContent).to.eq('Name Ascending');
     });
 
     it('should call flux.sort() on click', () => {
       const model = new Model(mount());
       const sort = stub(flux(), 'sort');
 
-      model.options[1].click();
+      model.items[1].click();
 
-      expect(model.clearOption).to.not.be.ok;
+      expect(model.clearItem).to.not.be.ok;
       expect(sort).to.have.been.calledWith({ field: 'title', order: 'Ascending' });
     });
   });
 });
 
-class Model extends SelectModel<Sort> { }
+class Model extends SelectModel { }

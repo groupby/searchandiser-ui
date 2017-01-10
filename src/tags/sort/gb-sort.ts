@@ -1,4 +1,5 @@
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { Selectable } from '../select/gb-select';
+import { FluxTag } from '../tag';
 import { Results, Sort as SortModel } from 'groupby-api';
 
 export const DEFAULT_SORTS = [
@@ -6,25 +7,23 @@ export const DEFAULT_SORTS = [
   { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
 ];
 
-export interface SortConfig extends SelectConfig {
-  options: any[];
-}
+export interface SortConfig extends Selectable { }
 
-export interface Sort extends SelectTag<SortConfig> { }
+export interface Sort extends FluxTag<any>, Selectable { }
 
 export class Sort {
 
   init() {
-    this.configure();
+    this.alias('selectable');
 
-    this.options = this._config.options || DEFAULT_SORTS;
+    this.items = this.opts.items || DEFAULT_SORTS;
   }
 
   sortValues() {
-    return this.options.map((option) => option.value);
+    return this.items.map((item) => item.value);
   }
 
-  onselect(value: SortModel): Promise<Results> {
+  onSelect(value: SortModel): Promise<Results> {
     return this.flux.sort(value, this.sortValues());
   }
 }

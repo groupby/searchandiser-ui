@@ -18,8 +18,8 @@ suite<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
 
       expect(model.optionList).to.be.ok;
       expect(model.label.textContent).to.eq('10');
-      expect(model.options).to.have.length(4);
-      expect(model.options[2].textContent).to.eq('50');
+      expect(model.items).to.have.length(4);
+      expect(model.items[2].textContent).to.eq('50');
     });
   });
 
@@ -40,18 +40,18 @@ suite<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
 
       expect(html().querySelector('gb-option-list')).to.be.ok;
       expect(model.label.textContent).to.eq('12');
-      expect(model.options).to.have.length(3);
-      expect(model.options[2].textContent).to.eq('40');
+      expect(model.items).to.have.length(3);
+      expect(model.items[2].textContent).to.eq('40');
     });
 
     it('should resize on option selected', (done) => {
       flux().resize = (value): any => {
         expect(value).to.eq(25);
-        expect(model.clearOption).to.not.be.ok;
+        expect(model.clearItem).to.not.be.ok;
         done();
       };
 
-      model.options[1].click();
+      model.items[1].click();
     });
   });
 });

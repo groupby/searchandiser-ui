@@ -116,11 +116,11 @@ export abstract class SelectModel extends BaseModel<any> {
     return this.element(this.html, '.gb-button__label');
   }
 
-  get options() {
+  get items() {
     return this.list(this.html, 'gb-option:not(.clear) a');
   }
 
-  get clearOption() {
+  get clearItem() {
     return this.element(this.html, 'gb-option.clear a');
   }
 }
