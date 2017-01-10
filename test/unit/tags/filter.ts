@@ -39,28 +39,17 @@ suite('gb-filter', Filter, ({
   });
 
   describe('updateValues()', () => {
-    it('should update the select tag with options', () => {
-      const results: any = { x: 'y' };
-      const refinements = [{ a: 'b', c: 'd' }];
-      const updateItems = spy();
-      tag().tags = <any>{ 'gb-select': { updateItems } };
-      tag().convertRefinements = () => refinements;
-
-      tag().updateValues(results);
-
-      expect(updateItems).to.have.been.calledWith(refinements);
-    });
-
     it('should call update() with options', () => {
       const results: any = { x: 'y' };
       const items = [{ a: 'b', c: 'd' }];
       const update = tag().update = spy();
-      tag().tags = <any>{};
+      const clearItem = { e: 'f' };
+      tag().tags = <any>{ 'gb-select': { clearItem } };
       tag().convertRefinements = () => items;
 
       tag().updateValues(results);
 
-      expect(update).to.have.been.calledWith({ items });
+      expect(update).to.have.been.calledWith({ items: [clearItem, ...items] });
     });
   });
 

@@ -31,7 +31,6 @@ export interface Select extends FluxTag<any> {
 }
 
 export class Select {
-  items: any[];
   iconUrl: string;
   label: string;
   hover: boolean;
@@ -49,7 +48,7 @@ export class Select {
     this.alias('select');
     this.alias(['listable', 'linkable'], selectable);
 
-    this.items = selectable.items || [];
+    const items = selectable.items || [];
     this.onSelect = selectable.onSelect;
     this.iconUrl = selectable.iconUrl || require('./arrow-down.png');
     this.label = selectable.label || 'Select';
@@ -60,7 +59,7 @@ export class Select {
     this.default = !('clear' in selectable);
 
     if (this.default) {
-      this.selectedItem = typeof this.items[0] === 'object' ? this.items[0].label : this.items[0];
+      this.selectedItem = typeof items[0] === 'object' ? items[0].label : items[0];
     }
 
     this.on('update', this.updateAliases);
@@ -69,8 +68,8 @@ export class Select {
   updateAliases() {
     // this should also update $listable as they reference the same object
     this.selectable(this.$linkable);
-    if (this.items[0] !== this.clearItem) {
-      this.items.unshift(this.clearItem);
+    if (!this.default) {
+      this.$linkable.items.unshift(this.clearItem);
     }
   }
 
