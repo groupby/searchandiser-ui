@@ -1,9 +1,10 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
 import { toRefinement } from '../../utils/common';
-import { Select, SelectConfig, SelectTag } from '../select/gb-select';
+import { Select, Selectable } from '../select/gb-select';
+import { FluxTag } from '../tag';
 import { Results } from 'groupby-api';
 
-export interface FilterConfig extends SelectConfig {
+export interface FilterConfig extends Selectable {
   field: string;
 }
 
@@ -13,19 +14,22 @@ export const DEFAULT_CONFIG: FilterConfig = {
   clear: 'Unfiltered'
 };
 
-export interface Filter extends SelectTag<FilterConfig> {
+export interface Filter extends FluxTag<any>, Selectable {
   tags: {
     'gb-select': Select<FilterConfig>;
   };
 }
 
 export class Filter {
+  field: string;
 
   _config: FilterConfig;
   selected: any;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.field = this.opts.field;
+    this.label = this.opts.label || 'Filter';
+    this.clear = this.opts.clear || 'Unfiltered';
 
     this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
   }
