@@ -12,21 +12,19 @@ suite('collections', ({ spy, stub }) => {
 
       expect(service.collectionsConfig).to.eql({});
       expect(service.fetchCounts).to.be.true;
-      expect(service.isLabeled).to.be.false;
       expect(service.collections).to.eql([]);
       expect(service.items).to.eql([]);
     });
 
     it('should take overrides for properties', () => {
       const items = [{ value: 'b' }];
-      const collections = { collections: 'my collection', showCounts: false, items };
+      const collections = { showCounts: false, items };
       const config: any = { tags: { collections } };
 
       const service = new Collections(<any>{}, config);
 
       expect(service.collectionsConfig).to.eq(collections);
       expect(service.fetchCounts).to.be.false;
-      expect(service.isLabeled).to.be.true;
       expect(service.collections).to.eql(['b']);
       expect(service.items).to.eq(items);
     });
@@ -207,6 +205,21 @@ suite('collections', ({ spy, stub }) => {
 
       expect(service.isSelected(collection)).to.be.true;
       expect(service.isSelected('some collection')).to.be.false;
+    });
+  });
+
+  describe('isLabeled()', () => {
+    let service: Collections;
+
+    beforeEach(() => service = new Collections(<any>{}, <any>{}));
+
+    it('should return true', () => {
+      expect(service.isLabeled(<any[]>[{ a: 'b' }])).to.be.true;
+    });
+
+    it('should return false', () => {
+      expect(service.isLabeled([])).to.be.false;
+      expect(service.isLabeled(['a'])).to.be.false;
     });
   });
 

@@ -53,13 +53,9 @@ suite('gb-collections', Collections, ({
       const onSelect = stub(tag(), 'onSelect');
 
       tag().switchCollection(<any>{
-        target: {
-          tagName: 'SPAN',
-          parentElement: {
-            tagName: 'A',
-            dataset: {
-              collection
-            }
+        currentTarget: {
+          dataset: {
+            collection
           }
         }
       });

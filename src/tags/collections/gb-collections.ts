@@ -9,7 +9,7 @@ export interface CollectionOption {
 }
 
 export interface CollectionsConfig extends Selectable {
-  items: Array<string | CollectionOption>;
+  items: string[] | CollectionOption[];
   dropdown?: boolean;
   showCounts?: boolean;
 }
@@ -28,8 +28,7 @@ export class Collections {
     this.showCounts = checkBooleanAttr('showCounts', this.opts, true);
     this.dropdown = checkBooleanAttr('dropdown', this.opts);
 
-    const collectionsService = this.services.collections;
-    this.items = collectionsService.items;
+    this.items = this.services.collections.items;
     this.counts = {};
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
@@ -39,12 +38,8 @@ export class Collections {
     this.update({ counts });
   }
 
-  switchCollection(event: MouseEvent) {
-    let element = <HTMLElement>event.target;
-    while (element.tagName !== 'A') {
-      element = element.parentElement;
-    }
-    this.onSelect(element.dataset['collection']);
+  switchCollection({ currentTarget}: { currentTarget: HTMLAnchorElement }) {
+    this.onSelect(currentTarget.dataset['collection']);
   }
 
   onSelect(collection: string) {
