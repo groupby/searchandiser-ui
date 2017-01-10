@@ -13,7 +13,7 @@
       position: relative;
       display: inline-block;
     }
-    gb-option-list {
+    gb-list {
       display: none;
       z-index: 100;
       position: absolute;
@@ -23,9 +23,27 @@
       max-height: 300px;
       overflow-y: scroll;
     }
-    .gb-select.hoverable:hover gb-option-list,
-    .gb-select.clickable button:focus + gb-option-list,
-    gb-option-list:hover {
+    gb-list ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    gb-list ul:hover {
+      display: block;
+    }
+    gb-option a {
+      cursor: pointer;
+      display: block;
+      text-decoration: none;
+      color: black;
+      padding: 10px 12px;
+    }
+    gb-option a:hover {
+      background-color: #eee;
+    }
+    .gb-select.hoverable:hover gb-list,
+    .gb-select.clickable button:focus + gb-list,
+    gb-list:hover {
       display: block;
     }
     .gb-stylish.gb-select:hover button,
