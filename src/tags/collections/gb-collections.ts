@@ -17,26 +17,23 @@ export interface CollectionsConfig extends Selectable {
 export interface Collections extends FluxTag<any>, Selectable { }
 
 export class Collections {
-  items: Array<string | CollectionOption>;
   dropdown: boolean;
   showCounts: boolean;
 
-  collections: string[];
   counts: { [key: string]: number };
   labels: { [key: string]: string };
 
   init() {
     this.alias(['collections', 'listable', 'selectable']);
 
-    this.items = this.opts.items || [];
+    // const items = this.opts.items || [];
+    const items = this.config.tags.collections.options || [];
     this.showCounts = checkBooleanAttr('showCounts', this.opts, true);
     this.dropdown = checkBooleanAttr('dropdown', this.opts);
 
     const collectionsService = this.services.collections;
-    this.collections = collectionsService.collections;
-    this.labels = collectionsService.isLabeled
-      ? this.items.reduce(this.extractLabels, {})
-      : {};
+    this.items = collectionsService.collections;
+    this.labels = collectionsService.isLabeled ? items.reduce(this.extractLabels, {}) : {};
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
   }
