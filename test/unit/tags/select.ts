@@ -2,9 +2,23 @@ import { Select } from '../../../src/tags/select/gb-select';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-select', Select, ({ tag, spy, stub }) => {
+suite('gb-select', Select, ({
+  tag, spy, stub,
+  expectAliases, expectSubscriptions
+}) => {
 
   describe('init()', () => {
+    it('should alias self and re-alias selectable', () => {
+      const selectable = { a: 'b' };
+      tag().selectable = () => selectable;
+
+      expectAliases(() => tag().init(), {
+        select: undefined,
+        linkable: selectable,
+        listable: selectable
+      });
+    });
+
     it('should have default values', () => {
       tag().init();
 
@@ -23,13 +37,13 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
     });
 
     it('should set properties from selectable', () => {
-      const options = [{ a: 'b' }, { c: 'd' }];
+      const items = [{ a: 'b' }, { c: 'd' }];
       const iconUrl = 'image.png';
       const label = 'Choice';
       const clear = 'None selected';
       const onSelect = () => null;
       tag().selectable = () => ({
-        options,
+        items,
         onSelect,
         iconUrl,
         label,
@@ -40,7 +54,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().init();
 
-      expect(tag().items).to.eql(options);
+      expect(tag().items).to.eql(items);
       expect(tag().onSelect).to.eq(onSelect);
       expect(tag().iconUrl).to.eq(iconUrl);
       expect(tag().label).to.eq(label);
@@ -51,77 +65,92 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       expect(tag().default).to.be.false;
     });
 
-    it('should override selectedOption with first label when options set and clear undefined', () => {
-      const options = [
+    it('should override selectedOption with first label when items set and clear undefined', () => {
+      const items = [
         { label: 'Value Descending' },
         { label: 'Value Ascending' }
       ];
-      tag().selectable = () => ({ options });
+      tag().selectable = () => ({ items });
 
       tag().init();
 
       expect(tag().default).to.be.true;
-      expect(tag().selectedItem).to.eq(options[0].label);
+      expect(tag().selectedItem).to.eq(items[0].label);
     });
 
-    it('should override selectedOption with first option when options set and clear undefined', () => {
-      const options = ['first', 'second'];
-      tag().selectable = () => ({ options });
+    it('should override selectedOption with first option when items set and clear undefined', () => {
+      const items = ['first', 'second'];
+      tag().selectable = () => ({ items });
 
       tag().init();
 
       expect(tag().default).to.be.true;
-      expect(tag().selectedItem).to.eq(options[0]);
+      expect(tag().selectedItem).to.eq(items[0]);
+    });
+
+    it('should listen for update', () => {
+      expectSubscriptions(() => tag().init(), { update: tag().updateAliases }, tag());
     });
   });
 
-  describe('updateOptions()', () => {
-    it('should update options', () => {
-      const options = ['first', 'second'];
+  describe('updateAliases()', () => {
+    it('should call selectable() with $linkable', () => {
+      const linkable = tag().$linkable = <any>{ a: 'b' };
+      const selectable = tag().selectable = spy();
+
+      tag().updateAliases();
+
+      expect(selectable).to.have.been.calledWith(linkable);
+    });
+  });
+
+  describe('updateItems()', () => {
+    it('should update items', () => {
+      const items = ['first', 'second'];
       const update = tag().update = spy();
       tag().default = true;
 
-      tag().updateItems(options);
+      tag().updateItems(items);
 
-      expect(update).to.have.been.calledWith({ options });
+      expect(update).to.have.been.calledWith({ items });
     });
 
-    it('should update options with clearOption', () => {
-      const options = ['first', 'second'];
-      const clearOption = tag().clearItem = { label: 'a', clear: true };
+    it('should update items with clearItem', () => {
+      const items = ['first', 'second'];
+      const clearItem = tag().clearItem = { label: 'a', clear: true };
       const update = tag().update = spy();
       tag().default = false;
 
-      tag().updateItems(options);
+      tag().updateItems(items);
 
-      expect(update).to.have.been.calledWith({ options: [clearOption, ...options] });
+      expect(update).to.have.been.calledWith({ items: [clearItem, ...items] });
     });
   });
 
   describe('selectLabel()', () => {
-    it('should return selectedOption', () => {
-      const selectedOption = tag().selectedItem = { a: 'b' };
+    it('should return selectedItem', () => {
+      const selectedItem = tag().selectedItem = { a: 'b' };
 
-      const option = tag().selectLabel();
+      const item = tag().selectLabel();
 
-      expect(option).to.eq(selectedOption);
+      expect(item).to.eq(selectedItem);
     });
 
-    it('should return clearOption', () => {
-      const clearOption = tag().clearItem = <any>{ a: 'b' };
+    it('should return clearItem', () => {
+      const clearItem = tag().clearItem = <any>{ a: 'b' };
       tag().selected = true;
 
-      const option = tag().selectLabel();
+      const item = tag().selectLabel();
 
-      expect(option).to.eq(clearOption);
+      expect(item).to.eq(clearItem);
     });
 
     it('should return label', () => {
       const label = tag().label = <any>{ a: 'b' };
 
-      const option = tag().selectLabel();
+      const item = tag().selectLabel();
 
-      expect(option).to.eq(label);
+      expect(item).to.eq(label);
     });
   });
 
@@ -206,14 +235,14 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
     });
   });
 
-  describe('selectOption()', () => {
-    it('should update selectedOption', () => {
-      const selectedOption = 'a';
+  describe('selectItem()', () => {
+    it('should update selectedItem', () => {
+      const selectedItem = 'a';
       const update = tag().update = spy();
 
-      tag().selectItems(selectedOption, {});
+      tag().selectItem(selectedItem, {});
 
-      expect(update.calledWith({ selectedOption })).to.be.true;
+      expect(update.calledWith({ selectedItem })).to.be.true;
     });
 
     it('should return JSON parsed value', () => {
@@ -221,7 +250,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const callback = tag().onSelect = spy();
       tag().update = () => null;
 
-      tag().selectItems('', JSON.stringify(opts));
+      tag().selectItem('', JSON.stringify(opts));
 
       expect(callback).to.have.been.calledWith(opts);
     });
@@ -231,7 +260,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const callback = tag().onSelect = spy();
       tag().update = () => null;
 
-      tag().selectItems('', opts);
+      tag().selectItem('', opts);
 
       expect(callback).to.have.been.calledWith(opts);
     });
@@ -240,7 +269,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const callback = tag().onSelect = spy();
       tag().update = () => null;
 
-      tag().selectItems('', undefined);
+      tag().selectItem('', undefined);
 
       expect(callback).to.have.been.calledWith('*');
     });
@@ -248,60 +277,56 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
   describe('selectNative()', () => {
     it('should call update() with selected', () => {
-      const option = { value: 'hat', text: 'Hat' };
+      const item = { value: 'hat', text: 'Hat' };
       const options = [{ disabled: true }];
       const update = tag().update = spy();
-      const selectOption = stub(tag(), 'selectOption');
+      const selectItem = stub(tag(), 'selectItem');
       tag().nativeSelect = () => <any>({ options });
 
-      tag().selectNative(<any>{
-        target: {
-          selectedOptions: [option]
-        }
-      });
+      tag().selectNative(<any>{ target: { selectedOptions: [item] } });
 
       expect(options[0].disabled).to.be.false;
-      expect(update).to.have.been.calledWith({ selected: option.value });
-      expect(selectOption).to.have.been.calledWith(option.text, option.value);
+      expect(update).to.have.been.calledWith({ selected: item.value });
+      expect(selectItem).to.have.been.calledWith(item.text, item.value);
     });
 
-    it('should set first option enabled', () => {
-      const option = { text: 'Hat' };
+    it('should set first item enabled', () => {
+      const item = { text: 'Hat' };
       const options = [{ disabled: true }];
       const nativeSelect = stub(tag(), 'nativeSelect').returns({ options });
       const update = tag().update = spy();
-      const selectOption = stub(tag(), 'selectOption');
+      const selectItem = stub(tag(), 'selectItem');
 
-      tag().selectNative(<any>{ target: { selectedOptions: [option] } });
+      tag().selectNative(<any>{ target: { selectedOptions: [item] } });
 
       expect(options[0].disabled).to.be.true;
       expect(nativeSelect).to.have.been.called;
       expect(update).to.have.been.called;
-      expect(selectOption).to.have.been.called;
+      expect(selectItem).to.have.been.called;
     });
   });
 
   describe('selectCustom()', () => {
-    it('should select option', () => {
-      const option = { value: 'hat', label: 'Hat' };
-      const selectOption = stub(tag(), 'selectOption');
+    it('should select item', () => {
+      const item = { value: 'hat', label: 'Hat' };
+      const selectItem = stub(tag(), 'selectItem');
       const blur = spy();
       tag().selectButton = () => <any>({ blur });
 
-      tag().selectCustom(option);
+      tag().selectCustom(item);
 
       expect(blur).to.have.been.called;
-      expect(selectOption).to.have.been.calledWith(option.label, option.value);
+      expect(selectItem).to.have.been.calledWith(item.label, item.value);
     });
   });
 
   describe('clearSelection()', () => {
-    it('should call selectOption()', () => {
-      const selectOption = stub(tag(), 'selectOption');
+    it('should call selectItem()', () => {
+      const selectItem = stub(tag(), 'selectItem');
 
       tag().clearSelection();
 
-      expect(selectOption).to.have.been.calledWith(undefined, '*');
+      expect(selectItem).to.have.been.calledWith(undefined, '*');
     });
   });
 });

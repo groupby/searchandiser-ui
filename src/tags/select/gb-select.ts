@@ -62,10 +62,12 @@ export class Select {
     if (this.default) {
       this.selectedItem = typeof this.items[0] === 'object' ? this.items[0].label : this.items[0];
     }
+
+    this.on('update', this.updateAliases);
   }
 
   updateAliases() {
-    // this should also update $listable
+    // this should also update $listable as they reference the same object
     this.selectable(this.$linkable);
   }
 

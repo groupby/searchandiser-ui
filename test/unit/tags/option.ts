@@ -8,7 +8,7 @@ suite('gb-option', Option, ({ tag, spy }) => {
     it('should add class clear to root', () => {
       const add = spy();
       tag().$item = { clear: true };
-      tag().$select = <any>{ optionLabel: () => null, optionValue: () => null };
+      tag().$select = <any>{ itemLabel: () => null, itemValue: () => null };
       tag().root = <any>{ classList: { add } };
 
       tag().init();
@@ -17,9 +17,9 @@ suite('gb-option', Option, ({ tag, spy }) => {
     it('should set label and value', () => {
       const label = 'My Value';
       const value = 'my_value';
-      const optionLabel = () => label;
-      const optionValue = () => value;
-      tag().$select = <any>{ optionLabel, optionValue };
+      const itemLabel = () => label;
+      const itemValue = () => value;
+      tag().$select = <any>{ itemLabel, itemValue };
       tag().$item = {};
 
       tag().init();
