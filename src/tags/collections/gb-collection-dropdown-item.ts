@@ -9,10 +9,9 @@ export interface CollectionDropdownItem extends FluxTag<any> {
 export class CollectionDropdownItem {
 
   selectDropdown() {
-    if (typeof this.$item === 'object') {
-      this.$select.selectCustom(this.$item);
-    } else {
-      this.$select.selectCustom({ label: this.$item, value: this.$item });
-    }
+    this.$select.selectCustom({
+      label: this.$item.label || this.$item,
+      value: this.$item.value || this.$item
+    });
   }
 }

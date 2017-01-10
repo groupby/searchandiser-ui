@@ -9,7 +9,7 @@ export interface CollectionOption {
 }
 
 export interface CollectionsConfig extends Selectable {
-  items: string[] | CollectionOption[];
+  items: Array<string | CollectionOption>;
   dropdown?: boolean;
   showCounts?: boolean;
 }
@@ -26,14 +26,13 @@ export class Collections {
   init() {
     this.alias(['collections', 'listable', 'selectable']);
 
-    // const items = this.opts.items || [];
-    const items = this.config.tags.collections.options || [];
     this.showCounts = checkBooleanAttr('showCounts', this.opts, true);
     this.dropdown = checkBooleanAttr('dropdown', this.opts);
 
     const collectionsService = this.services.collections;
-    this.items = collectionsService.collections;
-    this.labels = collectionsService.isLabeled ? items.reduce(this.extractLabels, {}) : {};
+    this.items = collectionsService.items;
+    this.labels = collectionsService.isLabeled ? this.items.reduce(this.extractLabels, {}) : {};
+    this.counts = {};
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
   }
@@ -44,7 +43,9 @@ export class Collections {
 
   switchCollection(event: MouseEvent) {
     let element = <HTMLElement>event.target;
-    while (element.tagName !== 'A') element = element.parentElement;
+    while (element.tagName !== 'A') {
+      element = element.parentElement;
+    }
     this.onSelect(element.dataset['collection']);
   }
 
@@ -52,7 +53,7 @@ export class Collections {
     this.flux.switchCollection(collection);
   }
 
-  private extractLabels(labels: any, collection: { value: string; label: string; }) {
+  extractLabels(labels: any, collection: { value: string; label: string; }) {
     return Object.assign(labels, { [collection.value]: collection.label });
   }
 }

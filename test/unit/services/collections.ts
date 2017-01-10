@@ -14,7 +14,7 @@ suite('collections', ({ spy, stub }) => {
       expect(service.fetchCounts).to.be.true;
       expect(service.isLabeled).to.be.false;
       expect(service.collections).to.eql([]);
-      expect(service.options).to.eql([]);
+      expect(service.items).to.eql([]);
     });
 
     it('should take overrides for properties', () => {
@@ -28,7 +28,7 @@ suite('collections', ({ spy, stub }) => {
       expect(service.fetchCounts).to.be.false;
       expect(service.isLabeled).to.be.true;
       expect(service.collections).to.eql(['b']);
-      expect(service.options).to.eq(options);
+      expect(service.items).to.eq(options);
     });
   });
 

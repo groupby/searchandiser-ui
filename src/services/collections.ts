@@ -15,17 +15,17 @@ export class Collections {
   counts: any = {};
   inProgress: CancelablePromise<any>;
   collections: string[];
-  options: string[] | CollectionOption[];
+  items: Array<string | CollectionOption>;
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
     this.collectionsConfig = getPath(config, 'tags.collections') || {};
-    this.fetchCounts = unless(this.collectionsConfig.counts, true);
-    this.options = this.collectionsConfig.items || [];
-    this.isLabeled = this.options.length !== 0
-      && typeof this.options[0] === 'object';
+    this.fetchCounts = unless(this.collectionsConfig.showCounts, true);
+    this.items = this.collectionsConfig.items || [];
+    this.isLabeled = this.items.length !== 0
+      && typeof this.items[0] === 'object';
     this.collections = this.isLabeled
-      ? (<CollectionOption[]>this.options).map((collection) => collection.value)
-      : <string[]>this.options;
+      ? (<CollectionOption[]>this.items).map((collection) => collection.value)
+      : <string[]>this.items;
   }
 
   init() {

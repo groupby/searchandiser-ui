@@ -1,7 +1,7 @@
 <gb-collection-dropdown-item>
   <a class="gb-collection" onclick="{ selectDropdown }">
     <span class="gb-collection__name">{ $item.label || $item }</span>
-    <gb-badge>{ $collections.counts[$item.value || $item.option] }</gb-badge>
+    <gb-badge>{ $collections.counts[$item.value || $item] }</gb-badge>
   </a>
 
   <script>
