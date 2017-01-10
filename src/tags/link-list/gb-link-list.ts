@@ -2,7 +2,7 @@ import { Listable } from '../list/gb-list';
 import { FluxTag } from '../tag';
 
 export interface Linkable extends Listable {
-  onSelect: () => void;
+  onSelect: (obj: any) => void;
 }
 
 export interface LinkList extends FluxTag<any> {

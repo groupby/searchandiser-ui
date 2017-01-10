@@ -14,7 +14,7 @@ suite('gb-page-size', PageSize, ({
       tag().init();
 
       expect(tag().resetOffset).to.be.false;
-      expect(tag().options).to.eql([10, 25, 50, 100]);
+      expect(tag().items).to.eql([10, 25, 50, 100]);
     });
 
     it('should set properties from opts', () => {
@@ -31,7 +31,7 @@ suite('gb-page-size', PageSize, ({
 
       tag().init();
 
-      expect(tag().options).to.eq(pageSizes);
+      expect(tag().items).to.eq(pageSizes);
     });
   });
 

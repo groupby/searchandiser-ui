@@ -1,7 +1,7 @@
 <gb-custom-select>
   <div class="gb-select { $select.hover ? 'hoverable' : 'clickable' } { _style }">
     <button data-is="gb-select-button" type="button"></button>
-    <gb-list items="{ $select.options }" item-alias="option" should-render="{ $select.shouldRender }">
+    <gb-list should-render="{ $select.shouldRender }">
       <yield>
         <gb-option></gb-option>
       </yield>

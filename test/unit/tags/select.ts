@@ -8,16 +8,16 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
     it('should have default values', () => {
       tag().init();
 
-      expect(tag().options).to.eql([]);
+      expect(tag().items).to.eql([]);
       expect(tag().onSelect).to.be.undefined;
       expect(tag().iconUrl).to.eq(tag().iconUrl);
       expect(tag().label).to.eq('Select');
       expect(tag().hover).to.be.false;
       expect(tag().native).to.be.false;
 
-      expect(tag().clearOption).to.eql({ label: 'Unselect', clear: true });
+      expect(tag().clearItem).to.eql({ label: 'Unselect', clear: true });
       expect(tag().default).to.be.true;
-      expect(tag().selectedOption).to.be.undefined;
+      expect(tag().selectedItem).to.be.undefined;
       expect(tag().selected).to.be.undefined;
       expect(tag().focused).to.be.undefined;
     });
@@ -40,14 +40,14 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
       tag().init();
 
-      expect(tag().options).to.eql(options);
+      expect(tag().items).to.eql(options);
       expect(tag().onSelect).to.eq(onSelect);
       expect(tag().iconUrl).to.eq(iconUrl);
       expect(tag().label).to.eq(label);
       expect(tag().hover).to.be.true;
       expect(tag().native).to.be.true;
 
-      expect(tag().clearOption).to.eql({ label: clear, clear: true });
+      expect(tag().clearItem).to.eql({ label: clear, clear: true });
       expect(tag().default).to.be.false;
     });
 
@@ -61,7 +61,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       tag().init();
 
       expect(tag().default).to.be.true;
-      expect(tag().selectedOption).to.eq(options[0].label);
+      expect(tag().selectedItem).to.eq(options[0].label);
     });
 
     it('should override selectedOption with first option when options set and clear undefined', () => {
@@ -71,7 +71,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       tag().init();
 
       expect(tag().default).to.be.true;
-      expect(tag().selectedOption).to.eq(options[0]);
+      expect(tag().selectedItem).to.eq(options[0]);
     });
   });
 
@@ -81,18 +81,18 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const update = tag().update = spy();
       tag().default = true;
 
-      tag().updateOptions(options);
+      tag().updateItems(options);
 
       expect(update).to.have.been.calledWith({ options });
     });
 
     it('should update options with clearOption', () => {
       const options = ['first', 'second'];
-      const clearOption = tag().clearOption = { label: 'a', clear: true };
+      const clearOption = tag().clearItem = { label: 'a', clear: true };
       const update = tag().update = spy();
       tag().default = false;
 
-      tag().updateOptions(options);
+      tag().updateItems(options);
 
       expect(update).to.have.been.calledWith({ options: [clearOption, ...options] });
     });
@@ -100,7 +100,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
 
   describe('selectLabel()', () => {
     it('should return selectedOption', () => {
-      const selectedOption = tag().selectedOption = { a: 'b' };
+      const selectedOption = tag().selectedItem = { a: 'b' };
 
       const option = tag().selectLabel();
 
@@ -108,7 +108,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
     });
 
     it('should return clearOption', () => {
-      const clearOption = tag().clearOption = <any>{ a: 'b' };
+      const clearOption = tag().clearItem = <any>{ a: 'b' };
       tag().selected = true;
 
       const option = tag().selectLabel();
@@ -211,7 +211,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const selectedOption = 'a';
       const update = tag().update = spy();
 
-      tag().selectOption(selectedOption, {});
+      tag().selectItems(selectedOption, {});
 
       expect(update.calledWith({ selectedOption })).to.be.true;
     });
@@ -221,7 +221,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const callback = tag().onSelect = spy();
       tag().update = () => null;
 
-      tag().selectOption('', JSON.stringify(opts));
+      tag().selectItems('', JSON.stringify(opts));
 
       expect(callback).to.have.been.calledWith(opts);
     });
@@ -231,7 +231,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const callback = tag().onSelect = spy();
       tag().update = () => null;
 
-      tag().selectOption('', opts);
+      tag().selectItems('', opts);
 
       expect(callback).to.have.been.calledWith(opts);
     });
@@ -240,7 +240,7 @@ suite('gb-select', Select, ({ tag, spy, stub }) => {
       const callback = tag().onSelect = spy();
       tag().update = () => null;
 
-      tag().selectOption('', undefined);
+      tag().selectItems('', undefined);
 
       expect(callback).to.have.been.calledWith('*');
     });

@@ -1,6 +1,6 @@
 <gb-native-select>
   <select ref="selector" onchange="{ $select.selectNative }">
     <option if="{ !$select.default }" value="" selected disabled>{ $select.selectLabel() }</option>
-    <option each="{ option in $select.options }" if="{ !option.clear }" value="{ $select.optionValue(option) }">{ $select.optionLabel(option) }</option>
+    <option each="{ item in $select.items }" if="{ !item.clear }" value="{ $select.itemValue(item) }">{ $select.itemLabel(item) }</option>
   </select>
 </gb-native-select>

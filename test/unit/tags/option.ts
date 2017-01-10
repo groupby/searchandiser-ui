@@ -7,7 +7,7 @@ suite('gb-option', Option, ({ tag, spy }) => {
   describe('init()', () => {
     it('should add class clear to root', () => {
       const add = spy();
-      tag().$option = { clear: true };
+      tag().$item = { clear: true };
       tag().$select = <any>{ optionLabel: () => null, optionValue: () => null };
       tag().root = <any>{ classList: { add } };
 
@@ -20,7 +20,7 @@ suite('gb-option', Option, ({ tag, spy }) => {
       const optionLabel = () => label;
       const optionValue = () => value;
       tag().$select = <any>{ optionLabel, optionValue };
-      tag().$option = {};
+      tag().$item = {};
 
       tag().init();
 
@@ -33,7 +33,7 @@ suite('gb-option', Option, ({ tag, spy }) => {
     it('should call $select.clearSelection()', () => {
       const clearSelection = spy();
       tag().$select = <any>{ clearSelection };
-      tag().$option = { clear: true };
+      tag().$item = { clear: true };
 
       tag().onSelect();
 
@@ -42,7 +42,7 @@ suite('gb-option', Option, ({ tag, spy }) => {
 
     it('should call $select.selectCustom()', () => {
       const selectCustom = spy();
-      tag().$option = { clear: false };
+      tag().$item = { clear: false };
       tag().$select = <any>{ selectCustom };
 
       tag().onSelect();

@@ -3,7 +3,7 @@ import { Select } from './gb-select';
 
 export interface Option extends FluxTag<any> {
   $select: Select;
-  $option: any;
+  $item: any;
 }
 
 export class Option {
@@ -12,16 +12,16 @@ export class Option {
   value: string;
 
   init() {
-    if (this.$option.clear) {
+    if (this.$item.clear) {
       this.root.classList.add('clear');
     }
 
-    this.label = this.$select.optionLabel(this.$option);
-    this.value = this.$select.optionValue(this.$option);
+    this.label = this.$select.itemLabel(this.$item);
+    this.value = this.$select.itemValue(this.$item);
   }
 
   onSelect() {
-    if (this.$option.clear) {
+    if (this.$item.clear) {
       this.$select.clearSelection();
     } else {
       this.$select.selectCustom(<any>this);

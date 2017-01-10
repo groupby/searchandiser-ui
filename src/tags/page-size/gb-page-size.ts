@@ -17,7 +17,7 @@ export class PageSize {
 
     this.resetOffset = checkBooleanAttr('resetOffset', this.opts);
 
-    this.options = this.config.pageSizes || [10, 25, 50, 100];
+    this.items = this.config.pageSizes || [10, 25, 50, 100];
   }
 
   onSelect(value: number) {

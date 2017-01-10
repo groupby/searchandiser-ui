@@ -1,10 +1,10 @@
 import { checkBooleanAttr } from '../../utils/common';
+import { Linkable } from '../link-list/gb-link-list';
+import { Listable } from '../list/gb-list';
 import { FluxTag } from '../tag';
 import * as riot from 'riot'; // tslint:disable-line:no-unused-variable
 
-export interface Selectable {
-  options: any[];
-  onSelect: (value: any) => void;
+export interface Selectable extends Linkable {
   iconUrl?: string;
   label?: string;
   clear?: string;
@@ -14,6 +14,8 @@ export interface Selectable {
 
 export interface Select extends FluxTag<any> {
   $selectable: Selectable;
+  $linkable: Linkable;
+  $listable: Listable;
   tags: {
     'gb-native-select': FluxTag<any> & {
       refs: {
@@ -29,48 +31,54 @@ export interface Select extends FluxTag<any> {
 }
 
 export class Select {
-  options: any[];
+  items: any[];
   iconUrl: string;
   label: string;
   hover: boolean;
   native: boolean;
 
-  clearOption: { label: string, clear: boolean };
+  clearItem: { label: string, clear: boolean };
   onSelect: Function;
-  selectedOption: any;
+  selectedItem: any;
   default: boolean;
   selected: any;
   focused: boolean;
 
   init() {
-    this.alias('select');
-
     const selectable = this.selectable();
-    this.options = selectable.options || [];
+    this.alias('select');
+    this.alias(['listable', 'linkable'], selectable);
+
+    this.items = selectable.items || [];
     this.onSelect = selectable.onSelect;
     this.iconUrl = selectable.iconUrl || require('./arrow-down.png');
     this.label = selectable.label || 'Select';
     this.hover = checkBooleanAttr('hover', selectable);
     this.native = checkBooleanAttr('native', selectable);
 
-    this.clearOption = { label: selectable.clear || 'Unselect', clear: true };
+    this.clearItem = { label: selectable.clear || 'Unselect', clear: true };
     this.default = !('clear' in selectable);
 
     if (this.default) {
-      this.selectedOption = typeof this.options[0] === 'object' ? this.options[0].label : this.options[0];
+      this.selectedItem = typeof this.items[0] === 'object' ? this.items[0].label : this.items[0];
     }
   }
 
-  selectable() {
-    return Object.assign({}, this.$selectable, this.opts);
+  updateAliases() {
+    // this should also update $listable
+    this.selectable(this.$linkable);
   }
 
-  updateOptions(options: any[]) {
-    this.update({ options: this.default ? options : [this.clearOption, ...options] });
+  selectable(obj: any = {}) {
+    return Object.assign(obj, this.$selectable, this.opts);
+  }
+
+  updateItems(items: any[]) {
+    this.update({ items: this.default ? items : [this.clearItem, ...items] });
   }
 
   selectLabel(): string {
-    return this.selectedOption || (this.selected ? this.clearOption : this.label);
+    return this.selectedItem || (this.selected ? this.clearItem : this.label);
   }
 
   prepFocus() {
@@ -95,8 +103,8 @@ export class Select {
     if (!this.focused) this.selectButton().blur();
   }
 
-  selectOption(selectedOption: string, value: any): void {
-    this.update({ selectedOption });
+  selectItem(selectedItem: string, value: any): void {
+    this.update({ selectedItem });
     if (this.onSelect) {
       try {
         this.onSelect(JSON.parse(value));
@@ -107,31 +115,31 @@ export class Select {
   }
 
   selectNative(event: Event & { target: HTMLSelectElement; }) {
-    const [option] = Array.from(event.target.selectedOptions);
-    const selected = option.value;
+    const [item] = Array.from(event.target.selectedOptions);
+    const selected = item.value;
     this.nativeSelect().options[0].disabled = !selected;
     this.update({ selected });
-    this.selectOption(option.text, selected);
+    this.selectItem(item.text, selected);
   }
 
   selectCustom({ value, label }: { value: string, label: string }) {
     this.selectButton().blur();
-    this.selectOption(label, value);
+    this.selectItem(label, value);
   }
 
   clearSelection() {
-    return this.selectOption(undefined, '*');
+    return this.selectItem(undefined, '*');
   }
 
-  optionValue(option: any) {
-    return typeof option === 'object' ? JSON.stringify(option.value) : option;
+  itemValue(item: any) {
+    return typeof item === 'object' ? JSON.stringify(item.value) : item;
   }
 
-  optionLabel(option: any) {
-    return typeof option === 'object' ? option.label : option;
+  itemLabel(item: any) {
+    return typeof item === 'object' ? item.label : item;
   }
 
-  shouldRender(option: any) {
-    return option.clear ? this.selectedOption : true;
+  shouldRender(item: any) {
+    return item.clear ? this.selectedItem : true;
   }
 }
