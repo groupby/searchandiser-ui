@@ -1,5 +1,5 @@
 <gb-collection-item>
-  <a class="gb-collection" data-collection="{ $item }" onclick="{ $collections.switchCollection }">
+  <a class="gb-collection" data-collection="{ $item.value || $item }" onclick="{ $collections.switchCollection }">
     <span class="gb-collection__name">{ $item.label || $item }</span>
     <gb-badge if="{ $collections.showCounts }">{ $collections.counts[$item.value || $item] }</gb-badge>
   </a>
