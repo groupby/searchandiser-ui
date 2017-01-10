@@ -1,12 +1,14 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { checkBooleanAttr } from '../../utils/common';
+import { Selectable } from '../select/gb-select';
+import { FluxTag } from '../tag';
 
 export interface CollectionOption {
   label: string;
   value: string;
 }
 
-export interface CollectionsConfig extends SelectConfig {
+export interface CollectionsConfig extends Selectable {
   options: string[] | CollectionOption[];
   counts?: boolean;
   dropdown?: boolean;
@@ -18,18 +20,21 @@ export const DEFAULT_CONFIG: CollectionsConfig = {
   dropdown: false
 };
 
-export interface Collections extends SelectTag<CollectionsConfig> { }
+export interface Collections extends FluxTag<any>, Selectable { }
 
 export class Collections {
+  options: string[] | CollectionOption[];
+  counts: {[key: string]: number};
+  dropdown: boolean;
 
   collections: string[];
-  counts: any;
-  labels: any;
+  labels: {[key: string]: string};
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.options = this.opts.options || [];
+    this.counts = checkBooleanAttr('counts', this.opts, true);
+    this.dropdown = checkBooleanAttr('dropdown', this.opts);
 
-    this.options = this._config.options;
     const collectionsService = this.services.collections;
     this.collections = collectionsService.collections;
     this.labels = collectionsService.isLabeled
