@@ -20,7 +20,7 @@ suite('gb-collections', Collections, ({
 
       tag().init();
 
-      expect(tag().options).to.eql(options);
+      expect(tag().items).to.eql(options);
     });
 
     it('should get values from collections service', () => {

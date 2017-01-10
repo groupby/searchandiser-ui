@@ -20,7 +20,7 @@ export class Collections {
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
     this.collectionsConfig = getPath(config, 'tags.collections') || {};
     this.fetchCounts = unless(this.collectionsConfig.counts, true);
-    this.options = this.collectionsConfig.options || [];
+    this.options = this.collectionsConfig.items || [];
     this.isLabeled = this.options.length !== 0
       && typeof this.options[0] === 'object';
     this.collections = this.isLabeled

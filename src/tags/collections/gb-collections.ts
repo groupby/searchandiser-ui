@@ -9,36 +9,33 @@ export interface CollectionOption {
 }
 
 export interface CollectionsConfig extends Selectable {
-  options: string[] | CollectionOption[];
-  counts?: boolean;
+  items: string[] | CollectionOption[];
   dropdown?: boolean;
+  showCounts?: boolean;
 }
-
-export const DEFAULT_CONFIG: CollectionsConfig = {
-  options: [],
-  counts: true,
-  dropdown: false
-};
 
 export interface Collections extends FluxTag<any>, Selectable { }
 
 export class Collections {
-  options: string[] | CollectionOption[];
-  counts: {[key: string]: number};
+  items: Array<string | CollectionOption>;
   dropdown: boolean;
+  showCounts: boolean;
 
   collections: string[];
-  labels: {[key: string]: string};
+  counts: { [key: string]: number };
+  labels: { [key: string]: string };
 
   init() {
-    this.options = this.opts.options || [];
-    this.counts = checkBooleanAttr('counts', this.opts, true);
+    this.alias(['collections', 'listable', 'selectable']);
+
+    this.items = this.opts.items || [];
+    this.showCounts = checkBooleanAttr('showCounts', this.opts, true);
     this.dropdown = checkBooleanAttr('dropdown', this.opts);
 
     const collectionsService = this.services.collections;
     this.collections = collectionsService.collections;
     this.labels = collectionsService.isLabeled
-      ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
+      ? this.items.reduce(this.extractLabels, {})
       : {};
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
@@ -51,10 +48,10 @@ export class Collections {
   switchCollection(event: MouseEvent) {
     let element = <HTMLElement>event.target;
     while (element.tagName !== 'A') element = element.parentElement;
-    this.onselect(element.dataset['collection']);
+    this.onSelect(element.dataset['collection']);
   }
 
-  onselect(collection: string) {
+  onSelect(collection: string) {
     this.flux.switchCollection(collection);
   }
 

@@ -1,6 +1,6 @@
 <gb-collection-item>
-  <a class="gb-collection" data-collection="{ _parent.item }" onclick="{ _scope.switchCollection }">
-    <span class="gb-collection__name">{ (_scope.labels && _scope.labels[_parent.item]) || _parent.item }</span>
-    <gb-badge if="{ _scope._config && _scope._config.counts }">{ _scope.counts && _scope.counts[parent._parent.item] }</gb-badge>
+  <a class="gb-collection" data-collection="{ $item }" onclick="{ $collections.switchCollection }">
+    <span class="gb-collection__name">{ $collections.labels[$item] || $item }</span>
+    <gb-badge if="{ $collections.showCounts }">{ $collections.counts[$item] }</gb-badge>
   </a>
 </gb-collection-item>
