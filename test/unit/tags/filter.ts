@@ -43,13 +43,11 @@ suite('gb-filter', Filter, ({
       const results: any = { x: 'y' };
       const items = [{ a: 'b', c: 'd' }];
       const update = tag().update = spy();
-      const clearItem = { e: 'f' };
-      tag().tags = <any>{ 'gb-select': { clearItem } };
       tag().convertRefinements = () => items;
 
       tag().updateValues(results);
 
-      expect(update).to.have.been.calledWith({ items: [clearItem, ...items] });
+      expect(update).to.have.been.calledWith({ items });
     });
   });
 

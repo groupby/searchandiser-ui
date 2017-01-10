@@ -22,7 +22,6 @@ suite('gb-select', Select, ({
     it('should have default values', () => {
       tag().init();
 
-      expect(tag().items).to.eql([]);
       expect(tag().onSelect).to.be.undefined;
       expect(tag().iconUrl).to.eq(tag().iconUrl);
       expect(tag().label).to.eq('Select');
@@ -37,13 +36,11 @@ suite('gb-select', Select, ({
     });
 
     it('should set properties from selectable', () => {
-      const items = [{ a: 'b' }, { c: 'd' }];
       const iconUrl = 'image.png';
       const label = 'Choice';
       const clear = 'None selected';
       const onSelect = () => null;
       tag().selectable = () => ({
-        items,
         onSelect,
         iconUrl,
         label,
@@ -54,7 +51,6 @@ suite('gb-select', Select, ({
 
       tag().init();
 
-      expect(tag().items).to.eql(items);
       expect(tag().onSelect).to.eq(onSelect);
       expect(tag().iconUrl).to.eq(iconUrl);
       expect(tag().label).to.eq(label);
@@ -101,29 +97,6 @@ suite('gb-select', Select, ({
       tag().updateAliases();
 
       expect(selectable).to.have.been.calledWith(linkable);
-    });
-  });
-
-  describe('updateItems()', () => {
-    it('should update items', () => {
-      const items = ['first', 'second'];
-      const update = tag().update = spy();
-      tag().default = true;
-
-      tag().updateItems(items);
-
-      expect(update).to.have.been.calledWith({ items });
-    });
-
-    it('should update items with clearItem', () => {
-      const items = ['first', 'second'];
-      const clearItem = tag().clearItem = { label: 'a', clear: true };
-      const update = tag().update = spy();
-      tag().default = false;
-
-      tag().updateItems(items);
-
-      expect(update).to.have.been.calledWith({ items: [clearItem, ...items] });
     });
   });
 

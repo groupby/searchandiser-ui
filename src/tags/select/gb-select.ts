@@ -69,16 +69,12 @@ export class Select {
     // this should also update $listable as they reference the same object
     this.selectable(this.$linkable);
     if (!this.default) {
-      this.$linkable.items.unshift(this.clearItem);
+      this.$linkable.items = [this.clearItem, ...this.$linkable.items];
     }
   }
 
   selectable(obj: any = {}) {
     return Object.assign(obj, this.$selectable, this.opts);
-  }
-
-  updateItems(items: any[]) {
-    this.update({ items: this.default ? items : [this.clearItem, ...items] });
   }
 
   selectLabel(): string {
