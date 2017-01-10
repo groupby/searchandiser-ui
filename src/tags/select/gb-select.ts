@@ -69,6 +69,9 @@ export class Select {
   updateAliases() {
     // this should also update $listable as they reference the same object
     this.selectable(this.$linkable);
+    if (this.items[0] !== this.clearItem) {
+      this.items.unshift(this.clearItem);
+    }
   }
 
   selectable(obj: any = {}) {
