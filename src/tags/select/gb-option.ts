@@ -12,6 +12,10 @@ export class Option {
   value: string;
 
   init() {
+    if (this.$option.clear) {
+      this.root.classList.add('clear');
+    }
+
     this.label = this.$select.optionLabel(this.$option);
     this.value = this.$select.optionValue(this.$option);
   }

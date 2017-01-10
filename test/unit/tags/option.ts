@@ -2,15 +2,25 @@ import { Option } from '../../../src/tags/select/gb-option';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-option', Option, ({ tag, spy, expectAliases }) => {
+suite('gb-option', Option, ({ tag, spy }) => {
 
   describe('init()', () => {
+    it('should add class clear to root', () => {
+      const add = spy();
+      tag().$option = { clear: true };
+      tag().$select = <any>{ optionLabel: () => null, optionValue: () => null };
+      tag().root = <any>{ classList: { add } };
+
+      tag().init();
+    });
+
     it('should set label and value', () => {
       const label = 'My Value';
       const value = 'my_value';
       const optionLabel = () => label;
       const optionValue = () => value;
       tag().$select = <any>{ optionLabel, optionValue };
+      tag().$option = {};
 
       tag().init();
 

@@ -5,13 +5,12 @@ import { Events } from 'groupby-api';
 
 suite('gb-paging', Paging, ({
   flux, tag, spy, stub,
-  expectSubscriptions, expectAliases
+  expectSubscriptions,
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
-    it('should alias self as pageable', () => {
-      expectAliases(() => tag().init(), { pageable: tag() });
-    });
+    itShouldAlias('pageable');
 
     it('should have default initial state', () => {
       tag().init();

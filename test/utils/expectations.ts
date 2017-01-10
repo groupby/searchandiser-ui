@@ -1,6 +1,8 @@
 import { FluxTag } from '../../src/tags/tag';
 import { expect } from 'chai';
 
+export type ExpectedAliases = { [key: string]: any } | string[] | string;
+
 export function expectSubscriptions(func: Function, subscriptions: any, emitter: any) {
   const events = Object.keys(subscriptions);
   const listeners = {};
@@ -25,9 +27,19 @@ export function expectSubscriptions(func: Function, subscriptions: any, emitter:
   expect(subscribedEvents).to.have.members(events);
 }
 
-export function expectAliases(func: Function, tag: FluxTag<any>, aliasMap: { [key: string]: any }) {
+export function expectAliases(func: Function, tag: FluxTag<any>, expectedAliases: ExpectedAliases) {
+  if (Array.isArray(expectedAliases)) {
+    expectAliasArray(func, tag, <string[]>expectedAliases);
+  } else if (typeof expectedAliases === 'string') {
+    expectAliasArray(func, tag, [expectedAliases]);
+  } else {
+    expectAliasMap(func, tag, expectedAliases);
+  }
+}
+
+export function expectAliasMap(func: Function, tag: FluxTag<any>, expectedAliases: { [key: string]: any }) {
   const foundAliases = [];
-  const aliasKeys = Object.keys(aliasMap);
+  const aliasKeys = Object.keys(expectedAliases);
 
   tag.alias = (aliases, obj) => {
     if (!Array.isArray(aliases)) {
@@ -35,10 +47,8 @@ export function expectAliases(func: Function, tag: FluxTag<any>, aliasMap: { [ke
     }
     foundAliases.push(...aliases);
     aliases.forEach((alias) => {
-      if (obj === undefined) {
-        expect(tag).to.eq(aliasMap[alias]);
-      } else if (aliasKeys.includes(alias)) {
-        expect(obj).to.eq(aliasMap[alias]);
+      if (aliasKeys.includes(alias)) {
+        expect(obj).to.eq(expectedAliases[alias]);
       } else {
         expect.fail();
       }
@@ -48,4 +58,21 @@ export function expectAliases(func: Function, tag: FluxTag<any>, aliasMap: { [ke
   func();
 
   expect(foundAliases).to.have.length(aliasKeys.length);
+}
+
+export function expectAliasArray(func: Function, tag: FluxTag<any>, expectedAliases: string[]) {
+  const foundAliases = [];
+
+  tag.alias = (aliases, obj) => {
+    expect(obj).to.be.undefined;
+    if (!Array.isArray(aliases)) {
+      aliases = [aliases];
+    }
+    foundAliases.push(...aliases);
+    aliases.forEach((alias) => expect(expectedAliases).to.include(alias));
+  };
+
+  func();
+
+  expect(foundAliases).to.have.length(expectedAliases.length);
 }

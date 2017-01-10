@@ -9,15 +9,18 @@ export interface PageSizeConfig extends Selectable {
 export interface PageSize extends FluxTag<any>, Selectable { }
 
 export class PageSize {
+
   resetOffset: boolean;
 
   init() {
+    this.alias('selectable');
+
     this.resetOffset = checkBooleanAttr('resetOffset', this.opts);
 
     this.options = this.config.pageSizes || [10, 25, 50, 100];
   }
 
-  onselect(value: number) {
+  onSelect(value: number) {
     return this.flux.resize(value, this.resetOffset)
       .then(() => this.services.tracker && this.services.tracker.search());
   }

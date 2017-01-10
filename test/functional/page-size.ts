@@ -2,7 +2,7 @@ import { PageSize } from '../../src/tags/page-size/gb-page-size';
 import suite, { SelectModel } from './_suite';
 import { expect } from 'chai';
 
-suite.only<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
+suite<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
 
   itMountsTag();
 
@@ -56,7 +56,7 @@ suite.only<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
   });
 });
 
-class Model extends SelectModel<PageSize> {
+class Model extends SelectModel {
 
   get optionList() {
     return this.element(this.html, 'gb-list');

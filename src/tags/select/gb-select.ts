@@ -4,7 +4,7 @@ import * as riot from 'riot'; // tslint:disable-line:no-unused-variable
 
 export interface Selectable {
   options: any[];
-  onSelect: () => void;
+  onSelect: (value: any) => void;
   iconUrl?: string;
   label?: string;
   clear?: string;
@@ -70,7 +70,6 @@ export class Select {
   }
 
   selectLabel(): string {
-    console.log(this.label);
     return this.selectedOption || (this.selected ? this.clearOption : this.label);
   }
 

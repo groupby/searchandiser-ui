@@ -1,5 +1,4 @@
 import '../../src/tags/index';
-import { SelectTag } from '../../src/tags/select/gb-select';
 import { configure, FluxTag, MixinFlux } from '../../src/tags/tag';
 import { baseSuite, buildSuite, SuiteModifier } from '../utils/suite';
 import { expect } from 'chai';
@@ -111,17 +110,17 @@ export abstract class BaseModel<T extends FluxTag<any>> {
   }
 }
 
-export abstract class SelectModel<T extends SelectTag<any>> extends BaseModel<T> {
+export abstract class SelectModel extends BaseModel<any> {
 
   get label() {
     return this.element(this.html, '.gb-button__label');
   }
 
   get options() {
-    return this.list(this.html, '.gb-select__option:not(.clear) gb-option a');
+    return this.list(this.html, 'gb-option:not(.clear) a');
   }
 
   get clearOption() {
-    return this.element(this.html, '.gb-select__option.clear gb-option a');
+    return this.element(this.html, 'gb-option.clear a');
   }
 }
