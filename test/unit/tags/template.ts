@@ -5,12 +5,12 @@ import { Events } from 'groupby-api';
 
 suite('gb-template', Template, ({
   tag, spy,
-  itShouldConfigure,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure();
+    itShouldAlias('template');
 
     it('should have default values', () => {
       tag().init();
@@ -29,11 +29,10 @@ suite('gb-template', Template, ({
 
   describe('updateActive()', () => {
     it('should update active on RESULTS', () => {
-      const target = 'My Spotlight Template';
+      const target = tag().target = 'My Spotlight Template';
       const zoneList = [{ a: 'b' }];
       const zoneMap = { a: 'b' };
       const update = tag().update = spy();
-      tag()._config = { target };
       tag().sortZones = (zones) => {
         expect(zones).to.eq(zoneMap);
         return zoneList;

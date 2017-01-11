@@ -9,19 +9,21 @@ export interface Template extends FluxTag<TemplateConfig> { }
 
 export class Template {
 
+  target: string;
+
   isActive: boolean;
   zones: any[];
   zoneMap: any;
 
   init() {
-    this.configure();
+    this.alias('template');
 
     this.flux.on(Events.RESULTS, this.updateActive);
   }
 
   updateActive({ template }: Results) {
     this.update({
-      isActive: template.name === this._config.target,
+      isActive: template.name === this.target,
       zoneMap: template.zones,
       zones: this.sortZones(template.zones)
     });
