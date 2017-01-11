@@ -12,25 +12,19 @@ export interface Selectable extends Linkable {
   native?: boolean;
 }
 
-export interface Select extends FluxTag<any> {
+export class Select extends FluxTag<any> {
   $selectable: Selectable;
   $linkable: Linkable;
   $listable: Listable;
   tags: {
     'gb-native-select': FluxTag<any> & {
-      refs: {
-        selector: HTMLSelectElement;
-      };
+      refs: { selector: HTMLSelectElement; };
     };
     'gb-custom-select': FluxTag<any> & {
-      tags: {
-        'gb-select-button': FluxTag<any>;
-      };
+      tags: { 'gb-select-button': FluxTag<any>; };
     };
   };
-}
 
-export class Select {
   iconUrl: string;
   label: string;
   hover: boolean;

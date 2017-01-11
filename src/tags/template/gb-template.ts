@@ -5,9 +5,7 @@ export interface TemplateConfig {
   target: string;
 }
 
-export interface Template extends FluxTag<TemplateConfig> { }
-
-export class Template {
+export class Template extends FluxTag<TemplateConfig> {
 
   target: string;
 

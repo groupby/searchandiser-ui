@@ -1,8 +1,6 @@
 import { FluxTag } from '../tag';
 
-export interface SaytDivider extends FluxTag<any> { }
-
-export class SaytDivider {
+export class SaytDivider extends FluxTag<any> {
 
   isVisible() {
     return this.root.nextElementSibling &&

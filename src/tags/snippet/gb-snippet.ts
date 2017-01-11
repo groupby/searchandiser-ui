@@ -6,9 +6,7 @@ export interface SnippetConfig {
   url: string;
 }
 
-export interface Snippet extends FluxTag<any> { }
-
-export class Snippet {
+export class Snippet extends FluxTag<any> {
 
   raw: boolean;
   url: string;

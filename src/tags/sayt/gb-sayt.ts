@@ -27,9 +27,7 @@ export interface SaytConfig {
 
 export const MIN_DELAY = 100;
 
-export interface Sayt extends SaytTag<any> { }
-
-export class Sayt {
+export class Sayt extends SaytTag<any> {
   structure: ProductStructure;
   navigationNames: { [key: string]: string };
   allowedNavigations: string[];

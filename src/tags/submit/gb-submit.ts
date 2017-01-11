@@ -7,11 +7,8 @@ export interface SubmitConfig {
   staticSearch?: boolean;
 }
 
-export interface Submit extends FluxTag<any> {
+export class Submit extends FluxTag<any> {
   root: riot.TagElement & { value: any };
-}
-
-export class Submit {
 
   label: string;
   staticSearch: boolean;
@@ -38,8 +35,9 @@ export class Submit {
     const inputValue = this.searchBox.value;
 
     if (this.staticSearch && this.services.url.isActive()) {
-      return Promise.resolve(this.services.url.update(this.flux.query.withQuery(inputValue)
-        .withConfiguration(<any>{ refinements: [] })));
+      const query = this.flux.query.withQuery(inputValue)
+        .withConfiguration(<any>{ refinements: [] });
+      return Promise.resolve(this.services.url.update(query));
     } else {
       return this.flux.reset(inputValue)
         .then(() => this.services.tracker && this.services.tracker.search());

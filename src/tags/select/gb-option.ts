@@ -1,12 +1,9 @@
 import { FluxTag } from '../tag';
 import { Select } from './gb-select';
 
-export interface Option extends FluxTag<any> {
+export class Option extends FluxTag<any>  {
   $select: Select;
   $item: any;
-}
-
-export class Option {
 
   label: string;
   value: string;
