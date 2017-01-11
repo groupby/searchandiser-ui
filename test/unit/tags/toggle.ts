@@ -151,6 +151,15 @@ suite('gb-toggle', Toggle, ({
       expect(appendChild).to.have.been.calledWith(node);
     });
   });
+
+  describe('toggleable()', () => {
+    it('should mix $toggleable with opts', () => {
+      tag().$toggleable = <any>{ a: 'b', c: 'd' };
+      tag().opts = { a: 'e' };
+
+      expect(tag().toggleable()).to.eql({ a: 'e', c: 'd' });
+    });
+  });
 });
 
 function expectCss(actual: string, expected: string) {

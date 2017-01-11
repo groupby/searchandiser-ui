@@ -1,4 +1,4 @@
-import { Details, DEFAULT_CONFIG } from '../../../src/tags/details/gb-details';
+import { Details } from '../../../src/tags/details/gb-details';
 import * as utils from '../../../src/utils/common';
 import { ProductTransformer } from '../../../src/utils/product-transformer';
 import suite from './_suite';
@@ -7,19 +7,26 @@ import { Events } from 'groupby-api';
 
 suite('gb-details', Details, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
-
     it('should have default values', () => {
       tag().init();
 
+      expect(tag().idParam).to.eq('id');
       expect(tag().query).to.not.be.ok;
       expect(tag().struct).to.eql({});
       expect(tag().transformer).to.be.an.instanceof(ProductTransformer);
+    });
+
+    it('should set properties from opts', () => {
+      const idParam = 'myId';
+      tag().opts = { idParam };
+
+      tag().init();
+
+      expect(tag().idParam).to.eq(idParam);
     });
 
     it('should allow override from config', () => {

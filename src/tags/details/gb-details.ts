@@ -8,9 +8,7 @@ export interface DetailsConfig {
   idParam: string;
 }
 
-export interface Details extends FluxTag<DetailsConfig> { }
-
-export class Details {
+export class Details extends FluxTag<any> {
   idParam: string;
 
   query: string;
