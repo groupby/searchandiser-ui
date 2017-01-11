@@ -1,5 +1,5 @@
 import { checkBooleanAttr } from '../../utils/common';
-import { ProductMeta, ProductStructure, ProductTransformer } from '../../utils/product-transformer';
+import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import oget = require('oget');
@@ -20,14 +20,15 @@ export class Product extends FluxTag<any> {
   tombstone: boolean;
 
   variantIndex: number;
-  variants: any[];
   detailsUrl: string;
-  allMeta: any;
-  structure: any;
-  productMeta: ProductMeta;
+  metadata: any;
+  variants: any[];
+  structure: ProductStructure;
   transformer: ProductTransformer;
 
   init() {
+    this.alias('product');
+
     const productable = this.productable();
     this.lazy = checkBooleanAttr('lazy', productable, true);
     this.infinite = checkBooleanAttr('infinite', productable);
@@ -41,15 +42,15 @@ export class Product extends FluxTag<any> {
     this.styleProduct();
     this.transformRecord(productable.allMeta);
 
-    this.on('update', this.updateAllMeta);
+    this.on('update', this.updateMetadata);
   }
 
   productable(obj: any = {}) {
     return Object.assign(obj, this.$productable, this.opts);
   }
 
-  updateAllMeta() {
-    this.allMeta = this.productable().allMeta;
+  updateMetadata() {
+    this.metadata = this.productable().allMeta;
   }
 
   styleProduct() {
@@ -62,20 +63,17 @@ export class Product extends FluxTag<any> {
   }
 
   transformRecord(allMeta: any = {}) {
-    const productMeta = this.transformer.transform(clone(allMeta, false));
-    this.update({
-      productMeta: () => productMeta(this.variantIndex),
-      variants: productMeta.variants || [],
-      allMeta: productMeta.transformedMeta
-    });
+    const { variants, transformedMeta: metadata } = this.transformer.transform(clone(allMeta, false));
+    this.update({ variants: variants || [], metadata });
   }
 
   link() {
-    return this.productMeta().url || `${this.detailsUrl}?id=${this.productMeta().id}`;
+    return this.metadata.url || `${this.detailsUrl}?id=${this.metadata.id}`;
   }
 
-  image(imageObj: string | string[]) {
-    return Array.isArray(imageObj) ? imageObj[0] : imageObj;
+  imageLink() {
+    const image = this.metadata.image;
+    return Array.isArray(image) ? image[0] : image;
   }
 
   switchVariant({ target }: { target: HTMLElement }) {
