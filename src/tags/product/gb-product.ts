@@ -1,49 +1,62 @@
-import { ProductMeta, ProductTransformer } from '../../utils/product-transformer';
+import { checkBooleanAttr } from '../../utils/common';
+import { ProductMeta, ProductStructure, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import oget = require('oget');
 
-export interface ProductConfig {
+export interface Productable {
   lazy?: boolean;
   infinite?: boolean;
   tombstone?: boolean;
+  structure?: ProductStructure;
+  allMeta: any;
 }
 
-export const DEFAULT_CONFIG: ProductConfig = {
-  lazy: true,
-  infinite: false,
-  tombstone: false
-};
+export class Product extends FluxTag<any> {
+  $productable: Productable;
 
-export interface Product extends FluxTag<ProductConfig> { }
-
-export class Product {
+  lazy: boolean;
+  infinite: boolean;
+  tombstone: boolean;
 
   variantIndex: number;
   variants: any[];
   detailsUrl: string;
   allMeta: any;
-  struct: any;
+  structure: any;
   productMeta: ProductMeta;
   transformer: ProductTransformer;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    const productable = this.productable();
+    this.lazy = checkBooleanAttr('lazy', productable, true);
+    this.infinite = checkBooleanAttr('infinite', productable);
+    this.tombstone = checkBooleanAttr('tombstone', productable);
 
     this.variantIndex = 0;
     this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
-    this.struct = this.opts.structure || this._scope.struct || this.config.structure || {};
-    this.transformer = new ProductTransformer(this.struct);
+    this.structure = Object.assign({}, this.config.structure, productable.structure);
+    this.transformer = new ProductTransformer(this.structure);
 
     this.styleProduct();
-    this.transformRecord(this.opts.all_meta);
+    this.transformRecord(productable.allMeta);
+
+    this.on('update', this.updateAllMeta);
+  }
+
+  productable(obj: any = {}) {
+    return Object.assign(obj, this.$productable, this.opts);
+  }
+
+  updateAllMeta() {
+    this.allMeta = this.productable().allMeta;
   }
 
   styleProduct() {
-    if (this._config.infinite) {
+    if (this.infinite) {
       this.root.classList.add('gb-infinite');
     }
-    if (this._config.tombstone) {
+    if (this.tombstone) {
       this.root.classList.add('tombstone');
     }
   }
@@ -65,8 +78,8 @@ export class Product {
     return Array.isArray(imageObj) ? imageObj[0] : imageObj;
   }
 
-  switchVariant(event: MouseEvent) {
-    const variantIndex = (<HTMLElement>event.target).dataset['index'];
+  switchVariant({ target }: { target: HTMLElement }) {
+    const variantIndex = target.dataset['index'];
     this.update({ variantIndex });
   }
 }

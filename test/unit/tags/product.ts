@@ -56,7 +56,7 @@ suite('gb-product', Product, ({
 
         tag().init();
 
-        expect(tag().struct).to.eq(structure);
+        expect(tag().structure).to.eq(structure);
       });
 
       it('should inherit from _scope', () => {
@@ -65,7 +65,7 @@ suite('gb-product', Product, ({
 
         tag().init();
 
-        expect(tag().struct).to.eq(struct);
+        expect(tag().structure).to.eq(struct);
       });
 
       it('should default to config', () => {
@@ -76,7 +76,7 @@ suite('gb-product', Product, ({
 
         tag().init();
 
-        expect(tag().struct).to.eq(structure);
+        expect(tag().structure).to.eq(structure);
       });
 
       it('should fallback to empty object', () => {
@@ -85,7 +85,7 @@ suite('gb-product', Product, ({
 
         tag().init();
 
-        expect(tag().struct).to.eql({});
+        expect(tag().structure).to.eql({});
       });
     });
   });
