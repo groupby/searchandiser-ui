@@ -8,7 +8,8 @@ import { Events, Query } from 'groupby-api';
 
 suite('gb-sayt', Sayt, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
@@ -23,6 +24,8 @@ suite('gb-sayt', Sayt, ({
       tag().config = { structure: STRUCTURE };
       sayt = tag().sayt = { configure: () => null };
     });
+
+    itShouldAlias('sayt');
 
     it('should have default values', () => {
       tag().init();

@@ -47,16 +47,20 @@ export class Sayt {
   autoSearch: boolean;
   staticSearch: boolean;
 
+  autocomplete: Autocomplete;
   products: Record[];
   navigations: Navigation[];
-  autocomplete: Autocomplete;
+  queries: any[];
+  categoryResults: any[];
+  results: any;
   autocompleteList: HTMLUListElement;
   originalQuery: string;
   showProducts: boolean;
   matchesInput: boolean;
-  queries: any[];
 
   init() {
+    this.alias('sayt');
+
     this.allCategoriesLabel = this.opts.allCategoriesLabel || 'All Departments';
     this.highlight = checkBooleanAttr('highlight', this.opts, true);
     this.autoSearch = checkBooleanAttr('autoSearch', this.opts, true);

@@ -1,17 +1,11 @@
 <gb-sayt-products>
-  <ul class="{ _style }">
-    <li class="gb-sayt-product" each="{ parent.products }">
-      <yield>
-        <gb-product all_meta="{ allMeta }">
-          <gb-product-image thumbnail></gb-product-image>
-        </gb-product>
-      </yield>
-    </li>
-  </ul>
-
-  <script>
-    this._scopeTo('gb-sayt')
-  </script>
+  <gb-list items="{ $sayt.products }">
+    <yield>
+      <gb-product all_meta="{ $item.allMeta }">
+        <gb-product-image thumbnail></gb-product-image>
+      </gb-product>
+    </yield>
+  </gb-list>
 
   <style scoped>
     .gb-stylish :scope {
