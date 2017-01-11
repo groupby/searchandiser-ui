@@ -1,17 +1,41 @@
-import { DEFAULT_CONFIG, Toggle } from '../../../src/tags/toggle/gb-toggle';
+import { Toggle } from '../../../src/tags/toggle/gb-toggle';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-toggle', Toggle, ({
   tag, stub, spy,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
     beforeEach(() => tag()._scope = { on: () => null });
 
-    itShouldConfigure(DEFAULT_CONFIG);
+    it('should set default values', () => {
+      tag().addStyleTag = () => null;
+
+      tag().init();
+
+      expect(tag().height).to.eq(30);
+      expect(tag().switchHeight).to.eq(22);
+      expect(tag().animationSpeed).to.eq(0.4);
+      expect(tag().checked).to.be.false;
+    });
+
+    it('should set properties from toggleable()', () => {
+      const height = 40;
+      const switchHeight = 10;
+      const animationSpeed = 0.4;
+      const checked = true;
+      tag().addStyleTag = () => null;
+      tag().toggleable = () => ({ height, switchHeight, animationSpeed, checked });
+
+      tag().init();
+
+      expect(tag().height).to.eq(height);
+      expect(tag().switchHeight).to.eq(switchHeight);
+      expect(tag().animationSpeed).to.eq(animationSpeed);
+      expect(tag().checked).to.be.true;
+    });
 
     it('should listen for mount', () => {
       tag().addStyleTag = () => null;
@@ -32,7 +56,7 @@ suite('gb-toggle', Toggle, ({
   describe('onMount()', () => {
     it('should set input checked', () => {
       const input = tag().refs.input = <any>{};
-      tag()._config = { checked: true };
+      tag().checked = true;
 
       tag().onMount();
 
