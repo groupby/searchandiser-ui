@@ -5,14 +5,10 @@ import { expect } from 'chai';
 
 suite('gb-lazy-image', LazyImage, ({
   tag, stub, spy,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    beforeEach(() => tag()._scope = { on: () => null });
-
-    itShouldConfigure();
-
     it('should call lazyLoad() if src provided', () => {
       const lazyLoad = stub(tag(), 'lazyLoad');
       const src = 'example.com/image.png';
@@ -20,7 +16,7 @@ suite('gb-lazy-image', LazyImage, ({
 
       tag().init();
 
-      expect(lazyLoad.calledWith(src)).to.be.true;
+      expect(lazyLoad).to.have.been.calledWith(src);
     });
 
     it('should not call lazyLoad()', () => {
@@ -28,16 +24,14 @@ suite('gb-lazy-image', LazyImage, ({
 
       tag().init();
 
-      expect(lazyLoad.called).to.be.false;
+      expect(lazyLoad).to.not.have.been.called;
     });
 
-    it('should listen for update on _scope', () => {
-      const on = spy();
-      tag()._scope = { on };
-
-      tag().init();
-
-      expect(on.calledWith('update', tag().maybeLoadImage)).to.be.true;
+    it('should listen for events', () => {
+      expectSubscriptions(() => tag().init(), {
+        mount: tag().maybeLoadImage,
+        update: tag().maybeLoadImage
+      }, tag());
     });
   });
 
@@ -45,7 +39,7 @@ suite('gb-lazy-image', LazyImage, ({
     it('should load image', () => {
       const image = 'example.com/image.png';
       const lazyLoad = stub(tag(), 'lazyLoad');
-      tag()._scope = { productMeta: () => ({ image }) };
+      tag().$product = <any>{ imageLink: () => image };
 
       tag().maybeLoadImage();
 
@@ -54,7 +48,7 @@ suite('gb-lazy-image', LazyImage, ({
 
     it('should not load blank image', () => {
       const lazyLoad = stub(tag(), 'lazyLoad');
-      tag()._scope = { productMeta: () => ({}) };
+      tag().$product = <any>{ imageLink: () => null };
 
       tag().maybeLoadImage();
 
@@ -64,7 +58,7 @@ suite('gb-lazy-image', LazyImage, ({
     it('should not load existing image', () => {
       const image = 'example.com/image.png';
       const lazyLoad = stub(tag(), 'lazyLoad');
-      tag()._scope = { productMeta: () => ({ image }) };
+      tag().$product = <any>{ imageLink: () => image };
       tag().refs.lazyImage = <any>{ src: image };
 
       tag().maybeLoadImage();
