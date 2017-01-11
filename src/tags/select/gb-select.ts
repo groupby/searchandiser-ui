@@ -114,8 +114,8 @@ export class Select {
     }
   }
 
-  selectNative(event: Event & { target: HTMLSelectElement; }) {
-    const [item] = Array.from(event.target.selectedOptions);
+  selectNative({ target }: { target: HTMLSelectElement }) {
+    const [item] = Array.from(target.selectedOptions);
     const selected = item.value;
     this.nativeSelect().options[0].disabled = !selected;
     this.update({ selected });

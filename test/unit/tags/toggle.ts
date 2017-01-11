@@ -82,7 +82,7 @@ suite('gb-toggle', Toggle, ({
 
   describe('calculateSwitchHeight()', () => {
     it('should force height difference to be even', () => {
-      tag()._config = { switchHeight: 40 };
+      tag().switchHeight = 40;
 
       const switchHeight = tag().calculateSwitchHeight(41);
 
@@ -90,7 +90,7 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should not alter switchHeight', () => {
-      tag()._config = { switchHeight: 40 };
+      tag().switchHeight = 40;
 
       const switchHeight = tag().calculateSwitchHeight(42);
 
@@ -98,7 +98,7 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should not allow switchHeight > height', () => {
-      tag()._config = { switchHeight: 50 };
+      tag().switchHeight = 50;
 
       const switchHeight = tag().calculateSwitchHeight(40);
 
@@ -112,7 +112,9 @@ suite('gb-toggle', Toggle, ({
       const appendChild = spy();
       const createElement = stub(document, 'createElement').returns(node);
       tag().root = <any>{ appendChild };
-      tag()._config = { switchHeight: 20, height: 30, animationSpeed: 0.5 };
+      tag().switchHeight = 20;
+      tag().height = 30;
+      tag().animationSpeed = 0.5;
 
       tag().addStyleTag();
 
