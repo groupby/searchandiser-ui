@@ -90,6 +90,14 @@ export function checkBooleanAttr(attribute: string, opts: any, defaultValue: boo
   }
 }
 
+export function checkNumericAttr(attribute: string, opts: any, defaultValue?: number) {
+  if (typeof opts === 'object' && attribute in opts) {
+    return opts[attribute];
+  } else {
+    return defaultValue;
+  }
+}
+
 export function scopeCss(tag: string, selector: string) {
   return `${tag} ${selector}, [data-is="${tag}"] ${selector}`;
 }

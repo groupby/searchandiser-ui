@@ -1,5 +1,5 @@
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
-import { DEFAULT_CONFIG, MIN_DELAY, Sayt } from '../../../src/tags/sayt/gb-sayt';
+import { MIN_DELAY, Sayt } from '../../../src/tags/sayt/gb-sayt';
 import * as utils from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
@@ -8,8 +8,7 @@ import { Events, Query } from 'groupby-api';
 
 suite('gb-sayt', Sayt, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
@@ -25,22 +24,27 @@ suite('gb-sayt', Sayt, ({
       sayt = tag().sayt = { configure: () => null };
     });
 
-    itShouldConfigure(DEFAULT_CONFIG);
-
     it('should have default values', () => {
       tag().init();
 
-      expect(tag().struct).to.eql(STRUCTURE);
+      expect(tag().structure).to.eql(STRUCTURE);
       expect(tag().showProducts).to.be.true;
     });
 
     it('should take configuration overrides from global config', () => {
-      const structure = { image: 'thumbnail', url: 'url' };
-      tag().configure = () => tag()._config = { structure, products: 0 };
+      tag().opts = {
+        structure: { image: 'thumbnail', url: 'url' },
+        productCount: 0
+      };
 
       tag().init();
 
-      expect(tag().struct).to.eql(Object.assign({}, STRUCTURE, structure));
+      expect(tag().structure).to.eql({
+        image: 'thumbnail',
+        url: 'url',
+        title: 'title',
+        price: 'price'
+      });
       expect(tag().showProducts).to.be.false;
     });
 
@@ -78,11 +82,13 @@ suite('gb-sayt', Sayt, ({
   describe('generateSaytConfig()', () => {
     it('should generate configuration', () => {
       const customerId = 'mycustomer';
-      const collection = 'mycollection';
-      const area = 'MyArea';
-      const language = 'en';
-      tag().config = { customerId, collection, area };
-      tag()._config = { queries: 2, products: 3, https: true, language };
+      const collection = tag().collection = 'mycollection';
+      const area = tag().area = 'MyArea';
+      const language = tag().language = 'en';
+      tag().config = { customerId };
+      tag().queryCount = 2;
+      tag().productCount = 3;
+      tag().https = true;
 
       const config = tag().generateSaytConfig();
 
@@ -96,7 +102,7 @@ suite('gb-sayt', Sayt, ({
     });
 
     it('should generate configuration with HTTPS', () => {
-      tag()._config = { https: true };
+      tag().https = true;
 
       const config = tag().generateSaytConfig();
 
@@ -238,7 +244,7 @@ suite('gb-sayt', Sayt, ({
       const query = 'cool shoes';
       const searchProducts = stub(tag(), 'searchProducts');
       const rewriteQuery = stub(tag(), 'rewriteQuery');
-      tag()._config = { autoSearch: true };
+      tag().autoSearch = true;
 
       tag().notifier(query);
 
@@ -250,7 +256,8 @@ suite('gb-sayt', Sayt, ({
       const query = 'cool shoes';
       const searchProducts = stub(tag(), 'searchProducts');
       tag().rewriteQuery = () => null;
-      tag()._config = { autoSearch: true, categoryField: 'size' };
+      tag().autoSearch = true;
+      tag().categoryField = 'size';
 
       tag().notifier(query, 'Medium');
 
@@ -260,7 +267,8 @@ suite('gb-sayt', Sayt, ({
     it('should fetch suggestions with refinements and overwite query', () => {
       const searchProducts = stub(tag(), 'searchProducts');
       tag().rewriteQuery = () => null;
-      tag()._config = { autoSearch: true, categoryField: 'size' };
+      tag().autoSearch = true;
+      tag().categoryField = 'size';
 
       tag().notifier('Color: Blue', 'Blue', 'color');
 
@@ -270,7 +278,7 @@ suite('gb-sayt', Sayt, ({
     it('should fetch rewrite query but not fetch suggestions', () => {
       const query = 'cool shoes';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
-      tag()._config = { autoSearch: false };
+      tag().autoSearch = false;
       tag().searchProducts = () => expect.fail();
 
       tag().notifier(query);
@@ -309,7 +317,7 @@ suite('gb-sayt', Sayt, ({
   describe('highlightCurrentQuery()', () => {
     it('should apply regex replacement with the current query', () => {
       tag().originalQuery = 'blue sneakers';
-      tag()._config = { highlight: true };
+      tag().highlight = true;
 
       const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
 
@@ -319,7 +327,7 @@ suite('gb-sayt', Sayt, ({
     it('should apply regex replacement with slashes', () => {
       const currentQuery = 'hi-top blue sneakers';
       tag().originalQuery = 'blue sneakers\\';
-      tag()._config = { highlight: true };
+      tag().highlight = true;
 
       const highlight = () => tag().highlightCurrentQuery(currentQuery, '<b>$&</b>');
 
@@ -329,7 +337,7 @@ suite('gb-sayt', Sayt, ({
 
     it('should not apply regex replacement', () => {
       tag().originalQuery = 'blue sneakers';
-      tag()._config = { highlight: false };
+      tag().highlight = false;
 
       const highlighted = tag().highlightCurrentQuery('hi-top blue sneakers', '<b>$&</b>');
 
@@ -339,7 +347,7 @@ suite('gb-sayt', Sayt, ({
 
   describe('enhanceCategoryQuery()', () => {
     it('should insert category query into template', () => {
-      tag()._config = { categoryField: 'category.value' };
+      tag().categoryField = 'category.value';
 
       const highlighted = tag().enhanceCategoryQuery({
         value: 'blue sneakers',
@@ -356,7 +364,6 @@ suite('gb-sayt', Sayt, ({
       const rewriteQuery = stub(tag(), 'rewriteQuery');
       const reset = stub(flux(), 'reset').resolves();
       const emitEvent = stub(tag(), 'emitEvent');
-      tag()._config = {};
 
       tag().search(<any>{
         target: {
@@ -376,8 +383,7 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
       const reset = stub(flux(), 'reset').resolves();
-      stub(tag(), 'emitEvent');
-      tag()._config = {};
+      tag().emitEvent = () => null;
 
       tag().search(<any>{
         target: {
@@ -404,7 +410,7 @@ suite('gb-sayt', Sayt, ({
         .skip(19);
       tag().rewriteQuery = () => expect.fail();
       tag().services = <any>{ url: { isActive: () => true, update } };
-      tag()._config = { staticSearch: true };
+      tag().staticSearch = true;
 
       tag().search(<any>{
         target: {
@@ -434,7 +440,6 @@ suite('gb-sayt', Sayt, ({
       const rewrite = stub(flux(), 'rewrite');
       const refine = stub(flux(), 'refine').resolves();
       const emitEvent = stub(tag(), 'emitEvent');
-      tag()._config = {};
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
@@ -454,8 +459,7 @@ suite('gb-sayt', Sayt, ({
       const refinement = 8;
       const reset = stub(flux(), 'reset').resolves();
       flux().rewrite = (): any => expect.fail();
-      stub(tag(), 'emitEvent');
-      tag()._config = {};
+      tag().emitEvent = () => null;
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
@@ -475,7 +479,7 @@ suite('gb-sayt', Sayt, ({
       flux().query = new Query('blue heels').skip(13);
       flux().rewrite = (): any => expect.fail();
       tag().services = <any>{ url: { update, isActive: () => true } };
-      tag()._config = { staticSearch: true };
+      tag().staticSearch = true;
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
@@ -498,7 +502,7 @@ suite('gb-sayt', Sayt, ({
       const suggestion = 'red heels';
       const update = spy();
       tag().services = <any>{ url: { update, isActive: () => true } };
-      tag()._config = { staticSearch: true };
+      tag().staticSearch = true;
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
@@ -522,7 +526,7 @@ suite('gb-sayt', Sayt, ({
         expect(ref).to.eql(refinement(field, value));
         done();
       };
-      tag()._config = { categoryField: field };
+      tag().categoryField = field;
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
@@ -533,11 +537,11 @@ suite('gb-sayt', Sayt, ({
     it('should perform static refinement using configured category field', (done) => {
       const suggestion = 'red heels';
       const value = 8;
-      const field = 'size';
       const update = spy();
+      const field = tag().categoryField = 'size';
       flux().query = new Query('black heels').skip(30);
       tag().services = <any>{ url: { update, isActive: () => true } };
-      tag()._config = { staticSearch: true, categoryField: field };
+      tag().staticSearch = true;
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
@@ -575,7 +579,8 @@ suite('gb-sayt', Sayt, ({
     it('should extract and filter navigations', () => {
       const newNavigations = [{ name: 'brand' }, { name: 'colour' }];
       const update = tag().update = spy();
-      tag()._config = { allowedNavigations: ['colour'], navigationNames: {} };
+      tag().allowedNavigations = ['colour'];
+      tag().navigationNames = {};
 
       tag().processResults({ navigations: newNavigations });
 
@@ -587,7 +592,8 @@ suite('gb-sayt', Sayt, ({
     it('should rename navigations', () => {
       const newNavigations = [{ name: 'colour' }];
       const update = tag().update = spy();
-      tag()._config = { allowedNavigations: ['colour'], navigationNames: { colour: 'Colour' } };
+      tag().allowedNavigations = ['colour'];
+      tag().navigationNames = { colour: 'Colour' };
 
       tag().processResults({ navigations: newNavigations });
 
@@ -602,24 +608,19 @@ suite('gb-sayt', Sayt, ({
       const categoryResults = ['a', 'b'];
       const searchTerms = [{ value, additionalInfo }, { value: 'other' }];
       const update = tag().update = spy();
-      tag().extractCategoryResults = (categoryQuery) => {
-        expect(categoryQuery.additionalInfo).to.eq(additionalInfo);
-        expect(categoryQuery.value).to.eq(value);
-        return categoryResults;
-      };
+      const extractCategoryResults = tag().extractCategoryResults = spy(() => categoryResults);
 
       tag().processResults({ searchTerms });
 
       expect(tag().matchesInput).to.be.true;
       expect(searchTerms.length).to.eq(1);
       expect(update).to.have.been.calledWithMatch({ categoryResults });
+      expect(extractCategoryResults).to.have.been.calledWithMatch({ additionalInfo, value });
     });
 
     it('should not match input', () => {
       const searchTerms = [{ value: 'red boots' }, { value: 'other' }];
-      const update =
-        tag().update =
-        spy(({ categoryResults }) => expect(categoryResults).to.eql([]));
+      const update = tag().update = spy();
       tag().originalQuery = 'blue socks';
 
       tag().processResults({ searchTerms });
@@ -647,16 +648,13 @@ suite('gb-sayt', Sayt, ({
 
   describe('extractCategoryResults()', () => {
     it('should return empty array if not configured', () => {
-      tag()._config = {};
-
       expect(tag().extractCategoryResults({})).to.eql([]);
     });
 
     it('should extract categories for configured field', () => {
-      const allCategoriesLabel = 'All Categories';
-      const categoryField = 'department';
+      const allCategoriesLabel = tag().allCategoriesLabel = 'All Categories';
+      const categoryField = tag().categoryField = 'department';
       const query = tag().originalQuery = 'tool';
-      tag()._config = { allCategoriesLabel, categoryField };
 
       const categories = tag().extractCategoryResults({
         value: query,
@@ -681,26 +679,21 @@ suite('gb-sayt', Sayt, ({
       const addEventListener = spy();
       const searchBox = { autocomplete: 'on', addEventListener };
       const queryTag: any = { searchBox };
-      stub(utils, 'debounce', (func) => {
-        expect(func).to.eq(searchFunc);
-        return debouncedSearchFunc;
-      });
-      tag().debouncedSearch = (input) => {
-        expect(input).to.eq(searchBox);
-        return searchFunc;
-      };
+      const debounce = stub(utils, 'debounce', () => debouncedSearchFunc);
+      const debouncedSearch = stub(tag(), 'debouncedSearch', () => searchFunc);
 
       tag().listenForInput(queryTag);
 
       expect(searchBox.autocomplete).to.eq('off');
       expect(addEventListener).to.have.been.calledWith('input', debouncedSearchFunc);
+      expect(debounce).to.have.been.calledWith(searchFunc);
+      expect(debouncedSearch).to.have.been.calledWith(searchBox);
     });
 
     it('should debounce with the configured delay', () => {
       const saytDelay = 1423;
-      const debounce = stub(utils, 'debounce', (func, delay) =>
-        expect(delay).to.eq(saytDelay));
-      tag()._config = { delay: saytDelay };
+      const debounce = stub(utils, 'debounce');
+      tag().delay = saytDelay;
 
       tag().listenForInput(MOCK_QUERY);
 
@@ -709,7 +702,7 @@ suite('gb-sayt', Sayt, ({
 
     it('should debounce with minimum delay of 100', () => {
       const debounce = stub(utils, 'debounce');
-      tag()._config = { delay: 12 };
+      tag().delay = 12;
 
       tag().listenForInput(MOCK_QUERY);
 
@@ -733,7 +726,7 @@ suite('gb-sayt', Sayt, ({
     it('should return a function that calls reset()', () => {
       const func = tag().debouncedSearch(<any>{ value: '' });
       const reset = stub(tag(), 'reset');
-      tag()._config = { minimumCharacters: 3 };
+      tag().minimumCharacters = 3;
 
       func();
 
@@ -744,7 +737,7 @@ suite('gb-sayt', Sayt, ({
       const value = 'nike snea';
       const func = tag().debouncedSearch(<any>{ value });
       const fetchSuggestions = stub(tag(), 'fetchSuggestions');
-      tag()._config = { minimumCharacters: 3 };
+      tag().minimumCharacters = 3;
 
       func();
 
