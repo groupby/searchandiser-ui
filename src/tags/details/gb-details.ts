@@ -8,13 +8,10 @@ export interface DetailsConfig {
   idParam: string;
 }
 
-export const DEFAULT_CONFIG: DetailsConfig = {
-  idParam: 'id'
-};
-
 export interface Details extends FluxTag<DetailsConfig> { }
 
 export class Details {
+  idParam: string;
 
   query: string;
   struct: any;
@@ -23,14 +20,16 @@ export class Details {
   productMeta: ProductMeta;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.idParam = this.opts.idParam || 'id';
 
-    this.query = getParam(this._config.idParam);
+    this.query = getParam(this.idParam);
     this.struct = this.config.structure || {};
     this.transformer = new ProductTransformer(this.struct);
 
     this.flux.on(Events.DETAILS, this.updateRecord);
-    if (this.query) this.flux.details(this.query, this.transformer.idField);
+    if (this.query) {
+      this.flux.details(this.query, this.transformer.idField);
+    }
   }
 
   updateRecord({ allMeta }: Record) {
