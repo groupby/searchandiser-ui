@@ -19,18 +19,13 @@ export interface FluxTag<T> extends riot.Tag.Instance {
 
 export class FluxTag<T> {
   _tagName: string;
-  // TODO: should get rid of this
-  _parents: any;
   _aliases: any;
   // TODO: should get rid of this
   _style: string;
-  _config: T;
 
   init() {
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
-    // TODO: should get rid of this
-    setParents(this);
     setAliases(this);
   }
 
@@ -47,11 +42,6 @@ export class FluxTag<T> {
 
   _mixin(...mixins: any[]) {
     this.mixin(...mixins.map((mixin) => new mixin().__proto__));
-  }
-
-  // TODO: should get rid of this
-  configure(defaultConfig: any = {}) {
-    configure(defaultConfig, this);
   }
 }
 
@@ -79,13 +69,6 @@ export function setTagName(tag: FluxTag<any>) {
   }
 }
 
-export function setParents(tag: FluxTag<any>) {
-  tag._parents = tag.parent ? Object.assign({}, tag.parent['_parents']) : {};
-  if (tag._tagName) {
-    tag._parents[tag._tagName] = tag;
-  }
-}
-
 export function setAliases(tag: FluxTag<any>) {
   let aliases = {};
   if (tag.parent && tag.parent._aliases) {
@@ -104,23 +87,6 @@ export function setAliases(tag: FluxTag<any>) {
 export function addDollarSigns(obj: any) {
   return Object.keys(obj)
     .reduce((renamed, key) => Object.assign(renamed, { [`$${key}`]: obj[key] }), {});
-}
-
-export function configure(defaultConfig: any = {}, tag: FluxTag<any>) {
-  const rawConfig = Object.assign(
-    {},
-    defaultConfig,
-    getPath(tag.config, `tags.${camelizeTagName(tag._tagName)}`),
-    tag.opts.__proto__,
-    tag.opts);
-  for (let key of Object.keys(rawConfig)) {
-    if (typeof defaultConfig[key] === 'boolean'
-      || (typeof defaultConfig[key] !== 'number' && rawConfig[key] == true) // tslint:disable-line:triple-equals
-      || (!Array.isArray(rawConfig[key]) && typeof defaultConfig[key] !== 'number' && rawConfig[key] == false)) { // tslint:disable-line:triple-equals max-line-length
-      rawConfig[key] = checkBooleanAttr(key, rawConfig);
-    }
-  }
-  tag._config = rawConfig;
 }
 
 export function camelizeTagName(tagName: string) {

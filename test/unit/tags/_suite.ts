@@ -1,7 +1,6 @@
-import { configure, FluxTag } from '../../../src/tags/tag';
+import { FluxTag } from '../../../src/tags/tag';
 import { expectAliases, expectSubscriptions, ExpectedAliases } from '../../utils/expectations';
 import { baseSuite, buildSuite, SuiteModifier } from '../../utils/suite';
-import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
 function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) { // tslint:disable-line:max-line-length
@@ -30,7 +29,6 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       expectAliases: _expectAliases,
       spy,
       stub,
-      itShouldConfigure,
       itShouldAlias,
       tagName
     });
@@ -41,21 +39,6 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
 
     function _expectSubscriptions(func: Function, subscriptions: any, emitter: any = _flux) {
       expectSubscriptions(func, subscriptions, emitter);
-    }
-
-    function itShouldConfigure(defaultConfig?: any) {
-      it(`should configure itself ${defaultConfig ? 'with defaults' : ''}`, (done) => {
-        _tag.configure = (config) => {
-          if (defaultConfig) {
-            expect(config).to.eq(defaultConfig);
-          } else {
-            expect(config).to.be.undefined;
-          }
-          done();
-        };
-
-        _tag.init();
-      });
     }
 
     function itShouldAlias(aliases: ExpectedAliases) {
@@ -88,11 +71,9 @@ export function fluxTag<T extends FluxTag<any>>(tagName: string, tag: T, obj: an
     opts: {},
     refs: {},
     config: {},
-    _config: {},
     _tagName: tagName,
     alias: () => null,
     unalias: () => null,
-    configure: (cfg = {}) => configure(cfg, tag),
     mixin: () => null,
     on: () => null
   }, obj);
@@ -106,7 +87,6 @@ export interface UnitUtils<T> {
   stub: Sinon.SinonStubStatic;
   expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
   expectAliases: (func: Function, aliases: ExpectedAliases) => void;
-  itShouldConfigure: (defaultConfig?: any) => void;
   itShouldAlias: (aliases: ExpectedAliases) => void;
   tagName: string;
 }

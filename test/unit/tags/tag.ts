@@ -1,9 +1,7 @@
 import {
   addDollarSigns,
   camelizeTagName,
-  configure,
   setAliases,
-  setParents,
   setTagName,
   FluxTag,
   MixinFlux
@@ -172,44 +170,6 @@ describe('base tag logic', () => {
     });
   });
 
-  describe('setParents()', () => {
-    it('should set empty _parents', () => {
-      const tag: FluxTag<any> = <any>{};
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql({});
-    });
-
-    it('should inherit _parents', () => {
-      const _parents = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ parent: { _parents } };
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql(_parents);
-    });
-
-    it('should register self in _parents', () => {
-      const _tagName = 'gb-test-tag';
-      const tag: FluxTag<any> = <any>{ _tagName };
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql({ [_tagName]: tag });
-    });
-
-    it('should register self and inherit _parents', () => {
-      const _tagName = 'gb-test-tag';
-      const _parents = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ _tagName, parent: { _parents } };
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql(Object.assign({ [_tagName]: tag }, _parents));
-    });
-  });
-
   describe('setAliases()', () => {
     it('should inherit parent aliases', () => {
       const tag: any = {
@@ -256,7 +216,7 @@ describe('base tag logic', () => {
       expect(tag._aliases).to.eql({ a: tag, c: 'd' });
     });
 
-    it('should expose aliases on scope', () => {
+    it('should expose aliases', () => {
       const tag: any = {
         parent: {
           _aliases: {
@@ -277,75 +237,6 @@ describe('base tag logic', () => {
   describe('addDollarSigns()', () => {
     it('should add dollar sign prefix to every key', () => {
       expect(addDollarSigns({ a: 1, b: 2 })).to.eql({ $a: 1, $b: 2 });
-    });
-  });
-
-  describe('configure()', () => {
-    it('should mix together configuration sources', () => {
-      const tag: any = {
-        _tagName: 'gb-my-tag',
-        config: { tags: { myTag: { a: 'B', i: 'j', k: 'l', m: 'n' } } },
-        opts: {
-          __proto__: { c: 'D', i: 'J', o: 'p', q: 'r' },
-          e: 'F',
-          k: 'L',
-          o: 'P',
-          s: 't'
-        }
-      };
-
-      configure({ a: 'b', c: 'd', e: 'f', g: 'h' }, tag);
-
-      expect(tag._config).to.eql({
-        a: 'B',
-        c: 'D',
-        e: 'F',
-        g: 'h',
-        i: 'J',
-        k: 'L',
-        m: 'n',
-        o: 'P',
-        q: 'r',
-        s: 't'
-      });
-    });
-
-    it('should convert boolean values', () => {
-      const tag: any = { opts: {}, _tagName: '' };
-
-      configure({
-        a: 'false',
-        b: false,
-        c: 'true',
-        d: true,
-        e: undefined,
-        f: null,
-        g: [],
-        h: {},
-        i: '',
-        j: ' ',
-        k: 'other',
-        l: -1,
-        m: 0,
-        n: 1
-      }, tag);
-
-      expect(tag._config).to.eql({
-        a: 'false',
-        b: false,
-        c: 'true',
-        d: true,
-        e: undefined,
-        f: null,
-        g: [],
-        h: {},
-        i: true,
-        j: true,
-        k: 'other',
-        l: -1,
-        m: 0,
-        n: 1
-      });
     });
   });
 
