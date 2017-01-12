@@ -57,7 +57,7 @@ export class Sayt extends SaytTag<any> {
   matchesInput: boolean;
 
   init() {
-    this.alias('sayt');
+    this.alias(['sayt', 'productable']);
 
     this.allCategoriesLabel = this.opts.allCategoriesLabel || 'All Departments';
     this.highlight = checkBooleanAttr('highlight', this.opts, true);

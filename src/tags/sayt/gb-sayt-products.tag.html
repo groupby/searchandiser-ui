@@ -1,7 +1,7 @@
 <gb-sayt-products>
-  <gb-list items="{ $sayt.products }">
+  <gb-list items="{ $sayt.products }" item-alias="product">
     <yield>
-      <gb-product all_meta="{ $item.allMeta }">
+      <gb-product all-meta="{ $product.allMeta }">
         <gb-product-image thumbnail></gb-product-image>
       </gb-product>
     </yield>
