@@ -64,7 +64,7 @@ export class Product extends FluxTag<any> {
 
   transformRecord(allMeta: any = {}) {
     const { variants, transformedMeta: metadata } = this.transformer.transform(clone(allMeta, false));
-    this.update({ variants: variants || [], metadata });
+    this.update({ variants: variants || [], metadata: variants[0] });
   }
 
   link() {
