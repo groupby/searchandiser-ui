@@ -8,8 +8,6 @@ suite('gb-toggle', Toggle, ({
 }) => {
 
   describe('init()', () => {
-    beforeEach(() => tag()._scope = { on: () => null });
-
     it('should set default values', () => {
       tag().addStyleTag = () => null;
 

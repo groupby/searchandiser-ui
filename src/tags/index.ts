@@ -1,7 +1,7 @@
 import './badge';
 import './breadcrumbs';
-import './carousel';
-import './category-menu';
+// import './carousel';
+// import './category-menu';
 import './collections';
 import './details';
 import './did-you-mean';
