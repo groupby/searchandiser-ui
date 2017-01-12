@@ -9,24 +9,6 @@ suite('gb-lazy-image', LazyImage, ({
 }) => {
 
   describe('init()', () => {
-    it('should call lazyLoad() if src provided', () => {
-      const lazyLoad = stub(tag(), 'lazyLoad');
-      const src = 'example.com/image.png';
-      tag().opts = { src };
-
-      tag().init();
-
-      expect(lazyLoad).to.have.been.calledWith(src);
-    });
-
-    it('should not call lazyLoad()', () => {
-      const lazyLoad = stub(tag(), 'lazyLoad');
-
-      tag().init();
-
-      expect(lazyLoad).to.not.have.been.called;
-    });
-
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
         mount: tag().maybeLoadImage,
@@ -36,6 +18,8 @@ suite('gb-lazy-image', LazyImage, ({
   });
 
   describe('maybeLoadImage()', () => {
+    beforeEach(() => tag().refs = <any>{ lazyImage: {} });
+
     it('should load image', () => {
       const image = 'example.com/image.png';
       const lazyLoad = stub(tag(), 'lazyLoad');
@@ -59,7 +43,7 @@ suite('gb-lazy-image', LazyImage, ({
       const image = 'example.com/image.png';
       const lazyLoad = stub(tag(), 'lazyLoad');
       tag().$product = <any>{ imageLink: () => image };
-      tag().refs.lazyImage = <any>{ src: image };
+      tag().refs = <any>{ lazyImage: { src: image } };
 
       tag().maybeLoadImage();
 

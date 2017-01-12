@@ -1,4 +1,4 @@
-import { checkBooleanAttr, getPath, unless } from '../../utils/common';
+import { checkBooleanAttr, getPath } from '../../utils/common';
 import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
@@ -12,19 +12,19 @@ export interface Results extends FluxTag<ResultsConfig> { }
 export class Results {
   lazy: boolean;
 
-  struct: ProductStructure;
+  structure: ProductStructure;
   variantStruct: ProductStructure;
   records: Record[];
   collection: string;
-  getPath: typeof getPath;
 
   init() {
     this.alias('productable');
+    this.mixin({ getPath });
+
     this.lazy = checkBooleanAttr('lazy', this.opts);
 
-    this.struct = this.config.structure;
-    this.variantStruct = unless(this.struct._variantStructure, this.struct);
-    this.getPath = getPath;
+    this.structure = this.config.structure;
+    this.variantStruct = this.structure._variantStructure || this.structure;
 
     this.flux.on(Events.RESULTS, this.updateRecords);
   }

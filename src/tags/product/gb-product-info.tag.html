@@ -1,6 +1,6 @@
 <gb-product-info>
   <a href="{ $product.link() }">
-    <p class="gb-product__title">{ $product.metadata.title }</p>
-    <p class="gb-product__price">{ $product.metadata.price }</p>
+    <p class="gb-product__title">{ $product.currentVariant().title }</p>
+    <p class="gb-product__price">{ $product.currentVariant().price }</p>
   </a>
 </gb-product-info>

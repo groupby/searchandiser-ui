@@ -50,7 +50,9 @@ export class Product extends FluxTag<any> {
   }
 
   updateMetadata() {
-    this.metadata = this.productable().allMeta;
+    const { variants } = this.transformer.transform(clone(this.productable().allMeta, false));
+    this.variants = variants;
+    this.metadata = this.variants[0];
   }
 
   styleProduct() {
@@ -67,12 +69,16 @@ export class Product extends FluxTag<any> {
     this.update({ variants: variants || [], metadata: variants[0] });
   }
 
+  currentVariant() {
+    return this.variants[this.variantIndex] || this.metadata;
+  }
+
   link() {
-    return this.metadata.url || `${this.detailsUrl}?id=${this.metadata.id}`;
+    return this.currentVariant().url || `${this.detailsUrl}?id=${this.currentVariant().id}`;
   }
 
   imageLink() {
-    const image = this.metadata.image;
+    const image = this.currentVariant().image;
     return Array.isArray(image) ? image[0] : image;
   }
 

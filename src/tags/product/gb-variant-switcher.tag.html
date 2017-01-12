@@ -2,4 +2,10 @@
   <a if="{ $product.variants.length > 1 }" each="{ variant, i in $product.variants }" class="gb-product__variant-link" onclick="{ $product.switchVariant }" data-index="{ i }">
     { i }
   </a>
+
+  <style>
+    a {
+      cursor: pointer;
+    }
+  </style>
 </gb-variant-switcher>

@@ -13,15 +13,11 @@ export class LazyImage extends FluxTag<LazyImageConfig> {
   init() {
     this.on('mount', this.maybeLoadImage);
     this.on('update', this.maybeLoadImage);
-
-    if (this.opts.src) {
-      this.lazyLoad(this.opts.src);
-    }
   }
 
   maybeLoadImage() {
     const imageUrl = this.$product.imageLink();
-    if (imageUrl && (!this.refs.lazyImage || this.refs.lazyImage.src !== imageUrl)) {
+    if (imageUrl && this.refs.lazyImage.src !== imageUrl) {
       this.lazyLoad(imageUrl);
     }
   }
@@ -36,8 +32,10 @@ export class LazyImage extends FluxTag<LazyImageConfig> {
   }
 
   processImage(image: HTMLImageElement) {
-    this.refs.lazyImage.src = image.src;
-    this.refs.lazyImage.height = image.height;
-    this.refs.lazyImage.width = image.width;
+    if (this.refs.lazyImage) {
+      this.refs.lazyImage.src = image.src;
+      this.refs.lazyImage.height = image.height;
+      this.refs.lazyImage.width = image.width;
+    }
   }
 }
