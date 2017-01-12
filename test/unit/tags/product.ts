@@ -9,7 +9,7 @@ suite('gb-product', Product, ({
 }) => {
 
   describe('init()', () => {
-    beforeEach(() => tag().transformRecord = () => null);
+    beforeEach(() => tag().updateRecord = () => null);
 
     itShouldAlias('product');
 
@@ -109,7 +109,7 @@ suite('gb-product', Product, ({
       tag().transformer = <any>new MockTransformer(ALL_META, {}, []);
       tag().transformer.transform = transform;
 
-      tag().transformRecord();
+      tag().updateRecord();
 
       expect(transform.calledWith({})).to.be.true;
     });
@@ -120,7 +120,7 @@ suite('gb-product', Product, ({
       const update = tag().update = spy();
       tag().transformer = <any>new MockTransformer(ALL_META, remappedMeta, variants);
 
-      tag().transformRecord(ALL_META);
+      tag().updateRecord(ALL_META);
 
       expect(update).to.have.been.calledWith({ metadata: variants[0], variants });
     });

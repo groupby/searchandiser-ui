@@ -40,19 +40,21 @@ export class Product extends FluxTag<any> {
     this.transformer = new ProductTransformer(this.structure);
 
     this.styleProduct();
-    this.transformRecord(productable.allMeta);
-
-    this.on('update', this.updateMetadata);
+    this.updateRecord(productable.allMeta);
   }
 
   productable(obj: any = {}) {
     return Object.assign(obj, this.$productable, this.opts);
   }
 
-  updateMetadata() {
-    const { variants } = this.transformer.transform(clone(this.productable().allMeta, false));
+  updateRecord(allMeta: any) {
+    const { variants } = this.transformRecord(allMeta);
     this.variants = variants;
-    this.metadata = this.variants[0];
+    this.metadata = variants[0];
+  }
+
+  transformRecord(record: any): any {
+    return this.transformer.transform(clone(record, false));
   }
 
   styleProduct() {
@@ -61,13 +63,6 @@ export class Product extends FluxTag<any> {
     }
     if (this.tombstone) {
       this.root.classList.add('tombstone');
-    }
-  }
-
-  transformRecord(allMeta: any) {
-    if (allMeta) {
-      const { variants } = this.transformer.transform(clone(allMeta, false));
-      this.update({ variants, metadata: variants[0] });
     }
   }
 
