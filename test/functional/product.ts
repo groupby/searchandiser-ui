@@ -11,7 +11,7 @@ const STRUCTURE_WITH_VARIANTS = {
   _variantStructure: VARIANT_STRUCTURE
 };
 const MIXIN = { config: { structure: STRUCTURE } };
-const VARIANT_MIXIN = { structure: STRUCTURE_WITH_VARIANTS };
+const VARIANT_MIXIN = { config: { structure: STRUCTURE_WITH_VARIANTS } };
 
 suite<Product>('gb-product', MIXIN, ({ mount, itMountsTag }) => {
 

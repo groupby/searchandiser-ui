@@ -129,7 +129,7 @@ suite('gb-product', Product, ({
   describe('link()', () => {
     it('should return url from data', () => {
       const url = 'some/url/for/product';
-      tag().metadata = { url };
+      tag().variant = () => ({ url });
 
       expect(tag().link()).to.eq(url);
     });
@@ -137,7 +137,7 @@ suite('gb-product', Product, ({
     it('should return url built from id', () => {
       const id = 1423;
       const detailsUrl = 'productDetails.html';
-      tag().metadata = { id };
+      tag().variant = () => ({ id });
       tag().detailsUrl = detailsUrl;
 
       expect(tag().link()).to.eq(`${detailsUrl}?id=${id}`);
@@ -148,13 +148,13 @@ suite('gb-product', Product, ({
     const IMAGES = ['image1.png', 'image2.png'];
 
     it('should return image value', () => {
-      tag().metadata = { image: IMAGES[1] };
+      tag().variant = () => ({ image: IMAGES[1] });
 
       expect(tag().imageLink()).to.eq(IMAGES[1]);
     });
 
     it('should return image value from array', () => {
-      tag().metadata = { image: IMAGES };
+      tag().variant = () => ({ image: IMAGES });
 
       expect(tag().imageLink()).to.eq(IMAGES[0]);
     });
