@@ -23,7 +23,6 @@ export class FluxTag<T> {
   _parents: any;
   _aliases: any;
   // TODO: should get rid of this
-  _scope: FluxTag<any> & any;
   _style: string;
   _config: T;
 
@@ -32,8 +31,6 @@ export class FluxTag<T> {
     setTagName(this);
     // TODO: should get rid of this
     setParents(this);
-    // TODO: should get rid of this
-    setScope(this);
     setAliases(this);
   }
 
@@ -50,11 +47,6 @@ export class FluxTag<T> {
 
   _mixin(...mixins: any[]) {
     this.mixin(...mixins.map((mixin) => new mixin().__proto__));
-  }
-
-  // TODO: should get rid of this
-  _scopeTo(scope: string) {
-    this._scope = this._parents[scope];
   }
 
   // TODO: should get rid of this
@@ -91,18 +83,6 @@ export function setParents(tag: FluxTag<any>) {
   tag._parents = tag.parent ? Object.assign({}, tag.parent['_parents']) : {};
   if (tag._tagName) {
     tag._parents[tag._tagName] = tag;
-  }
-}
-
-// somehow this function isn't working for the gb-select inside gb-sort
-export function setScope(tag: FluxTag<any>) {
-  if (tag._parents && tag._parents[tag.opts.scope]) {
-    tag._scope = tag._parents[tag.opts.scope];
-  } else if (tag.parent && tag.parent._scope) {
-    tag._scope = tag.parent._scope;
-  } else {
-    let parent: any = tag;
-    while (parent.parent) tag._scope = parent = parent.parent;
   }
 }
 

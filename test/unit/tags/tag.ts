@@ -4,7 +4,6 @@ import {
   configure,
   setAliases,
   setParents,
-  setScope,
   setTagName,
   FluxTag,
   MixinFlux
@@ -114,18 +113,6 @@ describe('base tag logic', () => {
         expect(mixin).to.have.been.calledWith(proto, proto, proto);
       });
     });
-
-    describe('_scopeTo()', () => {
-      it('should set _scope to the parent specified', () => {
-        const scopeName = 'my-parent';
-        const scope = { a: 'b' };
-        tag._parents = { [scopeName]: scope };
-
-        tag._scopeTo(scopeName);
-
-        expect(tag._scope).to.eq(scope);
-      });
-    });
   });
 
   describe('setTagName()', () => {
@@ -220,49 +207,6 @@ describe('base tag logic', () => {
       setParents(tag);
 
       expect(tag._parents).to.eql(Object.assign({ [_tagName]: tag }, _parents));
-    });
-  });
-
-  describe('setScope()', () => {
-    it('should set scope from the configured parent tag', () => {
-      const parentScope = { a: 'b' };
-      const tag: FluxTag<any> = <any>{
-        _parents: { parentScope },
-        opts: { scope: 'parentScope' }
-      };
-
-      setScope(tag);
-
-      expect(tag._scope).to.eq(parentScope);
-    });
-
-    it('should set scope from parent tag', () => {
-      const parentScope = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ _scope: parentScope, opts: {} };
-
-      setScope(tag);
-
-      expect(tag._scope).to.eq(parentScope);
-    });
-
-    it('should search for the highest _scope', () => {
-      const topParent = { a: 'b' };
-      const tag: FluxTag<any> = <any>{
-        opts: {},
-        parent: {
-          parent: {
-            parent: {
-              parent: {
-                parent: topParent
-              }
-            }
-          }
-        }
-      };
-
-      setScope(tag);
-
-      expect(tag._scope).to.eq(topParent);
     });
   });
 
