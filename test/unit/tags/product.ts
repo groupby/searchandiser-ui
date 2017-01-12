@@ -104,9 +104,10 @@ suite('gb-product', Product, ({
     };
 
     it('should perform transformation on empty object', () => {
+      const transform = sinon.spy(() => ({ variants: [{}] }));
       tag().update = () => null;
       tag().transformer = <any>new MockTransformer(ALL_META, {}, []);
-      const transform = tag().transformer.transform = sinon.spy(() => () => null);
+      tag().transformer.transform = transform;
 
       tag().transformRecord();
 
@@ -121,7 +122,7 @@ suite('gb-product', Product, ({
 
       tag().transformRecord(ALL_META);
 
-      expect(update).to.have.been.calledWith({ metadata: ALL_META, variants });
+      expect(update).to.have.been.calledWith({ metadata: variants[0], variants });
     });
   });
 

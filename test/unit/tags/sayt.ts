@@ -25,7 +25,7 @@ suite('gb-sayt', Sayt, ({
       sayt = tag().sayt = { configure: () => null };
     });
 
-    itShouldAlias('sayt');
+    itShouldAlias(['sayt', 'productable']);
 
     it('should have default values', () => {
       tag().init();
