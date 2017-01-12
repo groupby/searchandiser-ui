@@ -41,19 +41,23 @@ export class ProductTransformer {
   }
 
   transform(allMeta: any): ProductMeta {
-    const transformedMeta = this.productTransform(allMeta);
-    const variants = this.unpackVariants(transformedMeta);
-    const productMeta: ProductMeta = (variant: number = 0) => {
-      if (variant >= variants.length) {
-        throw new Error(`cannot access the variant at index ${variant}`);
-      } else {
-        return variants[variant];
-      }
-    };
-    productMeta.variants = variants;
-    productMeta.transformedMeta = transformedMeta;
+    if (allMeta) {
+      const transformedMeta = this.productTransform(allMeta);
+      const variants = this.unpackVariants(transformedMeta);
+      const productMeta: ProductMeta = (variant: number = 0) => {
+        if (variant >= variants.length) {
+          throw new Error(`cannot access the variant at index ${variant}`);
+        } else {
+          return variants[variant];
+        }
+      };
+      productMeta.variants = variants;
+      productMeta.transformedMeta = transformedMeta;
 
-    return productMeta;
+      return productMeta;
+    } else {
+      return <any>{ variants: [{}] };
+    }
   }
 
   unpackVariants(allMeta: any): any[] {

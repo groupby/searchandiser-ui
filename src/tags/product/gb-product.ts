@@ -64,13 +64,19 @@ export class Product extends FluxTag<any> {
     }
   }
 
-  transformRecord(allMeta: any = {}) {
-    const { variants } = this.transformer.transform(clone(allMeta, false));
-    this.update({ variants, metadata: variants[0] });
+  transformRecord(allMeta: any) {
+    if (allMeta) {
+      const { variants } = this.transformer.transform(clone(allMeta, false));
+      this.update({ variants, metadata: variants[0] });
+    }
   }
 
   variant() {
-    return this.variants[this.variantIndex] || this.metadata;
+    if (this.variants && this.variants.length > this.variantIndex) {
+      return this.variants[this.variantIndex];
+    } else {
+      return this.metadata || {};
+    }
   }
 
   link() {
