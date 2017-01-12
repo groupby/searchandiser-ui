@@ -1,11 +1,7 @@
-import { getPath, unless } from '../../utils/common';
+import { checkBooleanAttr, getPath, unless } from '../../utils/common';
 import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
-
-export const DEFAULT_CONFIG: ResultsConfig = {
-  lazy: false
-};
 
 export interface ResultsConfig {
   lazy?: boolean;
@@ -14,6 +10,7 @@ export interface ResultsConfig {
 export interface Results extends FluxTag<ResultsConfig> { }
 
 export class Results {
+  lazy: boolean;
 
   struct: ProductStructure;
   variantStruct: ProductStructure;
@@ -22,7 +19,8 @@ export class Results {
   getPath: typeof getPath;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.alias('productable');
+    this.lazy = checkBooleanAttr('lazy', this.opts);
 
     this.struct = this.config.structure;
     this.variantStruct = unless(this.struct._variantStructure, this.struct);
