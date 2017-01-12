@@ -3,6 +3,16 @@ import { ProductMeta, ProductTransformer } from '../../../src/utils/product-tran
 import suite from './_suite';
 import { expect } from 'chai';
 
+const ALL_META = {
+  title: 'Red Sneakers',
+  price: '$12.45',
+  image: 'image.png',
+  id: '1340',
+  nested: {
+    value: '6532'
+  }
+};
+
 suite('gb-product', Product, ({
   tag, spy, stub,
   itShouldAlias
@@ -50,14 +60,14 @@ suite('gb-product', Product, ({
       tag().init();
     });
 
-    it('should call transformRecord()', () => {
+    it('should call updateRecord()', () => {
       const allMeta = { a: 'b' };
-      const transformRecord = stub(tag(), 'transformRecord');
-      tag().opts = { allMeta };
+      const updateRecord = stub(tag(), 'updateRecord');
+      tag().productable = () => ({ allMeta, structure: {} });
 
       tag().init();
 
-      expect(transformRecord).to.have.been.calledWith(allMeta);
+      expect(updateRecord).to.have.been.calledWith(allMeta);
     });
 
     it('should set structure from opts and productable()', () => {
@@ -92,37 +102,29 @@ suite('gb-product', Product, ({
     });
   });
 
-  describe('transformRecord()', () => {
-    const ALL_META = {
-      title: 'Red Sneakers',
-      price: '$12.45',
-      image: 'image.png',
-      id: '1340',
-      nested: {
-        value: '6532'
-      }
-    };
-
-    it('should perform transformation on empty object', () => {
-      const transform = sinon.spy(() => ({ variants: [{}] }));
-      tag().update = () => null;
-      tag().transformer = <any>new MockTransformer(ALL_META, {}, []);
-      tag().transformer.transform = transform;
-
-      tag().updateRecord();
-
-      expect(transform.calledWith({})).to.be.true;
-    });
-
-    it('should perform transformation', () => {
+  describe('updateRecord()', () => {
+    it('should update variants and metadata', () => {
       const remappedMeta = { e: 'f', g: 'h' };
       const variants = ['a', 'b', 'c'];
-      const update = tag().update = spy();
       tag().transformer = <any>new MockTransformer(ALL_META, remappedMeta, variants);
 
       tag().updateRecord(ALL_META);
 
-      expect(update).to.have.been.calledWith({ metadata: variants[0], variants });
+      expect(tag().variants).to.eq(variants);
+      expect(tag().metadata).to.eq(variants[0]);
+    });
+  });
+
+  describe('transformRecord()', () => {
+    it('should perform transformation', () => {
+      const obj = { a: 'b' };
+      const transform = spy(() => obj);
+      tag().transformer = <any>{ transform };
+
+      const transformation = tag().transformRecord(ALL_META);
+
+      expect(transformation).to.eq(obj);
+      expect(transform).to.have.been.calledWith(ALL_META);
     });
   });
 
