@@ -65,20 +65,20 @@ export class Product extends FluxTag<any> {
   }
 
   transformRecord(allMeta: any = {}) {
-    const { variants, transformedMeta: metadata } = this.transformer.transform(clone(allMeta, false));
-    this.update({ variants: variants || [], metadata: variants[0] });
+    const { variants } = this.transformer.transform(clone(allMeta, false));
+    this.update({ variants, metadata: variants[0] });
   }
 
-  currentVariant() {
+  variant() {
     return this.variants[this.variantIndex] || this.metadata;
   }
 
   link() {
-    return this.currentVariant().url || `${this.detailsUrl}?id=${this.currentVariant().id}`;
+    return this.variant().url || `${this.detailsUrl}?id=${this.variant().id}`;
   }
 
   imageLink() {
-    const image = this.currentVariant().image;
+    const image = this.variant().image;
     return Array.isArray(image) ? image[0] : image;
   }
 
