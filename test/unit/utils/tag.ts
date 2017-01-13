@@ -1,7 +1,9 @@
 import { FluxTag } from '../../../src/tags/tag';
+import * as utils from '../../../src/utils/common';
 import {
   addDollarSigns,
   camelizeTagName,
+  configure,
   setAliases,
   setTagName,
   MixinFlux
@@ -132,6 +134,39 @@ describe('tag utils', () => {
 
       expect(tag.$a).to.eq('b');
       expect(tag.$c).to.eq('d');
+    });
+  });
+
+  describe('configure()', () => {
+    it('should pass function to onConfigure()', () => {
+      const onConfigure = sinon.spy();
+      const tag: any = { onConfigure };
+
+      configure(tag);
+
+      expect(onConfigure).to.have.been.calledWith(sinon.match.func);
+    });
+
+    it('should not call onConfigure() if it does not exist', () => {
+      expect(() => configure(<any>{})).to.not.throw;
+    });
+
+    it('should call collectServiceConfigs()', () => {
+      const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
+      const tag: any = { onConfigure: (config) => config({}) };
+
+      configure(tag);
+
+      expect(collectServiceConfigs).to.have.been.calledWith(tag, []);
+    });
+
+    it('should call collectServiceConfigs() default to empty services list', () => {
+      const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
+      const tag: any = { onConfigure: (config) => config({}) };
+
+      configure(tag);
+
+      expect(collectServiceConfigs).to.have.been.calledWith(tag, []);
     });
   });
 

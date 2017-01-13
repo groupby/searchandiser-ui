@@ -1,5 +1,5 @@
 import { FluxTag } from '../tags/tag';
-import { checkBooleanAttr } from './common';
+import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
 import oget = require('oget');
 
@@ -50,26 +50,11 @@ export function configure(tag: FluxTag<any>) {
     const types = opts.types || {};
     const services = opts.services || [];
 
-    const serviceConfigs = services.reduce((configs, service) => {
-      const config = oget(tag.services, `${service}._config`);
-      if (config) {
-        configs.push(config);
-      }
-      return configs;
-    }, []);
+    const serviceConfigs = collectServiceConfigs(tag, services);
 
     const globalTagConfig = oget(tag.config, `tags.${tag._tagName}`, {});
 
-    const coercedOpts = Object.keys(tag.opts)
-      .reduce((coerced, key) => {
-        switch (types[key]) {
-          case 'boolean':
-            const attr = checkBooleanAttr(key, tag.opts, undefined);
-            return attr !== undefined ? Object.assign(coerced, { [key]: attr }) : coerced;
-          default:
-            return Object.assign(coerced, { [key]: tag.opts });
-        }
-      }, {});
+    const coercedOpts = coerceAttributes(tag.opts, types);
 
     const config = Object.assign(
       {},
