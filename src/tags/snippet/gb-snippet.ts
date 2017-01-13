@@ -23,6 +23,7 @@ export class Snippet extends FluxTag<any> {
   loadFile() {
     return new Promise((resolve) => {
       const req = new XMLHttpRequest();
+      req.onerror = (err) => console.error(`unable to load ${this.url}`, err);
       req.onload = () => {
         const { responseText } = req;
         if (this.raw) {

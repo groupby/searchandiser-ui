@@ -31,7 +31,6 @@ suite('gb-results', Results, ({
 
       expect(tag().lazy).to.be.false;
       expect(tag().structure).to.eq(structure);
-      expect(tag().variantStruct).to.eq(structure);
     });
 
     it('should set properties from opts', () => {
@@ -40,16 +39,6 @@ suite('gb-results', Results, ({
       tag().init();
 
       expect(tag().lazy).to.be.true;
-    });
-
-    it('should set variantStruct from _variantStructure', () => {
-      const varStruct = { c: 'd' };
-      const structure = { _variantStructure: varStruct };
-      tag().config = { structure };
-
-      tag().init();
-
-      expect(tag().variantStruct).to.eq(varStruct);
     });
 
     it('should listen for events', () => {

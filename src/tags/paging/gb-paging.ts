@@ -46,7 +46,7 @@ export class Paging extends FluxTag<any> {
   pageNumbers: number[];
 
   init() {
-    this.alias('pageable');
+    this.alias('paging');
 
     this.limit = this.opts.limit || 5;
     this.pages = checkBooleanAttr('pages', this.opts);

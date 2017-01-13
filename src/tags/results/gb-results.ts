@@ -22,7 +22,6 @@ export class Results extends FluxTag<ResultsConfig> {
     this.lazy = checkBooleanAttr('lazy', this.opts);
 
     this.structure = this.config.structure;
-    this.variantStruct = this.structure._variantStructure || this.structure;
 
     this.flux.on(Events.RESULTS, this.updateRecords);
   }

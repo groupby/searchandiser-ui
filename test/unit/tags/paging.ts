@@ -10,7 +10,7 @@ suite('gb-paging', Paging, ({
 }) => {
 
   describe('init()', () => {
-    itShouldAlias('pageable');
+    itShouldAlias('paging');
 
     it('should have default initial state', () => {
       tag().init();

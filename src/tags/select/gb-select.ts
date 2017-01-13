@@ -54,7 +54,7 @@ export class Select extends FluxTag<any> {
     this.native = checkBooleanAttr('native', selectable);
 
     this.clearItem = { label: selectable.clear || 'Unselect', clear: true };
-    this.default = !('clear' in selectable);
+    this.default = !selectable.clear;
 
     if (this.default) {
       this.selectedItem = typeof items[0] === 'object' ? items[0].label : items[0];
@@ -138,6 +138,6 @@ export class Select extends FluxTag<any> {
   }
 
   shouldRender(item: any) {
-    return item.clear ? this.selectedItem : true;
+    return !item.clear || this.selectedItem;
   }
 }

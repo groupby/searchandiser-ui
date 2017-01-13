@@ -1,10 +1,10 @@
 <gb-pages>
-  <ul class="gb-pages { _style }" if="{ $pageable.pages }">
-    <span class="gb-pages__ellipsis" if="{ $pageable.lowOverflow }">&hellip;</span>
-    <li each="{ pageNumber in $pageable.pageNumbers }">
-      <a class="gb-pages__page { selected: $pageable.currentPage === pageNumber }" onclick="{ $pageable.switchPage }">{ pageNumber }</a>
+  <ul class="gb-pages { _style }" if="{ $paging.pages }">
+    <span class="gb-pages__ellipsis" if="{ $paging.lowOverflow }">&hellip;</span>
+    <li each="{ pageNumber in $paging.pageNumbers }">
+      <a class="gb-pages__page { selected: $paging.currentPage === pageNumber }" onclick="{ $paging.switchPage }">{ pageNumber }</a>
     </li>
-    <span class="gb-pages__ellipsis" if="{ $pageable.highOverflow }">&hellip;</span>
+    <span class="gb-pages__ellipsis" if="{ $paging.highOverflow }">&hellip;</span>
   </ul>
 
   <style scoped>

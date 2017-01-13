@@ -30,8 +30,7 @@ export class Filter extends SelectTag<any> {
   }
 
   updateValues(res: Results) {
-    const items = this.convertRefinements(res.availableNavigation);
-    this.update({ items });
+    this.update({ items: this.convertRefinements(res.availableNavigation) });
   }
 
   onSelect(value: any | '*') {

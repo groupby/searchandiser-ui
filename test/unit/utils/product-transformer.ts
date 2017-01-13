@@ -20,10 +20,10 @@ describe('ProductTransformer', () => {
 
   describe('on construction', () => {
     it('should have default values', () => {
-      expect(transformer.struct.id).to.eql('id');
+      expect(transformer.structure.id).to.eql('id');
       expect(transformer.productTransform).to.be.a('function');
       expect(transformer.hasVariants).to.be.false;
-      expect(transformer.variantStruct).to.eq(transformer.struct);
+      expect(transformer.variantStructure).to.eq(transformer.structure);
       expect(transformer.idField).to.eq('id');
     });
 
@@ -32,7 +32,7 @@ describe('ProductTransformer', () => {
 
       transformer = new ProductTransformer(struct);
 
-      expect(transformer.struct).to.eql(struct);
+      expect(transformer.structure).to.eql(struct);
     });
 
     it('should accept tranform override from struct', () => {
@@ -663,8 +663,8 @@ describe('ProductTransformer', () => {
 
       expect(transformer.extractIdField()).to.eq('id');
 
-      transformer.struct = { id: 'id', _variantStructure: {} };
-      transformer.variantStruct = {};
+      transformer.structure = { id: 'id', _variantStructure: {} };
+      transformer.variantStructure = {};
 
       expect(transformer.extractIdField()).to.eq('id');
     });
@@ -672,8 +672,8 @@ describe('ProductTransformer', () => {
     it('should return variant id', () => {
       const _variantStructure = { id: 'childId' };
       transformer.hasVariants = true;
-      transformer.struct = { id: 'baseId', variants: 'child', _variantStructure };
-      transformer.variantStruct = _variantStructure;
+      transformer.structure = { id: 'baseId', variants: 'child', _variantStructure };
+      transformer.variantStructure = _variantStructure;
 
       expect(transformer.extractIdField()).to.eq('child.childId');
     });
