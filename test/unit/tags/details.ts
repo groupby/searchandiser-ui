@@ -16,7 +16,7 @@ suite('gb-details', Details, ({
 
       expect(tag().idParam).to.eq('id');
       expect(tag().query).to.not.be.ok;
-      expect(tag().struct).to.eql({});
+      expect(tag().structure).to.eql({});
       expect(tag().transformer).to.be.an.instanceof(ProductTransformer);
     });
 
@@ -35,7 +35,7 @@ suite('gb-details', Details, ({
 
       tag().init();
 
-      expect(tag().struct).to.eq(structure);
+      expect(tag().structure).to.eq(structure);
     });
 
     it('should listen for details event', () => {
@@ -62,13 +62,13 @@ suite('gb-details', Details, ({
     it('should update record', () => {
       const allMeta = { a: 'b', c: 'd' };
       const update = tag().update = spy();
-      tag().transformer = <any>{ transform: (meta) => () => meta };
+      tag().transformer = <any>{ transform: (meta) => [meta] };
 
       tag().updateRecord(<any>{ allMeta });
 
       expect(update).to.have.been.calledWith({
-        allMeta,
-        productMeta: sinon.match.func
+        metadata: allMeta,
+        variants: [allMeta]
       });
     });
   });
