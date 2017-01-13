@@ -31,7 +31,7 @@ export class Details extends FluxTag<any> {
   }
 
   updateRecord({ allMeta }: Record) {
-    const productMeta = this.transformer.transform(clone(allMeta, false));
-    this.update({ productMeta, allMeta: productMeta() });
+    const variants = this.transformer.transform(clone(allMeta, false));
+    this.update({ variants, metadata: variants[0] });
   }
 }

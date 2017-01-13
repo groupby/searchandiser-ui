@@ -104,9 +104,8 @@ suite('gb-product', Product, ({
 
   describe('updateRecord()', () => {
     it('should update variants and metadata', () => {
-      const remappedMeta = { e: 'f', g: 'h' };
       const variants = ['a', 'b', 'c'];
-      tag().transformer = <any>new MockTransformer(ALL_META, remappedMeta, variants);
+      tag().transformer = <any>new MockTransformer(variants);
 
       tag().updateRecord(ALL_META);
 
@@ -175,12 +174,9 @@ suite('gb-product', Product, ({
 });
 
 class MockTransformer {
-  constructor(private transformedMeta: any, private remappedMeta?: any, private variants?: any[]) { }
+  constructor(private variants?: any[]) { }
 
   transform() {
-    const productMeta: ProductMeta = () => this.remappedMeta;
-    productMeta.variants = this.variants;
-    productMeta.transformedMeta = this.transformedMeta;
-    return productMeta;
+    return this.variants;
   }
 }

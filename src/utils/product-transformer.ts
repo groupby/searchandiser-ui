@@ -40,23 +40,12 @@ export class ProductTransformer {
     this.idField = this.extractIdField();
   }
 
-  transform(allMeta: any): ProductMeta {
+  transform(allMeta: any) {
     if (allMeta) {
       const transformedMeta = this.productTransform(allMeta);
-      const variants = this.unpackVariants(transformedMeta);
-      const productMeta: ProductMeta = (variant: number = 0) => {
-        if (variant >= variants.length) {
-          throw new Error(`cannot access the variant at index ${variant}`);
-        } else {
-          return variants[variant];
-        }
-      };
-      productMeta.variants = variants;
-      productMeta.transformedMeta = transformedMeta;
-
-      return productMeta;
+      return this.unpackVariants(transformedMeta);
     } else {
-      return <any>{ variants: [{}] };
+      return [{}];
     }
   }
 

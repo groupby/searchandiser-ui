@@ -48,7 +48,7 @@ export class Product extends FluxTag<any> {
   }
 
   updateRecord(allMeta: any) {
-    const { variants } = this.transformRecord(allMeta);
+    const variants = this.transformRecord(allMeta);
     this.variants = variants;
     this.metadata = variants[0];
   }

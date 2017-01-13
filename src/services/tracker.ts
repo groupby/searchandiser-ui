@@ -57,13 +57,13 @@ export class Tracker {
 
   listenForViewProduct() {
     this.flux.on(Events.DETAILS, ({ allMeta }) => {
-      const productMeta = this.transformer.transform(allMeta);
+      const [metadata] = this.transformer.transform(allMeta);
       this.tracker.sendViewProductEvent({
         metadata: this.generateMetadata('viewProduct'),
         product: {
-          productId: productMeta().id,
-          title: productMeta().title,
-          price: productMeta().price,
+          productId: metadata.id,
+          title: metadata.title,
+          price: metadata.price,
           category: 'NONE'
         }
       });
