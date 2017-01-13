@@ -1,9 +1,7 @@
-import { FluxTag } from '../tag';
+import { LinkTag } from '../link-list/gb-link-list';
 import { Events, Results } from 'groupby-api';
 
-export class DidYouMean extends FluxTag<any> {
-
-  items: string[];
+export class DidYouMean extends LinkTag<any> {
 
   init() {
     this.alias('linkable');

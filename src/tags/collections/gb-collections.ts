@@ -1,7 +1,6 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
 import { checkBooleanAttr } from '../../utils/common';
-import { Selectable } from '../select/gb-select';
-import { FluxTag } from '../tag';
+import { Selectable, SelectTag } from '../select/gb-select';
 
 export interface CollectionOption {
   label: string;
@@ -14,9 +13,7 @@ export interface CollectionsConfig extends Selectable {
   showCounts?: boolean;
 }
 
-export interface Collections extends FluxTag<any>, Selectable { }
-
-export class Collections {
+export class Collections extends SelectTag<any> {
   dropdown: boolean;
   showCounts: boolean;
 

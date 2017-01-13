@@ -1,7 +1,7 @@
-import { FluxTag } from '../tag';
+import { LinkTag } from '../link-list/gb-link-list';
 import { Events, Results } from 'groupby-api';
 
-export class RelatedQueries extends FluxTag<any> {
+export class RelatedQueries extends LinkTag<any> {
 
   items: string[];
 

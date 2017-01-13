@@ -12,7 +12,9 @@ export interface Selectable extends Linkable {
   native?: boolean;
 }
 
-export interface SelectTag<T> extends FluxTag<T>, Selectable { }
+export interface SelectTag<T> extends Selectable { }
+
+export class SelectTag<T> extends FluxTag<T> { }
 
 export class Select extends FluxTag<any> {
   $selectable: Selectable;

@@ -1,14 +1,11 @@
 import { checkBooleanAttr } from '../../utils/common';
-import { Selectable } from '../select/gb-select';
-import { FluxTag } from '../tag';
+import { Selectable, SelectTag } from '../select/gb-select';
 
 export interface PageSizeConfig extends Selectable {
   resetOffset?: boolean;
 }
 
-export interface PageSize extends FluxTag<any>, Selectable { }
-
-export class PageSize {
+export class PageSize extends SelectTag<any> {
 
   resetOffset: boolean;
 

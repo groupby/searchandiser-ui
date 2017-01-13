@@ -1,5 +1,4 @@
-import { Selectable } from '../select/gb-select';
-import { FluxTag } from '../tag';
+import { Selectable, SelectTag } from '../select/gb-select';
 import { Results, Sort as SortModel } from 'groupby-api';
 
 export const DEFAULT_SORTS = [
@@ -9,9 +8,7 @@ export const DEFAULT_SORTS = [
 
 export interface SortConfig extends Selectable { }
 
-export interface Sort extends FluxTag<any>, Selectable { }
-
-export class Sort {
+export class Sort extends SelectTag<any> {
 
   init() {
     this.alias('selectable');
