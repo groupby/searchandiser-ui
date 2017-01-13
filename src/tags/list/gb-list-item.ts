@@ -1,13 +1,10 @@
 import { FluxTag } from '../tag';
 import { List } from './gb-list';
 
-export interface ListItem extends FluxTag<any> {
+export class ListItem extends FluxTag<any> {
   $list: List;
   item: any;
   i: number;
-}
-
-export class ListItem {
 
   init() {
     this.alias(this.$list.itemAlias, this.item);

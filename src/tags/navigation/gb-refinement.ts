@@ -4,13 +4,10 @@ import { NavigationInfo } from 'groupby-api';
 
 export { NavigationInfo };
 
-export interface Refinement extends FluxTag<any> {
+export class Refinement extends FluxTag<any> {
   $navigable: Navigation;
   $navigation: any;
   refinement: any;
-}
-
-export class Refinement {
 
   init() {
     this.alias('refinement', this.refinement);

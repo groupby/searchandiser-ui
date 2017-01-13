@@ -10,11 +10,8 @@ export interface Listable {
   shouldRender?: (option: any) => boolean;
 }
 
-export interface List extends FluxTag<any> {
+export class List extends FluxTag<any> {
   $listable: Listable;
-}
-
-export class List {
 
   itemAlias: string;
   indexAlias: string;

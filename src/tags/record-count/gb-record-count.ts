@@ -1,9 +1,7 @@
 import { FluxTag } from '../tag';
 import { Events, PageInfo } from 'groupby-api';
 
-export interface RecordCount extends FluxTag<any> { }
-
-export class RecordCount {
+export class RecordCount extends FluxTag<any>  {
 
   first: number;
   last: number;

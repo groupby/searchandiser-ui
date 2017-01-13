@@ -11,14 +11,12 @@ export interface InfiniteScrollConfig {
   maxRecords?: number;
 }
 
-export interface InfiniteScroll extends FluxTag<InfiniteScrollConfig> {
+export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   refs: {
     scroller: HTMLUListElement;
     runway: HTMLElement;
   };
-}
 
-export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   maxRecords: number;
 
   tombstoneLayout: { height: number; width: number; };

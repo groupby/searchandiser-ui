@@ -5,12 +5,9 @@ export interface Linkable extends Listable {
   onSelect: (obj: any) => void;
 }
 
-export interface LinkList extends FluxTag<any> {
+export class LinkList extends FluxTag<any> {
   $linkable: Linkable;
   $listable: Listable;
-}
-
-export class LinkList {
 
   init() {
     this.alias('listable', this.linkable());

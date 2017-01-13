@@ -14,9 +14,7 @@ export interface SelectionNavigation extends NavModel {
   selected: any[];
 }
 
-export interface Navigation extends FluxTag<any> { }
-
-export class Navigation {
+export class Navigation extends FluxTag<any> {
 
   badge: boolean;
   showSelected: boolean;

@@ -13,7 +13,7 @@ export interface QueryConfig {
   staticSearch?: boolean;
 }
 
-export interface Query extends FluxTag<any> {
+export class Query extends FluxTag<any> {
   root: riot.TagElement & HTMLInputElement;
   tags: {
     'gb-sayt': Sayt;
@@ -23,9 +23,6 @@ export interface Query extends FluxTag<any> {
       };
     };
   };
-}
-
-export class Query {
 
   sayt: boolean;
   autoSearch: boolean;

@@ -1,8 +1,6 @@
 import { FluxTag } from '../tag';
 
-export interface Raw extends FluxTag<any> { }
-
-export class Raw {
+export class Raw extends FluxTag<any> {
 
   init() {
     this.on('update', this.updateContent);

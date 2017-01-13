@@ -7,9 +7,7 @@ export interface IconConfig {
   value: string;
 }
 
-export interface Icon extends FluxTag<any> { }
-
-export class Icon {
+export class Icon extends FluxTag<any> {
 
   url: string;
   classes: string;

@@ -12,9 +12,7 @@ export interface BreadcrumbsConfig {
   correctedResultsLabel?: string;
 }
 
-export interface Breadcrumbs extends FluxTag<any> { }
-
-export class Breadcrumbs {
+export class Breadcrumbs extends FluxTag<any> {
 
   items: any[];
   hideQuery: boolean;

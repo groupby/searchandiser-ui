@@ -9,14 +9,12 @@ export interface Toggleable {
   trigger?: Function;
 }
 
-export interface Toggle extends FluxTag<any> {
+export class Toggle extends FluxTag<any> {
   $toggleable: Toggleable;
   refs: {
     input: HTMLInputElement;
   };
-}
 
-export class Toggle {
   height: number;
   switchHeight: number;
   animationSpeed: number;

@@ -1,9 +1,7 @@
 import { findSearchBox } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface Reset extends FluxTag<any> { }
-
-export class Reset {
+export class Reset extends FluxTag<any> {
 
   searchBox: HTMLInputElement;
 

@@ -21,9 +21,7 @@ export interface PagingConfig {
   lastIcon?: string;
 }
 
-export interface Paging extends FluxTag<any> { }
-
-export class Paging {
+export class Paging extends FluxTag<any> {
   limit: number;
   pages: boolean;
   numeric: boolean;

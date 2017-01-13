@@ -7,9 +7,7 @@ export interface ResultsConfig {
   lazy?: boolean;
 }
 
-export interface Results extends FluxTag<ResultsConfig> { }
-
-export class Results {
+export class Results extends FluxTag<ResultsConfig> {
   lazy: boolean;
 
   structure: ProductStructure;
