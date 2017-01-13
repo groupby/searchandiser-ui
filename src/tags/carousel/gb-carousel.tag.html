@@ -1,9 +1,9 @@
 <gb-carousel>
-  <a class="gb-carousel__previous-link" onclick={ prev }>Prev</a>
-  <gb-list items={ options } activation={ isSelected }>
+  <a class="gb-carousel__previous-link" onclick="{ prev }">Prev</a>
+  <gb-list activation="{ isSelected }">
     <yield/>
   </gb-list>
-  <a class="gb-carousel__next-link" onclick={ next }>Next</a>
+  <a class="gb-carousel__next-link" onclick="{ next }">Next</a>
 
   <script>
     import { Carousel } from './gb-carousel';
