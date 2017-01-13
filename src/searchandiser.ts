@@ -12,9 +12,9 @@ import { QueryConfig } from './tags/query/gb-query';
 import { SaytConfig } from './tags/sayt/gb-sayt';
 import { SortConfig } from './tags/sort/gb-sort';
 import { SubmitConfig } from './tags/submit/gb-submit';
-import { MixinFlux } from './tags/tag';
 import { Configuration } from './utils/configuration';
 import { ProductStructure } from './utils/product-transformer';
+import { MixinFlux } from './utils/tag';
 import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 import * as riot from 'riot';
 

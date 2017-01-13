@@ -1,7 +1,7 @@
 import { initSearchandiser, CONFIGURATION_MASK, Searchandiser } from '../../src/searchandiser';
 import * as serviceInitialiser from '../../src/services/init';
-import * as Tags from '../../src/tags/tag';
 import * as configuration from '../../src/utils/configuration';
+import * as TagUtils from '../../src/utils/tag';
 import { expect } from 'chai';
 import { Events, FluxCapacitor } from 'groupby-api';
 import * as groupby from 'groupby-api';
@@ -155,7 +155,7 @@ describe('searchandiser', () => {
       const mockFlux = { g: 'h' };
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
       sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
-      sandbox.stub(Tags, 'MixinFlux').returns(fluxMixin);
+      sandbox.stub(TagUtils, 'MixinFlux').returns(fluxMixin);
       sandbox.stub(riot, 'mixin');
       sandbox.stub(serviceInitialiser, 'initServices');
 
@@ -175,7 +175,7 @@ describe('searchandiser', () => {
       const configurationStub = sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
       sandbox.stub(riot, 'mixin');
       sandbox.stub(serviceInitialiser, 'initServices');
-      sandbox.stub(Tags, 'MixinFlux');
+      sandbox.stub(TagUtils, 'MixinFlux');
 
       const configure = initSearchandiser();
       configure(config);
@@ -192,7 +192,7 @@ describe('searchandiser', () => {
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
       sandbox.stub(serviceInitialiser, 'initServices');
       sandbox.stub(riot, 'mixin');
-      sandbox.stub(Tags, 'MixinFlux');
+      sandbox.stub(TagUtils, 'MixinFlux');
 
       const configure = initSearchandiser();
       configure(<any>{ a: 'b' });
@@ -213,7 +213,7 @@ describe('searchandiser', () => {
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
       sandbox.stub(groupby, 'FluxCapacitor');
       sandbox.stub(riot, 'mixin');
-      sandbox.stub(Tags, 'MixinFlux');
+      sandbox.stub(TagUtils, 'MixinFlux');
 
       const configure = initSearchandiser();
       configure(<any>{ e: 'f' });
@@ -227,7 +227,7 @@ describe('searchandiser', () => {
       const mockFlux = { e: 'f' };
       const services = { g: 'h' };
       const riotMixin = sandbox.stub(riot, 'mixin');
-      const fluxMixin = sandbox.stub(Tags, 'MixinFlux').returns(mixed);
+      const fluxMixin = sandbox.stub(TagUtils, 'MixinFlux').returns(mixed);
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
       sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
       sandbox.stub(serviceInitialiser, 'initServices').returns(services);

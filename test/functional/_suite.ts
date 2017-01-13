@@ -1,5 +1,6 @@
 import '../../src/tags/index';
-import { FluxTag, MixinFlux } from '../../src/tags/tag';
+import { FluxTag } from '../../src/tags/tag';
+import { MixinFlux } from '../../src/utils/tag';
 import { baseSuite, buildSuite, SuiteModifier } from '../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
