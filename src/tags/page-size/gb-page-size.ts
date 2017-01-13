@@ -1,25 +1,24 @@
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { checkBooleanAttr } from '../../utils/common';
+import { Selectable, SelectTag } from '../select/gb-select';
 
-export interface PageSizeConfig extends SelectConfig {
+export interface PageSizeConfig extends Selectable {
   resetOffset?: boolean;
 }
 
-export const DEFAULT_CONFIG = {
-  resetOffset: false
-};
+export class PageSize extends SelectTag<any> {
 
-export interface PageSize extends SelectTag<PageSizeConfig> { }
-
-export class PageSize {
+  resetOffset: boolean;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.alias('selectable');
 
-    this.options = this.config.pageSizes || [10, 25, 50, 100];
+    this.resetOffset = checkBooleanAttr('resetOffset', this.opts);
+
+    this.items = this.config.pageSizes || [10, 25, 50, 100];
   }
 
-  onselect(value: number) {
-    return this.flux.resize(value, this._config.resetOffset)
+  onSelect(value: number) {
+    return this.flux.resize(value, this.resetOffset)
       .then(() => this.services.tracker && this.services.tracker.search());
   }
 }

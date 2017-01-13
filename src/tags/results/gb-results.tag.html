@@ -1,7 +1,7 @@
 <gb-results>
   <yield>
-    <gb-list items={ records }>
-      <gb-product all_meta={ item.allMeta } lazy={ _parent._config.lazy }></gb-product>
+    <gb-list items="{ $productable.records }" item-alias="product">
+      <gb-product all-meta="{ $product.allMeta }" lazy="{ $product.lazy }"></gb-product>
     </gb-list>
   </yield>
 

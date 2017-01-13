@@ -1,17 +1,39 @@
-import { DEFAULT_CONFIG, Toggle } from '../../../src/tags/toggle/gb-toggle';
+import { Toggle } from '../../../src/tags/toggle/gb-toggle';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-toggle', Toggle, ({
   tag, stub, spy,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    beforeEach(() => tag()._scope = { on: () => null });
+    it('should set default values', () => {
+      tag().addStyleTag = () => null;
 
-    itShouldConfigure(DEFAULT_CONFIG);
+      tag().init();
+
+      expect(tag().height).to.eq(30);
+      expect(tag().switchHeight).to.eq(22);
+      expect(tag().animationSpeed).to.eq(0.4);
+      expect(tag().checked).to.be.false;
+    });
+
+    it('should set properties from toggleable()', () => {
+      const height = 40;
+      const switchHeight = 10;
+      const animationSpeed = 0.4;
+      const checked = true;
+      tag().addStyleTag = () => null;
+      tag().toggleable = () => ({ height, switchHeight, animationSpeed, checked });
+
+      tag().init();
+
+      expect(tag().height).to.eq(height);
+      expect(tag().switchHeight).to.eq(switchHeight);
+      expect(tag().animationSpeed).to.eq(animationSpeed);
+      expect(tag().checked).to.be.true;
+    });
 
     it('should listen for mount', () => {
       tag().addStyleTag = () => null;
@@ -32,7 +54,7 @@ suite('gb-toggle', Toggle, ({
   describe('onMount()', () => {
     it('should set input checked', () => {
       const input = tag().refs.input = <any>{};
-      tag()._config = { checked: true };
+      tag().checked = true;
 
       tag().onMount();
 
@@ -58,7 +80,7 @@ suite('gb-toggle', Toggle, ({
 
   describe('calculateSwitchHeight()', () => {
     it('should force height difference to be even', () => {
-      tag()._config = { switchHeight: 40 };
+      tag().switchHeight = 40;
 
       const switchHeight = tag().calculateSwitchHeight(41);
 
@@ -66,7 +88,7 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should not alter switchHeight', () => {
-      tag()._config = { switchHeight: 40 };
+      tag().switchHeight = 40;
 
       const switchHeight = tag().calculateSwitchHeight(42);
 
@@ -74,7 +96,7 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should not allow switchHeight > height', () => {
-      tag()._config = { switchHeight: 50 };
+      tag().switchHeight = 50;
 
       const switchHeight = tag().calculateSwitchHeight(40);
 
@@ -88,7 +110,9 @@ suite('gb-toggle', Toggle, ({
       const appendChild = spy();
       const createElement = stub(document, 'createElement').returns(node);
       tag().root = <any>{ appendChild };
-      tag()._config = { switchHeight: 20, height: 30, animationSpeed: 0.5 };
+      tag().switchHeight = 20;
+      tag().height = 30;
+      tag().animationSpeed = 0.5;
 
       tag().addStyleTag();
 
@@ -123,6 +147,15 @@ suite('gb-toggle', Toggle, ({
       `);
       expect(createElement).to.have.been.calledWith('style');
       expect(appendChild).to.have.been.calledWith(node);
+    });
+  });
+
+  describe('toggleable()', () => {
+    it('should mix $toggleable with opts', () => {
+      tag().$toggleable = <any>{ a: 'b', c: 'd' };
+      tag().opts = { a: 'e' };
+
+      expect(tag().toggleable()).to.eql({ a: 'e', c: 'd' });
     });
   });
 });

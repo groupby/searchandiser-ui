@@ -1,19 +1,14 @@
+import { Select } from '../select/gb-select';
 import { FluxTag } from '../tag';
 
-export interface CollectionDropdownItem extends FluxTag<any> {
-  _parent: FluxTag<any> & { option: any; };
-}
-
-export class CollectionDropdownItem {
+export class CollectionDropdownItem extends FluxTag<any> {
+  $select: Select;
+  $item: any;
 
   selectDropdown() {
-    if (typeof this._parent.option === 'object') {
-      this._scope.selectCustom(this._parent.option);
-    } else {
-      this._scope.selectCustom({
-        label: this._parent.option,
-        value: this._parent.option
-      });
-    }
+    this.$select.selectCustom({
+      label: this.$item.label || this.$item,
+      value: this.$item.value || this.$item
+    });
   }
 }

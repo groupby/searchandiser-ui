@@ -1,72 +1,90 @@
-import { ProductMeta, ProductTransformer } from '../../utils/product-transformer';
+import { checkBooleanAttr } from '../../utils/common';
+import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import oget = require('oget');
 
-export interface ProductConfig {
+export interface Productable {
   lazy?: boolean;
   infinite?: boolean;
   tombstone?: boolean;
+  structure?: ProductStructure;
+  allMeta: any;
 }
 
-export const DEFAULT_CONFIG: ProductConfig = {
-  lazy: true,
-  infinite: false,
-  tombstone: false
-};
+export class Product extends FluxTag<any> {
+  $productable: Productable;
 
-export interface Product extends FluxTag<ProductConfig> { }
-
-export class Product {
+  lazy: boolean;
+  infinite: boolean;
+  tombstone: boolean;
 
   variantIndex: number;
-  variants: any[];
   detailsUrl: string;
-  allMeta: any;
-  struct: any;
-  productMeta: ProductMeta;
+  metadata: any;
+  variants: any[];
+  structure: ProductStructure;
   transformer: ProductTransformer;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.alias('product');
+
+    const productable = this.productable();
+    this.lazy = checkBooleanAttr('lazy', productable, true);
+    this.infinite = checkBooleanAttr('infinite', productable);
+    this.tombstone = checkBooleanAttr('tombstone', productable);
 
     this.variantIndex = 0;
     this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
-    this.struct = this.opts.structure || this._scope.struct || this.config.structure || {};
-    this.transformer = new ProductTransformer(this.struct);
+    this.structure = Object.assign({}, this.config.structure, productable.structure);
+    this.transformer = new ProductTransformer(this.structure);
 
     this.styleProduct();
-    this.transformRecord(this.opts.all_meta);
+    this.updateRecord(productable.allMeta);
+  }
+
+  productable(obj: any = {}) {
+    return Object.assign(obj, this.$productable, this.opts);
+  }
+
+  updateRecord(allMeta: any) {
+    const variants = this.transformRecord(allMeta);
+    this.variants = variants;
+    this.metadata = variants[0];
+  }
+
+  transformRecord(record: any): any {
+    return this.transformer.transform(clone(record, false));
   }
 
   styleProduct() {
-    if (this._config.infinite) {
+    if (this.infinite) {
       this.root.classList.add('gb-infinite');
     }
-    if (this._config.tombstone) {
+    if (this.tombstone) {
       this.root.classList.add('tombstone');
     }
   }
 
-  transformRecord(allMeta: any = {}) {
-    const productMeta = this.transformer.transform(clone(allMeta, false));
-    this.update({
-      productMeta: () => productMeta(this.variantIndex),
-      variants: productMeta.variants || [],
-      allMeta: productMeta.transformedMeta
-    });
+  variant() {
+    if (this.variants && this.variants.length > this.variantIndex) {
+      return this.variants[this.variantIndex];
+    } else {
+      return this.metadata || {};
+    }
   }
 
   link() {
-    return this.productMeta().url || `${this.detailsUrl}?id=${this.productMeta().id}`;
+    return this.variant().url || `${this.detailsUrl}?id=${this.variant().id}`;
   }
 
-  image(imageObj: string | string[]) {
-    return Array.isArray(imageObj) ? imageObj[0] : imageObj;
+  imageLink() {
+    const image = this.variant().image;
+    return Array.isArray(image) ? image[0] : image;
   }
 
-  switchVariant(event: MouseEvent) {
-    const variantIndex = (<HTMLElement>event.target).dataset['index'];
+  switchVariant({ target }: { target: HTMLElement }) {
+    const variantIndex = target.dataset['index'];
     this.update({ variantIndex });
   }
 }

@@ -1,4 +1,5 @@
-import { DEFAULT_CONFIG, Results } from '../../../src/tags/results/gb-results';
+import { Results } from '../../../src/tags/results/gb-results';
+import { getPath } from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
@@ -6,34 +7,41 @@ import { Events } from 'groupby-api';
 suite('gb-results', Results, ({
   flux, tag, spy,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    beforeEach(() => tag().config = { structure: {} });
+
+    itShouldAlias('productable');
+
+    it('should mixin getPath()', () => {
+      const mixin = tag().mixin = spy();
+
+      tag().init();
+
+      expect(mixin).to.have.been.calledWith({ getPath });
+    });
 
     it('should have default values', () => {
       const structure = { a: 'b' };
       tag().config = { structure };
+
       tag().init();
 
-      expect(tag().struct).to.eq(structure);
-      expect(tag().variantStruct).to.eq(structure);
-      expect(tag().getPath).to.be.a('function');
+      expect(tag().lazy).to.be.false;
+      expect(tag().structure).to.eq(structure);
     });
 
-    it('should set variantStruct from _variantStructure', () => {
-      const varStruct = { c: 'd' };
-      const structure = { _variantStructure: varStruct };
-      tag().config = { structure };
+    it('should set properties from opts', () => {
+      tag().opts = { lazy: true };
+
       tag().init();
 
-      expect(tag().variantStruct).to.eq(varStruct);
+      expect(tag().lazy).to.be.true;
     });
 
     it('should listen for events', () => {
-      tag().config = { structure: {} };
-
       expectSubscriptions(() => tag().init(), {
         [Events.RESULTS]: tag().updateRecords
       });

@@ -1,32 +1,23 @@
 import { WINDOW } from '../../utils/common';
+import { Product } from '../product/gb-product';
 import { FluxTag } from '../tag';
 
 export interface LazyImageConfig {
   src: string;
 }
 
-export interface LazyImage extends FluxTag<LazyImageConfig> {
-  refs: {
-    lazyImage: HTMLImageElement;
-  };
-}
-
 export class LazyImage extends FluxTag<LazyImageConfig> {
+  $product: Product;
+  refs: { lazyImage: HTMLImageElement };
 
   init() {
-    this.configure();
-
-    this._scope.on('mount', this.maybeLoadImage);
-    this._scope.on('update', this.maybeLoadImage);
-
-    if (this._config.src) {
-      this.lazyLoad(this._config.src);
-    }
+    this.on('mount', this.maybeLoadImage);
+    this.on('update', this.maybeLoadImage);
   }
 
   maybeLoadImage() {
-    const imageUrl = this._scope.productMeta().image;
-    if (imageUrl && (!this.refs.lazyImage || this.refs.lazyImage.src !== imageUrl)) {
+    const imageUrl = this.$product.imageLink();
+    if (imageUrl && this.refs.lazyImage.src !== imageUrl) {
       this.lazyLoad(imageUrl);
     }
   }
@@ -41,8 +32,10 @@ export class LazyImage extends FluxTag<LazyImageConfig> {
   }
 
   processImage(image: HTMLImageElement) {
-    this.refs.lazyImage.src = image.src;
-    this.refs.lazyImage.height = image.height;
-    this.refs.lazyImage.width = image.width;
+    if (this.refs.lazyImage) {
+      this.refs.lazyImage.src = image.src;
+      this.refs.lazyImage.height = image.height;
+      this.refs.lazyImage.width = image.width;
+    }
   }
 }

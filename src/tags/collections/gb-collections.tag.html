@@ -1,9 +1,9 @@
 <gb-collections>
   <yield>
-    <gb-list class="gb-collections { _style }" items={ collections } if={ !_config.dropdown } scope="gb-collections" inline>
+    <gb-list class="gb-collections { _style }" if="{ !$collections.dropdown }" inline>
       <gb-collection-item></gb-collection-item>
     </gb-list>
-    <gb-select if={ _config.dropdown } scope="gb-collections">
+    <gb-select if="{ $collections.dropdown }">
       <gb-custom-select>
         <gb-collection-dropdown-item></gb-collection-dropdown-item>
       </gb-custom-select>

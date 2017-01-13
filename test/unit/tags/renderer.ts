@@ -489,23 +489,26 @@ describe('gb-infinite-scroll renderer', () => {
   describe('render()', () => {
     it('should update content on existing node', () => {
       const record = { allMeta: { a: 'b' } };
-      const transformRecord = sinon.spy();
+      const updateRecord = sinon.spy();
+      const update = sinon.spy();
       const one = sinon.spy((event, cb) => cb());
-      const node: any = { _tag: { transformRecord, one } };
+      const node: any = { _tag: { updateRecord, one, update } };
 
       renderer.render(record, node);
 
-      expect(transformRecord).to.have.been.calledWith(record.allMeta);
+      expect(updateRecord).to.have.been.calledWith(record.allMeta);
+      expect(update).to.have.been.called;
     });
 
     it('should update content on new node', () => {
       const record = { allMeta: { a: 'b' } };
       const structure = { c: 'd' };
       const remove = sinon.spy();
-      const transformRecord = sinon.spy();
+      const updateRecord = sinon.spy();
+      const update = sinon.spy();
       const one = sinon.spy((event, cb) => cb());
       const createTombstone = sandbox.stub(Renderer, 'createTombstone').returns({
-        _tag: { transformRecord, one },
+        _tag: { updateRecord, one, update },
         classList: { remove }
       });
       renderer.tag = <any>{ config: { structure } };
@@ -513,7 +516,8 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.render(record, null);
 
       expect(remove).to.have.been.calledWith('tombstone');
-      expect(transformRecord).to.have.been.calledWith(record.allMeta);
+      expect(updateRecord).to.have.been.calledWith(record.allMeta);
+      expect(update).to.have.been.called;
       expect(createTombstone).to.have.been.calledWith(structure);
     });
   });

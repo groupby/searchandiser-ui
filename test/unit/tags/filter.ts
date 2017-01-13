@@ -1,16 +1,16 @@
 import { FILTER_UPDATED_EVENT } from '../../../src/services/filter';
-import { DEFAULT_CONFIG, Filter } from '../../../src/tags/filter/gb-filter';
+import { Filter } from '../../../src/tags/filter/gb-filter';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-filter', Filter, ({
   flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    itShouldAlias('selectable');
 
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
@@ -39,36 +39,23 @@ suite('gb-filter', Filter, ({
   });
 
   describe('updateValues()', () => {
-    it('should update the select tag with options', () => {
-      const results: any = { x: 'y' };
-      const refinements = [{ a: 'b', c: 'd' }];
-      const updateOptions = spy();
-      tag().tags = <any>{ 'gb-select': { updateOptions } };
-      tag().convertRefinements = () => refinements;
-
-      tag().updateValues(results);
-
-      expect(updateOptions).to.have.been.calledWith(refinements);
-    });
-
     it('should call update() with options', () => {
       const results: any = { x: 'y' };
-      const options = [{ a: 'b', c: 'd' }];
+      const items = [{ a: 'b', c: 'd' }];
       const update = tag().update = spy();
-      tag().tags = <any>{};
-      tag().convertRefinements = () => options;
+      tag().convertRefinements = () => items;
 
       tag().updateValues(results);
 
-      expect(update).to.have.been.calledWith({ options });
+      expect(update).to.have.been.calledWith({ items });
     });
   });
 
-  describe('onselect()', () => {
+  describe('onSelect()', () => {
     it('should call reset on clear navigation', () => {
       const reset = stub(flux(), 'reset');
 
-      tag().onselect('*');
+      tag().onSelect('*');
 
       expect(reset).to.have.been.called;
     });
@@ -77,9 +64,9 @@ suite('gb-filter', Filter, ({
       const selection = { type: 'Value', value: 'DeWalt' };
       const navigationName = 'brand';
       const refine = stub(flux(), 'refine');
-      tag()._config = { field: navigationName };
+      tag().field = navigationName;
 
-      tag().onselect(selection);
+      tag().onSelect(selection);
 
       expect(refine).to.have.been.calledWith(Object.assign(selection, { navigationName }));
     });
@@ -88,7 +75,7 @@ suite('gb-filter', Filter, ({
       const selection = tag().selected = { a: 'b', c: 'd' };
       const unrefine = stub(flux(), 'unrefine');
 
-      tag().onselect('*');
+      tag().onSelect('*');
 
       expect(unrefine).to.have.been.calledWith(selection, { skipSearch: true });
     });

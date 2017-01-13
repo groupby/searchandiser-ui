@@ -25,40 +25,33 @@ export type ProductStructure = BaseStructure & any;
 
 export class ProductTransformer {
 
-  struct: ProductStructure;
-  variantStruct: any;
+  structure: ProductStructure;
+  variantStructure: any;
   hasVariants: boolean;
   idField: string;
   productTransform: (allMeta: any) => any;
   variants: any[];
 
-  constructor(struct: ProductStructure) {
-    this.struct = Object.assign({}, DEFAULT_STRUCTURE, struct);
+  constructor(structure: ProductStructure) {
+    this.structure = Object.assign({}, DEFAULT_STRUCTURE, structure);
     this.setTransform();
-    this.hasVariants = 'variants' in struct;
-    this.variantStruct = this.struct._variantStructure || this.struct;
+    this.hasVariants = 'variants' in structure;
+    this.variantStructure = this.structure._variantStructure || this.structure;
     this.idField = this.extractIdField();
   }
 
-  transform(allMeta: any): ProductMeta {
-    const transformedMeta = this.productTransform(allMeta);
-    const variants = this.unpackVariants(transformedMeta);
-    const productMeta: ProductMeta = (variant: number = 0) => {
-      if (variant >= variants.length) {
-        throw new Error(`cannot access the variant at index ${variant}`);
-      } else {
-        return variants[variant];
-      }
-    };
-    productMeta.variants = variants;
-    productMeta.transformedMeta = transformedMeta;
-
-    return productMeta;
+  transform(allMeta: any) {
+    if (allMeta) {
+      const transformedMeta = this.productTransform(allMeta);
+      return this.unpackVariants(transformedMeta);
+    } else {
+      return [{}];
+    }
   }
 
   unpackVariants(allMeta: any): any[] {
-    const struct = filterObject(this.struct, '!_*');
-    const variantStruct = filterObject(this.variantStruct, '!_*');
+    const struct = filterObject(this.structure, '!_*');
+    const variantStruct = filterObject(this.variantStructure, '!_*');
     const remappedMeta = remap(allMeta, struct);
     const variantMapping = this.remapVariant(remappedMeta, variantStruct);
 
@@ -81,16 +74,16 @@ export class ProductTransformer {
 
   extractIdField() {
     // ensure we actually want the nested id
-    if (this.hasVariants && this.struct._variantStructure && this.variantStruct.id) {
-      return `${this.struct.variants}.${this.variantStruct.id}`;
+    if (this.hasVariants && this.structure._variantStructure && this.variantStructure.id) {
+      return `${this.structure.variants}.${this.variantStructure.id}`;
     } else {
-      return this.struct.id;
+      return this.structure.id;
     }
   }
 
   private setTransform() {
-    if (typeof this.struct._transform === 'function') {
-      this.productTransform = this.struct._transform;
+    if (typeof this.structure._transform === 'function') {
+      this.productTransform = this.structure._transform;
     } else {
       this.productTransform = this.defaultTransform;
     }

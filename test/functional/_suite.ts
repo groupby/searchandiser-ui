@@ -1,6 +1,5 @@
 import '../../src/tags/index';
-import { SelectTag } from '../../src/tags/select/gb-select';
-import { configure, FluxTag, MixinFlux } from '../../src/tags/tag';
+import { FluxTag, MixinFlux } from '../../src/tags/tag';
 import { baseSuite, buildSuite, SuiteModifier } from '../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
@@ -67,11 +66,7 @@ export default suite;
 
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
-  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), {
-    configure(cfg: any = {}) {
-      configure(cfg, this);
-    }
-  }, obj));
+  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), obj));
   return flux;
 }
 
@@ -111,17 +106,17 @@ export abstract class BaseModel<T extends FluxTag<any>> {
   }
 }
 
-export abstract class SelectModel<T extends SelectTag<any>> extends BaseModel<T> {
+export abstract class SelectModel extends BaseModel<any> {
 
   get label() {
     return this.element(this.html, '.gb-button__label');
   }
 
-  get options() {
-    return this.list(this.html, '.gb-select__option:not(.clear) gb-option a');
+  get items() {
+    return this.list(this.html, 'gb-option:not(.clear) a');
   }
 
-  get clearOption() {
-    return this.element(this.html, '.gb-select__option.clear gb-option a');
+  get clearItem() {
+    return this.element(this.html, 'gb-option.clear a');
   }
 }

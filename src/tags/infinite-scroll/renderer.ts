@@ -266,7 +266,8 @@ export class Renderer {
       elem.classList.remove('tombstone');
     }
     const tag: any = (<riot.TagElement>elem)._tag;
-    tag.transformRecord(data.allMeta);
+    tag.updateRecord(data.allMeta);
+    tag.update();
 
     return elem;
   }

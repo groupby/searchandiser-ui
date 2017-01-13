@@ -20,10 +20,10 @@ describe('ProductTransformer', () => {
 
   describe('on construction', () => {
     it('should have default values', () => {
-      expect(transformer.struct.id).to.eql('id');
+      expect(transformer.structure.id).to.eql('id');
       expect(transformer.productTransform).to.be.a('function');
       expect(transformer.hasVariants).to.be.false;
-      expect(transformer.variantStruct).to.eq(transformer.struct);
+      expect(transformer.variantStructure).to.eq(transformer.structure);
       expect(transformer.idField).to.eq('id');
     });
 
@@ -32,7 +32,7 @@ describe('ProductTransformer', () => {
 
       transformer = new ProductTransformer(struct);
 
-      expect(transformer.struct).to.eql(struct);
+      expect(transformer.structure).to.eql(struct);
     });
 
     it('should accept tranform override from struct', () => {
@@ -106,54 +106,27 @@ describe('ProductTransformer', () => {
         image: 'thumbnail.png'
       };
 
-      const productMeta = transformer.transform(allMeta);
+      const variants = transformer.transform(allMeta);
 
-      expect(productMeta).to.be.a('function');
-      expect(productMeta.transformedMeta).to.eq(allMeta);
-      expect(productMeta.variants).to.eql([allMeta]);
+      expect(variants).to.eql([allMeta]);
     });
 
     it('should call productTransform()', () => {
       const transformedMeta = { a: 'b', c: 'd' };
-      transformer.productTransform = (allMeta) => {
-        expect(allMeta).to.eq(VARIANT_META);
-        return transformedMeta;
-      };
+      const productTransform = transformer.productTransform = sinon.spy(() => transformedMeta);
 
-      const productMeta = transformer.transform(VARIANT_META);
+      transformer.transform(VARIANT_META);
 
-      expect(productMeta.transformedMeta).to.eq(transformedMeta);
+      expect(productTransform).to.have.been.calledWith(VARIANT_META);
     });
 
     it('should call unpackVariants()', () => {
       const variants = [{ a: 'b' }, { c: 'd' }];
-      transformer.unpackVariants = (transformedMeta) => {
-        expect(transformedMeta).to.eq(VARIANT_META);
-        return variants;
-      };
+      const unpackVariants = transformer.unpackVariants = sinon.spy(() => variants);
 
-      const productMeta = transformer.transform(VARIANT_META);
+      transformer.transform(VARIANT_META);
 
-      expect(productMeta.variants).to.eq(variants);
-    });
-
-    it('should ignore variants if variants is not configured', () => {
-      const productMeta = transformer.transform(VARIANT_META);
-
-      expect(productMeta()).to.be.eql({
-        title: 'Orange Chili',
-        price: '$3',
-        image: 'image.bmp'
-      });
-    });
-
-    it('should throw errors when accessing improperly configured variants', () => {
-      transformer = new ProductTransformer({ variants: 'varieties' });
-
-      const productMeta = transformer.transform(VARIANT_META);
-
-      expect(productMeta(0)).to.eql({});
-      expect(() => productMeta(1)).to.throw('cannot access the variant at index 1');
+      expect(unpackVariants).to.have.been.calledWith(VARIANT_META);
     });
   });
 
@@ -663,8 +636,8 @@ describe('ProductTransformer', () => {
 
       expect(transformer.extractIdField()).to.eq('id');
 
-      transformer.struct = { id: 'id', _variantStructure: {} };
-      transformer.variantStruct = {};
+      transformer.structure = { id: 'id', _variantStructure: {} };
+      transformer.variantStructure = {};
 
       expect(transformer.extractIdField()).to.eq('id');
     });
@@ -672,8 +645,8 @@ describe('ProductTransformer', () => {
     it('should return variant id', () => {
       const _variantStructure = { id: 'childId' };
       transformer.hasVariants = true;
-      transformer.struct = { id: 'baseId', variants: 'child', _variantStructure };
-      transformer.variantStruct = _variantStructure;
+      transformer.structure = { id: 'baseId', variants: 'child', _variantStructure };
+      transformer.variantStructure = _variantStructure;
 
       expect(transformer.extractIdField()).to.eq('child.childId');
     });

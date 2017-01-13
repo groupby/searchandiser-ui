@@ -1,4 +1,11 @@
-import { configure, setParents, setScope, setTagName, FluxTag, MixinFlux } from '../../../src/tags/tag';
+import {
+  addDollarSigns,
+  camelizeTagName,
+  setAliases,
+  setTagName,
+  FluxTag,
+  MixinFlux
+} from '../../../src/tags/tag';
 import { expect } from 'chai';
 
 describe('base tag logic', () => {
@@ -8,11 +15,15 @@ describe('base tag logic', () => {
   afterEach(() => sandbox.restore());
 
   describe('FluxTag', () => {
+    let tag: FluxTag<any>;
+
+    beforeEach(() => {
+      tag = new FluxTag();
+    });
+
     describe('init()', () => {
-      let tag: FluxTag<any>;
 
       beforeEach(() => {
-        tag = new FluxTag();
         tag.root = <any>{ tagName: 'gb-test-tag' };
         tag.opts = {};
         tag.config = {};
@@ -32,10 +43,78 @@ describe('base tag logic', () => {
         expect(tag._style).to.eq('gb-stylish');
       });
     });
+
+    describe('alias()', () => {
+
+      beforeEach(() => {
+        tag._aliases = {};
+      });
+
+      it('should accept alias name as a string', () => {
+        const alias = 'item';
+
+        tag.alias(alias);
+
+        expect(tag._aliases[alias]).to.eq(tag);
+      });
+
+      it('should accept alias name as a array of strings', () => {
+        const aliases = ['item', 'item2', 'item3'];
+
+        tag.alias(aliases);
+
+        aliases.forEach((alias) => expect(tag._aliases[alias]).to.eq(tag));
+      });
+
+      it('should alias provided object from name', () => {
+        const alias = 'item';
+        const obj = { a: 'b' };
+
+        tag.alias(alias, obj);
+
+        expect(tag._aliases[alias]).to.eq(obj);
+      });
+
+      it('should alias provided object from names', () => {
+        const aliases = ['item', 'item2', 'item3'];
+        const obj = { a: 'b' };
+
+        tag.alias(aliases, obj);
+
+        aliases.forEach((alias) => expect(tag._aliases[alias]).to.eq(obj));
+      });
+    });
+
+    describe('unalias()', () => {
+      it('should remove alias from _aliases', () => {
+        const alias = 'item';
+        tag._aliases = { [alias]: {} };
+
+        tag.unalias(alias);
+
+        expect(tag._aliases).to.not.have.property(alias);
+      });
+    });
+
+    describe('_mixin()', () => {
+      it('should call mixin() with the __proto__ of every new instance', () => {
+        const proto = { a: 'b' };
+        class Mixin {
+          constructor() {
+            return { __proto__: proto };
+          }
+        }
+        const mixin = tag.mixin = sinon.spy();
+
+        tag._mixin(Mixin, Mixin, Mixin);
+
+        expect(mixin).to.have.been.calledWith(proto, proto, proto);
+      });
+    });
   });
 
   describe('setTagName()', () => {
-    it('should not set tag names', () => {
+    it('should not set _tagName', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'SOMENAME',
@@ -47,8 +126,6 @@ describe('base tag logic', () => {
       setTagName(tag);
 
       expect(tag._tagName).to.not.be.ok;
-      expect(tag._simpleTagName).to.not.be.ok;
-      expect(tag._camelTagName).to.not.be.ok;
     });
 
     it('should fall back to root.tagName', () => {
@@ -63,11 +140,9 @@ describe('base tag logic', () => {
       setTagName(tag);
 
       expect(tag._tagName).to.eq('my-some-name');
-      expect(tag._simpleTagName).to.eq('some-name');
-      expect(tag._camelTagName).to.eq('someName');
     });
 
-    it('should set tag names from root.tagName', () => {
+    it('should set _tagName from root.tagName', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'GB-TEST-TAG'
@@ -77,11 +152,9 @@ describe('base tag logic', () => {
       setTagName(tag);
 
       expect(tag._tagName).to.eq('gb-test-tag');
-      expect(tag._simpleTagName).to.eq('test-tag');
-      expect(tag._camelTagName).to.eq('testTag');
     });
 
-    it('should set tag names from dataset.is', () => {
+    it('should set _tagName from dataset.is', () => {
       const tag: FluxTag<any> = <any>{
         root: {
           tagName: 'SOMENAME',
@@ -94,175 +167,82 @@ describe('base tag logic', () => {
       setTagName(tag);
 
       expect(tag._tagName).to.eq('gb-test-tag');
-      expect(tag._simpleTagName).to.eq('test-tag');
-      expect(tag._camelTagName).to.eq('testTag');
     });
   });
 
-  describe('setParents()', () => {
-    it('should set empty _parents and _parentsList', () => {
-      const tag: FluxTag<any> = <any>{};
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql({});
-      expect(tag._parentsList).to.eql([]);
-    });
-
-    it('should inherit _parents', () => {
-      const _parents = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ parent: { _parents } };
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql(_parents);
-      expect(tag._parentsList).to.eql([{ _parents }]);
-    });
-
-    it('should register self in _parents', () => {
-      const _tagName = 'gb-test-tag';
-      const tag: FluxTag<any> = <any>{ _tagName };
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql({ [_tagName]: tag });
-      expect(tag._parentsList).to.eql([]);
-    });
-
-    it('should register self and inherit _parents', () => {
-      const _tagName = 'gb-test-tag';
-      const _parents = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ _tagName, parent: { _parents } };
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql(Object.assign({ [_tagName]: tag }, _parents));
-      expect(tag._parentsList).to.eql([{ _parents }]);
-    });
-
-    it('should add all parents to _parentsList', () => {
-      const parent3 = { a: 'b' };
-      const parent2 = { parent: parent3 };
-      const parent1 = { _parents: { e: 'e' }, parent: parent2 };
-      const tag: FluxTag<any> = <any>{ parent: parent1 };
-
-      setParents(tag);
-
-      expect(tag._parents).to.eql(parent1._parents);
-      expect(tag._parentsList).to.eql([parent1, parent2, parent3]);
-    });
-  });
-
-  describe('setScope()', () => {
-    it('should set scope from the configured parent tag', () => {
-      const parentScope = { a: 'b' };
-      const tag: FluxTag<any> = <any>{
-        _parents: { parentScope },
-        opts: { scope: 'parentScope' }
-      };
-
-      setScope(tag);
-
-      expect(tag._scope).to.eq(parentScope);
-    });
-
-    it('should set scope from parent tag', () => {
-      const parentScope = { a: 'b' };
-      const tag: FluxTag<any> = <any>{ _scope: parentScope, opts: {} };
-
-      setScope(tag);
-
-      expect(tag._scope).to.eq(parentScope);
-    });
-
-    it('should search for the highest _scope', () => {
-      const topParent = { a: 'b' };
-      const tag: FluxTag<any> = <any>{
-        opts: {},
-        parent: {
-          parent: {
-            parent: {
-              parent: {
-                parent: topParent
-              }
-            }
-          }
-        }
-      };
-
-      setScope(tag);
-
-      expect(tag._scope).to.eq(topParent);
-      expect(tag._top).to.eq(topParent);
-    });
-  });
-
-  describe('configure()', () => {
-    it('should mix together configuration sources', () => {
+  describe('setAliases()', () => {
+    it('should inherit parent aliases', () => {
       const tag: any = {
-        _camelTagName: 'myTag',
-        config: { tags: { myTag: { a: 'B', i: 'j', k: 'l', m: 'n' } } },
+        parent: {
+          _aliases: {
+            c: 'd'
+          }
+        },
+        opts: {}
+      };
+
+      setAliases(tag);
+
+      expect(tag._aliases).to.eql({ c: 'd' });
+    });
+
+    it('should expose alias from opts', () => {
+      const tag: any = {
         opts: {
-          __proto__: { c: 'D', i: 'J', o: 'p', q: 'r' },
-          e: 'F',
-          k: 'L',
-          o: 'P',
-          s: 't'
+          alias: 'idk'
         }
       };
 
-      configure({ a: 'b', c: 'd', e: 'f', g: 'h' }, tag);
+      setAliases(tag);
 
-      expect(tag._config).to.eql({
-        a: 'B',
-        c: 'D',
-        e: 'F',
-        g: 'h',
-        i: 'J',
-        k: 'L',
-        m: 'n',
-        o: 'P',
-        q: 'r',
-        s: 't'
-      });
+      expect(tag._aliases).to.eql({ idk: tag });
     });
 
-    it('should convert boolean values', () => {
-      const tag: any = { opts: {} };
+    it('should override alias from parent', () => {
+      const tag: any = {
+        parent: {
+          _aliases: {
+            a: 'b',
+            c: 'd'
+          }
+        },
+        opts: {
+          alias: 'a'
+        }
+      };
 
-      configure({
-        a: 'false',
-        b: false,
-        c: 'true',
-        d: true,
-        e: undefined,
-        f: null,
-        g: [],
-        h: {},
-        i: '',
-        j: ' ',
-        k: 'other',
-        l: -1,
-        m: 0,
-        n: 1
-      }, tag);
+      setAliases(tag);
 
-      expect(tag._config).to.eql({
-        a: 'false',
-        b: false,
-        c: 'true',
-        d: true,
-        e: undefined,
-        f: null,
-        g: [],
-        h: {},
-        i: true,
-        j: true,
-        k: 'other',
-        l: -1,
-        m: 0,
-        n: 1
-      });
+      expect(tag._aliases).to.eql({ a: tag, c: 'd' });
+    });
+
+    it('should expose aliases', () => {
+      const tag: any = {
+        parent: {
+          _aliases: {
+            a: 'b',
+            c: 'd'
+          }
+        },
+        opts: {}
+      };
+
+      setAliases(tag);
+
+      expect(tag.$a).to.eq('b');
+      expect(tag.$c).to.eq('d');
+    });
+  });
+
+  describe('addDollarSigns()', () => {
+    it('should add dollar sign prefix to every key', () => {
+      expect(addDollarSigns({ a: 1, b: 2 })).to.eql({ $a: 1, $b: 2 });
+    });
+  });
+
+  describe('camelizeTagName()', () => {
+    it('should remove prefix and camelcase string', () => {
+      expect(camelizeTagName('gb-my-tag')).to.eq('myTag');
     });
   });
 

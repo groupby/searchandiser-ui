@@ -1,8 +1,8 @@
 <gb-navigation>
   <yield>
-    <div class="gb-side-nav { _style }">
-      <gb-refinement-list each={ navigation in processed }></gb-refinement-list>
-    </div>
+    <ul class="gb-side-nav { _style }">
+      <li data-is="gb-refinement-list" each="{ navigation in $navigable.processed }"></li>
+    </ul>
   </yield>
 
   <script>

@@ -1,21 +1,19 @@
-import { unless } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface CarouselConfig {
-  options: any[];
+  items: any[];
 }
 
-export interface Carousel extends FluxTag<CarouselConfig> { }
-
-export class Carousel {
+export class Carousel extends FluxTag<CarouselConfig> {
 
   currentIndex: number;
-  options: any[];
+  items: any[];
 
   init() {
-    this.configure();
+    this.alias('listable');
+
     this.currentIndex = 0;
-    this.options = unless(this._config.options, this._scope.options, []);
+    this.items = this.opts.items || [];
   }
 
   isSelected(index: number) {
@@ -23,11 +21,10 @@ export class Carousel {
   }
 
   next() {
-    this.update({ currentIndex: Math.min(this.currentIndex + 1, this.options.length - 1) });
+    this.update({ currentIndex: Math.min(this.currentIndex + 1, this.items.length - 1) });
   }
 
   prev() {
     this.update({ currentIndex: Math.max(this.currentIndex - 1, 0) });
   }
-
 }

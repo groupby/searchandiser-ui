@@ -135,6 +135,11 @@ describe('utils', () => {
       expect(checkBooleanAttr('attr4', options)).to.be.false;
       expect(checkBooleanAttr('attr5', options)).to.be.false;
     });
+
+    it('should accept defaultValue', () => {
+      expect(checkBooleanAttr('test', {}, true)).to.be.true;
+      expect(checkBooleanAttr('test', {}, false)).to.be.false;
+    });
   });
 
   describe('getParam()', () => {

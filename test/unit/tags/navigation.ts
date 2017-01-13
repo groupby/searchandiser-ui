@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { Navigation } from '../../../src/tags/navigation/gb-navigation';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,12 +6,25 @@ import { Events } from 'groupby-api';
 
 suite('gb-navigation', Navigation, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    it('should set defaults', () => {
+      tag().init();
+
+      expect(tag().badge).to.be.true;
+      expect(tag().showSelected).to.be.true;
+    });
+
+    it('should set properties from opts', () => {
+      tag().opts = { badge: false, showSelected: false };
+
+      tag().init();
+
+      expect(tag().badge).to.be.false;
+      expect(tag().showSelected).to.be.false;
+    });
 
     it('should listen for flux events', () => {
       expectSubscriptions(() => tag().init(), {

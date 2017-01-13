@@ -1,11 +1,6 @@
 <gb-product-image>
-  <a class="gb-product-image { _style }" href={ _scope.link() }>
-    <gb-lazy-image if={ _scope._config.lazy } src={ imageLink() }></gb-lazy-image>
-    <img if={ !_scope._config.lazy } src={ imageLink() } alt="" />
+  <a class="gb-product-image { _style }" href="{ $product.link() }">
+    <gb-lazy-image if="{ $product.lazy }" src="{ $product.imageLink() }"></gb-lazy-image>
+    <img if="{ !$product.lazy }" src="{ $product.imageLink() }" alt="" />
   </a>
-
-  <script>
-    import { ProductImage } from './gb-product-image';
-    this._mixin(ProductImage);
-  </script>
 </gb-product-image>

@@ -11,21 +11,20 @@ export class Collections {
 
   collectionsConfig: CollectionsConfig;
   fetchCounts: boolean;
-  isLabeled: boolean;
   counts: any = {};
   inProgress: CancelablePromise<any>;
   collections: string[];
-  options: string[] | CollectionOption[];
+  items: string[] | CollectionOption[];
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
     this.collectionsConfig = getPath(config, 'tags.collections') || {};
-    this.fetchCounts = unless(this.collectionsConfig.counts, true);
-    this.options = this.collectionsConfig.options || [];
-    this.isLabeled = this.options.length !== 0
-      && typeof this.options[0] === 'object';
-    this.collections = this.isLabeled
-      ? (<CollectionOption[]>this.options).map((collection) => collection.value)
-      : <string[]>this.options;
+    this.fetchCounts = unless(this.collectionsConfig.showCounts, true);
+    this.items = this.collectionsConfig.items || [];
+    if (this.isLabeled(this.items)) {
+      this.collections = this.items.map((item) => item.value);
+    } else {
+      this.collections = this.items;
+    }
   }
 
   init() {
@@ -72,11 +71,11 @@ export class Collections {
     return collection === this.selectedCollection;
   }
 
+  isLabeled(items: Array<string | CollectionOption>): items is CollectionOption[] {
+    return items.length !== 0 && typeof items[0] === 'object';
+  }
+
   get selectedCollection() {
     return getPath(this.flux, 'query.raw.collection') || this.config.collection;
   }
-
-  // private extractCounts(counts: any, { results, collection }: { results: Results, collection: string }) {
-  //   return Object.assign(counts, { [collection]: results.totalRecordCount });
-  // }
 }

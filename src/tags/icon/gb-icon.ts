@@ -7,23 +7,28 @@ export interface IconConfig {
   value: string;
 }
 
-export interface Icon extends FluxTag<IconConfig> { }
-
-export class Icon {
+export class Icon extends FluxTag<any> {
 
   url: string;
   classes: string;
 
   init() {
-    this.configure();
-    if (this.isImage(this._config.value)) {
-      this.url = this._config.value;
+    this.setImage();
+
+    this.on('update', this.setImage);
+  }
+
+  setImage() {
+    if (this.isImage(this.opts.value)) {
+      this.url = this.opts.value;
+      delete this.classes;
     } else {
-      this.classes = this._config.value;
+      this.classes = this.opts.value;
+      delete this.url;
     }
   }
 
-  private isImage(value: string) {
+  isImage(value: string) {
     const matches = value.match(IMAGE_PATTERN);
     return (matches && matches.length > 0) || value.startsWith(DATA_URL_PREFIX);
   }

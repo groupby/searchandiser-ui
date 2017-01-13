@@ -1,4 +1,4 @@
-import { debounce } from '../../utils/common';
+import { checkBooleanAttr, checkNumericAttr, debounce } from '../../utils/common';
 import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
 import { SaytTag } from '../tag';
@@ -13,8 +13,8 @@ export interface SaytConfig {
   collection?: string;
   area?: string;
   language?: string;
-  products?: number;
-  queries?: number;
+  productCount?: number;
+  queryCount?: number;
   minimumCharacters?: number;
   delay?: number;
   autoSearch?: boolean;
@@ -25,40 +25,59 @@ export interface SaytConfig {
   allowedNavigations?: string[];
 }
 
-export const DEFAULT_CONFIG: SaytConfig = {
-  allCategoriesLabel: 'All Departments',
-  products: 4,
-  queries: 5,
-  minimumCharacters: 1,
-  delay: 100,
-  autoSearch: true,
-  staticSearch: false,
-  highlight: true,
-  https: false,
-  navigationNames: {},
-  allowedNavigations: []
-};
 export const MIN_DELAY = 100;
 
-export interface Sayt extends SaytTag<SaytConfig> { }
+export class Sayt extends SaytTag<any> {
+  structure: ProductStructure;
+  navigationNames: { [key: string]: string };
+  allowedNavigations: string[];
+  allCategoriesLabel: string;
+  categoryField: string;
+  area: string;
+  collection: string;
+  language: string;
+  delay: number;
+  productCount: number;
+  queryCount: number;
+  minimumCharacters: number;
+  highlight: boolean;
+  https: boolean;
+  autoSearch: boolean;
+  staticSearch: boolean;
 
-export class Sayt {
-
+  autocomplete: Autocomplete;
   products: Record[];
   navigations: Navigation[];
-  struct: any;
-  autocomplete: Autocomplete;
+  queries: any[];
+  categoryResults: any[];
+  results: any;
   autocompleteList: HTMLUListElement;
   originalQuery: string;
   showProducts: boolean;
   matchesInput: boolean;
-  queries: any[];
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.alias(['sayt', 'productable']);
 
-    this.struct = Object.assign({}, this.config.structure, this._config.structure);
-    this.showProducts = this._config.products > 0;
+    this.allCategoriesLabel = this.opts.allCategoriesLabel || 'All Departments';
+    this.highlight = checkBooleanAttr('highlight', this.opts, true);
+    this.autoSearch = checkBooleanAttr('autoSearch', this.opts, true);
+    this.staticSearch = checkBooleanAttr('staticSearch', this.opts);
+    this.https = checkBooleanAttr('https', this.opts);
+    this.delay = this.opts.delay || 100;
+    this.minimumCharacters = this.opts.minimumCharacters || 1;
+    this.navigationNames = this.opts.navigationNames || {};
+    this.allowedNavigations = this.opts.allowedNavigations || [];
+    this.productCount = checkNumericAttr('productCount', this.opts, 4);
+    this.queryCount = checkNumericAttr('queryCount', this.opts, 5);
+
+    this.structure = Object.assign({}, this.config.structure, this.opts.structure);
+    this.collection = this.opts.collection || this.config.collection;
+    this.language = this.opts.language || this.config.language;
+    this.area = this.opts.area || this.config.area;
+    this.categoryField = this.opts.categoryField;
+
+    this.showProducts = this.productCount > 0;
 
     this.sayt.configure(this.generateSaytConfig());
 
@@ -73,17 +92,17 @@ export class Sayt {
   generateSaytConfig() {
     return {
       subdomain: this.config.customerId,
-      collection: this._config.collection || this.config.collection,
+      collection: this.collection,
       autocomplete: {
-        numSearchTerms: this._config.queries,
-        language: this._config.language
+        numSearchTerms: this.queryCount,
+        language: this.language
       },
       productSearch: {
-        area: this._config.area || this.config.area,
-        numProducts: this._config.products,
-        language: this._config.language
+        area: this.area,
+        numProducts: this.productCount,
+        language: this.language
       },
-      https: this._config.https
+      https: this.https
     };
   }
 
@@ -120,9 +139,9 @@ export class Sayt {
   }
 
   notifier(query: string, refinement?: string, field?: string) {
-    const isRefinement = refinement && refinement !== this._config.allCategoriesLabel;
-    const refinementString = `~${field || this._config.categoryField}=${refinement}`;
-    if (this._config.autoSearch) {
+    const isRefinement = refinement && refinement !== this.allCategoriesLabel;
+    const refinementString = `~${field || this.categoryField}=${refinement}`;
+    if (this.autoSearch) {
       this.searchProducts(field ? '' : query, isRefinement ? refinementString : undefined);
     }
     this.rewriteQuery(query);
@@ -140,8 +159,8 @@ export class Sayt {
     }
 
     const navigations = result.navigations ? result.navigations
-      .map((nav) => Object.assign(nav, { displayName: this._config.navigationNames[nav.name] || nav.name }))
-      .filter(({name}) => this._config.allowedNavigations.includes(name)) : [];
+      .map((nav) => Object.assign(nav, { displayName: this.navigationNames[nav.name] || nav.name }))
+      .filter(({name}) => this.allowedNavigations.includes(name)) : [];
     this.update({
       results: result,
       navigations,
@@ -152,12 +171,12 @@ export class Sayt {
 
   extractCategoryResults({ additionalInfo, value }: any) {
     let categoryResults = [];
-    const categoryField = this._config.categoryField;
+    const categoryField = this.categoryField;
     if (additionalInfo && categoryField && categoryField in additionalInfo) {
       categoryResults = additionalInfo[categoryField]
         .map((category) => ({ category, value }))
         .slice(0, 3);
-      categoryResults.unshift({ category: this._config.allCategoriesLabel, value, noRefine: true });
+      categoryResults.unshift({ category: this.allCategoriesLabel, value, noRefine: true });
     }
     return categoryResults;
   }
@@ -173,7 +192,7 @@ export class Sayt {
   }
 
   highlightCurrentQuery(value: string, regexReplacement: string) {
-    return this._config.highlight
+    return this.highlight
       ? value.replace(new RegExp(escapeStringRegexp(this.originalQuery), 'i'), regexReplacement)
       : value;
   }
@@ -187,12 +206,12 @@ export class Sayt {
 
     const doRefinement = !node.dataset['norefine'];
     const refinement: SelectedValueRefinement = {
-      navigationName: node.dataset['field'] || this._config.categoryField,
+      navigationName: node.dataset['field'] || this.categoryField,
       value: node.dataset['refinement'],
       type: 'Value'
     };
 
-    if (this._config.staticSearch && this.services.url.isActive()) {
+    if (this.staticSearch && this.services.url.isActive()) {
       return Promise.resolve(this.services.url.update(this.flux.query.withQuery(queryString)
         .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] })));
     } else if (doRefinement) {
@@ -211,7 +230,7 @@ export class Sayt {
 
     const query = node.dataset['value'];
 
-    if (this._config.staticSearch && this.services.url.isActive()) {
+    if (this.staticSearch && this.services.url.isActive()) {
       return Promise.resolve(this.services.url.update(this.flux.query
         .withConfiguration(<any>{ query, refinements: [] })));
     } else {
@@ -224,14 +243,14 @@ export class Sayt {
   listenForInput(tag: Query) {
     const input = <HTMLInputElement>tag.searchBox;
     input.autocomplete = 'off';
-    const debouncedSearch = debounce(this.debouncedSearch(input), Math.max(this._config.delay, MIN_DELAY));
+    const debouncedSearch = debounce(this.debouncedSearch(input), Math.max(this.delay, MIN_DELAY));
     input.addEventListener('input', debouncedSearch);
     document.addEventListener('click', this.reset);
   }
 
   debouncedSearch(input: HTMLInputElement) {
     return () => {
-      if (input.value.length >= this._config.minimumCharacters) {
+      if (input.value.length >= this.minimumCharacters) {
         this.fetchSuggestions(input.value);
       } else {
         this.reset();

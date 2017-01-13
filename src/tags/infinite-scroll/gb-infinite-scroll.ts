@@ -11,18 +11,13 @@ export interface InfiniteScrollConfig {
   maxRecords?: number;
 }
 
-export const DEFAULT_CONFIG: InfiniteScrollConfig = {
-  maxRecords: 500
-};
-
-export interface InfiniteScroll extends FluxTag<InfiniteScrollConfig> {
+export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   refs: {
     scroller: HTMLUListElement;
     runway: HTMLElement;
   };
-}
 
-export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
+  maxRecords: number;
 
   tombstoneLayout: { height: number; width: number; };
   items: ScrollItem[];
@@ -36,7 +31,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   anchorScrollTop: number;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.maxRecords = this.opts.maxRecords || 500;
 
     WINDOW.addEventListener('resize', this.onResize);
     this.flux.on(Events.QUERY_CHANGED, this.reset);

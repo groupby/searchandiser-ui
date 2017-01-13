@@ -1,21 +1,21 @@
-import { FluxTag } from '../tag';
+import { LinkTag } from '../link-list/gb-link-list';
 import { Events, Results } from 'groupby-api';
 
-export interface RelatedQueries extends FluxTag<any> { }
+export class RelatedQueries extends LinkTag<any> {
 
-export class RelatedQueries {
-
-  relatedQueries: string[];
+  items: string[];
 
   init() {
+    this.alias('linkable');
+
     this.flux.on(Events.RESULTS, this.updatedRelatedQueries);
   }
 
-  updatedRelatedQueries({ relatedQueries }: Results) {
-    this.update({ relatedQueries });
+  updatedRelatedQueries({ relatedQueries: items }: Results) {
+    this.update({ items });
   }
 
-  send(event: Event) {
-    return this.flux.rewrite((<HTMLAnchorElement>event.target).text);
+  onSelect({ target }: Event & { target: HTMLAnchorElement }) {
+    return this.flux.rewrite(target.text);
   }
 }

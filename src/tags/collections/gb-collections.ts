@@ -1,40 +1,32 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { checkBooleanAttr } from '../../utils/common';
+import { Selectable, SelectTag } from '../select/gb-select';
 
 export interface CollectionOption {
   label: string;
   value: string;
 }
 
-export interface CollectionsConfig extends SelectConfig {
-  options: string[] | CollectionOption[];
-  counts?: boolean;
+export interface CollectionsConfig extends Selectable {
+  items: string[] | CollectionOption[];
   dropdown?: boolean;
+  showCounts?: boolean;
 }
 
-export const DEFAULT_CONFIG: CollectionsConfig = {
-  options: [],
-  counts: true,
-  dropdown: false
-};
+export class Collections extends SelectTag<any> {
+  dropdown: boolean;
+  showCounts: boolean;
 
-export interface Collections extends SelectTag<CollectionsConfig> { }
-
-export class Collections {
-
-  collections: string[];
-  counts: any;
-  labels: any;
+  counts: { [key: string]: number };
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.alias(['collections', 'listable', 'selectable']);
 
-    this.options = this._config.options;
-    const collectionsService = this.services.collections;
-    this.collections = collectionsService.collections;
-    this.labels = collectionsService.isLabeled
-      ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
-      : {};
+    this.showCounts = checkBooleanAttr('showCounts', this.opts, true);
+    this.dropdown = checkBooleanAttr('dropdown', this.opts);
+
+    this.items = this.services.collections.items;
+    this.counts = {};
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
   }
@@ -43,17 +35,11 @@ export class Collections {
     this.update({ counts });
   }
 
-  switchCollection(event: MouseEvent) {
-    let element = <HTMLElement>event.target;
-    while (element.tagName !== 'A') element = element.parentElement;
-    this.onselect(element.dataset['collection']);
+  switchCollection({ currentTarget}: { currentTarget: HTMLAnchorElement }) {
+    this.onSelect(currentTarget.dataset['collection']);
   }
 
-  onselect(collection: string) {
+  onSelect(collection: string) {
     this.flux.switchCollection(collection);
-  }
-
-  private extractLabels(labels: any, collection: { value: string; label: string; }) {
-    return Object.assign(labels, { [collection.value]: collection.label });
   }
 }

@@ -1,7 +1,7 @@
 import './badge';
 import './breadcrumbs';
-import './carousel';
-import './category-menu';
+// import './carousel';
+// import './category-menu';
 import './collections';
 import './details';
 import './did-you-mean';
@@ -9,6 +9,7 @@ import './filter';
 import './icon';
 import './infinite-scroll';
 import './lazy-image';
+import './link-list';
 import './list';
 import './navigation';
 import './page-size';

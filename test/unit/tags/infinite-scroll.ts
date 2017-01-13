@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, InfiniteScroll, MIN_REQUEST_SIZE } from '../../../src/tags/infinite-scroll/gb-infinite-scroll';
+import { InfiniteScroll, MIN_REQUEST_SIZE } from '../../../src/tags/infinite-scroll/gb-infinite-scroll';
 import * as renderer from '../../../src/tags/infinite-scroll/renderer';
 import { WINDOW } from '../../../src/utils/common';
 import suite from './_suite';
@@ -7,8 +7,7 @@ import { Events, Query } from 'groupby-api';
 
 suite('gb-infinite-scroll', InfiniteScroll, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldConfigure
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
@@ -20,7 +19,20 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       tag().reset = () => null;
     });
 
-    itShouldConfigure(DEFAULT_CONFIG);
+    it('should set defaults', () => {
+      tag().init();
+
+      expect(tag().maxRecords).to.eq(500);
+    });
+
+    it('should set properties from opts', () => {
+      const maxRecords = 100;
+      tag().opts = { maxRecords };
+
+      tag().init();
+
+      expect(tag().maxRecords).to.eq(maxRecords);
+    });
 
     it('should listen for resize events on window', () => {
       const addEventListener = stub(WINDOW, 'addEventListener');

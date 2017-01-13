@@ -1,3 +1,4 @@
+import { checkBooleanAttr } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface SnippetConfig {
@@ -5,33 +6,35 @@ export interface SnippetConfig {
   url: string;
 }
 
-export const DEFAULT_CONFIG: SnippetConfig & any = {
-  raw: false
-};
+export class Snippet extends FluxTag<any> {
 
-export interface Snippet extends FluxTag<SnippetConfig> { }
-
-export class Snippet {
+  raw: boolean;
+  url: string;
 
   responseText: string;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.raw = checkBooleanAttr('raw', this.opts);
+    this.url = this.opts.url;
 
     this.on('mount', this.loadFile);
   }
 
   loadFile() {
-    const req = new XMLHttpRequest();
-    req.onload = () => {
-      const { responseText } = req;
-      if (this._config.raw) {
-        this.root.innerHTML = responseText;
-      } else {
-        this.update({ responseText });
-      }
-    };
-    req.open('get', this._config.url, true);
-    req.send();
+    return new Promise((resolve) => {
+      const req = new XMLHttpRequest();
+      req.onerror = (err) => console.error(`unable to load ${this.url}`, err);
+      req.onload = () => {
+        const { responseText } = req;
+        if (this.raw) {
+          this.root.innerHTML = responseText;
+        } else {
+          this.update({ responseText });
+        }
+        resolve(responseText);
+      };
+      req.open('get', this.url, true);
+      req.send();
+    });
   }
 }

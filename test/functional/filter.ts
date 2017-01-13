@@ -32,22 +32,22 @@ suite<Filter>('gb-filter', ({
       tag.updateValues(<any>{ availableNavigation: [NAVIGATION] });
     });
 
-    it('should render options', () => {
-      expect(html().querySelector('gb-option-list')).to.be.ok;
+    it('should render items', () => {
+      expect(html().querySelector('gb-list')).to.be.ok;
       expect(model.label.textContent).to.eq('Filter');
-      expect(model.options).to.have.length(1);
-      expect(model.options[0].textContent).to.eq('DeWalt');
+      expect(model.items).to.have.length(1);
+      expect(model.items[0].textContent).to.eq('DeWalt');
     });
 
     describe('clear option', () => {
       it('should not render clear option', () => {
-        expect(model.clearOption).to.not.be.ok;
+        expect(model.clearItem).to.not.be.ok;
       });
 
       it('should render clear option when selected', () => {
-        model.options[0].click();
+        model.items[0].click();
 
-        expect(model.clearOption.textContent).to.eq('Unfiltered');
+        expect(model.clearItem.textContent).to.eq('Unfiltered');
       });
 
       it('should call flux.unrefine() on click', (done) => {
@@ -59,12 +59,12 @@ suite<Filter>('gb-filter', ({
           expect(unrefine).to.have.been.calledWith(tag.selected);
           done();
         };
-        model.options[0].click();
+        model.items[0].click();
 
-        model.clearOption.click();
+        model.clearItem.click();
       });
     });
   });
 });
 
-class Model extends SelectModel<Filter> { }
+class Model extends SelectModel { }

@@ -18,21 +18,21 @@ suite('gb-related-queries', RelatedQueries, ({
 
   describe('updatedRelatedQueries()', () => {
     it('should call update() with relatedQueries', () => {
-      const relatedQueries = ['a', 'b', 'c'];
+      const items = ['a', 'b', 'c'];
       const update = tag().update = spy();
 
-      tag().updatedRelatedQueries(<any>{ relatedQueries });
+      tag().updatedRelatedQueries(<any>{ relatedQueries: items });
 
-      expect(update).to.have.been.calledWith({ relatedQueries });
+      expect(update).to.have.been.calledWith({ items });
     });
   });
 
-  describe('send()', () => {
+  describe('onSelect()', () => {
     it('should call flux.rewrite()', () => {
       const text = 'red sneakers';
       const rewrite = stub(flux(), 'rewrite');
 
-      tag().send(<any>{ target: { text } });
+      tag().onSelect(<any>{ target: { text } });
 
       expect(rewrite).to.have.been.calledWith(text);
     });

@@ -1,19 +1,28 @@
-import { DEFAULT_CONFIG, PageSize } from '../../../src/tags/page-size/gb-page-size';
+import { PageSize } from '../../../src/tags/page-size/gb-page-size';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-page-size', PageSize, ({
   tag, flux, spy, stub,
-  itShouldConfigure
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    itShouldAlias('selectable');
 
     it('should have default values', () => {
       tag().init();
 
-      expect(tag().options).to.eql([10, 25, 50, 100]);
+      expect(tag().resetOffset).to.be.false;
+      expect(tag().items).to.eql([10, 25, 50, 100]);
+    });
+
+    it('should set properties from opts', () => {
+      tag().opts = { resetOffset: true };
+
+      tag().init();
+
+      expect(tag().resetOffset).to.be.true;
     });
 
     it('should read global pageSizes', () => {
@@ -22,11 +31,11 @@ suite('gb-page-size', PageSize, ({
 
       tag().init();
 
-      expect(tag().options).to.eq(pageSizes);
+      expect(tag().items).to.eq(pageSizes);
     });
   });
 
-  describe('onselect()', () => {
+  describe('onSelect()', () => {
     it('should resize and keep offset', (done) => {
       flux().resize = (pageSize, reset): any => {
         expect(pageSize).to.eq(40);
@@ -35,7 +44,7 @@ suite('gb-page-size', PageSize, ({
       };
       flux().query.skip(43);
 
-      tag().onselect(40);
+      tag().onSelect(40);
     });
 
     it('should resize and reset offset', (done) => {
@@ -45,9 +54,9 @@ suite('gb-page-size', PageSize, ({
         done();
       };
       flux().query.skip(43);
-      tag()._config = { resetOffset: true };
+      tag().resetOffset = true;
 
-      tag().onselect(20);
+      tag().onSelect(20);
     });
 
     it('should emit tracking event', (done) => {
@@ -56,7 +65,7 @@ suite('gb-page-size', PageSize, ({
       tag().services = <any>{ tracker: { search } };
       flux().query.skip(43);
 
-      tag().onselect(40)
+      tag().onSelect(40)
         .then(() => {
           expect(search).to.have.been.called;
           expect(resize).to.have.been.called;
@@ -68,7 +77,7 @@ suite('gb-page-size', PageSize, ({
       stub(flux(), 'resize').resolves();
       tag().services = <any>{};
 
-      tag().onselect(40)
+      tag().onSelect(40)
         .then(() => done());
     });
   });
