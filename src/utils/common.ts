@@ -115,14 +115,13 @@ export function collectServiceConfigs(tag: FluxTag<any>, services: string[]) {
 }
 
 export function coerceAttributes(opts: any, types: TypeMap) {
-  Object.keys(opts)
+  return Object.keys(opts)
     .reduce((coerced, key) => {
       switch (types[key]) {
         case 'boolean':
-          const attr = checkBooleanAttr(key, opts, undefined);
-          return attr !== undefined ? Object.assign(coerced, { [key]: attr }) : coerced;
+          return Object.assign(coerced, { [key]: checkBooleanAttr(key, opts, undefined) });
         default:
-          return Object.assign(coerced, { [key]: opts });
+          return Object.assign(coerced, { [key]: opts[key] });
       }
     }, {});
 }

@@ -1,6 +1,7 @@
 import {
   checkBooleanAttr,
   checkNested,
+  coerceAttributes,
   debounce,
   displayRefinement,
   findSearchBox,
@@ -189,7 +190,19 @@ describe('utils', () => {
   describe('scopeCss()', () => {
     it('should generate multiple scoped CSS selectors', () => {
       const scopedSelector = scopeCss('gb-target', '.my > #selector');
+
       expect(scopedSelector).to.eq('gb-target .my > #selector, [data-is="gb-target"] .my > #selector'); // tslint:disable-line:max-line-length
+    });
+  });
+
+  describe('coerceAttributes()', () => {
+    it.only('should only coerce specified attributes', () => {
+      const opts = { length: 'idk', table: 'idk' };
+      const types: any = { length: 'boolean' };
+
+      const coercedAttributes = coerceAttributes(opts, types);
+
+      expect(coercedAttributes).to.eql({ length: true, table: 'idk' });
     });
   });
 });

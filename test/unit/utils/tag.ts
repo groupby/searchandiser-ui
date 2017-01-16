@@ -153,16 +153,19 @@ describe('tag utils', () => {
 
     it('should call collectServiceConfigs()', () => {
       const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
-      const tag: any = { onConfigure: (config) => config({}) };
+      const services = ['a', 'b'];
+      const tag: any = { onConfigure: (config) => config({ services }), opts: {} };
+      sandbox.stub(utils, 'coerceAttributes');
 
       configure(tag);
 
-      expect(collectServiceConfigs).to.have.been.calledWith(tag, []);
+      expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
     });
 
     it('should call collectServiceConfigs() default to empty services list', () => {
       const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
-      const tag: any = { onConfigure: (config) => config({}) };
+      const tag: any = { onConfigure: (config) => config({}), opts: {} };
+      sandbox.stub(utils, 'coerceAttributes');
 
       configure(tag);
 
