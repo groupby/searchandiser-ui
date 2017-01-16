@@ -119,7 +119,7 @@ export function coerceAttributes(opts: any, types: TypeMap) {
     .reduce((coerced, key) => {
       switch (types[key]) {
         case 'boolean':
-          return Object.assign(coerced, { [key]: checkBooleanAttr(key, opts, undefined) });
+          return Object.assign(coerced, { [key]: checkBooleanAttr(key, opts) });
         default:
           return Object.assign(coerced, { [key]: opts[key] });
       }
