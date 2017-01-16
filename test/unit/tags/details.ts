@@ -1,4 +1,4 @@
-import { Details } from '../../../src/tags/details/gb-details';
+import { Details, DEFAULTS } from '../../../src/tags/details/gb-details';
 import * as utils from '../../../src/utils/common';
 import { ProductTransformer } from '../../../src/utils/product-transformer';
 import suite from './_suite';
@@ -7,54 +7,79 @@ import { Events } from 'groupby-api';
 
 suite('gb-details', Details, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
-    it('should have default values', () => {
-      tag().init();
-
-      expect(tag().idParam).to.eq('id');
-      expect(tag().query).to.not.be.ok;
-      expect(tag().structure).to.eql({});
-      expect(tag().transformer).to.be.an.instanceof(ProductTransformer);
-    });
-
-    it('should set properties from opts', () => {
-      const idParam = 'myId';
-      tag().opts = { idParam };
-
-      tag().init();
-
-      expect(tag().idParam).to.eq(idParam);
-    });
-
-    it('should allow override from config', () => {
-      const structure = { a: 'b', c: 'd' };
-      tag().config = { structure };
-
-      tag().init();
-
-      expect(tag().structure).to.eq(structure);
-    });
+    itShouldAlias('product');
 
     it('should listen for details event', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.DETAILS]: tag().updateRecord
       });
     });
+  });
 
-    it('should call flux.details() if query is found', () => {
-      const id = 1632;
-      const idField = 'productId';
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy(() => ({}));
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS });
+    });
+
+    describe('structure', () => {
+      it('should set structure from combined', () => {
+        const structure = { a: 'b' };
+        const configure = spy(() => ({ structure }));
+
+        tag().onConfigure(configure);
+
+        expect(tag().structure).to.eq(structure);
+      });
+
+      it('should set structure from global', () => {
+        const structure = { a: 'b' };
+        const configure = spy(() => ({}));
+        tag().config = { structure };
+
+        tag().onConfigure(configure);
+
+        expect(tag().structure).to.eq(structure);
+      });
+
+      it('fallback to empty structure', () => {
+        const configure = spy(() => ({}));
+
+        tag().onConfigure(configure);
+
+        expect(tag().structure).to.eql({});
+      });
+    });
+  });
+
+  describe('requestDetails()', () => {
+    it('should call flux.details()', () => {
+      const idField = 'myId';
+      const query = { a: 'b' };
+      const idParam = tag().idParam = 'myQuery';
+      const getParam = stub(utils, 'getParam', () => query);
       const details = stub(flux(), 'details');
-      const getParam = stub(utils, 'getParam').returns(id);
-      tag().config = { structure: { id: idField } };
+      tag().transformer = <any>{ idField };
 
-      tag().init();
+      tag().requestDetails();
 
-      expect(getParam).to.have.been.calledWith('id');
-      expect(details).to.have.been.calledWith(id, idField);
+      expect(getParam).to.have.been.calledWith(idParam);
+      expect(details).to.have.been.calledWith(query, idField);
+    });
+
+    it('should not call flux.details()', () => {
+      stub(utils, 'getParam', () => false);
+      stub(flux(), 'details', () => expect.fail());
+
+      tag().requestDetails();
     });
   });
 
