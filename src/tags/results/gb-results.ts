@@ -1,11 +1,15 @@
-import { checkBooleanAttr, getPath } from '../../utils/common';
+import { getPath } from '../../utils/common';
 import { ProductStructure } from '../../utils/product-transformer';
-import { FluxTag } from '../tag';
+import { FluxTag, TagConfigure } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
 export interface ResultsConfig {
   lazy?: boolean;
 }
+
+export const TYPES = {
+  lazy: 'boolean'
+};
 
 export class Results extends FluxTag<ResultsConfig> {
   lazy: boolean;
@@ -19,11 +23,13 @@ export class Results extends FluxTag<ResultsConfig> {
     this.alias('productable');
     this.mixin({ getPath });
 
-    this.lazy = checkBooleanAttr('lazy', this.opts);
+    this.flux.on(Events.RESULTS, this.updateRecords);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    configure({ types: TYPES });
 
     this.structure = this.config.structure;
-
-    this.flux.on(Events.RESULTS, this.updateRecords);
   }
 
   updateRecords({ records }: ResultsModel) {

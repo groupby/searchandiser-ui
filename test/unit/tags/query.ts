@@ -1,4 +1,4 @@
-import { Query } from '../../../src/tags/query/gb-query';
+import { DEFAULTS, Query, TYPES } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
@@ -11,25 +11,6 @@ suite('gb-query', Query, ({
 }) => {
 
   describe('init()', () => {
-    it('should set default values', () => {
-      tag().init();
-
-      expect(tag().sayt).to.be.true;
-      expect(tag().autoSearch).to.be.true;
-      expect(tag().staticSearch).to.be.false;
-      expect(tag().enterKeyHandlers).to.eql([]);
-    });
-
-    it('should set properties from opts', () => {
-      tag().opts = { sayt: false, autoSearch: false, staticSearch: true };
-
-      tag().init();
-
-      expect(tag().sayt).to.be.false;
-      expect(tag().autoSearch).to.be.false;
-      expect(tag().staticSearch).to.be.true;
-    });
-
     it('should attachListeners on mount', () => {
       expectSubscriptions(() => tag().init(), {
         mount: tag().attachListeners
@@ -44,7 +25,19 @@ suite('gb-query', Query, ({
   });
 
   describe('onConfigure()', () => {
-    it('should')
+    it('should call configure()', () => {
+      const configure = spy();
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
+    });
+
+    it('should set defaults', () => {
+      tag().onConfigure(() => null);
+
+      expect(tag().enterKeyHandlers).to.eql([]);
+    });
   });
 
   describe('attachListeners()', () => {

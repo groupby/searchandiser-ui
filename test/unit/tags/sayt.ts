@@ -1,5 +1,5 @@
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
-import { MIN_DELAY, Sayt } from '../../../src/tags/sayt/gb-sayt';
+import { DEFAULTS, MIN_DELAY, Sayt, TYPES } from '../../../src/tags/sayt/gb-sayt';
 import * as utils from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
@@ -72,6 +72,18 @@ suite('gb-sayt', Sayt, ({
         [AUTOCOMPLETE_HIDE_EVENT]: tag().reset
       });
     });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy(() => ({}));
+      tag().sayt = { configure: () => null };
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
+    });
+
+
   });
 
   describe('initializeAutocomplete()', () => {

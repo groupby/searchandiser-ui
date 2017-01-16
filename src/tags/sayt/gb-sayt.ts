@@ -1,7 +1,7 @@
-import { checkBooleanAttr, checkNumericAttr, debounce } from '../../utils/common';
+import { debounce } from '../../utils/common';
 import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
-import { SaytTag } from '../tag';
+import { SaytTag, TagConfigure } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
 import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
 import escapeStringRegexp = require('escape-string-regexp');
@@ -26,6 +26,23 @@ export interface SaytConfig {
 }
 
 export const MIN_DELAY = 100;
+export const DEFAULTS = {
+  allCategoriesLabel: 'All Departments',
+  highlight: true,
+  autoSearch: true,
+  delay: 100,
+  minimumCharacters: 1,
+  navigationNames: {},
+  allowedNavigations: [],
+  productCount: 4,
+  queryCount: 5
+};
+export const TYPES = {
+  highlight: 'boolean',
+  autoSearch: 'boolean',
+  staticSearch: 'boolean',
+  https: 'boolean'
+};
 
 export class Sayt extends SaytTag<any> {
   structure: ProductStructure;
@@ -59,30 +76,21 @@ export class Sayt extends SaytTag<any> {
   init() {
     this.alias(['sayt', 'productable']);
 
-    this.allCategoriesLabel = this.opts.allCategoriesLabel || 'All Departments';
-    this.highlight = checkBooleanAttr('highlight', this.opts, true);
-    this.autoSearch = checkBooleanAttr('autoSearch', this.opts, true);
-    this.staticSearch = checkBooleanAttr('staticSearch', this.opts);
-    this.https = checkBooleanAttr('https', this.opts);
-    this.delay = this.opts.delay || 100;
-    this.minimumCharacters = this.opts.minimumCharacters || 1;
-    this.navigationNames = this.opts.navigationNames || {};
-    this.allowedNavigations = this.opts.allowedNavigations || [];
-    this.productCount = checkNumericAttr('productCount', this.opts, 4);
-    this.queryCount = checkNumericAttr('queryCount', this.opts, 5);
-
-    this.structure = Object.assign({}, this.config.structure, this.opts.structure);
-    this.collection = this.opts.collection || this.config.collection;
-    this.language = this.opts.language || this.config.language;
-    this.area = this.opts.area || this.config.area;
-    this.categoryField = this.opts.categoryField;
-
-    this.showProducts = this.productCount > 0;
-
-    this.sayt.configure(this.generateSaytConfig());
-
     this.on('mount', this.initializeAutocomplete);
     this.flux.on(AUTOCOMPLETE_HIDE_EVENT, this.reset);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    const config = configure({ defaults: DEFAULTS, types: TYPES });
+
+    this.structure = Object.assign({}, this.config.structure, config.structure);
+    this.collection = config.collection || this.config.collection;
+    this.language = config.language || this.config.language;
+    this.area = config.area || this.config.area;
+    this.categoryField = config.categoryField;
+
+    this.showProducts = this.productCount > 0;
+    this.sayt.configure(this.generateSaytConfig());
   }
 
   initializeAutocomplete() {
