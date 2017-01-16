@@ -1,9 +1,13 @@
-import { checkBooleanAttr } from '../../utils/common';
 import { Selectable, SelectTag } from '../select/gb-select';
+import { TagConfigure } from '../tag';
 
 export interface PageSizeConfig extends Selectable {
   resetOffset?: boolean;
 }
+
+export const TYPES = {
+  resetOffset: 'boolean'
+};
 
 export class PageSize extends SelectTag<any> {
 
@@ -11,8 +15,10 @@ export class PageSize extends SelectTag<any> {
 
   init() {
     this.alias('selectable');
+  }
 
-    this.resetOffset = checkBooleanAttr('resetOffset', this.opts);
+  onConfigure(configure: TagConfigure) {
+    configure({ types: TYPES });
 
     this.items = this.config.pageSizes || [10, 25, 50, 100];
   }

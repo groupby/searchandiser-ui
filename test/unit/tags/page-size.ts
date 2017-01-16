@@ -1,4 +1,4 @@
-import { PageSize } from '../../../src/tags/page-size/gb-page-size';
+import { PageSize, TYPES } from '../../../src/tags/page-size/gb-page-size';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -32,6 +32,20 @@ suite('gb-page-size', PageSize, ({
       tag().init();
 
       expect(tag().items).to.eq(pageSizes);
+    });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ types: TYPES });
+    });
+
+    it('should set items from global config', () => {
+
     });
   });
 
