@@ -8,6 +8,7 @@ export interface PageSizeConfig extends Selectable {
 export const TYPES = {
   resetOffset: 'boolean'
 };
+export const DEFAULT_PAGE_SIZES = [10, 25, 50, 100];
 
 export class PageSize extends SelectTag<any> {
 
@@ -20,7 +21,7 @@ export class PageSize extends SelectTag<any> {
   onConfigure(configure: TagConfigure) {
     configure({ types: TYPES });
 
-    this.items = this.config.pageSizes || [10, 25, 50, 100];
+    this.items = this.config.pageSizes || DEFAULT_PAGE_SIZES;
   }
 
   onSelect(value: number) {

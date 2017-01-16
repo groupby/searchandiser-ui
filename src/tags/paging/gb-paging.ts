@@ -1,5 +1,5 @@
 import { checkBooleanAttr } from '../../utils/common';
-import { FluxTag } from '../tag';
+import { FluxTag, TagConfigure } from '../tag';
 import { Events } from 'groupby-api';
 
 export interface PagingConfig {
@@ -21,6 +21,28 @@ export interface PagingConfig {
   lastIcon?: string;
 }
 
+export const DEFAULTS = {
+  limit: 5,
+  terminals: true,
+  labels: true,
+  icons: true,
+  firstLabel: 'First',
+  nextLabel: 'Next',
+  prevLabel: 'Prev',
+  lastLabel: 'Last',
+  firstIcon: require('./double-arrow-left.png'),
+  nextIcon: require('./arrow-right.png'),
+  prevIcon: require('./arrow-left.png'),
+  lastIcon: require('./double-arrow-right.png')
+};
+export const TYPES = {
+  pages: 'boolean',
+  numeric: 'boolean',
+  terminals: 'boolean',
+  labels: 'boolean',
+  icons: 'boolean'
+};
+
 export class Paging extends FluxTag<any> {
   limit: number;
   pages: boolean;
@@ -30,7 +52,7 @@ export class Paging extends FluxTag<any> {
   icons: boolean;
   prevLabel: string;
   nextLabel: string;
-  fistLabel: string;
+  firstLabel: string;
   lastLabel: string;
   prevIcon: string;
   nextIcon: string;
@@ -48,27 +70,16 @@ export class Paging extends FluxTag<any> {
   init() {
     this.alias('paging');
 
-    this.limit = this.opts.limit || 5;
-    this.pages = checkBooleanAttr('pages', this.opts);
-    this.numeric = checkBooleanAttr('numeric', this.opts);
-    this.terminals = checkBooleanAttr('terminals', this.opts, true);
-    this.labels = checkBooleanAttr('labels', this.opts, true);
-    this.icons = checkBooleanAttr('icons', this.opts, true);
-    this.fistLabel = this.opts.fistLabel || 'First';
-    this.prevLabel = this.opts.prevLabel || 'Prev';
-    this.nextLabel = this.opts.nextLabel || 'Next';
-    this.lastLabel = this.opts.lastLabel || 'Last';
-    this.firstIcon = this.opts.firstIcon || require('./double-arrow-left.png');
-    this.prevIcon = this.opts.prevIcon || require('./arrow-left.png');
-    this.nextIcon = this.opts.nextIcon || require('./arrow-right.png');
-    this.lastIcon = this.opts.lastIcon || require('./double-arrow-right.png');
+    this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
+    this.flux.on(Events.RESULTS, this.pageInfo);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    configure({ defaults: DEFAULTS, types: TYPES });
 
     // default initial state
     this.backDisabled = true;
     this.currentPage = 1;
-
-    this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
-    this.flux.on(Events.RESULTS, this.pageInfo);
   }
 
   pageInfo() {

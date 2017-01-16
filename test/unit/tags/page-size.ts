@@ -1,4 +1,4 @@
-import { PageSize, TYPES } from '../../../src/tags/page-size/gb-page-size';
+import { DEFAULT_PAGE_SIZES, PageSize, TYPES } from '../../../src/tags/page-size/gb-page-size';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -9,30 +9,6 @@ suite('gb-page-size', PageSize, ({
 
   describe('init()', () => {
     itShouldAlias('selectable');
-
-    it('should have default values', () => {
-      tag().init();
-
-      expect(tag().resetOffset).to.be.false;
-      expect(tag().items).to.eql([10, 25, 50, 100]);
-    });
-
-    it('should set properties from opts', () => {
-      tag().opts = { resetOffset: true };
-
-      tag().init();
-
-      expect(tag().resetOffset).to.be.true;
-    });
-
-    it('should read global pageSizes', () => {
-      const pageSizes = [12, 24, 48];
-      tag().config = { pageSizes };
-
-      tag().init();
-
-      expect(tag().items).to.eq(pageSizes);
-    });
   });
 
   describe('onConfigure()', () => {
@@ -45,7 +21,18 @@ suite('gb-page-size', PageSize, ({
     });
 
     it('should set items from global config', () => {
+      const pageSizes = [1, 2, 3, 4];
+      tag().config = { pageSizes };
 
+      tag().onConfigure(() => null);
+
+      expect(tag().items).to.eq(pageSizes);
+    });
+
+    it('should fallback to default items', () => {
+      tag().onConfigure(() => null);
+
+      expect(tag().items).to.eq(DEFAULT_PAGE_SIZES);
     });
   });
 

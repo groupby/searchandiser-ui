@@ -1,4 +1,4 @@
-import { Paging } from '../../../src/tags/paging/gb-paging';
+import { DEFAULTS, Paging, TYPES } from '../../../src/tags/paging/gb-paging';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
@@ -12,68 +12,28 @@ suite('gb-paging', Paging, ({
   describe('init()', () => {
     itShouldAlias('paging');
 
-    it('should have default initial state', () => {
-      tag().init();
-
-      expect(tag().limit).to.eq(5);
-      expect(tag().pages).to.be.false;
-      expect(tag().numeric).to.be.false;
-      expect(tag().terminals).to.be.true;
-      expect(tag().labels).to.be.true;
-      expect(tag().icons).to.be.true;
-      expect(tag().fistLabel).to.eq('First');
-      expect(tag().prevLabel).to.eq('Prev');
-      expect(tag().nextLabel).to.eq('Next');
-      expect(tag().lastLabel).to.eq('Last');
-      expect(tag().firstIcon).to.have.string('data:image/png');
-      expect(tag().prevIcon).to.have.string('data:image/png');
-      expect(tag().nextIcon).to.have.string('data:image/png');
-      expect(tag().lastIcon).to.have.string('data:image/png');
-      expect(tag().currentPage).to.eq(1);
-      expect(tag().backDisabled).to.be.true;
-    });
-
-    it('should set properties from opts', () => {
-      tag().opts = {
-        limit: 10,
-        pages: true,
-        numeric: true,
-        terminals: false,
-        labels: false,
-        icons: false,
-        fistLabel: 'first',
-        prevLabel: 'prev',
-        nextLabel: 'next',
-        lastLabel: 'last',
-        firstIcon: 'firstIcon',
-        prevIcon: 'prevIcon',
-        nextIcon: 'nextIcon',
-        lastIcon: 'lastIcon'
-      };
-
-      tag().init();
-
-      expect(tag().limit).to.eq(10);
-      expect(tag().pages).to.be.true;
-      expect(tag().numeric).to.be.true;
-      expect(tag().terminals).to.be.false;
-      expect(tag().labels).to.be.false;
-      expect(tag().icons).to.be.false;
-      expect(tag().fistLabel).to.eq('first');
-      expect(tag().prevLabel).to.eq('prev');
-      expect(tag().nextLabel).to.eq('next');
-      expect(tag().lastLabel).to.eq('last');
-      expect(tag().firstIcon).to.eq('firstIcon');
-      expect(tag().prevIcon).to.eq('prevIcon');
-      expect(tag().nextIcon).to.eq('nextIcon');
-      expect(tag().lastIcon).to.eq('lastIcon');
-    });
-
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.PAGE_CHANGED]: tag().updateCurrentPage,
         [Events.RESULTS]: tag().pageInfo
       });
+    });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
+    });
+
+    it('should set defaults', () => {
+      tag().onConfigure(() => null);
+
+      expect(tag().backDisabled).to.be.true;
+      expect(tag().currentPage).to.eq(1);
     });
   });
 
