@@ -1,5 +1,6 @@
 import { FluxTag } from '../../../src/tags/tag';
 import * as utils from '../../../src/utils/tag';
+import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
 
 describe('base tag logic', () => {
@@ -21,6 +22,7 @@ describe('base tag logic', () => {
         tag.root = <any>{ tagName: 'gb-test-tag' };
         tag.opts = {};
         tag.config = {};
+        tag.on = () => null;
       });
 
       it('should not set _style empty', () => {
@@ -53,12 +55,17 @@ describe('base tag logic', () => {
         expect(setAliases).to.have.been.calledWith(tag);
       });
 
-      it('should call configure()', () => {
+      it('should listen for before-mount', () => {
         const configure = sandbox.stub(utils, 'configure');
 
-        tag.init();
-
-        expect(configure).to.have.been.calledWith(tag);
+        expectSubscriptions(() => tag.init(), {
+          'before-mount': {
+            test: (cb) => {
+              cb();
+              expect(configure).to.have.been.calledWith(tag);
+            }
+          }
+        }, tag);
       });
     });
 
