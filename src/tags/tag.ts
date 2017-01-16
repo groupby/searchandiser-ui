@@ -1,5 +1,5 @@
 import { Services } from '../services/init';
-import { setAliases, setTagName } from '../utils/tag';
+import { configure, setAliases, setTagName } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
@@ -26,6 +26,7 @@ export class FluxTag<T> {
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
     setAliases(this);
+    configure(this);
   }
 
   alias(aliases: string | string[], obj: any = this) {

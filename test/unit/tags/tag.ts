@@ -1,4 +1,5 @@
 import { FluxTag } from '../../../src/tags/tag';
+import * as utils from '../../../src/utils/tag';
 import { expect } from 'chai';
 
 describe('base tag logic', () => {
@@ -34,6 +35,30 @@ describe('base tag logic', () => {
         tag.init();
 
         expect(tag._style).to.eq('gb-stylish');
+      });
+
+      it('should call setTagName()', () => {
+        const setTagName = sandbox.stub(utils, 'setTagName');
+
+        tag.init();
+
+        expect(setTagName).to.have.been.calledWith(tag);
+      });
+
+      it('should call setAliases()', () => {
+        const setAliases = sandbox.stub(utils, 'setAliases');
+
+        tag.init();
+
+        expect(setAliases).to.have.been.calledWith(tag);
+      });
+
+      it('should call configure()', () => {
+        const configure = sandbox.stub(utils, 'configure');
+
+        tag.init();
+
+        expect(configure).to.have.been.calledWith(tag);
       });
     });
 
