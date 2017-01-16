@@ -154,7 +154,7 @@ describe('tag utils', () => {
     it('should call collectServiceConfigs()', () => {
       const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
       const services = ['a', 'b'];
-      const tag: any = { onConfigure: (config) => config({ services }), opts: {} };
+      const tag: any = { onConfigure: (config) => config({ services }), opts: {}, _tagName: '' };
       sandbox.stub(utils, 'coerceAttributes');
 
       configure(tag);
@@ -164,7 +164,7 @@ describe('tag utils', () => {
 
     it('should call collectServiceConfigs() default to empty services list', () => {
       const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
-      const tag: any = { onConfigure: (config) => config({}), opts: {} };
+      const tag: any = { onConfigure: (config) => config({}), opts: {}, _tagName: '' };
       sandbox.stub(utils, 'coerceAttributes');
 
       configure(tag);
@@ -175,7 +175,7 @@ describe('tag utils', () => {
     it('should call coerceAttributes() with opts and types', () => {
       const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
       const types = { a: 'b' };
-      const tag: any = { onConfigure: (config) => config({ types }), opts: {} };
+      const tag: any = { onConfigure: (config) => config({ types }), opts: {}, _tagName: '' };
 
       configure(tag);
 
@@ -184,24 +184,78 @@ describe('tag utils', () => {
 
     it('should call coerceAttributes() with opts and empty types', () => {
       const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
-      const tag: any = { onConfigure: (config) => config({}), opts: {} };
+      const tag: any = { onConfigure: (config) => config({}), opts: {}, _tagName: '' };
 
       configure(tag);
 
       expect(coerceAttributes).to.have.been.calledWith(tag.opts, {});
     });
 
-    it('should return combined config', () => {
-      const defaults = { a: 'b' };
-      const types = { c: 'boolean' };
-      const services = ['service1', 'service2'];
+    it('should find global tag configuration', () => {
+      const globalConfig = { a: 'b', c: 'd' };
       const tag: any = {
-        onConfigure: (config) => config({
-          defaults,
-          types, services
-        }), opts: {}
+        _tagName: 'gb-my-tag',
+        config: { tags: { myTag: globalConfig } },
+        opts: {},
+        onConfigure: (config) => {
+          const finalConfig = config({});
+          expect(finalConfig).to.eql(globalConfig);
+        }
       };
 
+      configure(tag);
+    });
+
+    it('should use provided defaults', () => {
+      const defaults = { a: 'b', c: 'd' };
+      const tag: any = {
+        _tagName: '',
+        opts: {},
+        onConfigure: (config) => {
+          const finalConfig = config({ defaults });
+          expect(finalConfig).to.eql(defaults);
+        }
+      };
+
+      configure(tag);
+    });
+
+    it('should return combined config', () => {
+      const defaults = { a: 'b', c: 'd', e: 'f', g: 'h', i: 'j', k: 'l' };
+      const types = { k: 'boolean' };
+      const services = ['service1', 'service2'];
+      const tag: any = {
+        _tagName: 'gb-my-tag',
+        services: {
+          service1: { _config: { c: 'd1', e: 'f1', g: 'h1', i: 'j1', k: 'l1' } },
+          service2: { _config: { e: 'f2', g: 'h2', i: 'j2', k: 'l2' } }
+        },
+        config: { tags: { myTag: { g: 'h3', i: 'j3', k: 'l3' } } },
+        opts: {
+          __proto__: { i: 'j4', k: 'l4' },
+          k: 'l5'
+        },
+        onConfigure: (config) => {
+          const finalConfig = config({ defaults, types, services });
+          expect(finalConfig).to.eql({ a: 'b', c: 'd1', e: 'f2', g: 'h3', i: 'j4', k: true });
+        }
+      };
+
+      configure(tag);
+    });
+
+    it('should mix configuration into tag', () => {
+      const tag: any = {
+        _tagName: '',
+        opts: { a: 'b', c: 'd' },
+        onConfigure: (config) => {
+          config({});
+          expect(tag).to.have.property('a', 'b');
+          expect(tag).to.have.property('c', 'd');
+        }
+      };
+
+      configure(tag);
     });
   });
 

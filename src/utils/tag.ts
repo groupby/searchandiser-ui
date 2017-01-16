@@ -52,7 +52,7 @@ export function configure(tag: FluxTag<any>) {
 
     const serviceConfigs = collectServiceConfigs(tag, services);
 
-    const globalTagConfig = oget(tag.config, `tags.${tag._tagName}`, {});
+    const globalTagConfig = oget(tag.config, `tags.${camelizeTagName(tag._tagName)}`, {});
 
     const coercedOpts = coerceAttributes(tag.opts, types);
 
