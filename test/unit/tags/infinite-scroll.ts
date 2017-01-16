@@ -1,4 +1,4 @@
-import { InfiniteScroll, MIN_REQUEST_SIZE } from '../../../src/tags/infinite-scroll/gb-infinite-scroll';
+import { DEFAULTS, InfiniteScroll, MIN_REQUEST_SIZE } from '../../../src/tags/infinite-scroll/gb-infinite-scroll';
 import * as renderer from '../../../src/tags/infinite-scroll/renderer';
 import { WINDOW } from '../../../src/utils/common';
 import suite from './_suite';
@@ -17,21 +17,6 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       tag().refs.scroller = SCROLLER;
       tag().onResize = () => null;
       tag().reset = () => null;
-    });
-
-    it('should set defaults', () => {
-      tag().init();
-
-      expect(tag().maxRecords).to.eq(500);
-    });
-
-    it('should set properties from opts', () => {
-      const maxRecords = 100;
-      tag().opts = { maxRecords };
-
-      tag().init();
-
-      expect(tag().maxRecords).to.eq(maxRecords);
     });
 
     it('should listen for resize events on window', () => {
@@ -57,9 +42,19 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
         [Events.SORT]: tag().reset
       });
     });
+  });
 
-    it('should set initial values', () => {
-      tag().init();
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS });
+    });
+
+    it('should set defaults', () => {
+      tag().onConfigure(() => null);
 
       expect(tag().items).to.eql([]);
       expect(tag().loadedItems).to.eq(0);

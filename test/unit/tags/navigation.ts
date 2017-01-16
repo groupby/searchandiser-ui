@@ -1,4 +1,5 @@
-import { Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { DEFAULTS, Navigation, TYPES } from '../../../src/tags/navigation/gb-navigation';
+import { displayRefinement } from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,24 +7,19 @@ import { Events } from 'groupby-api';
 
 suite('gb-navigation', Navigation, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
-    it('should set defaults', () => {
-      tag().init();
+    itShouldAlias('navigable');
 
-      expect(tag().badge).to.be.true;
-      expect(tag().showSelected).to.be.true;
-    });
-
-    it('should set properties from opts', () => {
-      tag().opts = { badge: false, showSelected: false };
+    it('should mixin toView()', () => {
+      const mixin = tag().mixin = spy();
 
       tag().init();
 
-      expect(tag().badge).to.be.false;
-      expect(tag().showSelected).to.be.false;
+      expect(mixin).to.have.been.calledWith({ toView: displayRefinement });
     });
 
     it('should listen for flux events', () => {
@@ -31,6 +27,16 @@ suite('gb-navigation', Navigation, ({
         [Events.RESULTS]: tag().updateNavigations,
         [Events.REFINEMENT_RESULTS]: tag().updateRefinements
       });
+    });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
     });
   });
 
