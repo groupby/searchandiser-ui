@@ -13,53 +13,7 @@ suite('gb-sayt', Sayt, ({
 }) => {
 
   describe('init()', () => {
-    const STRUCTURE = {
-      title: 'title',
-      price: 'price',
-      image: 'image'
-    };
-    let sayt;
-
-    beforeEach(() => {
-      tag().config = { structure: STRUCTURE };
-      sayt = tag().sayt = { configure: () => null };
-    });
-
     itShouldAlias(['sayt', 'productable']);
-
-    it('should have default values', () => {
-      tag().init();
-
-      expect(tag().structure).to.eql(STRUCTURE);
-      expect(tag().showProducts).to.be.true;
-    });
-
-    it('should take configuration overrides from global config', () => {
-      tag().opts = {
-        structure: { image: 'thumbnail', url: 'url' },
-        productCount: 0
-      };
-
-      tag().init();
-
-      expect(tag().structure).to.eql({
-        image: 'thumbnail',
-        url: 'url',
-        title: 'title',
-        price: 'price'
-      });
-      expect(tag().showProducts).to.be.false;
-    });
-
-    it('should configure sayt', () => {
-      const generated: any = { a: 'b', c: 'd' };
-      const configure = sayt.configure = spy();
-      tag().generateSaytConfig = () => generated;
-
-      tag().init();
-
-      expect(configure).to.have.been.calledWith(generated);
-    });
 
     it('should listen for mount event', () => {
       expectSubscriptions(() => tag().init(), {
@@ -83,7 +37,67 @@ suite('gb-sayt', Sayt, ({
       expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
     });
 
+    it('should merge structures', () => {
+      const structure = { a: 'b', c: 'd' };
+      const configure = spy(() => ({ structure: { a: 'b1' } }));
+      tag().config = { structure };
+      tag().sayt = { configure: () => null };
+      tag().onConfigure(configure);
 
+      expect(tag().structure).to.eql({ a: 'b1', c: 'd' });
+    });
+
+    it('should use values from combined config', () => {
+      const area = 'myArea';
+      const collection = 'myCollection';
+      const language = 'french';
+      tag().sayt = { configure: () => null };
+      tag().onConfigure(() => ({ area, collection, language }));
+
+      expect(tag().area).to.eq(area);
+      expect(tag().collection).to.eq(collection);
+      expect(tag().language).to.eq(language);
+    });
+
+    it('should use collection from global config', () => {
+      const area = 'myArea';
+      const collection = 'myCollection';
+      const language = 'french';
+      tag().config = { area, collection, language };
+      tag().sayt = { configure: () => null };
+      tag().onConfigure(() => ({}));
+
+      expect(tag().area).to.eq(area);
+      expect(tag().collection).to.eq(collection);
+      expect(tag().language).to.eq(language);
+    });
+
+    it('should set showProducts true if productCount is not 0', () => {
+      tag().productCount = 3;
+      tag().sayt = { configure: () => null };
+      tag().onConfigure(() => ({}));
+
+      expect(tag().showProducts).to.be.true;
+    });
+
+    it('should set showProducts false if productCount is 0', () => {
+      tag().productCount = 0;
+      tag().sayt = { configure: () => null };
+      tag().onConfigure(() => ({}));
+
+      expect(tag().showProducts).to.be.false;
+    });
+
+    it('should call sayt.configure()', () => {
+      const saytConfig = { a: 'b' };
+      const configure = spy();
+      const generateSaytConfig = tag().generateSaytConfig = spy(() => saytConfig);
+      tag().sayt = { configure };
+      tag().onConfigure(() => ({}));
+
+      expect(generateSaytConfig).to.have.been.called;
+      expect(configure).to.have.been.calledWith(saytConfig);
+    });
   });
 
   describe('initializeAutocomplete()', () => {

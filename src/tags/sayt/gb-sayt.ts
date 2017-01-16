@@ -87,9 +87,8 @@ export class Sayt extends SaytTag<any> {
     this.collection = config.collection || this.config.collection;
     this.language = config.language || this.config.language;
     this.area = config.area || this.config.area;
-    this.categoryField = config.categoryField;
-
     this.showProducts = this.productCount > 0;
+
     this.sayt.configure(this.generateSaytConfig());
   }
 
