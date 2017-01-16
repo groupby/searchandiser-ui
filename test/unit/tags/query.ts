@@ -43,6 +43,10 @@ suite('gb-query', Query, ({
     });
   });
 
+  describe('onConfigure()', () => {
+    it('should')
+  });
+
   describe('attachListeners()', () => {
     beforeEach(() => tag().findSearchBox = () => <any>({ addEventListener: () => null }));
 

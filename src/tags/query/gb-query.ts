@@ -1,7 +1,7 @@
 import { checkBooleanAttr, findTag } from '../../utils/common';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
-import { FluxTag } from '../tag';
+import { FluxTag, TagConfigure } from '../tag';
 import { Events } from 'groupby-api';
 import * as riot from 'riot';
 
@@ -12,6 +12,16 @@ export interface QueryConfig {
   autoSearch?: boolean;
   staticSearch?: boolean;
 }
+
+export const DEFAULTS = {
+  sayt: true,
+  autoSearch: true
+};
+export const TYPES = {
+  sayt: 'boolean',
+  autoSearch: 'boolean',
+  staticSearch: 'boolean'
+};
 
 export class Query extends FluxTag<any> {
   root: riot.TagElement & HTMLInputElement;
@@ -32,13 +42,14 @@ export class Query extends FluxTag<any> {
   enterKeyHandlers: Function[];
 
   init() {
-    this.sayt = checkBooleanAttr('sayt', this.opts, true);
-    this.autoSearch = checkBooleanAttr('autoSearch', this.opts, true);
-    this.staticSearch = checkBooleanAttr('staticSearch', this.opts);
-    this.enterKeyHandlers = [];
-
     this.on('mount', this.attachListeners);
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    configure({ defaults: DEFAULTS, types: TYPES });
+
+    this.enterKeyHandlers = [];
   }
 
   attachListeners() {
