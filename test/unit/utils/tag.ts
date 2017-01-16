@@ -171,6 +171,38 @@ describe('tag utils', () => {
 
       expect(collectServiceConfigs).to.have.been.calledWith(tag, []);
     });
+
+    it('should call coerceAttributes() with opts and types', () => {
+      const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
+      const types = { a: 'b' };
+      const tag: any = { onConfigure: (config) => config({ types }), opts: {} };
+
+      configure(tag);
+
+      expect(coerceAttributes).to.have.been.calledWith(tag.opts, types);
+    });
+
+    it('should call coerceAttributes() with opts and empty types', () => {
+      const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
+      const tag: any = { onConfigure: (config) => config({}), opts: {} };
+
+      configure(tag);
+
+      expect(coerceAttributes).to.have.been.calledWith(tag.opts, {});
+    });
+
+    it('should return combined config', () => {
+      const defaults = { a: 'b' };
+      const types = { c: 'boolean' };
+      const services = ['service1', 'service2'];
+      const tag: any = {
+        onConfigure: (config) => config({
+          defaults,
+          types, services
+        }), opts: {}
+      };
+
+    });
   });
 
   describe('addDollarSigns()', () => {

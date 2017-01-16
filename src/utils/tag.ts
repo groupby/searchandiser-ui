@@ -45,10 +45,10 @@ export function setAliases(tag: FluxTag<any>) {
 }
 
 export function configure(tag: FluxTag<any>) {
-  const doConfigure: TagConfigure = (opts: ConfigureOptions) => {
-    const defaultConfig = opts.defaults || {};
-    const types = opts.types || {};
-    const services = opts.services || [];
+  const doConfigure: TagConfigure = (options: ConfigureOptions) => {
+    const defaultConfig = options.defaults || {};
+    const types = options.types || {};
+    const services = options.services || [];
 
     const serviceConfigs = collectServiceConfigs(tag, services);
 
