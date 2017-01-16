@@ -64,5 +64,5 @@ export interface ConfigureOptions {
   types?: TypeMap;
 }
 export interface TagConfigure {
-  (opts: ConfigureOptions): void;
+  (opts: ConfigureOptions): any;
 }
