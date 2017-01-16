@@ -1,5 +1,4 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { checkBooleanAttr } from '../../utils/common';
 import { Selectable, SelectTag } from '../select/gb-select';
 import { TagConfigure } from '../tag';
 
@@ -37,7 +36,7 @@ export class Collections extends SelectTag<any> {
   onConfigure(configure: TagConfigure) {
     configure({ defaults: DEFAULTS, types: TYPES });
 
-    // TODO: extract items into collections.service._config
+    // TODO: extract items into services.collections._config
     this.items = this.services.collections.items;
     this.counts = {};
   }
