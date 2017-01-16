@@ -1,5 +1,5 @@
 import { FILTER_UPDATED_EVENT } from '../../../src/services/filter';
-import { Filter } from '../../../src/tags/filter/gb-filter';
+import { DEFAULTS, Filter } from '../../../src/tags/filter/gb-filter';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -16,6 +16,16 @@ suite('gb-filter', Filter, ({
       expectSubscriptions(() => tag().init(), {
         [FILTER_UPDATED_EVENT]: tag().updateValues
       });
+    });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS });
     });
   });
 

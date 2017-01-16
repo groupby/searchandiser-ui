@@ -1,11 +1,17 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
 import { toRefinement } from '../../utils/common';
 import { Select, Selectable, SelectTag } from '../select/gb-select';
+import { TagConfigure } from '../tag';
 import { Results } from 'groupby-api';
 
 export interface FilterConfig extends Selectable {
   field: string;
 }
+
+export const DEFAULTS = {
+  label: 'Filter',
+  clear: 'Unfiltered'
+};
 
 export class Filter extends SelectTag<any> {
   tags: { 'gb-select': Select };
@@ -17,11 +23,11 @@ export class Filter extends SelectTag<any> {
   init() {
     this.alias('selectable');
 
-    this.field = this.opts.field;
-    this.label = this.opts.label || 'Filter';
-    this.clear = this.opts.clear || 'Unfiltered';
-
     this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    configure({ defaults: DEFAULTS });
   }
 
   convertRefinements(navigations: any[]): any[] {

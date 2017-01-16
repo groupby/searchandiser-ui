@@ -1,5 +1,5 @@
 import { WINDOW } from '../../utils/common';
-import { FluxTag } from '../tag';
+import { FluxTag, TagConfigure } from '../tag';
 import { Renderer } from './renderer';
 import { Events, Record } from 'groupby-api';
 import * as riot from 'riot';
@@ -10,6 +10,10 @@ export const MAX_REQUEST_SIZE = 120;
 export interface InfiniteScrollConfig {
   maxRecords?: number;
 }
+
+export const DEFAULTS = {
+  maxRecords: 500
+};
 
 export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   refs: {
@@ -31,14 +35,16 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   anchorScrollTop: number;
 
   init() {
-    this.maxRecords = this.opts.maxRecords || 500;
-
     WINDOW.addEventListener('resize', this.onResize);
     this.flux.on(Events.QUERY_CHANGED, this.reset);
     this.flux.on(Events.REFINEMENTS_CHANGED, this.reset);
     this.flux.on(Events.SORT, this.reset);
     this.flux.on(Events.COLLECTION_CHANGED, this.reset);
     this.on('mount', this.onMount);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    configure({ defaults: DEFAULTS });
 
     this.items = [];
     this.loadedItems = 0;

@@ -1,6 +1,6 @@
 import { Details, DEFAULTS } from '../../../src/tags/details/gb-details';
 import * as utils from '../../../src/utils/common';
-import { ProductTransformer } from '../../../src/utils/product-transformer';
+import * as transform from '../../../src/utils/product-transformer';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
@@ -56,6 +56,18 @@ suite('gb-details', Details, ({
         tag().onConfigure(configure);
 
         expect(tag().structure).to.eql({});
+      });
+
+      it('should initialize transformer', () => {
+        const transformer = { a: 'b' };
+        const structure = { c: 'd' };
+        const configure = spy(() => ({ structure }));
+        const productTransformer = stub(transform, 'ProductTransformer', () => transformer);
+
+        tag().onConfigure(configure);
+
+        expect(tag().transformer).to.eq(transformer);
+        expect(productTransformer).to.have.been.calledWith(structure);
       });
     });
   });
