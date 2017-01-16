@@ -1,5 +1,4 @@
-import { FluxTag } from '../tags/tag';
-import { TypeMap } from '../utils/tag';
+import { FluxTag, TypeMap } from '../tags/tag';
 import * as debounce from 'debounce';
 import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
 import * as queryString from 'query-string';

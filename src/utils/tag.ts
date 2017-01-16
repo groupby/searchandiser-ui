@@ -1,20 +1,10 @@
-import { FluxTag } from '../tags/tag';
+import { ConfigureOptions, FluxTag, TagConfigure } from '../tags/tag';
 import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
 import oget = require('oget');
 
 const TAG_PREFIX_REGEX = /^[a-z]*?-/;
 const TAG_WORD_BREAK_REGEX = /-([a-z])/g;
-
-export interface TypeMap { [key: string]: 'number' | 'boolean'; }
-export interface ConfigureOptions {
-  defaults?: any;
-  services?: string[];
-  types?: TypeMap;
-}
-export interface TagConfigure {
-  (opts: ConfigureOptions): void;
-}
 
 export function setTagName(tag: FluxTag<any>) {
   const htmlTagName = tag.root.tagName.toLowerCase();

@@ -26,7 +26,8 @@ export class FluxTag<T> {
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
     setAliases(this);
-    configure(this);
+
+    this.on('before-mount', () => configure(this));
   }
 
   alias(aliases: string | string[], obj: any = this) {
@@ -54,4 +55,14 @@ export class SaytTag<T> {
   init() {
     this.sayt = sayt;
   }
+}
+
+export interface TypeMap { [key: string]: string; }
+export interface ConfigureOptions {
+  defaults?: any;
+  services?: string[];
+  types?: TypeMap;
+}
+export interface TagConfigure {
+  (opts: ConfigureOptions): void;
 }
