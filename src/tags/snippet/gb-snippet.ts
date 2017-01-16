@@ -1,10 +1,13 @@
-import { checkBooleanAttr } from '../../utils/common';
-import { FluxTag } from '../tag';
+import { FluxTag, TagConfigure } from '../tag';
 
 export interface SnippetConfig {
   raw?: boolean;
   url: string;
 }
+
+export const TYPES = {
+  raw: 'boolean'
+};
 
 export class Snippet extends FluxTag<any> {
 
@@ -14,10 +17,11 @@ export class Snippet extends FluxTag<any> {
   responseText: string;
 
   init() {
-    this.raw = checkBooleanAttr('raw', this.opts);
-    this.url = this.opts.url;
-
     this.on('mount', this.loadFile);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    configure({ types: TYPES });
   }
 
   loadFile() {

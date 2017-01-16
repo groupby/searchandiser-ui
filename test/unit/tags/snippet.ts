@@ -1,31 +1,24 @@
-import { Snippet } from '../../../src/tags/snippet/gb-snippet';
+import { Snippet, TYPES } from '../../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-snippet', Snippet, ({ tag, spy, expectSubscriptions }) => {
 
   describe('init()', () => {
-    it('should set defaults', () => {
-      tag().init();
-
-      expect(tag().raw).to.be.false;
-      expect(tag().url).to.be.undefined;
-    });
-
-    it('should set properties from opts', () => {
-      const url = 'example.com';
-      tag().opts = { raw: true, url };
-
-      tag().init();
-
-      expect(tag().raw).to.be.true;
-      expect(tag().url).to.eq(url);
-    });
-
     it('should listen for mount', () => {
       expectSubscriptions(() => tag().init(), {
         mount: tag().loadFile
       }, tag());
+    });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ types: TYPES });
     });
   });
 
