@@ -1,5 +1,5 @@
 import { checkBooleanAttr, displayRefinement as toView, toRefinement } from '../../utils/common';
-import { FluxTag } from '../tag';
+import { FluxTag, TagConfigure } from '../tag';
 import { Events, Results } from 'groupby-api';
 
 export interface BreadcrumbsConfig {
@@ -11,6 +11,18 @@ export interface BreadcrumbsConfig {
   noResultsLabel?: string;
   correctedResultsLabel?: string;
 }
+
+export const DEFAULTS = {
+  labels: true,
+  resultsLabel: 'Results for:',
+  noResultsLabel: 'No results for:',
+  correctedResultsLabel: 'Showing results for:'
+};
+export const TYPES = {
+  hideQuery: 'boolean',
+  hideRefinements: 'boolean',
+  labels: 'boolean'
+};
 
 export class Breadcrumbs extends FluxTag<any> {
 
@@ -29,15 +41,12 @@ export class Breadcrumbs extends FluxTag<any> {
     this.alias(['breadcrumbs', 'listable']);
     this.mixin({ toView });
 
-    this.hideQuery = checkBooleanAttr('hideQuery', this.opts);
-    this.hideRefinements = checkBooleanAttr('hideRefinements', this.opts);
-    this.labels = checkBooleanAttr('labels', this.opts, true);
-    this.resultsLabel = this.opts.resultsLabel || 'Results for:';
-    this.noResultsLabel = this.opts.noResultsLabel || 'No results for:';
-    this.correctedResultsLabel = this.opts.correctedResultsLabel || 'Showing results for:';
-
     this.flux.on(Events.RESULTS, this.updateQueryState);
     this.flux.on(Events.RESET, this.clearRefinements);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    configure({ defaults: DEFAULTS, types: TYPES });
   }
 
   clearRefinements() {

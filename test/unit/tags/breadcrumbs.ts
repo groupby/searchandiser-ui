@@ -1,4 +1,4 @@
-import { Breadcrumbs } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
+import { Breadcrumbs, DEFAULTS, TYPES } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,19 +6,19 @@ import { Events } from 'groupby-api';
 
 suite('gb-breadcrumbs', Breadcrumbs, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldAlias
 }) => {
 
   describe('init()', () => {
-    it('should set default values', () => {
+    itShouldAlias(['breadcrumbs', 'listable']);
+
+    it('should mixin toView()', () => {
+      const mixin = tag().mixin = spy();
+
       tag().init();
 
-      expect(tag().hideQuery).to.be.false;
-      expect(tag().hideRefinements).to.be.false;
-      expect(tag().labels).to.be.true;
-      expect(tag().resultsLabel).to.eq('Results for:');
-      expect(tag().noResultsLabel).to.eq('No results for:');
-      expect(tag().correctedResultsLabel).to.eq('Showing results for:');
+      expect(mixin).to.have.been.calledWith({ toView: utils.displayRefinement });
     });
 
     it('should listen for events', () => {
@@ -26,6 +26,16 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
         [Events.RESULTS]: tag().updateQueryState,
         [Events.RESET]: tag().clearRefinements
       });
+    });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
     });
   });
 
