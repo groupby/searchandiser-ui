@@ -1,11 +1,18 @@
-import { checkBooleanAttr, findSearchBox } from '../../utils/common';
-import { FluxTag } from '../tag';
+import { findSearchBox } from '../../utils/common';
+import { FluxTag, TagConfigure } from '../tag';
 import * as riot from 'riot';
 
 export interface SubmitConfig {
   label?: string;
   staticSearch?: boolean;
 }
+
+export const DEFAULTS = {
+  label: 'Search'
+};
+export const TYPES = {
+  staticSearch: 'boolean'
+};
 
 export class Submit extends FluxTag<any> {
   root: riot.TagElement & { value: any };
@@ -16,15 +23,16 @@ export class Submit extends FluxTag<any> {
   searchBox: HTMLInputElement;
 
   init() {
-    this.label = this.opts.label || 'Search';
-    this.staticSearch = checkBooleanAttr('staticSearch', this.opts);
+    this.on('mount', this.setSearchBox);
+    this.root.addEventListener('click', this.submitQuery);
+  }
+
+  onConfigure(configure: TagConfigure) {
+    configure({ defaults: DEFAULTS, types: TYPES });
 
     if (this.root.tagName === 'INPUT') {
       this.root.value = this.label;
     }
-
-    this.on('mount', this.setSearchBox);
-    this.root.addEventListener('click', this.submitQuery);
   }
 
   setSearchBox() {

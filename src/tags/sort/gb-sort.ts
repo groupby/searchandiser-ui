@@ -1,19 +1,24 @@
 import { Selectable, SelectTag } from '../select/gb-select';
+import { TagConfigure } from '../tag';
 import { Results, Sort as SortModel } from 'groupby-api';
 
-export const DEFAULT_SORTS = [
-  { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
-  { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
-];
-
 export interface SortConfig extends Selectable { }
+
+export const DEFAULTS = {
+  items: [
+    { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
+    { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
+  ]
+};
 
 export class Sort extends SelectTag<any> {
 
   init() {
     this.alias('selectable');
+  }
 
-    this.items = this.opts.items || DEFAULT_SORTS;
+  onConfigure(configure: TagConfigure) {
+    configure({ defaults: DEFAULTS });
   }
 
   sortValues() {

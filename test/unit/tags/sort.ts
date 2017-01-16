@@ -1,37 +1,29 @@
-import { DEFAULT_SORTS, Sort } from '../../../src/tags/sort/gb-sort';
+import { DEFAULTS, Sort } from '../../../src/tags/sort/gb-sort';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-sort', Sort, ({
-  flux, tag, stub,
+  flux, tag, stub, spy,
   itShouldAlias
 }) => {
 
   describe('init()', () => {
     itShouldAlias('selectable');
+  });
 
-    it('should have default values', () => {
-      tag().init();
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
 
-      expect(tag().items).to.eq(DEFAULT_SORTS);
-    });
+      tag().onConfigure(configure);
 
-    it('should set items from opts', () => {
-      const items = [
-        { label: 'Value Descending', value: { field: 'value', order: 'Descending' } },
-        { label: 'Value Ascending', value: { field: 'value', order: 'Ascending' } }
-      ];
-      tag().opts = { items };
-
-      tag().init();
-
-      expect(tag().items).to.eq(items);
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS });
     });
   });
 
   describe('sortValues()', () => {
     it('should return option values', () => {
-      tag().items = DEFAULT_SORTS;
+      tag().items = DEFAULTS.items;
 
       const values = tag().sortValues();
 

@@ -1,4 +1,4 @@
-import { Submit } from '../../../src/tags/submit/gb-submit';
+import { DEFAULTS, Submit, TYPES } from '../../../src/tags/submit/gb-submit';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -14,37 +14,6 @@ suite('gb-submit', Submit, ({
 
     beforeEach(() => tag().root = ROOT);
 
-    it('should set defaults', () => {
-      tag().init();
-
-      expect(tag().label).to.eq('Search');
-      expect(tag().staticSearch).to.be.false;
-    });
-
-    it('should set properties from opts', () => {
-      const label = 'Search here!';
-      tag().opts = { staticSearch: true, label };
-
-      tag().init();
-
-      expect(tag().label).to.eq(label);
-      expect(tag().staticSearch).to.be.true;
-    });
-
-    it('should set label for input tag', () => {
-      tag().root = Object.assign({}, ROOT, { tagName: 'INPUT' });
-
-      tag().init();
-
-      expect(tag().root.value).to.eq('Search');
-    });
-
-    it('should not set label for input tag', () => {
-      tag().init();
-
-      expect(tag().root.value).to.be.undefined;
-    });
-
     it('should listen for mount event', () => {
       expectSubscriptions(() => tag().init(), {
         mount: tag().setSearchBox
@@ -58,6 +27,34 @@ suite('gb-submit', Submit, ({
       tag().init();
 
       expect(addEventListener).to.have.been.calledWith('click', tag().submitQuery);
+    });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call configure()', () => {
+      const configure = spy();
+      tag().root = <any>{};
+
+      tag().onConfigure(configure);
+
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
+    });
+
+    it('should set root value when root is input tag', () => {
+      const root = tag().root = <any>{ tagName: 'INPUT' };
+      const label = tag().label = 'label';
+
+      tag().onConfigure(() => null);
+
+      expect(root.value).to.eq(label);
+    });
+
+    it('should not set root value', () => {
+      const root = tag().root = <any>{ tagName: 'not input' };
+
+      tag().onConfigure(() => null);
+
+      expect(root.value).to.not.be.ok;
     });
   });
 
