@@ -3,7 +3,7 @@ import * as utils from '../../../src/utils/tag';
 import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
 
-describe('base tag logic', () => {
+describe.only('base tag logic', () => {
   let sandbox: Sinon.SinonSandbox;
 
   beforeEach(() => sandbox = sinon.sandbox.create());
@@ -118,6 +118,44 @@ describe('base tag logic', () => {
         tag.unexpose(alias);
 
         expect(tag._aliases).to.not.have.property(alias);
+      });
+    });
+
+    describe('depend()', () => {
+      it('should set types, dependencies, and call updateDependencies', () => {
+        const alias = 'alias';
+        const options = { types: { bb: 'd' }, defaults: { a: 'b' } };
+        const transform = () => null;
+        const updateDependencies = sandbox.stub(utils, 'updateDependencies');
+        tag._dependencies = {};
+        tag.on = () => null;
+
+        tag.depend(alias, options, transform);
+
+        expect(tag._types).to.eq(options.types);
+        expect(tag._dependencies[alias]).to.eq(transform);
+        expect(updateDependencies).to.be.calledWith(tag, options.defaults);
+      });
+
+      it('should listen for update', () => {
+        const alias = 'alias';
+        const options = { defaults: { a: 'b' } };
+        const updateDependencies = sandbox.stub(utils, 'updateDependencies');
+        tag._dependencies = {};
+        tag.on = () => null;
+
+        expectSubscriptions(() => tag.depend(alias, options),
+          {
+            update: {
+              test: (cb) => {
+                cb();
+                expect(updateDependencies).to.be.calledWith(tag, options.defaults);
+              }
+            }
+          })
+        tag.depend(alias, options);
+
+        expect(tag._types).to.eq({});
       });
     });
 
