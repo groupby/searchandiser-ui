@@ -12,6 +12,6 @@ export class ListItem extends FluxTag<any> {
     if (this.$list.isActive(this.i)) {
       this.root.classList.add('active');
     }
-    this.unalias('list');
+    this.unexpose('list');
   }
 }

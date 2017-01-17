@@ -37,7 +37,7 @@ export class FluxTag<T> {
     aliases.forEach((alias) => this[`$${alias}`] = this._aliases[alias] = obj);
   }
 
-  unalias(alias: string) {
+  unexpose(alias: string) {
     delete this._aliases[alias];
   }
 

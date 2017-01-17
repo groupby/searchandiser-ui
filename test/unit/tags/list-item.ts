@@ -34,13 +34,13 @@ suite('gb-list-item', ListItem, ({ tag, spy, expectAliases }) => {
       tag().init();
     });
 
-    it('should unalias() $list', () => {
-      const unalias = tag().unalias = spy();
+    it('should unexpose() $list', () => {
+      const unexpose = tag().unexpose = spy();
       tag().$list = <any>{ isActive: () => null };
 
       tag().init();
 
-      expect(unalias).to.have.been.calledWith('list');
+      expect(unexpose).to.have.been.calledWith('list');
     });
   });
 });

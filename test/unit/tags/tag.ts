@@ -110,12 +110,12 @@ describe('base tag logic', () => {
       });
     });
 
-    describe('unalias()', () => {
+    describe('unexpose()', () => {
       it('should remove alias from _aliases', () => {
         const alias = 'item';
         tag._aliases = { [alias]: {} };
 
-        tag.unalias(alias);
+        tag.unexpose(alias);
 
         expect(tag._aliases).to.not.have.property(alias);
       });
