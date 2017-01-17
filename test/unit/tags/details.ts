@@ -7,13 +7,10 @@ import { Events } from 'groupby-api';
 
 suite('gb-details', Details, ({
   flux, tag, spy, stub,
-  expectSubscriptions,
-  itShouldAlias
+  expectSubscriptions
 }) => {
 
   describe('init()', () => {
-    itShouldAlias('product');
-
     it('should listen for details event', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.DETAILS]: tag().updateRecord
@@ -24,51 +21,42 @@ suite('gb-details', Details, ({
   describe('onConfigure()', () => {
     it('should call configure()', () => {
       const configure = spy(() => ({}));
+      tag().config = { structure: {} };
 
       tag().onConfigure(configure);
 
       expect(configure).to.have.been.calledWith({ defaults: DEFAULTS });
     });
 
-    describe('structure', () => {
-      it('should set structure from combined', () => {
-        const structure = { a: 'b' };
-        const configure = spy(() => ({ structure }));
+    it('should set structure from config', () => {
+      const structure = { a: 'b' };
+      const configure = spy(() => ({ structure }));
 
-        tag().onConfigure(configure);
+      tag().onConfigure(configure);
 
-        expect(tag().structure).to.eq(structure);
-      });
+      expect(tag().structure).to.eq(structure);
+    });
 
-      it('should set structure from global', () => {
-        const structure = { a: 'b' };
-        const configure = spy(() => ({}));
-        tag().config = { structure };
+    it('should set structure from global', () => {
+      const structure = { a: 'b' };
+      const configure = spy(() => ({}));
+      tag().config = { structure };
 
-        tag().onConfigure(configure);
+      tag().onConfigure(configure);
 
-        expect(tag().structure).to.eq(structure);
-      });
+      expect(tag().structure).to.eq(structure);
+    });
 
-      it('fallback to empty structure', () => {
-        const configure = spy(() => ({}));
+    it('should initialize transformer', () => {
+      const transformer = { a: 'b' };
+      const structure = { c: 'd' };
+      const configure = spy(() => ({ structure }));
+      const productTransformer = stub(transform, 'ProductTransformer', () => transformer);
 
-        tag().onConfigure(configure);
+      tag().onConfigure(configure);
 
-        expect(tag().structure).to.eql({});
-      });
-
-      it('should initialize transformer', () => {
-        const transformer = { a: 'b' };
-        const structure = { c: 'd' };
-        const configure = spy(() => ({ structure }));
-        const productTransformer = stub(transform, 'ProductTransformer', () => transformer);
-
-        tag().onConfigure(configure);
-
-        expect(tag().transformer).to.eq(transformer);
-        expect(productTransformer).to.have.been.calledWith(structure);
-      });
+      expect(tag().transformer).to.eq(transformer);
+      expect(productTransformer).to.have.been.calledWith(structure);
     });
   });
 
@@ -96,17 +84,16 @@ suite('gb-details', Details, ({
   });
 
   describe('updateRecord()', () => {
-    it('should update record', () => {
+    it('should update gb-product tag', () => {
       const allMeta = { a: 'b', c: 'd' };
-      const update = tag().update = spy();
-      tag().transformer = <any>{ transform: (meta) => [meta] };
+      const updateRecord = spy();
+      const update = spy();
+      tag().tags = <any>{ 'gb-product': { updateRecord, update } };
 
       tag().updateRecord(<any>{ allMeta });
 
-      expect(update).to.have.been.calledWith({
-        metadata: allMeta,
-        variants: [allMeta]
-      });
+      expect(updateRecord).to.have.been.calledWith(allMeta);
+      expect(update).to.have.been.called;
     });
   });
 });

@@ -1,7 +1,7 @@
 import { getParam } from '../../utils/common';
 import { ProductTransformer } from '../../utils/product-transformer';
+import { Product } from '../product/gb-product';
 import { FluxTag, TagConfigure } from '../tag';
-import * as clone from 'clone';
 import { Events, Record } from 'groupby-api';
 
 export interface DetailsConfig {
@@ -13,16 +13,15 @@ export const DEFAULTS = {
 };
 
 export class Details extends FluxTag<any> {
+  tags: { 'gb-product': Product };
+
   idParam: string;
 
   structure: any;
   transformer: ProductTransformer;
-  metadata: any;
-  variants: any[];
+  allMeta: any;
 
   init() {
-    this.alias('product');
-
     this.flux.on(Events.DETAILS, this.updateRecord);
   }
 
@@ -43,7 +42,7 @@ export class Details extends FluxTag<any> {
   }
 
   updateRecord({ allMeta }: Record) {
-    const variants = this.transformer.transform(clone(allMeta, false));
-    this.update({ variants, metadata: variants[0] });
+    this.tags['gb-product'].updateRecord(allMeta);
+    this.tags['gb-product'].update();
   }
 }
