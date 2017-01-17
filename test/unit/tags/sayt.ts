@@ -37,14 +37,24 @@ suite('gb-sayt', Sayt, ({
       expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
     });
 
-    it('should merge structures', () => {
-      const structure = { a: 'b', c: 'd' };
-      const configure = spy(() => ({ structure: { a: 'b1' } }));
-      tag().config = { structure };
+    it('should set structure from config', () => {
+      const structure = { a: 'b' };
       tag().sayt = { configure: () => null };
-      tag().onConfigure(configure);
+      tag().config = { structure: { c: 'd' } };
 
-      expect(tag().structure).to.eql({ a: 'b1', c: 'd' });
+      tag().onConfigure(() => ({ structure }));
+
+      expect(tag().structure).to.eq(structure);
+    });
+
+    it('should set structure from global config', () => {
+      const structure = { a: 'b' };
+      tag().sayt = { configure: () => null };
+      tag().config = { structure };
+
+      tag().onConfigure(() => ({}));
+
+      expect(tag().structure).to.eq(structure);
     });
 
     it('should use values from combined config', () => {

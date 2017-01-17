@@ -83,7 +83,7 @@ export class Sayt extends SaytTag<any> {
   onConfigure(configure: TagConfigure) {
     const config = configure({ defaults: DEFAULTS, types: TYPES });
 
-    this.structure = Object.assign({}, this.config.structure, config.structure);
+    this.structure = config.structure || this.config.structure;
     this.collection = config.collection || this.config.collection;
     this.language = config.language || this.config.language;
     this.area = config.area || this.config.area;

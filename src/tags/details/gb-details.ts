@@ -29,7 +29,7 @@ export class Details extends FluxTag<any> {
   onConfigure(configure: TagConfigure) {
     const config = configure({ defaults: DEFAULTS });
 
-    this.structure = config.structure || this.config.structure || {};
+    this.structure = config.structure || this.config.structure;
     this.transformer = new ProductTransformer(this.structure);
 
     this.requestDetails();
