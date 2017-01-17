@@ -27,7 +27,7 @@ export class Product extends FluxTag<any> {
   transformer: ProductTransformer;
 
   init() {
-    this.alias('product');
+    this.expose('product');
 
     const productable = this.productable();
     this.lazy = checkBooleanAttr('lazy', productable, true);

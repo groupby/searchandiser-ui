@@ -47,12 +47,12 @@ describe('base tag logic', () => {
         expect(setTagName).to.have.been.calledWith(tag);
       });
 
-      it('should call setAliases()', () => {
-        const setAliases = sandbox.stub(utils, 'setAliases');
+      it('should call exposeAliases()', () => {
+        const exposeAliases = sandbox.stub(utils, 'exposeAliases');
 
         tag.init();
 
-        expect(setAliases).to.have.been.calledWith(tag);
+        expect(exposeAliases).to.have.been.calledWith(tag);
       });
 
       it('should listen for before-mount', () => {
@@ -69,7 +69,7 @@ describe('base tag logic', () => {
       });
     });
 
-    describe('alias()', () => {
+    describe('expose()', () => {
 
       beforeEach(() => {
         tag._aliases = {};
@@ -78,7 +78,7 @@ describe('base tag logic', () => {
       it('should accept alias name as a string', () => {
         const alias = 'item';
 
-        tag.alias(alias);
+        tag.expose(alias);
 
         expect(tag._aliases[alias]).to.eq(tag);
       });
@@ -86,7 +86,7 @@ describe('base tag logic', () => {
       it('should accept alias name as a array of strings', () => {
         const aliases = ['item', 'item2', 'item3'];
 
-        tag.alias(aliases);
+        tag.expose(aliases);
 
         aliases.forEach((alias) => expect(tag._aliases[alias]).to.eq(tag));
       });
@@ -95,7 +95,7 @@ describe('base tag logic', () => {
         const alias = 'item';
         const obj = { a: 'b' };
 
-        tag.alias(alias, obj);
+        tag.expose(alias, obj);
 
         expect(tag._aliases[alias]).to.eq(obj);
       });
@@ -104,7 +104,7 @@ describe('base tag logic', () => {
         const aliases = ['item', 'item2', 'item3'];
         const obj = { a: 'b' };
 
-        tag.alias(aliases, obj);
+        tag.expose(aliases, obj);
 
         aliases.forEach((alias) => expect(tag._aliases[alias]).to.eq(obj));
       });

@@ -14,7 +14,7 @@ export const DEFAULTS = {
 export class Sort extends SelectTag<any> {
 
   init() {
-    this.alias('selectable');
+    this.expose('selectable');
   }
 
   onConfigure(configure: TagConfigure) {

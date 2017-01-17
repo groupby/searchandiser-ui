@@ -14,7 +14,7 @@ export class Template extends FluxTag<TemplateConfig> {
   zoneMap: any;
 
   init() {
-    this.alias('template');
+    this.expose('template');
 
     this.flux.on(Events.RESULTS, this.updateActive);
   }

@@ -6,7 +6,7 @@ export class RelatedQueries extends LinkTag<any> {
   items: string[];
 
   init() {
-    this.alias('linkable');
+    this.expose('linkable');
 
     this.flux.on(Events.RESULTS, this.updatedRelatedQueries);
   }

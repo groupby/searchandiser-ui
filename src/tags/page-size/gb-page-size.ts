@@ -15,7 +15,7 @@ export class PageSize extends SelectTag<any> {
   resetOffset: boolean;
 
   init() {
-    this.alias('selectable');
+    this.expose('selectable');
   }
 
   onConfigure(configure: TagConfigure) {

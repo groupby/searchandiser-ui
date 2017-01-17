@@ -4,6 +4,6 @@ export class RefinementList extends FluxTag<any> {
   navigation: any;
 
   init() {
-    this.alias('navigation', this.navigation);
+    this.expose('navigation', this.navigation);
   }
 }

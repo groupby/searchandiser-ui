@@ -38,7 +38,7 @@ export class Breadcrumbs extends FluxTag<any> {
   correctedQuery: string;
 
   init() {
-    this.alias(['breadcrumbs', 'listable']);
+    this.expose(['breadcrumbs', 'listable']);
     this.mixin({ toView });
 
     this.flux.on(Events.RESULTS, this.updateQueryState);

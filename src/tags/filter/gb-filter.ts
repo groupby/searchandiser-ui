@@ -21,7 +21,7 @@ export class Filter extends SelectTag<any> {
   selected: any;
 
   init() {
-    this.alias('selectable');
+    this.expose('selectable');
 
     this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
   }

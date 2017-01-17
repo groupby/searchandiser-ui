@@ -14,7 +14,7 @@ export class LinkList extends FluxTag<any> {
   $listable: Listable;
 
   init() {
-    this.alias('listable', this.linkable());
+    this.expose('listable', this.linkable());
 
     this.on('update', this.updateListable);
   }

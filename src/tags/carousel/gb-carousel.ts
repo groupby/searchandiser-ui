@@ -10,7 +10,7 @@ export class Carousel extends FluxTag<CarouselConfig> {
   items: any[];
 
   init() {
-    this.alias('listable');
+    this.expose('listable');
 
     this.currentIndex = 0;
     this.items = this.opts.items || [];

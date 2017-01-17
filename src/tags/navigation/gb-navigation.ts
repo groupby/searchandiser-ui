@@ -31,7 +31,7 @@ export class Navigation extends FluxTag<any> {
   processed: SelectionNavigation[];
 
   init() {
-    this.alias('navigable');
+    this.expose('navigable');
     this.mixin({ toView });
 
     this.flux.on(Events.RESULTS, this.updateNavigations);

@@ -10,7 +10,7 @@ export class Refinement extends FluxTag<any> {
   refinement: any;
 
   init() {
-    this.alias('refinement', this.refinement);
+    this.expose('refinement', this.refinement);
   }
 }
 

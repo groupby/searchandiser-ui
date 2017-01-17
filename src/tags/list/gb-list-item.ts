@@ -7,8 +7,8 @@ export class ListItem extends FluxTag<any> {
   i: number;
 
   init() {
-    this.alias(this.$list.itemAlias, this.item);
-    this.alias(this.$list.indexAlias, this.i);
+    this.expose(this.$list.itemAlias, this.item);
+    this.expose(this.$list.indexAlias, this.i);
     if (this.$list.isActive(this.i)) {
       this.root.classList.add('active');
     }

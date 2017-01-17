@@ -74,7 +74,7 @@ export class Sayt extends SaytTag<any> {
   matchesInput: boolean;
 
   init() {
-    this.alias(['sayt', 'productable']);
+    this.expose(['sayt', 'productable']);
 
     this.on('mount', this.initializeAutocomplete);
     this.flux.on(AUTOCOMPLETE_HIDE_EVENT, this.reset);

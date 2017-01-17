@@ -28,7 +28,7 @@ export class Collections extends SelectTag<any> {
   counts: { [key: string]: number };
 
   init() {
-    this.alias(['collections', 'listable', 'selectable']);
+    this.expose(['collections', 'listable', 'selectable']);
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
   }

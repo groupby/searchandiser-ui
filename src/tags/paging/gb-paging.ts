@@ -68,7 +68,7 @@ export class Paging extends FluxTag<any> {
   pageNumbers: number[];
 
   init() {
-    this.alias('paging');
+    this.expose('paging');
 
     this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
     this.flux.on(Events.RESULTS, this.pageInfo);

@@ -19,7 +19,7 @@ export class Results extends FluxTag<ResultsConfig> {
   collection: string;
 
   init() {
-    this.alias('productable');
+    this.expose('productable');
 
     this.flux.on(Events.RESULTS, this.updateRecords);
   }

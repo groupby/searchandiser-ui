@@ -43,8 +43,8 @@ export class Select extends FluxTag<any> {
 
   init() {
     const selectable = this.selectable();
-    this.alias('select');
-    this.alias(['listable', 'linkable'], selectable);
+    this.expose('select');
+    this.expose(['listable', 'linkable'], selectable);
 
     const items = selectable.items || [];
     this.onSelect = selectable.onSelect;

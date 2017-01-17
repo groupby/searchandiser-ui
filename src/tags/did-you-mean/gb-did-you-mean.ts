@@ -4,7 +4,7 @@ import { Events, Results } from 'groupby-api';
 export class DidYouMean extends LinkTag<any> {
 
   init() {
-    this.alias('linkable');
+    this.expose('linkable');
 
     this.flux.on(Events.RESULTS, this.updateDidYouMean);
   }

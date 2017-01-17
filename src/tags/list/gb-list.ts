@@ -18,7 +18,7 @@ export class List extends FluxTag<any> {
   inline: boolean;
 
   init() {
-    this.alias('list');
+    this.expose('list');
 
     const listable = this.listable();
     this.inline = checkBooleanAttr('inline', listable);

@@ -41,7 +41,7 @@ export function expectAliasMap(func: Function, tag: FluxTag<any>, expectedAliase
   const foundAliases = [];
   const aliasKeys = Object.keys(expectedAliases);
 
-  tag.alias = (aliases, obj) => {
+  tag.expose = (aliases, obj) => {
     if (!Array.isArray(aliases)) {
       aliases = [aliases];
     }
@@ -63,7 +63,7 @@ export function expectAliasMap(func: Function, tag: FluxTag<any>, expectedAliase
 export function expectAliasArray(func: Function, tag: FluxTag<any>, expectedAliases: string[]) {
   const foundAliases = [];
 
-  tag.alias = (aliases, obj) => {
+  tag.expose = (aliases, obj) => {
     expect(obj).to.be.undefined;
     if (!Array.isArray(aliases)) {
       aliases = [aliases];
