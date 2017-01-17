@@ -15,14 +15,6 @@ suite('gb-results', Results, ({
 
     itShouldAlias('productable');
 
-    it('should mixin getPath()', () => {
-      const mixin = tag().mixin = spy();
-
-      tag().init();
-
-      expect(mixin).to.have.been.calledWith({ getPath });
-    });
-
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.RESULTS]: tag().updateRecords
@@ -32,18 +24,27 @@ suite('gb-results', Results, ({
 
   describe('onConfigure()', () => {
     it('should call configure()', () => {
-      const configure = spy();
+      const configure = spy(() => ({}));
 
       tag().onConfigure(configure);
 
       expect(configure).to.have.been.calledWith({ types: TYPES });
     });
 
+    it('should set structure from config', () => {
+      const structure = { a: 'b' };
+      tag().config = { structure: { c: 'd' } };
+
+      tag().onConfigure(() => ({ structure }));
+
+      expect(tag().structure).to.eq(structure);
+    });
+
     it('should set structure from global config', () => {
       const structure = { a: 'b' };
       tag().config = { structure };
 
-      tag().onConfigure(() => null);
+      tag().onConfigure(() => ({}));
 
       expect(tag().structure).to.eq(structure);
     });

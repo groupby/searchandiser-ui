@@ -13,9 +13,11 @@ export class Icon extends FluxTag<any> {
   classes: string;
 
   init() {
-    this.setImage();
-
     this.on('update', this.setImage);
+  }
+
+  onConfigure() {
+    this.setImage();
   }
 
   setImage() {

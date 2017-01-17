@@ -8,18 +8,20 @@ suite('gb-icon', Icon, ({
 }) => {
 
   describe('init()', () => {
-    it('should call setImage()', () => {
-      const setImage = tag().setImage = spy();
-
-      tag().init();
-
-      expect(setImage).to.have.been.called;
-    });
-
     it('should listen for update', () => {
       tag().opts = { value: '' };
 
       expectSubscriptions(() => tag().init(), { update: tag().setImage }, tag());
+    });
+  });
+
+  describe('onConfigure()', () => {
+    it('should call setImage()', () => {
+      const setImage = tag().setImage = spy();
+
+      tag().onConfigure();
+
+      expect(setImage).to.have.been.called;
     });
   });
 

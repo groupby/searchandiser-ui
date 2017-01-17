@@ -1,4 +1,3 @@
-import { getPath } from '../../utils/common';
 import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag, TagConfigure } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
@@ -21,15 +20,14 @@ export class Results extends FluxTag<ResultsConfig> {
 
   init() {
     this.alias('productable');
-    this.mixin({ getPath });
 
     this.flux.on(Events.RESULTS, this.updateRecords);
   }
 
   onConfigure(configure: TagConfigure) {
-    configure({ types: TYPES });
+    const config = configure({ types: TYPES });
 
-    this.structure = this.config.structure;
+    this.structure = config.structure || this.config.structure;
   }
 
   updateRecords({ records }: ResultsModel) {
