@@ -3,7 +3,7 @@ import * as utils from '../../../src/utils/tag';
 import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
 
-describe.only('base tag logic', () => {
+describe('base tag logic', () => {
   let sandbox: Sinon.SinonSandbox;
 
   beforeEach(() => sandbox = sinon.sandbox.create());

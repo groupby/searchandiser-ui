@@ -5,14 +5,16 @@ import { expect } from 'chai';
 suite('gb-list-item', ListItem, ({ tag, spy, expectAliases }) => {
 
   describe('init()', () => {
+    beforeEach(() => tag().$listable = <any>{});
+
     it('should alias item as $list.itemAlias and i as $list.indexAlias', () => {
       const item = tag().item = { a: 'b' };
       const index = tag().i = 8;
-      tag().$list = <any>{
+      tag().$listable = <any>{
         itemAlias: 'item',
-        indexAlias: 'index',
-        isActive: () => null
+        indexAlias: 'index'
       };
+      tag().$list = <any>{ isActive: () => null };
 
       expectAliases(() => tag().init(), { item, index });
     });
