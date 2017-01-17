@@ -1,4 +1,5 @@
 import { Services } from '../services/init';
+import { coerceAttributes } from '../utils/common';
 import { configure, exposeAliases, setTagName } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
@@ -19,10 +20,14 @@ export interface FluxTag<T> extends riot.Tag.Instance {
 export class FluxTag<T> {
   _tagName: string;
   _aliases: any;
+  _dependencies: any;
+  _types: TypeMap;
   // TODO: should get rid of this
   _style: string;
 
   init() {
+    this._dependencies = {};
+    this._types = {};
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
     exposeAliases(this);
@@ -39,6 +44,11 @@ export class FluxTag<T> {
 
   unexpose(alias: string) {
     delete this._aliases[alias];
+  }
+
+  depend(alias: string, options: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
+    this._types = options.types || {};
+    this._dependencies[alias] = transform;
   }
 
   _mixin(...mixins: any[]) {
@@ -63,6 +73,19 @@ export interface ConfigureOptions {
   services?: string[];
   types?: TypeMap;
 }
+export interface DependencyOptions {
+  defaults?: any;
+  types?: TypeMap;
+}
 export interface TagConfigure {
   (opts: ConfigureOptions): any;
+}
+
+export function mixinDependencies(tag: FluxTag<any>, options: DependencyOptions = {}) {
+  Object.keys(tag._dependencies).forEach((key) => {
+    if (tag._aliases[key]) {
+      const coercedOpts = coerceAttributes(tag.opts, tag._types);
+      Object.assign(tag, tag._dependencies[key](tag._aliases[key]), coercedOpts);
+    }
+  });
 }
