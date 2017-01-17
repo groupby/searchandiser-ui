@@ -137,25 +137,31 @@ describe.only('base tag logic', () => {
         expect(updateDependencies).to.be.calledWith(tag, options.defaults);
       });
 
-      it('should listen for update', () => {
-        const alias = 'alias';
-        const options = { defaults: { a: 'b' } };
-        const updateDependencies = sandbox.stub(utils, 'updateDependencies');
+      it('should default to empty types', () => {
+        sandbox.stub(utils, 'updateDependencies');
         tag._dependencies = {};
         tag.on = () => null;
 
-        expectSubscriptions(() => tag.depend(alias, options),
+        tag.depend('alias', {});
+
+        expect(tag._types).to.eql({});
+      });
+
+      it('should listen for update', () => {
+        const options = { defaults: { a: 'b' } };
+        const updateDependencies = sandbox.stub(utils, 'updateDependencies');
+        tag._dependencies = {};
+
+        expectSubscriptions(() => tag.depend('alias', options),
           {
             update: {
               test: (cb) => {
+                updateDependencies.reset();
                 cb();
                 expect(updateDependencies).to.be.calledWith(tag, options.defaults);
               }
             }
-          })
-        tag.depend(alias, options);
-
-        expect(tag._types).to.eq({});
+          }, tag);
       });
     });
 
