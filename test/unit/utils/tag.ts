@@ -6,6 +6,7 @@ import {
   configure,
   setAliases,
   setTagName,
+  updateDependencies,
   MixinFlux
 } from '../../../src/utils/tag';
 import { expect } from 'chai';
@@ -256,6 +257,30 @@ describe('tag utils', () => {
       };
 
       configure(tag);
+    });
+  });
+
+  describe('updateDependencies()', () => {
+    it('should inherit from parent._aliases', () => {
+      const transform = sinon.spy();
+      const expose = sinon.spy();
+      const alias = 'a';
+      const tag: any = {
+        parent: {
+          _aliases: {
+            [alias]: 'b'
+          }
+        },
+        _dependencies: {
+          [alias]: transform
+        },
+        expose
+      };
+
+      updateDependencies(tag);
+
+      expect(transform).to.have.been.called;
+      expect(expose).to.have.been.calledWith(alias, {});
     });
   });
 

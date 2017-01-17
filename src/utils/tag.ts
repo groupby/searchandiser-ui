@@ -64,6 +64,21 @@ export function configure(tag: FluxTag<any>) {
   }
 }
 
+export function updateDependencies(tag: FluxTag<any>, defaults: any = {}) {
+  Object.keys(tag._dependencies)
+    .forEach((key) => {
+      const parentAlias = tag.parent ? tag.parent._aliases[key] : undefined;
+      const coercedOpts = coerceAttributes(tag.opts, tag._types);
+      const dependency = Object.assign(
+        {},
+        defaults,
+        parentAlias ? tag._dependencies[key](parentAlias) : {},
+        coercedOpts
+      );
+      tag.expose(key, dependency);
+    });
+}
+
 export function addDollarSigns(obj: any) {
   return Object.keys(obj)
     .reduce((renamed, key) => Object.assign(renamed, { [`$${key}`]: obj[key] }), {});

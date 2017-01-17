@@ -1,6 +1,5 @@
 import { Services } from '../services/init';
-import { coerceAttributes } from '../utils/common';
-import { configure, setAliases, setTagName } from '../utils/tag';
+import { configure, setAliases, setTagName, updateDependencies } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
@@ -82,19 +81,4 @@ export interface DependencyOptions {
 }
 export interface TagConfigure {
   (opts: ConfigureOptions): any;
-}
-
-export function updateDependencies(tag: FluxTag<any>, defaults: any = {}) {
-  Object.keys(tag._dependencies)
-    .forEach((key) => {
-      const parentAlias = tag.parent ? tag.parent._aliases[key] : undefined;
-      const coercedOpts = coerceAttributes(tag.opts, tag._types);
-      const dependency = Object.assign(
-        {},
-        defaults,
-        parentAlias ? tag._dependencies[key](parentAlias) : {},
-        coercedOpts
-      );
-      tag.expose(key, dependency);
-    });
 }
