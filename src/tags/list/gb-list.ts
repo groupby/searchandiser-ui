@@ -1,4 +1,3 @@
-import { checkBooleanAttr } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface Listable {
@@ -10,33 +9,27 @@ export interface Listable {
   shouldRender?: (option: any) => boolean;
 }
 
+export const DEFAULTS = {
+  itemAlias: 'item',
+  indexAlias: 'i'
+};
+export const TYPES = {
+  inline: 'boolean'
+};
+
 export class List extends FluxTag<any> {
   $listable: Listable;
 
-  itemAlias: string;
-  indexAlias: string;
-  inline: boolean;
-
   init() {
     this.expose('list');
-
-    const listable = this.listable();
-    this.inline = checkBooleanAttr('inline', listable);
-    this.itemAlias = listable.itemAlias || 'item';
-    this.indexAlias = listable.indexAlias || 'i';
+    this.depend('listable', { defaults: DEFAULTS, types: TYPES });
   }
 
   isActive(index: number) {
-    const listable = this.listable();
-    return listable.activation && listable.activation(index);
-  }
-
-  listable() {
-    return Object.assign({}, this.$listable, this.opts);
+    return this.$listable.activation && this.$listable.activation(index);
   }
 
   shouldRender(option: any) {
-    const listable = this.listable();
-    return !listable.shouldRender || listable.shouldRender(option);
+    return !this.$listable.shouldRender || this.$listable.shouldRender(option);
   }
 }

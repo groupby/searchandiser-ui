@@ -4,7 +4,7 @@ import {
   addDollarSigns,
   camelizeTagName,
   configure,
-  exposeAliases,
+  setAliases,
   setTagName,
   MixinFlux
 } from '../../../src/utils/tag';
@@ -73,7 +73,7 @@ describe('tag utils', () => {
     });
   });
 
-  describe('exposeAliases()', () => {
+  describe('setAliases()', () => {
     it('should inherit parent aliases', () => {
       const tag: any = {
         parent: {
@@ -84,7 +84,7 @@ describe('tag utils', () => {
         opts: {}
       };
 
-      exposeAliases(tag);
+      setAliases(tag);
 
       expect(tag._aliases).to.eql({ c: 'd' });
     });
@@ -96,7 +96,7 @@ describe('tag utils', () => {
         }
       };
 
-      exposeAliases(tag);
+      setAliases(tag);
 
       expect(tag._aliases).to.eql({ idk: tag });
     });
@@ -114,7 +114,7 @@ describe('tag utils', () => {
         }
       };
 
-      exposeAliases(tag);
+      setAliases(tag);
 
       expect(tag._aliases).to.eql({ a: tag, c: 'd' });
     });
@@ -130,7 +130,7 @@ describe('tag utils', () => {
         opts: {}
       };
 
-      exposeAliases(tag);
+      setAliases(tag);
 
       expect(tag.$a).to.eq('b');
       expect(tag.$c).to.eq('d');

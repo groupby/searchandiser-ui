@@ -19,7 +19,7 @@ export function setTagName(tag: FluxTag<any>) {
   }
 }
 
-export function exposeAliases(tag: FluxTag<any>) {
+export function setAliases(tag: FluxTag<any>) {
   let aliases = {};
   if (tag.parent && tag.parent._aliases) {
     Object.assign(aliases, tag.parent._aliases);

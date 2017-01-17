@@ -1,6 +1,6 @@
 import { Services } from '../services/init';
 import { coerceAttributes } from '../utils/common';
-import { configure, exposeAliases, setTagName } from '../utils/tag';
+import { configure, setAliases, setTagName } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
@@ -30,7 +30,7 @@ export class FluxTag<T> {
     this._types = {};
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
-    exposeAliases(this);
+    setAliases(this);
 
     this.on('before-mount', () => configure(this));
   }
@@ -49,6 +49,9 @@ export class FluxTag<T> {
   depend(alias: string, options: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
     this._types = options.types || {};
     this._dependencies[alias] = transform;
+
+    updateDependencies(this, options.defaults);
+    this.on('update', () => updateDependencies(this, options.defaults));
   }
 
   _mixin(...mixins: any[]) {
@@ -81,11 +84,17 @@ export interface TagConfigure {
   (opts: ConfigureOptions): any;
 }
 
-export function mixinDependencies(tag: FluxTag<any>, options: DependencyOptions = {}) {
-  Object.keys(tag._dependencies).forEach((key) => {
-    if (tag._aliases[key]) {
+export function updateDependencies(tag: FluxTag<any>, defaults: any = {}) {
+  Object.keys(tag._dependencies)
+    .forEach((key) => {
+      const parentAlias = tag.parent ? tag.parent._aliases[key] : undefined;
       const coercedOpts = coerceAttributes(tag.opts, tag._types);
-      Object.assign(tag, tag._dependencies[key](tag._aliases[key]), coercedOpts);
-    }
-  });
+      const dependency = Object.assign(
+        {},
+        defaults,
+        parentAlias ? tag._dependencies[key](parentAlias) : {},
+        coercedOpts
+      );
+      tag.expose(key, dependency);
+    });
 }

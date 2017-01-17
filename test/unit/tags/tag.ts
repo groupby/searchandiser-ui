@@ -47,12 +47,12 @@ describe('base tag logic', () => {
         expect(setTagName).to.have.been.calledWith(tag);
       });
 
-      it('should call exposeAliases()', () => {
-        const exposeAliases = sandbox.stub(utils, 'exposeAliases');
+      it('should call setAliases()', () => {
+        const setAliases = sandbox.stub(utils, 'setAliases');
 
         tag.init();
 
-        expect(exposeAliases).to.have.been.calledWith(tag);
+        expect(setAliases).to.have.been.calledWith(tag);
       });
 
       it('should listen for before-mount', () => {
