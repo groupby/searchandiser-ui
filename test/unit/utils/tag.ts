@@ -262,25 +262,83 @@ describe('tag utils', () => {
 
   describe('updateDependencies()', () => {
     it('should inherit from parent._aliases', () => {
-      const transform = sinon.spy();
+      const untransformed = { bb: 'c' };
+      const transformed = { bb: 'd' };
+      const transform = sinon.spy(() => transformed);
       const expose = sinon.spy();
       const alias = 'a';
       const tag: any = {
         parent: {
-          _aliases: {
-            [alias]: 'b'
-          }
+          _aliases: { [alias]: untransformed }
         },
-        _dependencies: {
-          [alias]: transform
-        },
+        _dependencies: { [alias]: transform },
         expose
       };
+      sandbox.stub(utils, 'coerceAttributes');
 
       updateDependencies(tag);
 
-      expect(transform).to.have.been.called;
-      expect(expose).to.have.been.calledWith(alias, {});
+      expect(transform).to.have.been.calledWith(untransformed);
+      expect(expose).to.have.been.calledWith(alias, transformed);
+    });
+
+    it('should not call transform if no parent', () => {
+      const tag: any = {
+        _dependencies: { a: () => expect.fail() },
+        expose: () => null
+      };
+      sandbox.stub(utils, 'coerceAttributes');
+
+      updateDependencies(tag);
+    });
+
+    it('should call coerceAttributes()', () => {
+      const opts = { a: 'b' };
+      const types = { c: 'd' };
+      const tag: any = {
+        opts,
+        _types: types,
+        _dependencies: { a: () => expect.fail() },
+        expose: () => null
+      };
+      const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
+
+      updateDependencies(tag);
+
+      expect(coerceAttributes).to.have.been.calledWith(opts, types);
+    });
+
+    it('should use defaults if provided', () => {
+      const defaults = { a: 'b' };
+      const expose = sinon.spy();
+      const alias = 'a';
+      const tag: any = {
+        expose,
+        _dependencies: { [alias]: () => expect.fail() }
+      };
+      sandbox.stub(utils, 'coerceAttributes');
+
+      updateDependencies(tag, defaults);
+
+      expect(expose).to.have.been.calledWith(alias, defaults);
+    });
+
+    it('should combine defaults, dependency and attributes', () => {
+      const coerced = { e: 'f2' };
+      const expose = sinon.spy();
+      const alias = 'a';
+      const tag: any = {
+        parent: {
+          _aliases: { [alias]: { c: 'd1', e: 'f1' } }
+        },
+        _dependencies: { [alias]: (obj) => obj },
+        expose
+      };
+      sandbox.stub(utils, 'coerceAttributes', () => coerced);
+
+      updateDependencies(tag, { a: 'b', c: 'd', e: 'f' });
+
+      expect(expose).to.have.been.calledWith(alias, { a: 'b', c: 'd1', e: 'f2' });
     });
   });
 
