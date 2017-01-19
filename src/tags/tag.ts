@@ -51,7 +51,7 @@ export class FluxTag<T> {
     this.on('update', () => updateDependency(this, dependency, options));
   }
 
-  depend(alias: string, options: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
+  depend(alias: string, options?: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
     this.transform(alias, alias, options, transform);
   }
 

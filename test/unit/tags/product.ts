@@ -1,5 +1,5 @@
-import { Product } from '../../../src/tags/product/gb-product';
-import { ProductMeta, ProductTransformer } from '../../../src/utils/product-transformer';
+import { DEFAULTS, Product, TYPES } from '../../../src/tags/product/gb-product';
+import * as transformer from '../../../src/utils/product-transformer';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -15,6 +15,7 @@ const ALL_META = {
 
 suite('gb-product', Product, ({
   tag, spy, stub,
+  expectSubscriptions,
   itShouldAlias
 }) => {
 
@@ -23,60 +24,25 @@ suite('gb-product', Product, ({
 
     itShouldAlias('product');
 
-    it('should set default values', () => {
-      tag().init();
-
-      expect(tag().lazy).to.be.true;
-      expect(tag().infinite).to.be.false;
-      expect(tag().tombstone).to.be.false;
-      expect(tag().variantIndex).to.eq(0);
-      expect(tag().detailsUrl).to.eq('details.html');
-      expect(tag().transformer).to.be.an.instanceof(ProductTransformer);
-    });
-
-    it('should set properties from productable()', () => {
-      tag().productable = () => ({ lazy: false, infinite: true, tombstone: true });
-      tag().styleProduct = () => null;
+    it('should depend on $productable', () => {
+      const depend = tag().depend = spy();
 
       tag().init();
 
-      expect(tag().lazy).to.be.false;
-      expect(tag().infinite).to.be.true;
-      expect(tag().tombstone).to.be.true;
+      expect(depend).to.be.calledWith('productable', { defaults: DEFAULTS, types: TYPES }, tag().transformProductable);
     });
 
-    it('should set detailsUrl from url service config', () => {
-      const detailsUrl = 'mydetails.php';
-      tag().services = <any>{ url: { urlConfig: { detailsUrl } } };
-
-      tag().init();
-
-      expect(tag().detailsUrl).to.eq(detailsUrl);
-    });
-
-    it('should call styleProduct()', (done) => {
-      tag().styleProduct = () => done();
-
-      tag().init();
-    });
-
-    it('should call updateRecord()', () => {
-      const allMeta = { a: 'b' };
-      const updateRecord = stub(tag(), 'updateRecord');
-      tag().productable = () => ({ allMeta, structure: {} });
-
-      tag().init();
-
-      expect(updateRecord).to.have.been.calledWith(allMeta);
-    });
-
-    it('should set structure from opts and productable()', () => {
+    it('should set structure and initialize ProductTransformer', () => {
+      const transformerInstance = { e: 'f' };
+      const productTransformer = stub(transformer, 'ProductTransformer', () => transformerInstance);
       tag().config = { structure: { a: 'b', c: 'd' } };
-      tag().productable = () => ({ structure: { a: 'e' } });
+      tag().$productable = <any>{ structure: { a: 'e' } };
 
       tag().init();
 
       expect(tag().structure).to.eql({ a: 'e', c: 'd' });
+      expect(tag().transformer).to.eq(transformerInstance);
+      expect(productTransformer).to.have.been.calledWith(tag().structure);
     });
   });
 
@@ -84,7 +50,7 @@ suite('gb-product', Product, ({
     it('should add class gb-infinite', () => {
       const add = spy();
       tag().root = <any>{ classList: { add } };
-      tag().infinite = true;
+      tag().$productable = <any>{ infinite: true };
 
       tag().styleProduct();
 
@@ -94,7 +60,7 @@ suite('gb-product', Product, ({
     it('should add class tombstone', () => {
       const add = spy();
       tag().root = <any>{ classList: { add } };
-      tag().tombstone = true;
+      tag().$productable = <any>{ tombstone: true };
 
       tag().styleProduct();
 
