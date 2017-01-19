@@ -1,4 +1,4 @@
-import { ConfigureOptions, FluxTag, TagConfigure } from '../tags/tag';
+import { ConfigureOptions, Dependency, DependencyOptions, FluxTag, TagConfigure } from '../tags/tag';
 import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
 import oget = require('oget');
@@ -19,7 +19,7 @@ export function setTagName(tag: FluxTag<any>) {
   }
 }
 
-export function setAliases(tag: FluxTag<any>) {
+export function inheritAliases(tag: FluxTag<any>) {
   let aliases = {};
   if (tag.parent && tag.parent._aliases) {
     Object.assign(aliases, tag.parent._aliases);
@@ -64,19 +64,16 @@ export function configure(tag: FluxTag<any>) {
   }
 }
 
-export function updateDependencies(tag: FluxTag<any>, defaults: any = {}) {
-  Object.keys(tag._dependencies)
-    .forEach((key) => {
-      const parentAlias = tag.parent ? tag.parent._aliases[key] : undefined;
-      const coercedOpts = coerceAttributes(tag.opts, tag._types);
-      const dependency = Object.assign(
-        {},
-        defaults,
-        parentAlias ? tag._dependencies[key](parentAlias) : {},
-        coercedOpts
-      );
-      tag.expose(key, dependency);
-    });
+export function updateDependency(tag: FluxTag<any>, dependency: Dependency, options: DependencyOptions = {}) {
+  const parentAlias = tag.parent ? tag.parent._aliases[dependency.alias] : undefined;
+  const coercedOpts = coerceAttributes(tag.opts, options.types || {});
+  const updated = Object.assign(
+    {},
+    options.defaults,
+    parentAlias ? dependency.transform(parentAlias) : {},
+    coercedOpts
+  );
+  tag.expose(dependency.realias, updated);
 }
 
 export function addDollarSigns(obj: any) {

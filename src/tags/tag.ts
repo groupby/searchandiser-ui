@@ -1,5 +1,5 @@
 import { Services } from '../services/init';
-import { configure, setAliases, setTagName, updateDependencies } from '../utils/tag';
+import { configure, inheritAliases, setTagName, updateDependency } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
@@ -17,19 +17,18 @@ export interface FluxTag<T> extends riot.Tag.Instance {
 }
 
 export class FluxTag<T> {
-  _tagName: string;
+  _state: any;
   _aliases: any;
-  _dependencies: any;
-  _types: TypeMap;
+
+  _tagName: string;
   // TODO: should get rid of this
   _style: string;
 
   init() {
-    this._dependencies = {};
-    this._types = {};
+    this._state = {};
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
-    setAliases(this);
+    inheritAliases(this);
 
     this.on('before-mount', () => configure(this));
   }
@@ -45,12 +44,15 @@ export class FluxTag<T> {
     delete this._aliases[alias];
   }
 
-  depend(alias: string, options: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
-    this._types = options.types || {};
-    this._dependencies[alias] = transform;
+  // tslint:disable-next-line:max-line-length
+  transform(alias: string, realias: string | string[], options: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
+    const dependency = { alias, realias, transform };
+    updateDependency(this, dependency, options);
+    this.on('update', () => updateDependency(this, dependency, options));
+  }
 
-    updateDependencies(this, options.defaults);
-    this.on('update', () => updateDependencies(this, options.defaults));
+  depend(alias: string, options: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
+    this.transform(alias, alias, options, transform);
   }
 
   _mixin(...mixins: any[]) {
@@ -74,6 +76,11 @@ export interface ConfigureOptions {
   defaults?: any;
   services?: string[];
   types?: TypeMap;
+}
+export interface Dependency {
+  alias: string;
+  realias: string | string[];
+  transform: (obj: any) => any;
 }
 export interface DependencyOptions {
   defaults?: any;

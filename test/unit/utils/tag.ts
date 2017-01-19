@@ -4,9 +4,9 @@ import {
   addDollarSigns,
   camelizeTagName,
   configure,
-  setAliases,
+  inheritAliases,
   setTagName,
-  updateDependencies,
+  updateDependency,
   MixinFlux
 } from '../../../src/utils/tag';
 import { expect } from 'chai';
@@ -74,7 +74,7 @@ describe('tag utils', () => {
     });
   });
 
-  describe('setAliases()', () => {
+  describe('inheritAliases()', () => {
     it('should inherit parent aliases', () => {
       const tag: any = {
         parent: {
@@ -85,7 +85,7 @@ describe('tag utils', () => {
         opts: {}
       };
 
-      setAliases(tag);
+      inheritAliases(tag);
 
       expect(tag._aliases).to.eql({ c: 'd' });
     });
@@ -97,7 +97,7 @@ describe('tag utils', () => {
         }
       };
 
-      setAliases(tag);
+      inheritAliases(tag);
 
       expect(tag._aliases).to.eql({ idk: tag });
     });
@@ -115,7 +115,7 @@ describe('tag utils', () => {
         }
       };
 
-      setAliases(tag);
+      inheritAliases(tag);
 
       expect(tag._aliases).to.eql({ a: tag, c: 'd' });
     });
@@ -131,7 +131,7 @@ describe('tag utils', () => {
         opts: {}
       };
 
-      setAliases(tag);
+      inheritAliases(tag);
 
       expect(tag.$a).to.eq('b');
       expect(tag.$c).to.eq('d');
@@ -260,36 +260,33 @@ describe('tag utils', () => {
     });
   });
 
-  describe('updateDependencies()', () => {
+  describe('updateDependency()', () => {
     it('should inherit from parent._aliases', () => {
       const untransformed = { bb: 'c' };
       const transformed = { bb: 'd' };
       const transform = sinon.spy(() => transformed);
       const expose = sinon.spy();
       const alias = 'a';
+      const realias = 'b';
       const tag: any = {
         parent: {
           _aliases: { [alias]: untransformed }
         },
-        _dependencies: { [alias]: transform },
         expose
       };
       sandbox.stub(utils, 'coerceAttributes');
 
-      updateDependencies(tag);
+      updateDependency(tag, { alias, realias, transform });
 
       expect(transform).to.have.been.calledWith(untransformed);
-      expect(expose).to.have.been.calledWith(alias, transformed);
+      expect(expose).to.have.been.calledWith(realias, transformed);
     });
 
     it('should not call transform if no parent', () => {
-      const tag: any = {
-        _dependencies: { a: () => expect.fail() },
-        expose: () => null
-      };
+      const tag: any = { expose: () => null };
       sandbox.stub(utils, 'coerceAttributes');
 
-      updateDependencies(tag);
+      updateDependency(tag, { alias: 'a', realias: 'a', transform: () => expect.fail() });
     });
 
     it('should call coerceAttributes()', () => {
@@ -303,7 +300,7 @@ describe('tag utils', () => {
       };
       const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
 
-      updateDependencies(tag);
+      updateDependency(tag, { alias: 'a', realias: 'a', transform: () => null }, { types });
 
       expect(coerceAttributes).to.have.been.calledWith(opts, types);
     });
@@ -312,13 +309,10 @@ describe('tag utils', () => {
       const defaults = { a: 'b' };
       const expose = sinon.spy();
       const alias = 'a';
-      const tag: any = {
-        expose,
-        _dependencies: { [alias]: () => expect.fail() }
-      };
+      const tag: any = { expose };
       sandbox.stub(utils, 'coerceAttributes');
 
-      updateDependencies(tag, defaults);
+      updateDependency(tag, { alias, realias: alias, transform: () => null }, { defaults });
 
       expect(expose).to.have.been.calledWith(alias, defaults);
     });
@@ -331,12 +325,15 @@ describe('tag utils', () => {
         parent: {
           _aliases: { [alias]: { c: 'd1', e: 'f1' } }
         },
-        _dependencies: { [alias]: (obj) => obj },
         expose
       };
       sandbox.stub(utils, 'coerceAttributes', () => coerced);
 
-      updateDependencies(tag, { a: 'b', c: 'd', e: 'f' });
+      updateDependency(tag, {
+        alias,
+        realias: alias,
+        transform: (obj) => obj
+      }, { defaults: { a: 'b', c: 'd', e: 'f' } });
 
       expect(expose).to.have.been.calledWith(alias, { a: 'b', c: 'd1', e: 'f2' });
     });

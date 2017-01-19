@@ -47,12 +47,12 @@ describe('base tag logic', () => {
         expect(setTagName).to.have.been.calledWith(tag);
       });
 
-      it('should call setAliases()', () => {
-        const setAliases = sandbox.stub(utils, 'setAliases');
+      it('should call inheritAliases()', () => {
+        const inheritAliases = sandbox.stub(utils, 'inheritAliases');
 
         tag.init();
 
-        expect(setAliases).to.have.been.calledWith(tag);
+        expect(inheritAliases).to.have.been.calledWith(tag);
       });
 
       it('should listen for before-mount', () => {
@@ -122,43 +122,47 @@ describe('base tag logic', () => {
     });
 
     describe('depend()', () => {
-      it('should set types, dependencies, and call updateDependencies', () => {
+      it('should call transform()', () => {
         const alias = 'alias';
-        const options = { types: { bb: 'd' }, defaults: { a: 'b' } };
-        const transform = () => null;
-        const updateDependencies = sandbox.stub(utils, 'updateDependencies');
-        tag._dependencies = {};
-        tag.on = () => null;
+        const options = { a: 'b' };
+        const transform = tag.transform = sinon.spy();
 
         tag.depend(alias, options, transform);
 
-        expect(tag._types).to.eq(options.types);
-        expect(tag._dependencies[alias]).to.eq(transform);
-        expect(updateDependencies).to.be.calledWith(tag, options.defaults);
+        expect(transform).to.be.calledWith(alias, alias, options, transform);
       });
+    });
 
-      it('should default to empty types', () => {
-        sandbox.stub(utils, 'updateDependencies');
-        tag._dependencies = {};
+    describe('transform()', () => {
+      it('should call updateDependency()', () => {
+        const alias = 'alias';
+        const realias = 'realias';
+        const options = { a: 'b' };
+        const transform = () => null;
+        const updateDependency = sandbox.stub(utils, 'updateDependency');
         tag.on = () => null;
 
-        tag.depend('alias', {});
+        tag.transform(alias, realias, options, transform);
 
-        expect(tag._types).to.eql({});
+        expect(updateDependency).to.be.calledWith(tag, { alias, realias, transform }, options);
       });
 
       it('should listen for update', () => {
-        const options = { defaults: { a: 'b' } };
-        const updateDependencies = sandbox.stub(utils, 'updateDependencies');
-        tag._dependencies = {};
+        const alias = 'alias';
+        const realias = 'realias';
+        const options = { a: 'b' };
+        const updateDependency = sandbox.stub(utils, 'updateDependency');
 
-        expectSubscriptions(() => tag.depend('alias', options),
+        expectSubscriptions(() => tag.transform(alias, realias, options),
           {
             update: {
               test: (cb) => {
-                updateDependencies.reset();
+                updateDependency.reset();
                 cb();
-                expect(updateDependencies).to.be.calledWith(tag, options.defaults);
+                expect(updateDependency).to.be.calledWith(tag, {
+                  alias, realias,
+                  transform: sinon.match.func
+                }, options);
               }
             }
           }, tag);
