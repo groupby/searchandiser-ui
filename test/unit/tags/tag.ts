@@ -134,37 +134,24 @@ describe('base tag logic', () => {
     });
 
     describe('transform()', () => {
-      it('should call updateDependency()', () => {
-        const alias = 'alias';
-        const realias = 'realias';
-        const options = { a: 'b' };
-        const transform = () => null;
-        const updateDependency = sandbox.stub(utils, 'updateDependency');
-        tag.on = () => null;
-
-        tag.transform(alias, realias, options, transform);
-
-        expect(updateDependency).to.be.calledWith(tag, { alias, realias, transform }, options);
-      });
-
-      it('should listen for update', () => {
+      it('should listen for update and before-mount', () => {
         const alias = 'alias';
         const realias = 'realias';
         const options = { a: 'b' };
         const updateDependency = sandbox.stub(utils, 'updateDependency');
+        const test = (cb) => {
+          updateDependency.reset();
+          cb();
+          expect(updateDependency).to.be.calledWith(tag, {
+            alias, realias,
+            transform: sinon.match.func
+          }, options);
+        };
 
         expectSubscriptions(() => tag.transform(alias, realias, options),
           {
-            update: {
-              test: (cb) => {
-                updateDependency.reset();
-                cb();
-                expect(updateDependency).to.be.calledWith(tag, {
-                  alias, realias,
-                  transform: sinon.match.func
-                }, options);
-              }
-            }
+            'before-mount': { test },
+            update: { test }
           }, tag);
       });
     });

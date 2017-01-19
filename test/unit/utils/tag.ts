@@ -282,13 +282,6 @@ describe('tag utils', () => {
       expect(expose).to.have.been.calledWith(realias, transformed);
     });
 
-    it('should not call transform if no parent', () => {
-      const tag: any = { expose: () => null };
-      sandbox.stub(utils, 'coerceAttributes');
-
-      updateDependency(tag, { alias: 'a', realias: 'a', transform: () => expect.fail() });
-    });
-
     it('should call coerceAttributes()', () => {
       const opts = { a: 'b' };
       const types = { c: 'd' };
@@ -312,7 +305,7 @@ describe('tag utils', () => {
       const tag: any = { expose };
       sandbox.stub(utils, 'coerceAttributes');
 
-      updateDependency(tag, { alias, realias: alias, transform: () => null }, { defaults });
+      updateDependency(tag, { alias, realias: alias, transform: (obj) => obj }, { defaults });
 
       expect(expose).to.have.been.calledWith(alias, defaults);
     });
