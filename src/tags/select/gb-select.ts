@@ -44,7 +44,9 @@ export class Select extends FluxTag<any> {
   init() {
     this.expose('select');
     this.transform('selectable', ['linkable', 'listable'], { defaults: DEFAULTS, types: TYPES });
+  }
 
+  onConfigure() {
     this.clearItem = { label: this.$selectable.clear || 'Unselect', clear: true };
     this.default = !this.$selectable.clear;
 
