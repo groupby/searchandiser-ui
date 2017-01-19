@@ -70,10 +70,14 @@ export function updateDependency(tag: FluxTag<any>, dependency: Dependency, opti
   const updated = Object.assign(
     {},
     options.defaults,
-    parentAlias ? dependency.transform(parentAlias) : {},
+    parentAlias,
     coercedOpts
   );
-  tag.expose(dependency.realias, updated);
+  const transformed = dependency.transform(updated);
+  tag.expose(dependency.realias, transformed);
+  if (dependency.alias !== dependency.realias) {
+    tag.expose(dependency.alias, transformed);
+  }
 }
 
 export function addDollarSigns(obj: any) {

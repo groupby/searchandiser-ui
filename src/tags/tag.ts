@@ -45,7 +45,7 @@ export class FluxTag<T> {
   }
 
   // tslint:disable-next-line:max-line-length
-  transform(alias: string, realias: string | string[], options: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
+  transform(alias: string, realias: string | string[], options: DependencyOptions = {}, transform: (obj: any) => any = (obj) => obj) {
     const dependency = { alias, realias, transform };
     updateDependency(this, dependency, options);
     this.on('update', () => updateDependency(this, dependency, options));
