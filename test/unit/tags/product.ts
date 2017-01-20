@@ -15,7 +15,6 @@ const ALL_META = {
 
 suite('gb-product', Product, ({
   tag, spy, stub,
-  expectSubscriptions,
   itShouldAlias
 }) => {
 

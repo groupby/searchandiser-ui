@@ -1,4 +1,4 @@
-import { checkBooleanAttr, scopeCss } from '../../utils/common';
+import { scopeCss } from '../../utils/common';
 import { FluxTag } from '../tag';
 
 export interface Toggleable {
@@ -9,59 +9,53 @@ export interface Toggleable {
   trigger?: Function;
 }
 
+export const DEFAULTS = {
+  height: 30,
+  switchHeight: 22,
+  animationSpeed: 0.4
+};
+export const TYPES = {
+  checked: 'boolean'
+};
+
 export class Toggle extends FluxTag<any> {
   $toggleable: Toggleable;
   refs: {
     input: HTMLInputElement;
   };
 
-  height: number;
-  switchHeight: number;
-  animationSpeed: number;
-  checked: boolean;
-
   init() {
-    const toggleable = this.toggleable();
-    this.height = toggleable.height || 30;
-    this.switchHeight = toggleable.switchHeight || 22;
-    this.animationSpeed = toggleable.animationSpeed || 0.4;
-    this.checked = checkBooleanAttr('checked', toggleable);
+    this.depend('toggleable', { defaults: DEFAULTS, types: TYPES });
 
-    this.addStyleTag();
-
+    this.on('before-mount', this.addStyleTag);
     this.on('mount', this.onMount);
   }
 
-  toggleable() {
-    return Object.assign({}, this.$toggleable, this.opts);
-  }
-
   onMount() {
-    this.refs.input.checked = this.checked;
+    this.refs.input.checked = this.$toggleable.checked;
   }
 
   onClick() {
-    const toggleable = this.toggleable();
-    if (toggleable.trigger) {
-      toggleable.trigger(this.refs.input.checked);
+    if (this.$toggleable.trigger) {
+      this.$toggleable.trigger(this.refs.input.checked);
     }
   }
 
   calculateSwitchHeight(toggleHeight: number) {
-    const heightDifference = toggleHeight - this.switchHeight;
-    const switchHeight = Math.min(this.switchHeight, toggleHeight);
+    const heightDifference = toggleHeight - this.$toggleable.switchHeight;
+    const switchHeight = Math.min(this.$toggleable.switchHeight, toggleHeight);
     return switchHeight - heightDifference % 2;
   }
 
   addStyleTag() {
-    const switchHeight = this.calculateSwitchHeight(this.height);
-    const padding = (this.height - switchHeight) / 2;
-    const speed = this.animationSpeed;
+    const switchHeight = this.calculateSwitchHeight(this.$toggleable.height);
+    const padding = (this.$toggleable.height - switchHeight) / 2;
+    const speed = this.$toggleable.animationSpeed;
     const node = document.createElement('style');
     node.textContent = `
       ${scopeCss('gb-toggle', 'label')} {
-        height: ${this.height}px;
-        width: ${this.height * 2}px;
+        height: ${this.$toggleable.height}px;
+        width: ${this.$toggleable.height * 2}px;
       }
 
       ${scopeCss('gb-toggle', 'div')} {
