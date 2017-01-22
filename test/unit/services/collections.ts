@@ -10,10 +10,9 @@ suite('collections', ({ spy, stub }) => {
     it('should set properties', () => {
       const service = new Collections(<any>{}, <any>{});
 
-      expect(service.collectionsConfig).to.eql({});
       expect(service.fetchCounts).to.be.true;
       expect(service.collections).to.eql([]);
-      expect(service.items).to.eql([]);
+      expect(service._config).to.eql({ items: [] });
     });
 
     it('should take overrides for properties', () => {
@@ -23,10 +22,9 @@ suite('collections', ({ spy, stub }) => {
 
       const service = new Collections(<any>{}, config);
 
-      expect(service.collectionsConfig).to.eq(collections);
       expect(service.fetchCounts).to.be.false;
       expect(service.collections).to.eql(['b']);
-      expect(service.items).to.eq(items);
+      expect(service._config).to.eql({ items });
     });
   });
 

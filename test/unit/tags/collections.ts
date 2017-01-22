@@ -1,5 +1,5 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
-import { Collections, DEFAULTS, TYPES } from '../../../src/tags/collections/gb-collections';
+import { Collections, DEFAULTS, SERVICES, TYPES } from '../../../src/tags/collections/gb-collections';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -22,30 +22,18 @@ suite('gb-collections', Collections, ({
   });
 
   describe('onConfigure()', () => {
-    it('should default to an empty array of items', () => {
-      tag().services = <any>{ collections: {} };
-
-      tag().onConfigure(() => null);
-
-      expect(tag().items).to.eql([]);
-    });
-
     it('should call configure()', () => {
       const configure = spy();
       tag().services = <any>{ collections: {} };
 
       tag().onConfigure(configure);
 
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
+      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES, services: SERVICES });
     });
 
-    it('should set items and counts', () => {
-      const items = ['a', 'b'];
-      tag().services = <any>{ collections: { items } };
-
+    it('should set empty counts', () => {
       tag().onConfigure(() => null);
 
-      expect(tag().items).to.eq(items);
       expect(tag().counts).to.eql({});
     });
   });

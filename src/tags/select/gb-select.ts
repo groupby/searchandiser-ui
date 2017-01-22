@@ -10,7 +10,14 @@ export interface Selectable extends Linkable {
   native?: boolean;
 }
 
+export interface LabeledOption {
+  label: string;
+  value: string;
+}
+
 export interface SelectTag<T> extends Selectable { }
+
+export type SelectOption = string | LabeledOption;
 
 export class SelectTag<T> extends FluxTag<T> { }
 

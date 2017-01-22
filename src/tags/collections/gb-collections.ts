@@ -1,5 +1,5 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { Selectable, SelectTag } from '../select/gb-select';
+import { Selectable, SelectOption, SelectTag } from '../select/gb-select';
 import { TagConfigure } from '../tag';
 
 export interface CollectionOption {
@@ -8,18 +8,20 @@ export interface CollectionOption {
 }
 
 export interface CollectionsConfig extends Selectable {
-  items: string[] | CollectionOption[];
+  items: SelectOption[];
   dropdown?: boolean;
   showCounts?: boolean;
 }
 
 export const DEFAULTS = {
+  items: [],
   showCounts: true
 };
 export const TYPES = {
   showCounts: 'boolean',
   dropdown: 'boolean'
 };
+export const SERVICES = ['collections'];
 
 export class Collections extends SelectTag<any> {
   dropdown: boolean;
@@ -34,10 +36,8 @@ export class Collections extends SelectTag<any> {
   }
 
   onConfigure(configure: TagConfigure) {
-    configure({ defaults: DEFAULTS, types: TYPES });
+    configure({ defaults: DEFAULTS, types: TYPES, services: SERVICES });
 
-    // TODO: extract items into services.collections._config
-    this.items = this.services.collections.items || [];
     this.counts = {};
   }
 
