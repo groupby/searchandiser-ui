@@ -1,6 +1,6 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
 import { toRefinement } from '../../utils/common';
-import { Select, Selectable, SelectTag } from '../select/gb-select';
+import { Selectable, SelectTag } from '../select/gb-select';
 import { TagConfigure } from '../tag';
 import { Results } from 'groupby-api';
 
@@ -14,7 +14,6 @@ export const DEFAULTS = {
 };
 
 export class Filter extends SelectTag<any> {
-  tags: { 'gb-select': Select };
 
   field: string;
 

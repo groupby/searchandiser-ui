@@ -22,6 +22,14 @@ suite('gb-collections', Collections, ({
   });
 
   describe('onConfigure()', () => {
+    it('should default to an empty array of items', () => {
+      tag().services = <any>{ collections: {} };
+
+      tag().onConfigure(() => null);
+
+      expect(tag().items).to.eql([]);
+    });
+
     it('should call configure()', () => {
       const configure = spy();
       tag().services = <any>{ collections: {} };

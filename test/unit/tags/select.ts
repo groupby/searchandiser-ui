@@ -4,6 +4,7 @@ import { expect } from 'chai';
 
 suite('gb-select', Select, ({
   tag, spy, stub,
+  expectSubscriptions,
   itShouldAlias
 }) => {
 
@@ -19,6 +20,10 @@ suite('gb-select', Select, ({
         defaults: DEFAULTS,
         types: TYPES
       });
+    });
+
+    it('should listen for update', () => {
+      expectSubscriptions(() => tag().init(), { update: tag().setClearItem }, tag());
     });
   });
 

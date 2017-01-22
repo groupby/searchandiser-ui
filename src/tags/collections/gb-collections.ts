@@ -37,7 +37,7 @@ export class Collections extends SelectTag<any> {
     configure({ defaults: DEFAULTS, types: TYPES });
 
     // TODO: extract items into services.collections._config
-    this.items = this.services.collections.items;
+    this.items = this.services.collections.items || [];
     this.counts = {};
   }
 

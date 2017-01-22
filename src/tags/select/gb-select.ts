@@ -44,6 +44,8 @@ export class Select extends FluxTag<any> {
   init() {
     this.expose('select');
     this.transform('selectable', ['linkable', 'listable'], { defaults: DEFAULTS, types: TYPES });
+
+    this.on('update', this.setClearItem);
   }
 
   onConfigure() {
@@ -56,6 +58,12 @@ export class Select extends FluxTag<any> {
     }
   }
 
+  setClearItem() {
+    if (!this.default && !this.$selectable.items.includes(this.clearItem)) {
+      this.$selectable.items.unshift(this.clearItem);
+    }
+  }
+
   selectLabel(): string {
     return this.selectedItem || (this.selected ? this.clearItem : this.$selectable.label);
   }
@@ -65,8 +73,7 @@ export class Select extends FluxTag<any> {
   }
 
   selectButton() {
-    const customSelect = this.tags['gb-custom-select'];
-    return customSelect.tags['gb-select-button'].root;
+    return this.tags['gb-custom-select'].tags['gb-select-button'].root;
   }
 
   nativeSelect() {
@@ -79,7 +86,9 @@ export class Select extends FluxTag<any> {
 
   unfocus() {
     this.focused = this.$selectable.hover || !this.focused;
-    if (!this.focused) this.selectButton().blur();
+    if (!this.focused) {
+      this.selectButton().blur();
+    }
   }
 
   selectItem(selectedItem: string, value: any): void {
