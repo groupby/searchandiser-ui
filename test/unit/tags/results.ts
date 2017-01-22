@@ -1,5 +1,4 @@
 import { Results, TYPES } from '../../../src/tags/results/gb-results';
-import { getPath } from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';

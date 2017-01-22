@@ -1,4 +1,3 @@
-import { checkBooleanAttr } from '../../utils/common';
 import { FluxTag, TagConfigure } from '../tag';
 import { Events } from 'groupby-api';
 

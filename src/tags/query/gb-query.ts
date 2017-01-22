@@ -1,4 +1,4 @@
-import { checkBooleanAttr, findTag } from '../../utils/common';
+import { findTag } from '../../utils/common';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
 import { FluxTag, TagConfigure } from '../tag';

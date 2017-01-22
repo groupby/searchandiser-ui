@@ -1,4 +1,4 @@
-import { checkBooleanAttr, displayRefinement as toView, toRefinement } from '../../utils/common';
+import { displayRefinement as toView, toRefinement } from '../../utils/common';
 import { FluxTag, TagConfigure } from '../tag';
 import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Results } from 'groupby-api';
