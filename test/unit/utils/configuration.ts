@@ -153,7 +153,7 @@ describe('Configuration', () => {
         const rawConfig: any = {
           tags: {
             sort: {
-              options: [
+              items: [
                 { value: { field: 'A', order: 'B' } },
                 { value: { field: 'C', order: 'D' } }
               ]
