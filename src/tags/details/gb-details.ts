@@ -4,7 +4,7 @@ import { Product } from '../product/gb-product';
 import { FluxTag, TagConfigure } from '../tag';
 import { Events, Record } from 'groupby-api';
 
-export interface DetailsConfig {
+export interface DetailsOpts {
   idParam: string;
 }
 
@@ -12,7 +12,7 @@ export const DEFAULTS = {
   idParam: 'id'
 };
 
-export class Details extends FluxTag<any> {
+export class Details extends FluxTag<DetailsOpts> {
   tags: { 'gb-product': Product };
 
   idParam: string;

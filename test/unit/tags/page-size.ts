@@ -22,7 +22,7 @@ suite('gb-page-size', PageSize, ({
 
     it('should set items from global config', () => {
       const pageSizes = [1, 2, 3, 4];
-      tag().config = { pageSizes };
+      tag().config = <any>{ pageSizes };
 
       tag().onConfigure(() => null);
 

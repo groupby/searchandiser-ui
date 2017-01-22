@@ -23,28 +23,10 @@ suite<PageSize>('gb-page-size', ({ flux, html, mount, itMountsTag }) => {
     });
   });
 
-  describe('render with page sizes', () => {
-    const PAGE_SIZES = [12, 24, 40];
-    let tag: PageSize;
-    let model: Model;
-
-    beforeEach(() => {
-      tag = mount();
-      model = new Model(tag);
-    });
-
-    it.skip('should render from configured page sizes', () => {
-      // doesn't pass (incorrectly sets up config)
-      tag.config = { pageSizes: PAGE_SIZES };
-      tag.init();
-
-      expect(html().querySelector('gb-option-list')).to.be.ok;
-      expect(model.label.textContent).to.eq('12');
-      expect(model.items).to.have.length(3);
-      expect(model.items[2].textContent).to.eq('40');
-    });
-
+  describe('select page size', () => {
     it('should resize on option selected', (done) => {
+      const model = new Model(mount());
+
       flux().resize = (value): any => {
         expect(value).to.eq(25);
         expect(model.clearItem).to.not.be.ok;

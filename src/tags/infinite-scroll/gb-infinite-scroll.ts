@@ -7,7 +7,7 @@ import * as riot from 'riot';
 export const MIN_REQUEST_SIZE = 25;
 export const MAX_REQUEST_SIZE = 120;
 
-export interface InfiniteScrollConfig {
+export interface InfiniteScrollOpts {
   maxRecords?: number;
 }
 
@@ -15,7 +15,7 @@ export const DEFAULTS = {
   maxRecords: 500
 };
 
-export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
+export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
   refs: {
     scroller: HTMLUListElement;
     runway: HTMLElement;

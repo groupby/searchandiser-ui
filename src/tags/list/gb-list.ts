@@ -9,6 +9,10 @@ export interface Listable {
   shouldRender?: (option: any) => boolean;
 }
 
+export interface ListTag<T extends Listable> extends Listable { }
+
+export class ListTag<T extends Listable> extends FluxTag<T> { }
+
 export const DEFAULTS = {
   itemAlias: 'item',
   indexAlias: 'i'

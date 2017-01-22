@@ -1,4 +1,4 @@
-import { Linkable } from '../link-list/gb-link-list';
+import { Linkable, LinkTag } from '../link-list/gb-link-list';
 import { FluxTag } from '../tag';
 import * as riot from 'riot'; // tslint:disable-line:no-unused-variable
 
@@ -15,11 +15,11 @@ export interface LabeledOption {
   value: string;
 }
 
-export interface SelectTag<T> extends Selectable { }
-
 export type SelectOption = string | LabeledOption;
 
-export class SelectTag<T> extends FluxTag<T> { }
+export interface SelectTag<T extends Selectable> extends Selectable { }
+
+export class SelectTag<T extends Selectable> extends LinkTag<T> { }
 
 export const DEFAULTS = {
   items: [],

@@ -1,7 +1,7 @@
 import { Selectable, SelectTag } from '../select/gb-select';
 import { TagConfigure } from '../tag';
 
-export interface PageSizeConfig extends Selectable {
+export interface PageSizeOpts extends Selectable {
   resetOffset?: boolean;
 }
 
@@ -10,7 +10,7 @@ export const TYPES = {
 };
 export const DEFAULT_PAGE_SIZES = [10, 25, 50, 100];
 
-export class PageSize extends SelectTag<any> {
+export class PageSize extends SelectTag<PageSizeOpts> {
 
   resetOffset: boolean;
 

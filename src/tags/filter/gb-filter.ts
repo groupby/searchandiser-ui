@@ -4,7 +4,7 @@ import { Selectable, SelectTag } from '../select/gb-select';
 import { TagConfigure } from '../tag';
 import { Results } from 'groupby-api';
 
-export interface FilterConfig extends Selectable {
+export interface FilterOpts extends Selectable {
   field: string;
 }
 
@@ -13,7 +13,7 @@ export const DEFAULTS = {
   clear: 'Unfiltered'
 };
 
-export class Filter extends SelectTag<any> {
+export class Filter extends SelectTag<FilterOpts> {
 
   field: string;
 

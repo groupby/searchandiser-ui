@@ -21,7 +21,7 @@ suite('gb-details', Details, ({
   describe('onConfigure()', () => {
     it('should call configure()', () => {
       const configure = spy(() => ({}));
-      tag().config = { structure: {} };
+      tag().config = <any>{ structure: {} };
 
       tag().onConfigure(configure);
 
@@ -40,7 +40,7 @@ suite('gb-details', Details, ({
     it('should set structure from global', () => {
       const structure = { a: 'b' };
       const configure = spy(() => ({}));
-      tag().config = { structure };
+      tag().config = <any>{ structure };
 
       tag().onConfigure(configure);
 

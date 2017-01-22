@@ -2,7 +2,7 @@ import { findSearchBox } from '../../utils/common';
 import { FluxTag, TagConfigure } from '../tag';
 import * as riot from 'riot';
 
-export interface SubmitConfig {
+export interface SubmitOpts {
   label?: string;
   staticSearch?: boolean;
 }
@@ -14,7 +14,7 @@ export const TYPES = {
   staticSearch: 'boolean'
 };
 
-export class Submit extends FluxTag<any> {
+export class Submit extends FluxTag<SubmitOpts> {
   root: riot.TagElement & { value: any };
 
   label: string;

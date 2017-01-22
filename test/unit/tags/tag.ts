@@ -21,7 +21,7 @@ describe('base tag logic', () => {
       beforeEach(() => {
         tag.root = <any>{ tagName: 'gb-test-tag' };
         tag.opts = {};
-        tag.config = {};
+        tag.config = <any>{};
         tag.on = () => null;
       });
 
@@ -32,7 +32,7 @@ describe('base tag logic', () => {
       });
 
       it('should set _style', () => {
-        tag.config = { stylish: true };
+        tag.config = <any>{ stylish: true };
 
         tag.init();
 

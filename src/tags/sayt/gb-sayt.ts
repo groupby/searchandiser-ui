@@ -6,7 +6,7 @@ import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
 import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
 import escapeStringRegexp = require('escape-string-regexp');
 
-export interface SaytConfig {
+export interface SaytOpts {
   structure?: ProductStructure;
   categoryField?: string;
   allCategoriesLabel?: string;
@@ -44,7 +44,7 @@ export const TYPES = {
   https: 'boolean'
 };
 
-export class Sayt extends SaytTag<any> {
+export class Sayt extends SaytTag<SaytOpts> {
   structure: ProductStructure;
   navigationNames: { [key: string]: string };
   allowedNavigations: string[];
@@ -81,12 +81,10 @@ export class Sayt extends SaytTag<any> {
   }
 
   onConfigure(configure: TagConfigure) {
-    const config = configure({ defaults: DEFAULTS, types: TYPES });
+    const { structure, collection, language, area } = this.config;
+    const defaults = Object.assign({ structure, collection, language, area }, DEFAULTS);
+    configure({ defaults, types: TYPES });
 
-    this.structure = config.structure || this.config.structure;
-    this.collection = config.collection || this.config.collection;
-    this.language = config.language || this.config.language;
-    this.area = config.area || this.config.area;
     this.showProducts = this.productCount > 0;
 
     this.sayt.configure(this.generateSaytConfig());

@@ -2,7 +2,7 @@ import { Selectable, SelectTag } from '../select/gb-select';
 import { TagConfigure } from '../tag';
 import { Results, Sort as SortModel } from 'groupby-api';
 
-export interface SortConfig extends Selectable { }
+export interface SortOpts extends Selectable { }
 
 export const DEFAULTS = {
   items: [
@@ -11,7 +11,7 @@ export const DEFAULTS = {
   ]
 };
 
-export class Sort extends SelectTag<any> {
+export class Sort extends SelectTag<SortOpts> {
 
   init() {
     this.expose('selectable');

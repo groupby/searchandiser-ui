@@ -50,10 +50,6 @@ export class Product extends FluxTag<any> {
     return productable;
   }
 
-  productable(obj: any = {}) {
-    return Object.assign(obj, this.$productable, this.opts);
-  }
-
   updateRecord(allMeta: any) {
     const variants = this.transformRecord(allMeta);
     this.variants = variants;

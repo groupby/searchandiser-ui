@@ -1,13 +1,13 @@
-import { Listable } from '../list/gb-list';
+import { Listable, ListTag } from '../list/gb-list';
 import { FluxTag } from '../tag';
 
 export interface Linkable extends Listable {
   onSelect(obj: any): void;
 }
 
-export interface LinkTag<T> extends Linkable { }
+export interface LinkTag<T extends Linkable> extends Linkable { }
 
-export class LinkTag<T> extends FluxTag<T> { }
+export class LinkTag<T extends Linkable> extends ListTag<T> { }
 
 export class LinkList extends FluxTag<any> {
 

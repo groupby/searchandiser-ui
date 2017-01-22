@@ -1,7 +1,7 @@
 import { FluxTag, TagConfigure } from '../tag';
 import { Events } from 'groupby-api';
 
-export interface PagingConfig {
+export interface PagingOpts {
   limit?: number;
   pages?: boolean;
   numeric?: boolean;
@@ -42,7 +42,7 @@ export const TYPES = {
   icons: 'boolean'
 };
 
-export class Paging extends FluxTag<any> {
+export class Paging extends FluxTag<PagingOpts> {
   limit: number;
   pages: boolean;
   numeric: boolean;

@@ -1,10 +1,10 @@
 import { FluxTag } from '../tag';
 
-export interface CarouselConfig {
+export interface CarouselOpts {
   items: any[];
 }
 
-export class Carousel extends FluxTag<CarouselConfig> {
+export class Carousel extends FluxTag<CarouselOpts> {
 
   currentIndex: number;
   items: any[];

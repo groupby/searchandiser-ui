@@ -10,7 +10,7 @@ suite('gb-results', Results, ({
 }) => {
 
   describe('init()', () => {
-    beforeEach(() => tag().config = { structure: {} });
+    beforeEach(() => tag().config = <any>{ structure: {} });
 
     itShouldAlias('productable');
 
@@ -32,7 +32,7 @@ suite('gb-results', Results, ({
 
     it('should set structure from config', () => {
       const structure = { a: 'b' };
-      tag().config = { structure: { c: 'd' } };
+      tag().config = <any>{ structure: { c: 'd' } };
 
       tag().onConfigure(() => ({ structure }));
 
@@ -41,7 +41,7 @@ suite('gb-results', Results, ({
 
     it('should set structure from global config', () => {
       const structure = { a: 'b' };
-      tag().config = { structure };
+      tag().config = <any>{ structure };
 
       tag().onConfigure(() => ({}));
 

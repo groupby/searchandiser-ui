@@ -1,3 +1,4 @@
+import { SearchandiserConfig } from '../searchandiser';
 import { Services } from '../services/init';
 import { configure, inheritAliases, setTagName, updateDependency } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
@@ -7,20 +8,21 @@ import { Sayt } from 'sayt';
 const sayt = new Sayt();
 
 export interface FluxTag<T> extends riot.Tag.Instance {
-  parent: FluxTag<any> & any;
+  parent: FluxTag<any>;
+  opts: T;
 
   flux: FluxCapacitor;
   services: Services;
-  config: any;
+  config: SearchandiserConfig;
 
-  onConfigure(opts: any): void;
+  onConfigure(configure: TagConfigure): void;
 }
 
 export class FluxTag<T> {
+  _tagName: string;
   _state: any;
   _aliases: any;
 
-  _tagName: string;
   // TODO: should get rid of this
   _style: string;
 

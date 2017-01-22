@@ -5,7 +5,7 @@ import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Resu
 
 export { NavigationInfo }
 
-export interface NavigationConfig {
+export interface NavigationOpts {
   badge?: boolean;
   showSelected?: boolean;
 }
@@ -23,7 +23,7 @@ export const TYPES = {
   showSelected: 'boolean'
 };
 
-export class Navigation extends FluxTag<any> {
+export class Navigation extends FluxTag<NavigationOpts> {
 
   badge: boolean;
   showSelected: boolean;

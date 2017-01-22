@@ -1,24 +1,25 @@
 import { initServices, Service } from './services/init';
 import { TrackerConfig } from './services/tracker';
 import { UrlConfig } from './services/url';
-import { BreadcrumbsConfig } from './tags/breadcrumbs/gb-breadcrumbs';
-import { CollectionsConfig } from './tags/collections/gb-collections';
-import { DetailsConfig } from './tags/details/gb-details';
-import { FilterConfig } from './tags/filter/gb-filter';
-import { NavigationConfig } from './tags/navigation/gb-navigation';
-import { PageSizeConfig } from './tags/page-size/gb-page-size';
-import { PagingConfig } from './tags/paging/gb-paging';
-import { QueryConfig } from './tags/query/gb-query';
-import { SaytConfig } from './tags/sayt/gb-sayt';
-import { SortConfig } from './tags/sort/gb-sort';
-import { SubmitConfig } from './tags/submit/gb-submit';
+import { BreadcrumbsOpts } from './tags/breadcrumbs/gb-breadcrumbs';
+import { CollectionsOpts } from './tags/collections/gb-collections';
+import { DetailsOpts } from './tags/details/gb-details';
+import { FilterOpts } from './tags/filter/gb-filter';
+import { NavigationOpts } from './tags/navigation/gb-navigation';
+import { PageSizeOpts } from './tags/page-size/gb-page-size';
+import { PagingOpts } from './tags/paging/gb-paging';
+import { QueryOpts } from './tags/query/gb-query';
+import { SaytOpts } from './tags/sayt/gb-sayt';
+import { SortOpts } from './tags/sort/gb-sort';
+import { SubmitOpts } from './tags/submit/gb-submit';
 import { Configuration } from './utils/configuration';
 import { ProductStructure } from './utils/product-transformer';
 import { MixinFlux } from './utils/tag';
 import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
-export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection,visitorId,sessionId}'; // tslint:disable:max-line-length
+// tslint:disable-next-line:max-line-length
+export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection,visitorId,sessionId}';
 
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig = <any>{}) {
@@ -38,7 +39,9 @@ export class Searchandiser {
   config: SearchandiserConfig;
 
   init() {
-    if (this.config.initialSearch) this.search();
+    if (this.config.initialSearch) {
+      this.search();
+    }
   }
 
   attach(tagName: string, opts?: any);
@@ -105,17 +108,17 @@ export interface SearchandiserConfig {
   sessionId?: string;
 
   tags?: {
-    breadcrumbs?: BreadcrumbsConfig;
-    collections?: CollectionsConfig;
-    details?: DetailsConfig;
-    filter?: FilterConfig;
-    navigation?: NavigationConfig;
-    pageSize?: PageSizeConfig;
-    paging?: PagingConfig;
-    query?: QueryConfig;
-    sayt?: SaytConfig;
-    sort?: SortConfig;
-    submit?: SubmitConfig;
+    breadcrumbs?: BreadcrumbsOpts;
+    collections?: CollectionsOpts;
+    details?: DetailsOpts;
+    filter?: FilterOpts;
+    navigation?: NavigationOpts;
+    pageSize?: PageSizeOpts;
+    paging?: PagingOpts;
+    query?: QueryOpts;
+    sayt?: SaytOpts;
+    sort?: SortOpts;
+    submit?: SubmitOpts;
   };
   services?: { [name: string]: Service | boolean };
   stylish?: boolean;

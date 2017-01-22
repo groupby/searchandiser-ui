@@ -30,56 +30,20 @@ suite('gb-sayt', Sayt, ({
 
   describe('onConfigure()', () => {
     it('should call configure()', () => {
-      const configure = spy(() => ({}));
+      const configure = spy();
+      const config = tag().config = <any>{
+        collection: 'a',
+        area: 'b',
+        language: 'c',
+        structure: { d: 'e' }
+      };
       tag().sayt = { configure: () => null };
       tag().onConfigure(configure);
 
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
-    });
-
-    it('should set structure from config', () => {
-      const structure = { a: 'b' };
-      tag().sayt = { configure: () => null };
-      tag().config = { structure: { c: 'd' } };
-
-      tag().onConfigure(() => ({ structure }));
-
-      expect(tag().structure).to.eq(structure);
-    });
-
-    it('should set structure from global config', () => {
-      const structure = { a: 'b' };
-      tag().sayt = { configure: () => null };
-      tag().config = { structure };
-
-      tag().onConfigure(() => ({}));
-
-      expect(tag().structure).to.eq(structure);
-    });
-
-    it('should use values from combined config', () => {
-      const area = 'myArea';
-      const collection = 'myCollection';
-      const language = 'french';
-      tag().sayt = { configure: () => null };
-      tag().onConfigure(() => ({ area, collection, language }));
-
-      expect(tag().area).to.eq(area);
-      expect(tag().collection).to.eq(collection);
-      expect(tag().language).to.eq(language);
-    });
-
-    it('should use collection from global config', () => {
-      const area = 'myArea';
-      const collection = 'myCollection';
-      const language = 'french';
-      tag().config = { area, collection, language };
-      tag().sayt = { configure: () => null };
-      tag().onConfigure(() => ({}));
-
-      expect(tag().area).to.eq(area);
-      expect(tag().collection).to.eq(collection);
-      expect(tag().language).to.eq(language);
+      expect(configure).to.have.been.calledWith({
+        defaults: Object.assign(config, DEFAULTS),
+        types: TYPES
+      });
     });
 
     it('should set showProducts true if productCount is not 0', () => {
@@ -124,7 +88,7 @@ suite('gb-sayt', Sayt, ({
       const collection = tag().collection = 'mycollection';
       const area = tag().area = 'MyArea';
       const language = tag().language = 'en';
-      tag().config = { customerId };
+      tag().config = <any>{ customerId };
       tag().queryCount = 2;
       tag().productCount = 3;
       tag().https = true;

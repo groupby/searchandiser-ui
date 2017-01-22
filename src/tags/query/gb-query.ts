@@ -7,7 +7,7 @@ import * as riot from 'riot';
 
 const KEY_ENTER = 13;
 
-export interface QueryConfig {
+export interface QueryOpts {
   sayt?: boolean;
   autoSearch?: boolean;
   staticSearch?: boolean;
@@ -23,14 +23,12 @@ export const TYPES = {
   staticSearch: 'boolean'
 };
 
-export class Query extends FluxTag<any> {
+export class Query extends FluxTag<QueryOpts> {
   root: riot.TagElement & HTMLInputElement;
   tags: {
     'gb-sayt': Sayt;
     'gb-search-box': FluxTag<any> & {
-      refs: {
-        searchBox: HTMLInputElement;
-      };
+      refs: { searchBox: HTMLInputElement };
     };
   };
 

@@ -34,7 +34,7 @@ suite('gb-product', Product, ({
     it('should set structure and initialize ProductTransformer', () => {
       const transformerInstance = { e: 'f' };
       const productTransformer = stub(transformer, 'ProductTransformer', () => transformerInstance);
-      tag().config = { structure: { a: 'b', c: 'd' } };
+      tag().config = <any>{ structure: { a: 'b', c: 'd' } };
       tag().$productable = <any>{ structure: { a: 'e' } };
 
       tag().init();

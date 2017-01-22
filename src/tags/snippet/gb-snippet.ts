@@ -1,6 +1,6 @@
 import { FluxTag, TagConfigure } from '../tag';
 
-export interface SnippetConfig {
+export interface SnippetOpts {
   raw?: boolean;
   url: string;
 }
@@ -9,7 +9,7 @@ export const TYPES = {
   raw: 'boolean'
 };
 
-export class Snippet extends FluxTag<any> {
+export class Snippet extends FluxTag<SnippetOpts> {
 
   raw: boolean;
   url: string;

@@ -130,7 +130,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       };
       const appendChild = spy();
       const createTombstone = stub(renderer.Renderer, 'createTombstone').returns(node);
-      tag().config = { structure };
+      tag().config = <any>{ structure };
       tag().refs.scroller = <any>{ appendChild };
       tag().items = [];
 

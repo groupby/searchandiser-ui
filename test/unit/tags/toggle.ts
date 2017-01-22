@@ -43,13 +43,13 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should call the configured trigger method', () => {
-      const trigger = spy();
-      tag().$toggleable = { trigger };
+      const onToggle = spy();
+      tag().$toggleable = { onToggle };
       tag().refs.input = <any>{ checked: true };
 
       tag().onClick();
 
-      expect(trigger).to.have.been.calledWith(true);
+      expect(onToggle).to.have.been.calledWith(true);
     });
   });
 

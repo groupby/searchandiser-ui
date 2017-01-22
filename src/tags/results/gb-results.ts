@@ -2,15 +2,16 @@ import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag, TagConfigure } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
-export interface ResultsConfig {
+export interface ResultsOptions {
   lazy?: boolean;
+  css?: { [key: string]: string };
 }
 
 export const TYPES = {
   lazy: 'boolean'
 };
 
-export class Results extends FluxTag<ResultsConfig> {
+export class Results extends FluxTag<ResultsOptions> {
   lazy: boolean;
 
   structure: ProductStructure;

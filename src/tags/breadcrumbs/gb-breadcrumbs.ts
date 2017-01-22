@@ -2,7 +2,7 @@ import { displayRefinement as toView, toRefinement } from '../../utils/common';
 import { FluxTag, TagConfigure } from '../tag';
 import { Events, Results } from 'groupby-api';
 
-export interface BreadcrumbsConfig {
+export interface BreadcrumbsOpts {
   items: any[];
   hideQuery?: boolean;
   hideRefinements?: boolean;
@@ -24,7 +24,7 @@ export const TYPES = {
   labels: 'boolean'
 };
 
-export class Breadcrumbs extends FluxTag<any> {
+export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
 
   items: any[];
   hideQuery: boolean;

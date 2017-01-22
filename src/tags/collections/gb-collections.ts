@@ -2,12 +2,7 @@ import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
 import { Selectable, SelectOption, SelectTag } from '../select/gb-select';
 import { TagConfigure } from '../tag';
 
-export interface CollectionOption {
-  label: string;
-  value: string;
-}
-
-export interface CollectionsConfig extends Selectable {
+export interface CollectionsOpts extends Selectable {
   items: SelectOption[];
   dropdown?: boolean;
   showCounts?: boolean;
@@ -23,7 +18,7 @@ export const TYPES = {
 };
 export const SERVICES = ['collections'];
 
-export class Collections extends SelectTag<any> {
+export class Collections extends SelectTag<CollectionsOpts> {
   dropdown: boolean;
   showCounts: boolean;
 

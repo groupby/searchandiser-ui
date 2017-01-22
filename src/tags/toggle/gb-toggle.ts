@@ -6,7 +6,7 @@ export interface Toggleable {
   switchHeight?: number;
   animationSpeed?: number;
   checked?: boolean;
-  trigger?: Function;
+  onToggle?: Function;
 }
 
 export const DEFAULTS = {
@@ -17,6 +17,10 @@ export const DEFAULTS = {
 export const TYPES = {
   checked: 'boolean'
 };
+
+export interface ToggleTag<T extends Toggleable> extends Toggleable { }
+
+export class ToggleTag<T extends Toggleable> extends FluxTag<T> { }
 
 export class Toggle extends FluxTag<any> {
   $toggleable: Toggleable;
@@ -36,8 +40,8 @@ export class Toggle extends FluxTag<any> {
   }
 
   onClick() {
-    if (this.$toggleable.trigger) {
-      this.$toggleable.trigger(this.refs.input.checked);
+    if (this.$toggleable.onToggle) {
+      this.$toggleable.onToggle(this.refs.input.checked);
     }
   }
 

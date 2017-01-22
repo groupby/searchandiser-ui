@@ -1,5 +1,5 @@
 import { CONFIGURATION_MASK, SearchandiserConfig } from '../searchandiser';
-import { FilterConfig } from '../tags/filter/gb-filter';
+import { FilterOpts } from '../tags/filter/gb-filter';
 import { getPath } from '../utils/common';
 import { Events, FluxCapacitor } from 'groupby-api';
 
@@ -7,7 +7,7 @@ export const FILTER_UPDATED_EVENT = 'filter_updated';
 
 export class Filter {
 
-  filterConfig: FilterConfig;
+  filterConfig: FilterOpts;
   fluxClone: FluxCapacitor;
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
