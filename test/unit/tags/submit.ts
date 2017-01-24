@@ -28,7 +28,7 @@ suite('gb-submit', Submit, ({
 
       tag().init();
 
-      expect(addEventListener).to.have.been.calledWith('click', tag().submitQuery);
+      expect(addEventListener).to.be.calledWith('click', tag().submitQuery);
     });
   });
 
@@ -84,8 +84,8 @@ suite('gb-submit', Submit, ({
       tag().submitQuery()
         .then(() => {
           expect(tag().searchBox.value).to.eq(query);
-          expect(reset).to.have.been.called;
-          expect(search).to.have.been.called;
+          expect(reset).to.be.called;
+          expect(search).to.be.called;
           done();
         });
     });
@@ -111,8 +111,8 @@ suite('gb-submit', Submit, ({
 
       tag().submitQuery()
         .then(() => {
-          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
-          expect(update).to.have.been.calledWithMatch({
+          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.be.calledWithMatch({
             raw: {
               query,
               refinements: [],

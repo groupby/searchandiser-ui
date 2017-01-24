@@ -44,7 +44,7 @@ suite('gb-collections', Collections, ({
         }
       });
 
-      expect(onSelect).to.have.been.calledWith(collection);
+      expect(onSelect).to.be.calledWith(collection);
     });
   });
 
@@ -55,7 +55,7 @@ suite('gb-collections', Collections, ({
 
       tag().updateCounts(counts);
 
-      expect(update).to.have.been.calledWith({ counts });
+      expect(update).to.be.calledWith({ counts });
     });
   });
 
@@ -66,7 +66,7 @@ suite('gb-collections', Collections, ({
 
       tag().onSelect(collection);
 
-      expect(switchCollection).to.have.been.calledWith(collection);
+      expect(switchCollection).to.be.calledWith(collection);
     });
   });
 });

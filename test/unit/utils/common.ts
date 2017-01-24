@@ -175,7 +175,7 @@ describe('utils', () => {
 
       LOCATION.replace(url);
 
-      expect(replace).to.have.been.calledWith(url);
+      expect(replace).to.be.calledWith(url);
     });
 
     it('should call window.location.assign()', () => {
@@ -184,7 +184,7 @@ describe('utils', () => {
 
       LOCATION.assign(url);
 
-      expect(assign).to.have.been.calledWith(url);
+      expect(assign).to.be.calledWith(url);
     });
   });
 

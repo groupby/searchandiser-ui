@@ -26,7 +26,7 @@ suite('gb-list-item', ListItem, ({ tag, spy, expectAliases }) => {
 
       tag().init();
 
-      expect(add).to.have.been.calledWith('active');
+      expect(add).to.be.calledWith('active');
     });
 
     it('should not add active class if not $list.isActive()', () => {
@@ -42,7 +42,7 @@ suite('gb-list-item', ListItem, ({ tag, spy, expectAliases }) => {
 
       tag().init();
 
-      expect(unexpose).to.have.been.calledWith('list');
+      expect(unexpose).to.be.calledWith('list');
     });
   });
 });

@@ -21,7 +21,7 @@ suite('gb-navigation', Navigation, ({
 
       tag().init();
 
-      expect(mixin).to.have.been.calledWith({ toView: displayRefinement });
+      expect(mixin).to.be.calledWith({ toView: displayRefinement });
     });
 
     it('should listen for flux events', () => {
@@ -41,8 +41,8 @@ suite('gb-navigation', Navigation, ({
 
       tag().updateRefinements(results);
 
-      expect(replaceRefinements).to.have.been.calledWith(results);
-      expect(update).to.have.been.calledWith({ processed });
+      expect(replaceRefinements).to.be.calledWith(results);
+      expect(update).to.be.calledWith({ processed });
     });
   });
 
@@ -105,7 +105,7 @@ suite('gb-navigation', Navigation, ({
 
       tag().send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(refine).to.have.been.calledWith(refinement('price', 4, 6));
+      expect(refine).to.be.calledWith(refinement('price', 4, 6));
     });
   });
 
@@ -115,7 +115,7 @@ suite('gb-navigation', Navigation, ({
 
       tag().remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(unrefine).to.have.been.calledWith(refinement('price', 4, 6));
+      expect(unrefine).to.be.calledWith(refinement('price', 4, 6));
     });
   });
 });

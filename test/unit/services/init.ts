@@ -85,7 +85,7 @@ describe('service initializer', () => {
 
       startServices(services);
 
-      expect(init).to.have.been.calledThrice;
+      expect(init).to.be.calledThrice;
     });
 
     it('should skip failed services', () => {
@@ -93,7 +93,7 @@ describe('service initializer', () => {
 
       startServices({ a: null, b: undefined, c: { init } });
 
-      expect(init).to.have.been.calledOnce;
+      expect(init).to.be.calledOnce;
     });
   });
 });

@@ -36,7 +36,7 @@ suite('gb-snippet', Snippet, ({
 
       tag().loadFile()
         .then(() => {
-          expect(update).to.have.been.calledWith({ responseText });
+          expect(update).to.be.calledWith({ responseText });
           done();
         });
     });

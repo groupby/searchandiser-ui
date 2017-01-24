@@ -26,11 +26,11 @@ describe('gb-infinite-scroll renderer', () => {
     });
 
     it('should call calculateVisibleItems()', () => {
-      expect(calculateVisibleItems).to.have.been.called;
+      expect(calculateVisibleItems).to.be.called;
     });
 
     it('should call initAnchorScrollTop()', () => {
-      expect(initAnchorScrollTop).to.have.been.called;
+      expect(initAnchorScrollTop).to.be.called;
     });
 
     it('should set tombstoneHeight & tombstoneWidth', () => {
@@ -71,7 +71,7 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.initAnchorScrollTop(7);
 
       expect(renderer.tag.anchor).to.eq(newAnchor);
-      expect(getAnchoredItem).to.have.been.calledWith(anchor, 7);
+      expect(getAnchoredItem).to.be.calledWith(anchor, 7);
     });
 
     it('should calculate new anchorScrollTop', () => {
@@ -100,7 +100,7 @@ describe('gb-infinite-scroll renderer', () => {
 
       expect(renderer.firstItem).to.eq(6);
       expect(renderer.lastItem).to.eq(50);
-      expect(getAnchoredItem).to.have.been.calledWith(anchor, 20);
+      expect(getAnchoredItem).to.be.calledWith(anchor, 20);
     });
 
     it('should create a view boundaries when delta > 0', () => {
@@ -112,7 +112,7 @@ describe('gb-infinite-scroll renderer', () => {
 
       expect(renderer.firstItem).to.eq(2);
       expect(renderer.lastItem).to.eq(64);
-      expect(getAnchoredItem).to.have.been.calledWith(anchor, 39);
+      expect(getAnchoredItem).to.be.calledWith(anchor, 39);
     });
 
     it('first item cannot be lower than 0', () => {
@@ -132,7 +132,7 @@ describe('gb-infinite-scroll renderer', () => {
 
       renderer.calculateVisibleItems(-10);
 
-      expect(capRecords).to.have.been.calledWith(16);
+      expect(capRecords).to.be.calledWith(16);
     });
   });
 
@@ -320,7 +320,7 @@ describe('gb-infinite-scroll renderer', () => {
 
       renderer.findUnusedNodes();
 
-      expect(sortNode).to.have.been.calledThrice;
+      expect(sortNode).to.be.calledThrice;
     });
 
     it('should not call sortNode() for visible nodes', () => {
@@ -331,7 +331,7 @@ describe('gb-infinite-scroll renderer', () => {
 
       renderer.findUnusedNodes();
 
-      expect(sortNode).to.have.been.calledTwice;
+      expect(sortNode).to.be.calledTwice;
     });
 
     it('should clear non-visible nodes', () => {
@@ -356,8 +356,8 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.sortNode(node);
 
       expect(renderer.tombstones).to.eql([node]);
-      expect(contains).to.have.been.calledWith('tombstone');
-      expect(add).to.have.been.calledWith('invisible');
+      expect(contains).to.be.calledWith('tombstone');
+      expect(add).to.be.calledWith('invisible');
     });
 
     it('should add to unusedNodes', () => {
@@ -367,7 +367,7 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.sortNode(node);
 
       expect(renderer.unusedNodes).to.eql([node]);
-      expect(contains).to.have.been.calledWith('tombstone');
+      expect(contains).to.be.calledWith('tombstone');
     });
   });
 
@@ -386,7 +386,7 @@ describe('gb-infinite-scroll renderer', () => {
 
       renderer.generateNodes();
 
-      expect(addBlankItem).to.have.been.calledTwice;
+      expect(addBlankItem).to.be.calledTwice;
     });
 
     it('should animate tombstones for items > items + 1', () => {
@@ -413,7 +413,7 @@ describe('gb-infinite-scroll renderer', () => {
       expect(item2.node).to.not.eq(node2);
       expect(node1.style.zIndex).to.eq('1');
       expect(node2.style.zIndex).to.eq('1');
-      expect(contains).to.have.been.calledTwice;
+      expect(contains).to.be.calledTwice;
       expect(contains).to.always.have.been.calledWith('tombstone');
     });
 
@@ -430,7 +430,7 @@ describe('gb-infinite-scroll renderer', () => {
 
       const nodes = renderer.generateNodes();
 
-      expect(contains).to.have.been.calledWith('tombstone');
+      expect(contains).to.be.calledWith('tombstone');
       expect(nodes).to.eql({});
     });
 
@@ -451,12 +451,12 @@ describe('gb-infinite-scroll renderer', () => {
       items.slice(2).forEach((item) => expect(item.node).to.eql({ c: 'd', style: { position: 'absolute' } }));
       items.forEach((item) => {
         expect(item.top).to.eq(-1);
-        expect(appendChild).to.have.been.calledWith(item.node);
+        expect(appendChild).to.be.calledWith(item.node);
       });
-      expect(getTombstone).to.have.been.calledTwice;
-      expect(render).to.have.been.calledTwice;
-      expect(render).to.have.been.calledWith(1, unused1);
-      expect(render).to.have.been.calledWith(2, unused2);
+      expect(getTombstone).to.be.calledTwice;
+      expect(render).to.be.calledTwice;
+      expect(render).to.be.calledWith(1, unused1);
+      expect(render).to.be.calledWith(2, unused2);
     });
   });
 
@@ -470,7 +470,7 @@ describe('gb-infinite-scroll renderer', () => {
       expect(tombstone.style.opacity).to.eq(undefined);
       expect(tombstone.style.transform).to.eq('');
       expect(tombstone.style.transition).to.eq('');
-      expect(remove).to.have.been.calledWith('invisible');
+      expect(remove).to.be.calledWith('invisible');
     });
 
     it('should call createTombstone() if no tombstones exist', () => {
@@ -482,7 +482,7 @@ describe('gb-infinite-scroll renderer', () => {
       const tombstone = renderer.getTombstone();
 
       expect(tombstone).to.eq(newTombstone);
-      expect(createTombstone).to.have.been.calledWith(structure);
+      expect(createTombstone).to.be.calledWith(structure);
     });
   });
 
@@ -495,7 +495,7 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.render(record, node);
 
       expect(node._tag.opts.allMeta).to.eq(record.allMeta);
-      expect(update).to.have.been.called;
+      expect(update).to.be.called;
     });
 
     it('should update content on new node', () => {
@@ -513,9 +513,9 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.render(record, null);
 
       expect(opts.allMeta).to.eq(record.allMeta);
-      expect(remove).to.have.been.calledWith('tombstone');
-      expect(update).to.have.been.called;
-      expect(createTombstone).to.have.been.calledWith(structure);
+      expect(remove).to.be.calledWith('tombstone');
+      expect(update).to.be.called;
+      expect(createTombstone).to.be.calledWith(structure);
     });
   });
 
@@ -531,10 +531,10 @@ describe('gb-infinite-scroll renderer', () => {
       renderer.dropUnusedNodes();
 
       expect(renderer.unusedNodes).to.eql([]);
-      expect(removeChild).to.have.been.calledThrice;
-      expect(removeChild.firstCall).to.have.been.calledWith(node1);
-      expect(removeChild.secondCall).to.have.been.calledWith(node2);
-      expect(removeChild.thirdCall).to.have.been.calledWith(node3);
+      expect(removeChild).to.be.calledThrice;
+      expect(removeChild.firstCall).to.be.calledWith(node1);
+      expect(removeChild.secondCall).to.be.calledWith(node2);
+      expect(removeChild.thirdCall).to.be.calledWith(node3);
     });
   });
 
@@ -740,7 +740,7 @@ describe('gb-infinite-scroll renderer', () => {
       setTimeout(() => {
         expect(renderer.tombstones).to.have.length(2);
         expect(renderer.tombstones[1]).to.eq(animNode2);
-        expect(add).to.have.been.calledTwice;
+        expect(add).to.be.calledTwice;
         expect(add).to.always.have.been.calledWith('invisible');
         done();
       }, 300);
@@ -759,8 +759,8 @@ describe('gb-infinite-scroll renderer', () => {
         const elem = Renderer.createTombstone(structure);
 
         expect(elem).to.eq(node);
-        expect(createElement).to.have.been.calledWith('li');
-        expect(mount).to.have.been.calledWith(node, 'gb-product', {
+        expect(createElement).to.be.calledWith('li');
+        expect(mount).to.be.calledWith(node, 'gb-product', {
           structure,
           tombstone: true,
           infinite: true

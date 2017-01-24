@@ -46,7 +46,7 @@ suite('gb-details', Details, ({
       tag().setDefaults(<any>{ structure });
 
       expect(tag().transformer).to.eq(transformer);
-      expect(productTransformer).to.have.been.calledWith(structure);
+      expect(productTransformer).to.be.calledWith(structure);
     });
   });
 
@@ -61,8 +61,8 @@ suite('gb-details', Details, ({
 
       tag().requestDetails();
 
-      expect(getParam).to.have.been.calledWith(idParam);
-      expect(details).to.have.been.calledWith(query, idField);
+      expect(getParam).to.be.calledWith(idParam);
+      expect(details).to.be.calledWith(query, idField);
     });
 
     it('should not call flux.details()', () => {
@@ -82,8 +82,8 @@ suite('gb-details', Details, ({
 
       tag().updateRecord(<any>{ allMeta });
 
-      expect(updateRecord).to.have.been.calledWith(allMeta);
-      expect(update).to.have.been.called;
+      expect(updateRecord).to.be.calledWith(allMeta);
+      expect(update).to.be.called;
     });
   });
 });

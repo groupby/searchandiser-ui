@@ -35,7 +35,7 @@ suite('gb-sort', Sort, ({
 
       tag().onSelect(<any>nextSort);
 
-      expect(sort).to.have.been.calledWith(nextSort, pastSorts);
+      expect(sort).to.be.calledWith(nextSort, pastSorts);
     });
   });
 });

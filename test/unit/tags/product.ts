@@ -44,7 +44,7 @@ suite('gb-product', Product, ({
 
       expect(tag().structure).to.eql({ a: 'e', c: 'd' });
       expect(tag().transformer).to.eq(transformerInstance);
-      expect(productTransformer).to.have.been.calledWith(tag().structure);
+      expect(productTransformer).to.be.calledWith(tag().structure);
     });
   });
 
@@ -109,7 +109,7 @@ suite('gb-product', Product, ({
       const transformation = tag().transformRecord(ALL_META);
 
       expect(transformation).to.eq(obj);
-      expect(transform).to.have.been.calledWith(ALL_META);
+      expect(transform).to.be.calledWith(ALL_META);
     });
   });
 
@@ -154,7 +154,7 @@ suite('gb-product', Product, ({
 
       tag().switchVariant(<any>{ target: { dataset: { index } } });
 
-      expect(update).to.have.been.calledWith({ variantIndex: index });
+      expect(update).to.be.calledWith({ variantIndex: index });
     });
   });
 });

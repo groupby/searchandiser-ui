@@ -115,7 +115,7 @@ suite('filter', ({ spy, stub }) => {
 
       service.updateFluxClone();
 
-      expect(emit).to.have.been.calledWith(FILTER_UPDATED_EVENT, result);
+      expect(emit).to.be.calledWith(FILTER_UPDATED_EVENT, result);
     });
   });
 });

@@ -52,7 +52,7 @@ suite('gb-results', Results, ({
 
       tag().updateRecords(<any>{ records });
 
-      expect(update).to.have.been.calledWith({ records, collection });
+      expect(update).to.be.calledWith({ records, collection });
     });
   });
 

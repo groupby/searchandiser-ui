@@ -71,7 +71,7 @@ suite<Navigation>('gb-navigation', ({
 
         model.refinementTitles[1].click();
 
-        expect(toRefinement).to.have.been.calledWith(refinement);
+        expect(toRefinement).to.be.calledWith(refinement);
       });
 
       it('should display selected refinement', () => {
@@ -105,7 +105,7 @@ suite<Navigation>('gb-navigation', ({
 
         expect(model.refinementTitles[0].textContent).to.eq('Random');
         expect(model.selectedRefinement).to.be.ok;
-        expect(refine).to.have.been.called;
+        expect(refine).to.be.called;
       });
     });
 
@@ -125,7 +125,7 @@ suite<Navigation>('gb-navigation', ({
 
         (<HTMLAnchorElement>html().querySelector('.gb-ref__link')).click();
 
-        expect(toRefinement).to.have.been.calledWith(refinement);
+        expect(toRefinement).to.be.calledWith(refinement);
       });
 
       it('should remove unselected refinement from display', () => {
@@ -164,7 +164,7 @@ suite<Navigation>('gb-navigation', ({
         expect(model.selectedRefinement).to.not.be.ok;
         // tslint:disable-next-line:max-line-length
         expect(html().querySelectorAll('li[data-is="gb-available-refinement"] .gb-ref__title')[2].textContent).to.eq('Random');
-        expect(unrefine).to.have.been.called;
+        expect(unrefine).to.be.called;
       });
     });
 
@@ -207,7 +207,7 @@ suite<Navigation>('gb-navigation', ({
 
       expect((<any>tag.processed[0]).moreRefinements).to.be.false;
       expect(model.refinementTitles[2].textContent).to.eq('Third');
-      expect(refinements).to.have.been.calledWith('main');
+      expect(refinements).to.be.calledWith('main');
     });
   });
 });

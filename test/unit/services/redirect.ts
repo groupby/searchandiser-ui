@@ -24,7 +24,7 @@ suite('redirect', ({ stub }) => {
 
       service.init();
 
-      expect(redirect).to.have.been.calledWith(url);
+      expect(redirect).to.be.calledWith(url);
     });
   });
 
@@ -36,7 +36,7 @@ suite('redirect', ({ stub }) => {
 
       service.redirect(url);
 
-      expect(assign).to.have.been.calledWith(url);
+      expect(assign).to.be.calledWith(url);
     });
   });
 });

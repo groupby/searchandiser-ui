@@ -21,7 +21,7 @@ suite('gb-icon', Icon, ({
 
       tag().setDefaults();
 
-      expect(setImage).to.have.been.called;
+      expect(setImage).to.be.called;
     });
   });
 
@@ -34,7 +34,7 @@ suite('gb-icon', Icon, ({
 
       tag().setImage();
 
-      expect(isImage).to.have.been.calledWith(dataUri);
+      expect(isImage).to.be.calledWith(dataUri);
       expect(tag().url).to.eq(dataUri);
       expect(tag()).to.not.have.property('classes');
     });

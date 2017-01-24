@@ -61,8 +61,8 @@ suite('gb-page-size', PageSize, ({
 
       tag().onSelect(40)
         .then(() => {
-          expect(search).to.have.been.called;
-          expect(resize).to.have.been.called;
+          expect(search).to.be.called;
+          expect(resize).to.be.called;
           done();
         });
     });

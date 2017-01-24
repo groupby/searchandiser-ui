@@ -16,7 +16,7 @@ suite('gb-select', Select, ({
 
       tag().init();
 
-      expect(transform).to.have.been.calledWith('selectable', ['linkable', 'listable'], {
+      expect(transform).to.be.calledWith('selectable', ['linkable', 'listable'], {
         defaults: DEFAULTS,
         types: TYPES
       });
@@ -159,7 +159,7 @@ suite('gb-select', Select, ({
       tag().unfocus();
 
       expect(tag().focused).to.be.false;
-      expect(blur).to.have.been.called;
+      expect(blur).to.be.called;
     });
   });
 
@@ -182,7 +182,7 @@ suite('gb-select', Select, ({
 
       tag().selectItem('', JSON.stringify(opts));
 
-      expect(onSelect).to.have.been.calledWith(opts);
+      expect(onSelect).to.be.calledWith(opts);
     });
 
     it('should return value', () => {
@@ -193,7 +193,7 @@ suite('gb-select', Select, ({
 
       tag().selectItem('', opts);
 
-      expect(onSelect).to.have.been.calledWith(opts);
+      expect(onSelect).to.be.calledWith(opts);
     });
 
     it('should return \'*\'', () => {
@@ -203,7 +203,7 @@ suite('gb-select', Select, ({
 
       tag().selectItem('', undefined);
 
-      expect(onSelect).to.have.been.calledWith('*');
+      expect(onSelect).to.be.calledWith('*');
     });
   });
 
@@ -218,8 +218,8 @@ suite('gb-select', Select, ({
       tag().selectNative(<any>{ target: { selectedOptions: [item] } });
 
       expect(options[0].disabled).to.be.false;
-      expect(update).to.have.been.calledWith({ selected: item.value });
-      expect(selectItem).to.have.been.calledWith(item.text, item.value);
+      expect(update).to.be.calledWith({ selected: item.value });
+      expect(selectItem).to.be.calledWith(item.text, item.value);
     });
 
     it('should set first item enabled', () => {
@@ -232,9 +232,9 @@ suite('gb-select', Select, ({
       tag().selectNative(<any>{ target: { selectedOptions: [item] } });
 
       expect(options[0].disabled).to.be.true;
-      expect(nativeSelect).to.have.been.called;
-      expect(update).to.have.been.called;
-      expect(selectItem).to.have.been.called;
+      expect(nativeSelect).to.be.called;
+      expect(update).to.be.called;
+      expect(selectItem).to.be.called;
     });
   });
 
@@ -247,8 +247,8 @@ suite('gb-select', Select, ({
 
       tag().selectCustom(item);
 
-      expect(blur).to.have.been.called;
-      expect(selectItem).to.have.been.calledWith(item.label, item.value);
+      expect(blur).to.be.called;
+      expect(selectItem).to.be.calledWith(item.label, item.value);
     });
   });
 
@@ -258,7 +258,7 @@ suite('gb-select', Select, ({
 
       tag().clearSelection();
 
-      expect(selectItem).to.have.been.calledWith(undefined, '*');
+      expect(selectItem).to.be.calledWith(undefined, '*');
     });
   });
 });

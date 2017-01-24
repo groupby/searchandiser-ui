@@ -49,7 +49,7 @@ suite('gb-toggle', Toggle, ({
 
       tag().onClick();
 
-      expect(onToggle).to.have.been.calledWith(true);
+      expect(onToggle).to.be.calledWith(true);
     });
   });
 
@@ -122,8 +122,8 @@ suite('gb-toggle', Toggle, ({
            transform: translateX(30px);
          }
       `);
-      expect(createElement).to.have.been.calledWith('style');
-      expect(appendChild).to.have.been.calledWith(node);
+      expect(createElement).to.be.calledWith('style');
+      expect(appendChild).to.be.calledWith(node);
     });
   });
 });

@@ -27,7 +27,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
       tag().init();
 
-      expect(addEventListener).to.have.been.calledWith('resize', tag().onResize);
+      expect(addEventListener).to.be.calledWith('resize', tag().onResize);
     });
 
     it('should call onMount() on mount', () => {
@@ -89,7 +89,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
       tag().reset();
 
-      expect(removeChild).to.have.been.calledThrice;
+      expect(removeChild).to.be.calledThrice;
       expect(removeChild).to.have.always.been.calledWith(lastChild);
     });
   });
@@ -102,8 +102,8 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
       tag().onMount();
 
-      expect(addEventListener).to.have.been.calledWith('scroll', tag().onScroll);
-      expect(onResize).to.have.been.called;
+      expect(addEventListener).to.be.calledWith('scroll', tag().onScroll);
+      expect(onResize).to.be.called;
     });
   });
 
@@ -131,9 +131,9 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
       tag().onResize();
 
-      expect(appendChild).to.have.been.calledWith(node);
-      expect(unmount).to.have.been.called;
-      expect(createTombstone).to.have.been.calledWith(structure);
+      expect(appendChild).to.be.calledWith(node);
+      expect(unmount).to.be.called;
+      expect(createTombstone).to.be.calledWith(structure);
     });
 
     it('should set the height & width of a tombstone', () => {
@@ -210,8 +210,8 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
       tag().attachRenderer();
 
-      expect(rendererStub).to.have.been.calledWith(tag());
-      expect(attachToView).to.have.been.called;
+      expect(rendererStub).to.be.calledWith(tag());
+      expect(attachToView).to.be.called;
     });
   });
 
@@ -234,7 +234,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       const fetch = stub(tag(), 'fetch').resolves();
       tag().updateItems = () => {
         expect(tag().updating).to.be.true;
-        expect(fetch).to.have.been.called;
+        expect(fetch).to.be.called;
         done();
       };
 
@@ -260,7 +260,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       tag().updateItems = (newRecords, currRenderer) => {
         expect(newRecords).to.eq(records);
         expect(currRenderer).to.eq(renderer);
-        expect(capRecords).to.have.been.calledWith(1);
+        expect(capRecords).to.be.calledWith(1);
         done();
       };
 
@@ -278,7 +278,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
 
       tag().fetch(50);
 
-      expect(search).to.have.been.calledWithMatch({ pageSize: 50, skip: 28 });
+      expect(search).to.be.calledWithMatch({ pageSize: 50, skip: 28 });
     });
 
     it('should get the default minimum number of records', () => {
@@ -326,7 +326,7 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
       expect(tag().items[1]).to.eql({});
       expect(tag().items[5].data).to.eql({});
       expect(addItem).to.have.callCount(5);
-      expect(attachToView).to.have.been.called;
+      expect(attachToView).to.be.called;
     });
   });
 

@@ -164,8 +164,8 @@ describe('tag utils', () => {
       const config = configure(tag);
 
       expect(config).to.eql(defaults);
-      expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
-      expect(coerceAttributes).to.have.been.calledWith(sinon.match.any, types);
+      expect(collectServiceConfigs).to.be.calledWith(tag, services);
+      expect(coerceAttributes).to.be.calledWith(sinon.match.any, types);
     });
 
     it('should call setDefaults() if it exists', () => {
@@ -187,7 +187,7 @@ describe('tag utils', () => {
 
       buildConfiguration(tag, { services });
 
-      expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
+      expect(collectServiceConfigs).to.be.calledWith(tag, services);
     });
 
     it('should call collectServiceConfigs() default to empty services list', () => {
@@ -197,7 +197,7 @@ describe('tag utils', () => {
 
       buildConfiguration(tag, {});
 
-      expect(collectServiceConfigs).to.have.been.calledWith(tag, []);
+      expect(collectServiceConfigs).to.be.calledWith(tag, []);
     });
 
     it('should call coerceAttributes() with opts and types', () => {
@@ -207,7 +207,7 @@ describe('tag utils', () => {
 
       buildConfiguration(tag, { types });
 
-      expect(coerceAttributes).to.have.been.calledWith(tag.opts, types);
+      expect(coerceAttributes).to.be.calledWith(tag.opts, types);
     });
 
     it('should call coerceAttributes() with opts and empty types', () => {
@@ -216,7 +216,7 @@ describe('tag utils', () => {
 
       buildConfiguration(tag, {});
 
-      expect(coerceAttributes).to.have.been.calledWith(tag.opts, {});
+      expect(coerceAttributes).to.be.calledWith(tag.opts, {});
     });
 
     it('should find global tag configuration', () => {
@@ -280,8 +280,8 @@ describe('tag utils', () => {
 
       updateDependency(tag, { alias, realias, transform });
 
-      expect(transform).to.have.been.calledWith(untransformed);
-      expect(expose).to.have.been.calledWith(realias, transformed);
+      expect(transform).to.be.calledWith(untransformed);
+      expect(expose).to.be.calledWith(realias, transformed);
     });
 
     it('should call coerceAttributes()', () => {
@@ -297,7 +297,7 @@ describe('tag utils', () => {
 
       updateDependency(tag, { alias: 'a', realias: 'a', transform: () => null }, { types });
 
-      expect(coerceAttributes).to.have.been.calledWith(opts, types);
+      expect(coerceAttributes).to.be.calledWith(opts, types);
     });
 
     it('should use defaults if provided', () => {
@@ -309,7 +309,7 @@ describe('tag utils', () => {
 
       updateDependency(tag, { alias, realias: alias, transform: (obj) => obj }, { defaults });
 
-      expect(expose).to.have.been.calledWith(alias, defaults);
+      expect(expose).to.be.calledWith(alias, defaults);
     });
 
     it('should combine defaults, dependency and attributes', () => {
@@ -330,7 +330,7 @@ describe('tag utils', () => {
         transform: (obj) => obj
       }, { defaults: { a: 'b', c: 'd', e: 'f' } });
 
-      expect(expose).to.have.been.calledWith(alias, { a: 'b', c: 'd1', e: 'f2' });
+      expect(expose).to.be.calledWith(alias, { a: 'b', c: 'd1', e: 'f2' });
     });
   });
 

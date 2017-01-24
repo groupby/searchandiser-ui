@@ -49,7 +49,7 @@ suite('gb-filter', Filter, ({
 
       tag().updateValues(results);
 
-      expect(update).to.have.been.calledWith({ items });
+      expect(update).to.be.calledWith({ items });
     });
   });
 
@@ -59,7 +59,7 @@ suite('gb-filter', Filter, ({
 
       tag().onSelect('*');
 
-      expect(reset).to.have.been.called;
+      expect(reset).to.be.called;
     });
 
     it('should call refine on navigation selected', () => {
@@ -70,7 +70,7 @@ suite('gb-filter', Filter, ({
 
       tag().onSelect(selection);
 
-      expect(refine).to.have.been.calledWith(Object.assign(selection, { navigationName }));
+      expect(refine).to.be.calledWith(Object.assign(selection, { navigationName }));
     });
 
     it('should call unrefine to clear current selection', () => {
@@ -79,7 +79,7 @@ suite('gb-filter', Filter, ({
 
       tag().onSelect('*');
 
-      expect(unrefine).to.have.been.calledWith(selection, { skipSearch: true });
+      expect(unrefine).to.be.calledWith(selection, { skipSearch: true });
     });
   });
 });

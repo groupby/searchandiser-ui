@@ -26,7 +26,7 @@ suite('gb-list', List, ({
 
       expect(tag().isActive(1)).to.be.true;
 
-      expect(activation).to.have.been.calledWith(1);
+      expect(activation).to.be.calledWith(1);
     });
 
     it('should default to falsy', () => {

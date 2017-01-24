@@ -47,7 +47,7 @@ suite('gb-paging', Paging, ({
 
       tag().pageInfo();
 
-      expect(updatePageInfo).to.have.been.calledWith(pageNumbers, 9, 16);
+      expect(updatePageInfo).to.be.calledWith(pageNumbers, 9, 16);
     });
   });
 
@@ -74,7 +74,7 @@ suite('gb-paging', Paging, ({
 
       tag().updatePageInfo([2, 3, 4], 1, 6);
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         lowOverflow: true,
         highOverflow: true
       });
@@ -85,7 +85,7 @@ suite('gb-paging', Paging, ({
 
       tag().updatePageInfo([1, 2, 3, 4], 1, 4);
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         lowOverflow: false,
         highOverflow: false
       });
@@ -96,7 +96,7 @@ suite('gb-paging', Paging, ({
 
       tag().updatePageInfo([1], 1, 1);
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         backDisabled: true,
         forwardDisabled: true
       });
@@ -107,7 +107,7 @@ suite('gb-paging', Paging, ({
 
       tag().updatePageInfo([1, 2, 3], 2, 3);
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         backDisabled: false,
         forwardDisabled: false
       });
@@ -120,7 +120,7 @@ suite('gb-paging', Paging, ({
 
       tag().updateCurrentPage({ pageNumber: 10 });
 
-      expect(update).to.have.been.calledWithMatch({ currentPage: 10 });
+      expect(update).to.be.calledWithMatch({ currentPage: 10 });
     });
   });
 
@@ -129,7 +129,7 @@ suite('gb-paging', Paging, ({
       const reset = spy(() => Promise.resolve());
       flux().page = <any>{ reset };
       tag().emitEvent = () => {
-        expect(reset).to.have.been.called;
+        expect(reset).to.be.called;
         done();
       };
 
@@ -149,7 +149,7 @@ suite('gb-paging', Paging, ({
       const prev = spy(() => Promise.resolve());
       flux().page = <any>{ prev };
       tag().emitEvent = () => {
-        expect(prev).to.have.been.called;
+        expect(prev).to.be.called;
         done();
       };
 
@@ -169,7 +169,7 @@ suite('gb-paging', Paging, ({
       const next = spy(() => Promise.resolve());
       flux().page = <any>{ next };
       tag().emitEvent = () => {
-        expect(next).to.have.been.called;
+        expect(next).to.be.called;
         done();
       };
 
@@ -189,7 +189,7 @@ suite('gb-paging', Paging, ({
       const last = spy(() => Promise.resolve());
       flux().page = <any>{ last };
       tag().emitEvent = () => {
-        expect(last).to.have.been.called;
+        expect(last).to.be.called;
         done();
       };
 
@@ -209,7 +209,7 @@ suite('gb-paging', Paging, ({
       const switchPage = spy(() => Promise.resolve());
       flux().page = <any>{ switchPage };
       tag().emitEvent = () => {
-        expect(switchPage).to.have.been.calledWith(8);
+        expect(switchPage).to.be.calledWith(8);
         done();
       };
 

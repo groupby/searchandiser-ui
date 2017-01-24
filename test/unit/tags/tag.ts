@@ -44,7 +44,7 @@ describe('base tag logic', () => {
 
         tag.init();
 
-        expect(setTagName).to.have.been.calledWith(tag);
+        expect(setTagName).to.be.calledWith(tag);
       });
 
       it('should call inheritAliases()', () => {
@@ -52,7 +52,7 @@ describe('base tag logic', () => {
 
         tag.init();
 
-        expect(inheritAliases).to.have.been.calledWith(tag);
+        expect(inheritAliases).to.be.calledWith(tag);
       });
 
       it('should listen for before-mount', () => {
@@ -62,7 +62,7 @@ describe('base tag logic', () => {
           'before-mount': {
             test: (cb) => {
               cb();
-              expect(configure).to.have.been.calledWith(tag);
+              expect(configure).to.be.calledWith(tag);
             }
           }
         }, tag);
@@ -173,7 +173,7 @@ describe('base tag logic', () => {
 
         tag._mixin(Mixin, Mixin, Mixin);
 
-        expect(mixin).to.have.been.calledWith(proto, proto, proto);
+        expect(mixin).to.be.calledWith(proto, proto, proto);
       });
 
       it('should call addMeta() for all found tag metadata', () => {
@@ -182,7 +182,7 @@ describe('base tag logic', () => {
 
         tag._mixin(Mixin);
 
-        expect(addMeta).to.have.been.calledWith(tag, METADATA, 'defaults', 'types', 'services');
+        expect(addMeta).to.be.calledWith(tag, METADATA, 'defaults', 'types', 'services');
       });
 
       it('should add final mixed-in metadata', () => {
@@ -195,7 +195,7 @@ describe('base tag logic', () => {
 
         tag._mixin(MetaMixin, NoMetaMixin, Mixin);
 
-        expect(addMeta).to.have.been.calledWith(tag, METADATA, 'defaults', 'types', 'services');
+        expect(addMeta).to.be.calledWith(tag, METADATA, 'defaults', 'types', 'services');
       });
     });
   });
