@@ -82,13 +82,15 @@ export function updateDependency(tag: FluxTag<any>, dependency: Dependency, opti
   }
 }
 
-export function addMeta(tag: FluxTag<any>, meta: any, property: string) {
+export function addMeta(tag: FluxTag<any>, meta: any, ...properties: string[]) {
   if (!tag[META]) {
     tag[META] = {};
   }
-  if (meta[property]) {
-    tag[META][property] = meta[property];
-  }
+  properties.forEach((property) => {
+    if (meta[property]) {
+      tag[META][property] = meta[property];
+    }
+  });
 }
 
 export function addDollarSigns(obj: any) {

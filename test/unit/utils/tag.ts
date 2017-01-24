@@ -1,7 +1,8 @@
-import { FluxTag } from '../../../src/tags/tag';
+import { FluxTag, META } from '../../../src/tags/tag';
 import * as utils from '../../../src/utils/common';
 import {
   addDollarSigns,
+  addMeta,
   camelizeTagName,
   configure,
   inheritAliases,
@@ -329,6 +330,30 @@ describe('tag utils', () => {
       }, { defaults: { a: 'b', c: 'd', e: 'f' } });
 
       expect(expose).to.have.been.calledWith(alias, { a: 'b', c: 'd1', e: 'f2' });
+    });
+  });
+
+  describe.only('addMeta()', () => {
+    it('should create a META property if it does not exist', () => {
+      const tag: any = {};
+      addMeta(tag, {});
+
+      expect(tag[META]).to.eql({});
+    });
+
+    it('should not set META property if already exists', () => {
+      const meta = { a: 'b' };
+      const tag: any = { [META]: meta };
+      addMeta(tag, {});
+
+      expect(tag[META]).to.eq(meta);
+    });
+
+    it('should add every existing property parameter', () => {
+      const tag: any = {};
+      addMeta(tag, {});
+
+      expect(tag[META]).to.eql({});
     });
   });
 

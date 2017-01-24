@@ -165,6 +165,7 @@ describe('base tag logic', () => {
           }
         }
         const mixin = tag.mixin = sinon.spy();
+        sandbox.stub(utils, 'addMeta', () => expect.fail());
 
         tag._mixin(Mixin, Mixin, Mixin);
 
@@ -172,23 +173,21 @@ describe('base tag logic', () => {
       });
 
       it('should call addMeta() for all found tag metadata', () => {
-        const proto = { a: 'b' };
-        const defaults = { c: 'd' };
-        const types = { e: 'f' };
-        const services = ['g', 'h'];
+        const meta = { a: 'b' };
         class Mixin {
-          static meta: any = { defaults, types, services };
+          static meta: any = meta;
 
           constructor() {
-            return { __proto__: proto };
+            return { __proto__: {} };
           }
         }
         const addMeta = sandbox.stub(utils, 'addMeta');
-        // tag.mixin = () => null;
+        tag.mixin = () => null;
 
-        tag._mixin(Mixin, Mixin, Mixin);
+        tag._mixin(Mixin);
 
         expect(addMeta).to.have.been.called;
+        expect(addMeta).to.have.been.calledWith(tag, meta, 'defaults', 'types', 'services');
       });
     });
   });
