@@ -170,6 +170,26 @@ describe('base tag logic', () => {
 
         expect(mixin).to.have.been.calledWith(proto, proto, proto);
       });
+
+      it('should call addMeta() for all found tag metadata', () => {
+        const proto = { a: 'b' };
+        const defaults = { c: 'd' };
+        const types = { e: 'f' };
+        const services = ['g', 'h'];
+        class Mixin {
+          static meta: any = { defaults, types, services };
+
+          constructor() {
+            return { __proto__: proto };
+          }
+        }
+        const addMeta = sandbox.stub(utils, 'addMeta');
+        // tag.mixin = () => null;
+
+        tag._mixin(Mixin, Mixin, Mixin);
+
+        expect(addMeta).to.have.been.called;
+      });
     });
   });
 });

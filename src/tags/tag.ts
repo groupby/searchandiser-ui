@@ -1,6 +1,6 @@
 import { SearchandiserConfig } from '../searchandiser';
 import { Services } from '../services/init';
-import { configure, inheritAliases, setTagName, updateDependency } from '../utils/tag';
+import { addMeta, configure, inheritAliases, setTagName, updateDependency } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
@@ -29,7 +29,6 @@ export class FluxTag<T> {
   _style: string;
 
   init() {
-    this[META] = {};
     this._state = {};
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
@@ -62,19 +61,13 @@ export class FluxTag<T> {
 
   _mixin(...mixins: any[]) {
     this.mixin(...mixins.map((mixin) => {
-      // if (mixin.meta) {
-      //   addMeta(this, mixin.meta, 'defaults');
-      //   addMeta(this, mixin.meta, 'types');
-      //   addMeta(this, mixin.meta, 'services');
-      // }
+      if (mixin.meta) {
+        addMeta(this, mixin.meta, 'defaults');
+        addMeta(this, mixin.meta, 'types');
+        addMeta(this, mixin.meta, 'services');
+      }
       return new mixin().__proto__;
     }));
-  }
-}
-
-export function addMeta(tag: FluxTag<any>, meta: any, property: string) {
-  if (meta[property]) {
-    tag[META][property] = meta[property];
   }
 }
 
@@ -89,6 +82,11 @@ export class SaytTag<T> {
   }
 }
 
+export interface TagMeta {
+  defaults?: any;
+  types?: TypeMap;
+  services?: string[];
+}
 export interface TypeMap { [key: string]: string; }
 export interface ConfigureOptions {
   defaults?: any;

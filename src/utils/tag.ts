@@ -61,10 +61,9 @@ export function configure(tag: FluxTag<any>) {
   };
   if (typeof tag.onConfigure === 'function') {
     tag.onConfigure(doConfigure);
+  } else if (tag[META]) {
+    doConfigure(tag[META]);
   }
-  // else if (tag[META]) {
-  //   doConfigure(tag[META]);
-  // }
 }
 
 export function updateDependency(tag: FluxTag<any>, dependency: Dependency, options: DependencyOptions = {}) {
@@ -80,6 +79,15 @@ export function updateDependency(tag: FluxTag<any>, dependency: Dependency, opti
   tag.expose(dependency.realias, transformed);
   if (dependency.alias !== dependency.realias) {
     tag.expose(dependency.alias, transformed);
+  }
+}
+
+export function addMeta(tag: FluxTag<any>, meta: any, property: string) {
+  if (!tag[META]) {
+    tag[META] = {};
+  }
+  if (meta[property]) {
+    tag[META][property] = meta[property];
   }
 }
 

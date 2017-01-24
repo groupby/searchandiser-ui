@@ -1,5 +1,5 @@
 import { displayRefinement as toView, toRefinement } from '../../utils/common';
-import { FluxTag, TagConfigure } from '../tag';
+import { FluxTag, TagMeta } from '../tag';
 import { Events, Results } from 'groupby-api';
 
 export interface BreadcrumbsOpts {
@@ -26,7 +26,7 @@ export const TYPES = {
 
 export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
 
-  static meta: any = {
+  static meta: TagMeta = {
     defaults: DEFAULTS,
     types: TYPES
   };
