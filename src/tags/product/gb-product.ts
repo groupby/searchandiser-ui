@@ -32,7 +32,7 @@ export class Product extends FluxTag<any> {
 
   init() {
     this.expose('product');
-    this.depend('productable', { defaults: DEFAULTS, types: TYPES }, this.transformProductable);
+    this.inherits('productable', { defaults: DEFAULTS, types: TYPES }, this.transformProductable);
 
     this.structure = Object.assign({}, this.config.structure, (this.$productable || <any>{}).structure);
     this.transformer = new ProductTransformer(this.structure);

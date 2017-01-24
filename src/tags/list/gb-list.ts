@@ -26,7 +26,7 @@ export class List extends FluxTag<any> {
 
   init() {
     this.expose('list');
-    this.depend('listable', { defaults: DEFAULTS, types: TYPES });
+    this.inherits('listable', { defaults: DEFAULTS, types: TYPES });
   }
 
   isActive(index: number) {

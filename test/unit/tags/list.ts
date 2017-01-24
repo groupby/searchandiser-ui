@@ -10,12 +10,12 @@ suite('gb-list', List, ({
   describe('init()', () => {
     itShouldAlias('list');
 
-    it('should call depend()', () => {
-      const depend = tag().depend = sinon.spy();
+    it('should call inherits()', () => {
+      const inherits = tag().inherits = sinon.spy();
 
       tag().init();
 
-      expect(depend).to.be.calledWith('listable', { defaults: DEFAULTS, types: TYPES });
+      expect(inherits).to.be.calledWith('listable', { defaults: DEFAULTS, types: TYPES });
     });
   });
 

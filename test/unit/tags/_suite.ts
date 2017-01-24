@@ -73,7 +73,7 @@ export function fluxTag<T extends FluxTag<any>>(tagName: string, tag: T, obj: an
     config: {},
     _tagName: tagName,
     expose: () => null,
-    depend: () => null,
+    inherits: () => null,
     transform: () => null,
     unexpose: () => null,
     mixin: () => null,

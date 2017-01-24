@@ -8,12 +8,12 @@ suite('gb-toggle', Toggle, ({
 }) => {
 
   describe('init()', () => {
-    it('should depend on toggleable', () => {
-      const depend = tag().depend = spy();
+    it('should inherits on toggleable', () => {
+      const inherits = tag().inherits = spy();
 
       tag().init();
 
-      expect(depend).to.be.calledWith('toggleable', { defaults: DEFAULTS, types: TYPES });
+      expect(inherits).to.be.calledWith('toggleable', { defaults: DEFAULTS, types: TYPES });
     });
 
     it('should listen for events', () => {

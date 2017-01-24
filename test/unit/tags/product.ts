@@ -23,12 +23,12 @@ suite('gb-product', Product, ({
 
     itShouldAlias('product');
 
-    it('should depend on $productable', () => {
-      const depend = tag().depend = spy();
+    it('should inherits on $productable', () => {
+      const inherits = tag().inherits = spy();
 
       tag().init();
 
-      expect(depend).to.be.calledWith('productable', { defaults: DEFAULTS, types: TYPES }, tag().transformProductable);
+      expect(inherits).to.be.calledWith('productable', { defaults: DEFAULTS, types: TYPES }, tag().transformProductable);
     });
 
     it('should set structure and initialize ProductTransformer', () => {

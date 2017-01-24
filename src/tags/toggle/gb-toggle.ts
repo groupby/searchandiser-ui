@@ -29,7 +29,7 @@ export class Toggle extends FluxTag<any> {
   };
 
   init() {
-    this.depend('toggleable', { defaults: DEFAULTS, types: TYPES });
+    this.inherits('toggleable', { defaults: DEFAULTS, types: TYPES });
 
     this.on('before-mount', this.addStyleTag);
     this.on('mount', this.onMount);

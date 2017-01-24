@@ -121,13 +121,13 @@ describe('base tag logic', () => {
       });
     });
 
-    describe('depend()', () => {
+    describe('inherits()', () => {
       it('should call transform()', () => {
         const alias = 'alias';
         const options = { a: 'b' };
         const transform = tag.transform = sinon.spy();
 
-        tag.depend(alias, options, transform);
+        tag.inherits(alias, options, transform);
 
         expect(transform).to.be.calledWith(alias, alias, options, transform);
       });
