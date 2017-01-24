@@ -1,4 +1,5 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
+import { meta } from '../../utils/decorators';
 import { Selectable, SelectOption, SelectTag } from '../select/gb-select';
 import { TagMeta } from '../tag';
 
@@ -20,9 +21,8 @@ export const META: TagMeta = {
   services: ['collections']
 };
 
+@meta(META)
 export class Collections extends SelectTag<CollectionsOpts> {
-
-  static meta: TagMeta = META;
 
   dropdown: boolean;
   showCounts: boolean;

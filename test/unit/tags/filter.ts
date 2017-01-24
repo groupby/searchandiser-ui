@@ -6,14 +6,10 @@ import { expect } from 'chai';
 suite('gb-filter', Filter, ({
   flux, tag, spy, stub,
   expectSubscriptions,
+  itShouldHaveMeta,
   itShouldAlias
 }) => {
-
-  describe('static', () => {
-    it('should have meta', () => {
-      expect(Filter.meta).to.eq(META);
-    });
-  });
+  itShouldHaveMeta(Filter, META);
 
   describe('init()', () => {
     itShouldAlias('selectable');

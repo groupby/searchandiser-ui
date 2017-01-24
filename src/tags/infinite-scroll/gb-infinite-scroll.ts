@@ -1,4 +1,5 @@
 import { WINDOW } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
 import { Renderer } from './renderer';
 import { Events, Record } from 'groupby-api';
@@ -17,9 +18,8 @@ export const META: TagMeta = {
   }
 };
 
+@meta(META)
 export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
-
-  static meta: TagMeta = META;
 
   refs: {
     scroller: HTMLUListElement;

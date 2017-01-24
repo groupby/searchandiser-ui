@@ -1,4 +1,5 @@
 import { displayRefinement as toView, toRefinement } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
 import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Results } from 'groupby-api';
@@ -25,9 +26,8 @@ export const META: TagMeta = {
   }
 };
 
+@meta(META)
 export class Navigation extends FluxTag<NavigationOpts> {
-
-  static meta: TagMeta = META;
 
   badge: boolean;
   showSelected: boolean;

@@ -7,14 +7,10 @@ import { Events, Query } from 'groupby-api';
 
 suite('gb-infinite-scroll', InfiniteScroll, ({
   flux, tag, spy, stub,
+  itShouldHaveMeta,
   expectSubscriptions
 }) => {
-
-  describe('static', () => {
-    it('should have meta', () => {
-      expect(InfiniteScroll.meta).to.eq(META);
-    });
-  });
+  itShouldHaveMeta(InfiniteScroll, META);
 
   describe('init()', () => {
     const SCROLLER: any = { addEventListener: () => null };

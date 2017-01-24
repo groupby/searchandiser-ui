@@ -1,4 +1,5 @@
 import { getParam } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { ProductTransformer } from '../../utils/product-transformer';
 import { Product } from '../product/gb-product';
 import { FluxTag, TagMeta } from '../tag';
@@ -13,9 +14,8 @@ export const META: TagMeta = {
   defaults: { idParam: 'id' }
 };
 
+@meta(META)
 export class Details extends FluxTag<DetailsOpts> {
-
-  static meta: TagMeta = META;
 
   tags: { 'gb-product': Product };
 

@@ -6,10 +6,7 @@ suite('gb-page-size', PageSize, ({
   tag, flux, spy, stub,
   itShouldAlias, itShouldHaveMeta
 }) => {
-
-  describe('static', () => {
-    itShouldHaveMeta(PageSize, META);
-  });
+  itShouldHaveMeta(PageSize, META);
 
   describe('init()', () => {
     itShouldAlias('selectable');

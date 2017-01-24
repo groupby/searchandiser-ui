@@ -1,4 +1,5 @@
 import { displayRefinement as toView, toRefinement } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
 import { Events, Results } from 'groupby-api';
 
@@ -26,9 +27,8 @@ export const META: TagMeta = {
   }
 };
 
+@meta(META)
 export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
-
-  static meta: TagMeta = META;
 
   items: any[];
   hideQuery: boolean;

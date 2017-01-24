@@ -7,14 +7,10 @@ import { Events } from 'groupby-api';
 suite('gb-breadcrumbs', Breadcrumbs, ({
   flux, tag, spy, stub,
   expectSubscriptions,
+  itShouldHaveMeta,
   itShouldAlias
 }) => {
-
-  describe('static', () => {
-    it('should have meta', () => {
-      expect(Breadcrumbs.meta).to.eq(META);
-    });
-  });
+  itShouldHaveMeta(Breadcrumbs, META);
 
   describe('init()', () => {
     itShouldAlias(['breadcrumbs', 'listable']);

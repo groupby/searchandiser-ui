@@ -1,4 +1,4 @@
-import { FluxTag } from '../../../src/tags/tag';
+import { FluxTag, META } from '../../../src/tags/tag';
 import * as utils from '../../../src/utils/tag';
 import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
@@ -157,10 +157,9 @@ describe('base tag logic', () => {
     });
 
     describe('_mixin()', () => {
-      const META = { a: 'b' };
-      class Mixin {
-        static meta: any = META;
-      }
+      const METADATA = { a: 'b' };
+      class Mixin { }
+      before(() => Mixin[META] = METADATA);
 
       it('should call mixin() with the __proto__ of every new instance', () => {
         const proto = { a: 'b' };
@@ -183,7 +182,7 @@ describe('base tag logic', () => {
 
         tag._mixin(Mixin);
 
-        expect(addMeta).to.have.been.calledWith(tag, META, 'defaults', 'types', 'services');
+        expect(addMeta).to.have.been.calledWith(tag, METADATA, 'defaults', 'types', 'services');
       });
 
       it('should add final mixed-in metadata', () => {
@@ -196,7 +195,7 @@ describe('base tag logic', () => {
 
         tag._mixin(MetaMixin, NoMetaMixin, Mixin);
 
-        expect(addMeta).to.have.been.calledWith(tag, META, 'defaults', 'types', 'services');
+        expect(addMeta).to.have.been.calledWith(tag, METADATA, 'defaults', 'types', 'services');
       });
     });
   });

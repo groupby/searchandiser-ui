@@ -1,5 +1,6 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
 import { toRefinement } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { Selectable, SelectTag } from '../select/gb-select';
 import { TagMeta } from '../tag';
 import { Results } from 'groupby-api';
@@ -15,10 +16,8 @@ export const META: TagMeta = {
   }
 };
 
+@meta(META)
 export class Filter extends SelectTag<FilterOpts> {
-
-  static meta: any = META;
-
   field: string;
 
   selected: any;

@@ -7,14 +7,10 @@ import { Events } from 'groupby-api';
 
 suite('gb-details', Details, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldHaveMeta
 }) => {
-
-  describe('static', () => {
-    it('should have meta', () => {
-      expect(Details.meta).to.eq(META);
-    });
-  });
+  itShouldHaveMeta(Details, META);
 
   describe('init()', () => {
     it('should listen for details event', () => {

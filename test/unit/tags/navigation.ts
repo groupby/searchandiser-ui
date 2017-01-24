@@ -1,4 +1,4 @@
-import { Navigation, META } from '../../../src/tags/navigation/gb-navigation';
+import { META, Navigation } from '../../../src/tags/navigation/gb-navigation';
 import { displayRefinement } from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
@@ -8,14 +8,10 @@ import { Events } from 'groupby-api';
 suite('gb-navigation', Navigation, ({
   flux, tag, spy, stub,
   expectSubscriptions,
+  itShouldHaveMeta,
   itShouldAlias
 }) => {
-
-  describe('static', () => {
-    it('should have meta', () => {
-      expect(Navigation.meta).to.eq(META);
-    });
-  });
+  itShouldHaveMeta(Navigation, META);
 
   describe('init()', () => {
     itShouldAlias('navigable');
