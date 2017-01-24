@@ -18,6 +18,7 @@ export interface FluxTag<T> extends riot.Tag.Instance {
   config: SearchandiserConfig;
 
   onConfigure(configure: TagConfigure): void;
+  setDefaults(config: T): void;
 }
 
 export class FluxTag<T> {

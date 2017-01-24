@@ -1,6 +1,6 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
 import { Selectable, SelectOption, SelectTag } from '../select/gb-select';
-import { TagConfigure } from '../tag';
+import { TagConfigure, TagMeta } from '../tag';
 
 export interface CollectionsOpts extends Selectable {
   items: SelectOption[];
@@ -8,6 +8,16 @@ export interface CollectionsOpts extends Selectable {
   showCounts?: boolean;
 }
 
+export const META: TagMeta = {
+  defaults: {
+    items: [],
+    showCounts: true
+  },
+  types: {
+    showCounts: 'boolean',
+    dropdown: 'boolean'
+  }
+};
 export const DEFAULTS = {
   items: [],
   showCounts: true
@@ -19,6 +29,9 @@ export const TYPES = {
 export const SERVICES = ['collections'];
 
 export class Collections extends SelectTag<CollectionsOpts> {
+
+  static meta: TagMeta = META;
+
   dropdown: boolean;
   showCounts: boolean;
 

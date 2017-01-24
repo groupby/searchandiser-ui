@@ -278,6 +278,22 @@ describe('tag utils', () => {
       expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
       expect(coerceAttributes).to.have.been.calledWith(sinon.match.any, types);
     });
+
+    it('should call setDefaults() if it exists', () => {
+      const setDefaults = sinon.spy();
+      const tag: any = {
+        _tagName: '',
+        opts: {},
+        [META]: {},
+        setDefaults
+      };
+      sandbox.stub(utils, 'collectServiceConfigs');
+      sandbox.stub(utils, 'coerceAttributes');
+
+      configure(tag);
+
+      expect(setDefaults).to.be.calledWith(sinon.match.any);
+    });
   });
 
   describe('updateDependency()', () => {
