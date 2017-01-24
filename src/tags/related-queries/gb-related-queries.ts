@@ -1,12 +1,12 @@
-import { LinkTag } from '../link-list/gb-link-list';
+import { Linkable, LinkTag } from '../link-list/gb-link-list';
 import { Events, Results } from 'groupby-api';
 
-export class RelatedQueries extends LinkTag<any> {
+export class RelatedQueries extends LinkTag<Linkable> {
 
   items: string[];
 
   init() {
-    this.alias('linkable');
+    this.expose('linkable');
 
     this.flux.on(Events.RESULTS, this.updatedRelatedQueries);
   }

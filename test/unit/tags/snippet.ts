@@ -1,27 +1,15 @@
-import { Snippet } from '../../../src/tags/snippet/gb-snippet';
+import { META, Snippet } from '../../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-snippet', Snippet, ({ tag, spy, expectSubscriptions }) => {
+suite('gb-snippet', Snippet, ({
+  tag, spy,
+  expectSubscriptions,
+  itShouldHaveMeta
+}) => {
+  itShouldHaveMeta(Snippet, META);
 
   describe('init()', () => {
-    it('should set defaults', () => {
-      tag().init();
-
-      expect(tag().raw).to.be.false;
-      expect(tag().url).to.be.undefined;
-    });
-
-    it('should set properties from opts', () => {
-      const url = 'example.com';
-      tag().opts = { raw: true, url };
-
-      tag().init();
-
-      expect(tag().raw).to.be.true;
-      expect(tag().url).to.eq(url);
-    });
-
     it('should listen for mount', () => {
       expectSubscriptions(() => tag().init(), {
         mount: tag().loadFile
@@ -48,7 +36,7 @@ suite('gb-snippet', Snippet, ({ tag, spy, expectSubscriptions }) => {
 
       tag().loadFile()
         .then(() => {
-          expect(update).to.have.been.calledWith({ responseText });
+          expect(update).to.be.calledWith({ responseText });
           done();
         });
     });

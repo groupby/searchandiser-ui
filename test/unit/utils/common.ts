@@ -1,6 +1,8 @@
 import {
   checkBooleanAttr,
   checkNested,
+  coerceAttributes,
+  collectServiceConfigs,
   debounce,
   displayRefinement,
   findSearchBox,
@@ -173,7 +175,7 @@ describe('utils', () => {
 
       LOCATION.replace(url);
 
-      expect(replace).to.have.been.calledWith(url);
+      expect(replace).to.be.calledWith(url);
     });
 
     it('should call window.location.assign()', () => {
@@ -182,14 +184,57 @@ describe('utils', () => {
 
       LOCATION.assign(url);
 
-      expect(assign).to.have.been.calledWith(url);
+      expect(assign).to.be.calledWith(url);
     });
   });
 
   describe('scopeCss()', () => {
     it('should generate multiple scoped CSS selectors', () => {
       const scopedSelector = scopeCss('gb-target', '.my > #selector');
+
       expect(scopedSelector).to.eq('gb-target .my > #selector, [data-is="gb-target"] .my > #selector'); // tslint:disable-line:max-line-length
+    });
+  });
+
+  describe('coerceAttributes()', () => {
+    it('should only coerce specified attributes', () => {
+      const opts = { length: 'idk', table: 'idk' };
+      const types: any = { length: 'boolean' };
+
+      const coercedAttributes = coerceAttributes(opts, types);
+
+      expect(coercedAttributes).to.eql({ length: true, table: 'idk' });
+    });
+  });
+
+  describe('collectServiceConfigs()', () => {
+    it('should collect service configs', () => {
+      const config1 = { a: 'b' };
+      const config2 = { c: 'd' };
+      const tag: any = {
+        services: {
+          service1: { _config: config1 },
+          service2: { _config: config2 }
+        }
+      };
+
+      const configs = collectServiceConfigs(tag, ['service1', 'service2']);
+
+      expect(configs).to.eql([config1, config2]);
+    });
+
+    it('should skip nonexistent service configs', () => {
+      const serviceConfig = { a: 'b' };
+      const tag: any = {
+        services: {
+          service1: { _config: serviceConfig },
+          service2: {}
+        }
+      };
+
+      const configs = collectServiceConfigs(tag, ['service1', 'service2', 'service3']);
+
+      expect(configs).to.eql([serviceConfig]);
     });
   });
 });

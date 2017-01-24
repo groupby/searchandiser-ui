@@ -1,5 +1,5 @@
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
-import { MIN_DELAY, Sayt } from '../../../src/tags/sayt/gb-sayt';
+import { META, MIN_DELAY, Sayt } from '../../../src/tags/sayt/gb-sayt';
 import * as utils from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
@@ -9,57 +9,13 @@ import { Events, Query } from 'groupby-api';
 suite('gb-sayt', Sayt, ({
   flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldAlias
+  itShouldAlias,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Sayt, META);
 
   describe('init()', () => {
-    const STRUCTURE = {
-      title: 'title',
-      price: 'price',
-      image: 'image'
-    };
-    let sayt;
-
-    beforeEach(() => {
-      tag().config = { structure: STRUCTURE };
-      sayt = tag().sayt = { configure: () => null };
-    });
-
     itShouldAlias(['sayt', 'productable']);
-
-    it('should have default values', () => {
-      tag().init();
-
-      expect(tag().structure).to.eql(STRUCTURE);
-      expect(tag().showProducts).to.be.true;
-    });
-
-    it('should take configuration overrides from global config', () => {
-      tag().opts = {
-        structure: { image: 'thumbnail', url: 'url' },
-        productCount: 0
-      };
-
-      tag().init();
-
-      expect(tag().structure).to.eql({
-        image: 'thumbnail',
-        url: 'url',
-        title: 'title',
-        price: 'price'
-      });
-      expect(tag().showProducts).to.be.false;
-    });
-
-    it('should configure sayt', () => {
-      const generated: any = { a: 'b', c: 'd' };
-      const configure = sayt.configure = spy();
-      tag().generateSaytConfig = () => generated;
-
-      tag().init();
-
-      expect(configure).to.have.been.calledWith(generated);
-    });
 
     it('should listen for mount event', () => {
       expectSubscriptions(() => tag().init(), {
@@ -71,6 +27,66 @@ suite('gb-sayt', Sayt, ({
       expectSubscriptions(() => tag().init(), {
         [AUTOCOMPLETE_HIDE_EVENT]: tag().reset
       });
+    });
+  });
+
+  describe('setDefaults()', () => {
+    it('should set defaults', () => {
+      const collection = 'a';
+      const area = 'b';
+      const language = 'c';
+      const structure = 'd';
+      tag().config = <any>{ collection, area, language, structure };
+      tag().sayt = { configure: () => null };
+
+      tag().setDefaults({});
+
+      expect(tag().collection).to.eq(collection);
+      expect(tag().area).to.eq(area);
+      expect(tag().language).to.eq(language);
+      expect(tag().structure).to.eq(structure);
+    });
+
+    it('should override defaults from computed config', () => {
+      const collection = 'a';
+      const area = 'b';
+      const language = 'c';
+      const structure = 'd';
+      tag().sayt = { configure: () => null };
+
+      tag().setDefaults({ collection, area, language, structure });
+
+      expect(tag().collection).to.eq(collection);
+    });
+
+    it('should set showProducts true if productCount is not 0', () => {
+      tag().productCount = 3;
+      tag().sayt = { configure: () => null };
+
+      tag().setDefaults({});
+
+      expect(tag().showProducts).to.be.true;
+    });
+
+    it('should set showProducts false if productCount is 0', () => {
+      tag().productCount = 0;
+      tag().sayt = { configure: () => null };
+
+      tag().setDefaults({});
+
+      expect(tag().showProducts).to.be.false;
+    });
+
+    it('should call sayt.configure()', () => {
+      const saytConfig = { a: 'b' };
+      const configure = spy();
+      const generateSaytConfig = tag().generateSaytConfig = spy(() => saytConfig);
+      tag().sayt = { configure };
+
+      tag().setDefaults({});
+
+      expect(generateSaytConfig).to.be.called;
+      expect(configure).to.be.calledWith(saytConfig);
     });
   });
 
@@ -88,7 +104,7 @@ suite('gb-sayt', Sayt, ({
       const collection = tag().collection = 'mycollection';
       const area = tag().area = 'MyArea';
       const language = tag().language = 'en';
-      tag().config = { customerId };
+      tag().config = <any>{ customerId };
       tag().queryCount = 2;
       tag().productCount = 3;
       tag().https = true;
@@ -122,7 +138,7 @@ suite('gb-sayt', Sayt, ({
       tag().reset();
 
       expect(reset.called).to.be.true;
-      expect(update).to.have.been.calledWith({
+      expect(update).to.be.calledWith({
         queries: null,
         navigations: null,
         products: null
@@ -160,8 +176,8 @@ suite('gb-sayt', Sayt, ({
 
       tag().handleSuggestions({ result, originalQuery });
 
-      expect(processResults).to.have.been.calledWith(result);
-      expect(update).to.have.been.calledWith({ originalQuery });
+      expect(processResults).to.be.calledWith(result);
+      expect(update).to.be.calledWith({ originalQuery });
     });
 
     it('should call searchProducts()', (done) => {
@@ -171,7 +187,7 @@ suite('gb-sayt', Sayt, ({
       tag().showProducts = true;
       tag().queries = [{ value: query }];
       tag().searchProducts = (productQuery) => {
-        expect(processResults).to.have.been.called;
+        expect(processResults).to.be.called;
         expect(update.called).to.be.true;
         expect(productQuery).to.eq(query);
         done();
@@ -189,7 +205,7 @@ suite('gb-sayt', Sayt, ({
       tag().sayt = { productSearch };
       tag().update = (data) => {
         expect(data).to.eql({ products });
-        expect(productSearch).to.have.been.calledWith(suggestion, { refinements: undefined });
+        expect(productSearch).to.be.calledWith(suggestion, { refinements: undefined });
         done();
       };
       tag().showProducts = true;
@@ -238,7 +254,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().rewriteQuery(query);
 
-      expect(emit).to.have.been.calledWith(Events.REWRITE_QUERY, query);
+      expect(emit).to.be.calledWith(Events.REWRITE_QUERY, query);
     });
   });
 
@@ -251,8 +267,8 @@ suite('gb-sayt', Sayt, ({
 
       tag().notifier(query);
 
-      expect(searchProducts).to.have.been.calledWith(query, undefined);
-      expect(rewriteQuery).to.have.been.calledWith(query);
+      expect(searchProducts).to.be.calledWith(query, undefined);
+      expect(rewriteQuery).to.be.calledWith(query);
     });
 
     it('should fetch suggestions with refinements', () => {
@@ -264,7 +280,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().notifier(query, 'Medium');
 
-      expect(searchProducts).to.have.been.calledWith(query, '~size=Medium');
+      expect(searchProducts).to.be.calledWith(query, '~size=Medium');
     });
 
     it('should fetch suggestions with refinements and overwite query', () => {
@@ -275,7 +291,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().notifier('Color: Blue', 'Blue', 'color');
 
-      expect(searchProducts).to.have.been.calledWith('', '~color=Blue');
+      expect(searchProducts).to.be.calledWith('', '~color=Blue');
     });
 
     it('should fetch rewrite query but not fetch suggestions', () => {
@@ -286,7 +302,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().notifier(query);
 
-      expect(rewriteQuery).to.have.been.calledWith(query);
+      expect(rewriteQuery).to.be.calledWith(query);
     });
   });
 
@@ -299,7 +315,7 @@ suite('gb-sayt', Sayt, ({
       tag().searchRefinement(<any>{ target });
 
       expect(resetRecall.called).to.be.true;
-      expect(refine).to.have.been.calledWith(target, '');
+      expect(refine).to.be.calledWith(target, '');
     });
   });
 
@@ -313,7 +329,7 @@ suite('gb-sayt', Sayt, ({
       tag().searchCategory(<any>{ target });
 
       expect(resetRecall.called).to.be.true;
-      expect(refine).to.have.been.calledWith(target, 'boots');
+      expect(refine).to.be.calledWith(target, 'boots');
     });
   });
 
@@ -375,9 +391,9 @@ suite('gb-sayt', Sayt, ({
         }
       })
         .then(() => {
-          expect(rewriteQuery).to.have.been.calledWith(suggestion);
-          expect(reset).to.have.been.calledWith(suggestion);
-          expect(emitEvent).to.have.been.called;
+          expect(rewriteQuery).to.be.calledWith(suggestion);
+          expect(reset).to.be.calledWith(suggestion);
+          expect(emitEvent).to.be.called;
           done();
         });
     });
@@ -399,8 +415,8 @@ suite('gb-sayt', Sayt, ({
         }
       })
         .then(() => {
-          expect(rewriteQuery).to.have.been.calledWith(suggestion);
-          expect(reset).to.have.been.calledWith(suggestion);
+          expect(rewriteQuery).to.be.calledWith(suggestion);
+          expect(reset).to.be.calledWith(suggestion);
           done();
         });
     });
@@ -422,8 +438,8 @@ suite('gb-sayt', Sayt, ({
         }
       })
         .then(() => {
-          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
-          expect(update).to.have.been.calledWithMatch({
+          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.be.calledWithMatch({
             raw: {
               query: suggestion,
               refinements: [],
@@ -449,9 +465,9 @@ suite('gb-sayt', Sayt, ({
         dataset: { field, refinement: value }
       }, suggestion)
         .then(() => {
-          expect(rewrite).to.have.been.calledWith(suggestion, { skipSearch: true });
-          expect(refine).to.have.been.calledWith(refinement(field, value));
-          expect(emitEvent).to.have.been.called;
+          expect(rewrite).to.be.calledWith(suggestion, { skipSearch: true });
+          expect(refine).to.be.calledWith(refinement(field, value));
+          expect(emitEvent).to.be.called;
           done();
         });
     });
@@ -469,7 +485,7 @@ suite('gb-sayt', Sayt, ({
         dataset: { field, refinement, norefine: true }
       }, suggestion)
         .then(() => {
-          expect(reset).to.have.been.calledWith(suggestion);
+          expect(reset).to.be.calledWith(suggestion);
           done();
         });
     });
@@ -489,8 +505,8 @@ suite('gb-sayt', Sayt, ({
         dataset: { field, refinement: value }
       }, suggestion)
         .then(() => {
-          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
-          expect(update).to.have.been.calledWithMatch({
+          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.be.calledWithMatch({
             raw: {
               query: suggestion,
               refinements: [refinement(field, value)],
@@ -512,7 +528,7 @@ suite('gb-sayt', Sayt, ({
         dataset: { norefine: true }
       }, suggestion)
         .then(() => {
-          expect(update).to.have.been.calledWithMatch({
+          expect(update).to.be.calledWithMatch({
             raw: {
               query: suggestion,
               refinements: []
@@ -551,8 +567,8 @@ suite('gb-sayt', Sayt, ({
         dataset: { refinement: value }
       }, suggestion)
         .then(() => {
-          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
-          expect(update).to.have.been.calledWithMatch({
+          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.be.calledWithMatch({
             raw: {
               query: suggestion,
               refinements: [refinement(field, value)],
@@ -570,7 +586,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().processResults({});
 
-      expect(update).to.have.been.calledWith({
+      expect(update).to.be.calledWith({
         results: {},
         queries: undefined,
         navigations: [],
@@ -587,7 +603,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().processResults({ navigations: newNavigations });
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         navigations: [{ name: 'colour', displayName: 'colour' }]
       });
     });
@@ -600,7 +616,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().processResults({ navigations: newNavigations });
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         navigations: [{ name: 'colour', displayName: 'Colour' }]
       });
     });
@@ -617,8 +633,8 @@ suite('gb-sayt', Sayt, ({
 
       expect(tag().matchesInput).to.be.true;
       expect(searchTerms.length).to.eq(1);
-      expect(update).to.have.been.calledWithMatch({ categoryResults });
-      expect(extractCategoryResults).to.have.been.calledWithMatch({ additionalInfo, value });
+      expect(update).to.be.calledWithMatch({ categoryResults });
+      expect(extractCategoryResults).to.be.calledWithMatch({ additionalInfo, value });
     });
 
     it('should not match input', () => {
@@ -630,7 +646,7 @@ suite('gb-sayt', Sayt, ({
 
       expect(tag().matchesInput).to.be.false;
       expect(searchTerms.length).to.eq(2);
-      expect(update).to.have.been.calledWithMatch({ categoryResults: [] });
+      expect(update).to.be.calledWithMatch({ categoryResults: [] });
     });
 
     it('should match case-insensitive input', () => {
@@ -645,7 +661,7 @@ suite('gb-sayt', Sayt, ({
       tag().processResults({ searchTerms });
 
       expect(tag().matchesInput).to.be.true;
-      expect(update).to.have.been.calledWithMatch({ categoryResults });
+      expect(update).to.be.calledWithMatch({ categoryResults });
     });
   });
 
@@ -688,9 +704,9 @@ suite('gb-sayt', Sayt, ({
       tag().listenForInput(queryTag);
 
       expect(searchBox.autocomplete).to.eq('off');
-      expect(addEventListener).to.have.been.calledWith('input', debouncedSearchFunc);
-      expect(debounce).to.have.been.calledWith(searchFunc);
-      expect(debouncedSearch).to.have.been.calledWith(searchBox);
+      expect(addEventListener).to.be.calledWith('input', debouncedSearchFunc);
+      expect(debounce).to.be.calledWith(searchFunc);
+      expect(debouncedSearch).to.be.calledWith(searchBox);
     });
 
     it('should debounce with the configured delay', () => {
@@ -700,7 +716,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().listenForInput(MOCK_QUERY);
 
-      expect(debounce).to.have.been.calledWith(sinon.match.func, saytDelay);
+      expect(debounce).to.be.calledWith(sinon.match.func, saytDelay);
     });
 
     it('should debounce with minimum delay of 100', () => {
@@ -709,7 +725,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().listenForInput(MOCK_QUERY);
 
-      expect(debounce).to.have.been.calledWith(sinon.match.func, MIN_DELAY);
+      expect(debounce).to.be.calledWith(sinon.match.func, MIN_DELAY);
     });
 
     it('should attach click listener to document', () => {
@@ -717,7 +733,7 @@ suite('gb-sayt', Sayt, ({
 
       tag().listenForInput(MOCK_QUERY);
 
-      expect(addEventListener).to.have.been.calledWith('click', tag().reset);
+      expect(addEventListener).to.be.calledWith('click', tag().reset);
     });
   });
 
@@ -733,7 +749,7 @@ suite('gb-sayt', Sayt, ({
 
       func();
 
-      expect(reset).to.have.been.called;
+      expect(reset).to.be.called;
     });
 
     it('should return a function that calls fetchSuggestions()', () => {
@@ -744,7 +760,7 @@ suite('gb-sayt', Sayt, ({
 
       func();
 
-      expect(fetchSuggestions).to.have.been.calledWith(value);
+      expect(fetchSuggestions).to.be.calledWith(value);
     });
   });
 

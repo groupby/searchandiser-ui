@@ -1,26 +1,38 @@
-import { checkBooleanAttr, findTag } from '../../utils/common';
+import { findTag } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
-import { FluxTag } from '../tag';
+import { FluxTag, TagMeta } from '../tag';
 import { Events } from 'groupby-api';
 import * as riot from 'riot';
 
 const KEY_ENTER = 13;
 
-export interface QueryConfig {
+export interface QueryOpts {
   sayt?: boolean;
   autoSearch?: boolean;
   staticSearch?: boolean;
 }
 
-export class Query extends FluxTag<any> {
+export const META: TagMeta = {
+  defaults: {
+    sayt: true,
+    autoSearch: true
+  },
+  types: {
+    sayt: 'boolean',
+    autoSearch: 'boolean',
+    staticSearch: 'boolean'
+  }
+};
+
+@meta(META)
+export class Query extends FluxTag<QueryOpts> {
   root: riot.TagElement & HTMLInputElement;
   tags: {
     'gb-sayt': Sayt;
     'gb-search-box': FluxTag<any> & {
-      refs: {
-        searchBox: HTMLInputElement;
-      };
+      refs: { searchBox: HTMLInputElement };
     };
   };
 
@@ -32,13 +44,12 @@ export class Query extends FluxTag<any> {
   enterKeyHandlers: Function[];
 
   init() {
-    this.sayt = checkBooleanAttr('sayt', this.opts, true);
-    this.autoSearch = checkBooleanAttr('autoSearch', this.opts, true);
-    this.staticSearch = checkBooleanAttr('staticSearch', this.opts);
-    this.enterKeyHandlers = [];
-
     this.on('mount', this.attachListeners);
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
+  }
+
+  setDefaults() {
+    this.enterKeyHandlers = [];
   }
 
   attachListeners() {

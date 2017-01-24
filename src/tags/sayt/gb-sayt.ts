@@ -1,12 +1,13 @@
-import { checkBooleanAttr, checkNumericAttr, debounce } from '../../utils/common';
+import { debounce } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
-import { SaytTag } from '../tag';
+import { SaytTag, TagMeta } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
 import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
 import escapeStringRegexp = require('escape-string-regexp');
 
-export interface SaytConfig {
+export interface SaytOpts {
   structure?: ProductStructure;
   categoryField?: string;
   allCategoriesLabel?: string;
@@ -26,8 +27,28 @@ export interface SaytConfig {
 }
 
 export const MIN_DELAY = 100;
+export const META: TagMeta = {
+  defaults: {
+    allCategoriesLabel: 'All Departments',
+    highlight: true,
+    autoSearch: true,
+    delay: 100,
+    minimumCharacters: 1,
+    navigationNames: {},
+    allowedNavigations: [],
+    productCount: 4,
+    queryCount: 5
+  },
+  types: {
+    highlight: 'boolean',
+    autoSearch: 'boolean',
+    staticSearch: 'boolean',
+    https: 'boolean'
+  }
+};
 
-export class Sayt extends SaytTag<any> {
+@meta(META)
+export class Sayt extends SaytTag<SaytOpts> {
   structure: ProductStructure;
   navigationNames: { [key: string]: string };
   allowedNavigations: string[];
@@ -57,32 +78,21 @@ export class Sayt extends SaytTag<any> {
   matchesInput: boolean;
 
   init() {
-    this.alias(['sayt', 'productable']);
-
-    this.allCategoriesLabel = this.opts.allCategoriesLabel || 'All Departments';
-    this.highlight = checkBooleanAttr('highlight', this.opts, true);
-    this.autoSearch = checkBooleanAttr('autoSearch', this.opts, true);
-    this.staticSearch = checkBooleanAttr('staticSearch', this.opts);
-    this.https = checkBooleanAttr('https', this.opts);
-    this.delay = this.opts.delay || 100;
-    this.minimumCharacters = this.opts.minimumCharacters || 1;
-    this.navigationNames = this.opts.navigationNames || {};
-    this.allowedNavigations = this.opts.allowedNavigations || [];
-    this.productCount = checkNumericAttr('productCount', this.opts, 4);
-    this.queryCount = checkNumericAttr('queryCount', this.opts, 5);
-
-    this.structure = Object.assign({}, this.config.structure, this.opts.structure);
-    this.collection = this.opts.collection || this.config.collection;
-    this.language = this.opts.language || this.config.language;
-    this.area = this.opts.area || this.config.area;
-    this.categoryField = this.opts.categoryField;
-
-    this.showProducts = this.productCount > 0;
-
-    this.sayt.configure(this.generateSaytConfig());
+    this.expose(['sayt', 'productable']);
 
     this.on('mount', this.initializeAutocomplete);
     this.flux.on(AUTOCOMPLETE_HIDE_EVENT, this.reset);
+  }
+
+  setDefaults(config: SaytOpts) {
+    this.showProducts = this.productCount > 0;
+    // TODO: should use service configuraiton dependency
+    this.area = config.area || this.config.area;
+    this.collection = config.collection || this.config.collection;
+    this.language = config.language || this.config.language;
+    this.structure = config.structure || this.config.structure;
+
+    this.sayt.configure(this.generateSaytConfig());
   }
 
   initializeAutocomplete() {

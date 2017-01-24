@@ -73,7 +73,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.setVisitorInfo();
 
-      expect(setVisitor).to.have.been.calledWith(visitorId, sessionId);
+      expect(setVisitor).to.be.calledWith(visitorId, sessionId);
     });
 
     it('should use cookies', () => {
@@ -85,7 +85,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.setVisitorInfo();
 
-      expect(setVisitor).to.have.been.calledWith(visitorId, sessionId);
+      expect(setVisitor).to.be.calledWith(visitorId, sessionId);
     });
 
     it('should generate ids', () => {
@@ -93,7 +93,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.setVisitorInfo();
 
-      expect(setVisitor).to.have.been.calledWith(sinon.match.string, sinon.match.string);
+      expect(setVisitor).to.be.calledWith(sinon.match.string, sinon.match.string);
     });
 
     it('should set cookies', () => {
@@ -121,7 +121,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.setVisitor(visitorId, sessionId);
 
-      expect(setVisitor).to.have.been.calledWith(visitorId, sessionId);
+      expect(setVisitor).to.be.calledWith(visitorId, sessionId);
     });
   });
 
@@ -135,7 +135,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.sendSearchEvent();
 
-      expect(sendSearchEvent).to.have.been.calledWith({
+      expect(sendSearchEvent).to.be.calledWith({
         metadata: [],
         search: Object.assign({
           origin: { search: true },
@@ -154,7 +154,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.sendSearchEvent();
 
-      expect(sendSearchEvent).to.have.been.calledWithMatch({ metadata });
+      expect(sendSearchEvent).to.be.calledWithMatch({ metadata });
     });
 
     it('should use originalQuery', () => {
@@ -167,7 +167,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.sendSearchEvent();
 
-      expect(sendSearchEvent).to.have.been.calledWithMatch({ search: { query: originalQuery } });
+      expect(sendSearchEvent).to.be.calledWithMatch({ search: { query: originalQuery } });
     });
 
     it('should allow overriding the origin', () => {
@@ -177,7 +177,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.sendSearchEvent('dym');
 
-      expect(sendSearchEvent).to.have.been.calledWithMatch({ search: { origin: { dym: true } } });
+      expect(sendSearchEvent).to.be.calledWithMatch({ search: { origin: { dym: true } } });
     });
 
     it('should remap the record root fields', () => {
@@ -200,7 +200,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.sendSearchEvent();
 
-      expect(sendSearchEvent).to.have.been.calledWithMatch({
+      expect(sendSearchEvent).to.be.calledWithMatch({
         search: {
           records: [{
             _id: 12,
@@ -238,7 +238,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.listenForViewProduct();
 
-      expect(sendViewProductEvent).to.have.been.calledWith({
+      expect(sendViewProductEvent).to.be.calledWith({
         metadata: [],
         product: {
           productId: 125123,
@@ -263,7 +263,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.listenForViewProduct();
 
-      expect(sendViewProductEvent).to.have.been.calledWithMatch({ metadata });
+      expect(sendViewProductEvent).to.be.calledWithMatch({ metadata });
     });
   });
 
@@ -276,7 +276,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.addToCart(event);
 
-      expect(sendAddToCartEvent).to.have.been.calledWith(event);
+      expect(sendAddToCartEvent).to.be.calledWith(event);
     });
   });
 
@@ -289,7 +289,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.order(event);
 
-      expect(sendOrderEvent).to.have.been.calledWith(event);
+      expect(sendOrderEvent).to.be.calledWith(event);
     });
   });
 
@@ -300,7 +300,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.search();
 
-      expect(sendSearchEvent).to.have.been.called;
+      expect(sendSearchEvent).to.be.called;
     });
   });
 
@@ -311,7 +311,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.didYouMean();
 
-      expect(sendSearchEvent).to.have.been.calledWith('dym');
+      expect(sendSearchEvent).to.be.calledWith('dym');
     });
   });
 
@@ -322,7 +322,7 @@ suite('tracker', ({ spy, stub }) => {
 
       service.sayt();
 
-      expect(sendSearchEvent).to.have.been.calledWith('sayt');
+      expect(sendSearchEvent).to.be.calledWith('sayt');
     });
   });
 

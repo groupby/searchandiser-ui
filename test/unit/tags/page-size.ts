@@ -1,37 +1,31 @@
-import { PageSize } from '../../../src/tags/page-size/gb-page-size';
+import { DEFAULT_PAGE_SIZES, META, PageSize } from '../../../src/tags/page-size/gb-page-size';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-page-size', PageSize, ({
   tag, flux, spy, stub,
-  itShouldAlias
+  itShouldAlias, itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(PageSize, META);
 
   describe('init()', () => {
     itShouldAlias('selectable');
+  });
 
-    it('should have default values', () => {
-      tag().init();
+  describe('setDefaults()', () => {
+    it('should set items from global config', () => {
+      const pageSizes = [1, 2, 3, 4];
+      tag().config = <any>{ pageSizes };
 
-      expect(tag().resetOffset).to.be.false;
-      expect(tag().items).to.eql([10, 25, 50, 100]);
-    });
-
-    it('should set properties from opts', () => {
-      tag().opts = { resetOffset: true };
-
-      tag().init();
-
-      expect(tag().resetOffset).to.be.true;
-    });
-
-    it('should read global pageSizes', () => {
-      const pageSizes = [12, 24, 48];
-      tag().config = { pageSizes };
-
-      tag().init();
+      tag().setDefaults();
 
       expect(tag().items).to.eq(pageSizes);
+    });
+
+    it('should fallback to default items', () => {
+      tag().setDefaults();
+
+      expect(tag().items).to.eq(DEFAULT_PAGE_SIZES);
     });
   });
 
@@ -67,8 +61,8 @@ suite('gb-page-size', PageSize, ({
 
       tag().onSelect(40)
         .then(() => {
-          expect(search).to.have.been.called;
-          expect(resize).to.have.been.called;
+          expect(search).to.be.called;
+          expect(resize).to.be.called;
           done();
         });
     });

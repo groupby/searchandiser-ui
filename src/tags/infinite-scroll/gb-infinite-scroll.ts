@@ -1,5 +1,6 @@
 import { WINDOW } from '../../utils/common';
-import { FluxTag } from '../tag';
+import { meta } from '../../utils/decorators';
+import { FluxTag, TagMeta } from '../tag';
 import { Renderer } from './renderer';
 import { Events, Record } from 'groupby-api';
 import * as riot from 'riot';
@@ -7,11 +8,19 @@ import * as riot from 'riot';
 export const MIN_REQUEST_SIZE = 25;
 export const MAX_REQUEST_SIZE = 120;
 
-export interface InfiniteScrollConfig {
+export interface InfiniteScrollOpts {
   maxRecords?: number;
 }
 
-export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
+export const META: TagMeta = {
+  defaults: {
+    maxRecords: 500
+  }
+};
+
+@meta(META)
+export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
+
   refs: {
     scroller: HTMLUListElement;
     runway: HTMLElement;
@@ -31,15 +40,15 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollConfig>  {
   anchorScrollTop: number;
 
   init() {
-    this.maxRecords = this.opts.maxRecords || 500;
-
     WINDOW.addEventListener('resize', this.onResize);
     this.flux.on(Events.QUERY_CHANGED, this.reset);
     this.flux.on(Events.REFINEMENTS_CHANGED, this.reset);
     this.flux.on(Events.SORT, this.reset);
     this.flux.on(Events.COLLECTION_CHANGED, this.reset);
     this.on('mount', this.onMount);
+  }
 
+  setDefaults() {
     this.items = [];
     this.loadedItems = 0;
     this.runwayEnd = 0;

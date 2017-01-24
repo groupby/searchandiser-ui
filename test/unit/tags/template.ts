@@ -40,7 +40,7 @@ suite('gb-template', Template, ({
 
       tag().updateActive(<any>{ template: { name: target, zones: zoneMap } });
 
-      expect(update).to.have.been.calledWith({ isActive: true, zones: zoneList, zoneMap });
+      expect(update).to.be.calledWith({ isActive: true, zones: zoneList, zoneMap });
     });
   });
 

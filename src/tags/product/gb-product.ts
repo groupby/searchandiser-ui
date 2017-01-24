@@ -1,4 +1,3 @@
-import { checkBooleanAttr } from '../../utils/common';
 import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
@@ -12,12 +11,17 @@ export interface Productable {
   allMeta: any;
 }
 
+export const DEFAULTS = {
+  lazy: true
+};
+export const TYPES = {
+  lazy: 'boolean',
+  infinite: 'boolean',
+  tombstone: 'boolean'
+};
+
 export class Product extends FluxTag<any> {
   $productable: Productable;
-
-  lazy: boolean;
-  infinite: boolean;
-  tombstone: boolean;
 
   variantIndex: number;
   detailsUrl: string;
@@ -27,24 +31,24 @@ export class Product extends FluxTag<any> {
   transformer: ProductTransformer;
 
   init() {
-    this.alias('product');
+    this.expose('product');
+    this.inherits('productable', { defaults: DEFAULTS, types: TYPES }, this.transformProductable);
 
-    const productable = this.productable();
-    this.lazy = checkBooleanAttr('lazy', productable, true);
-    this.infinite = checkBooleanAttr('infinite', productable);
-    this.tombstone = checkBooleanAttr('tombstone', productable);
-
-    this.variantIndex = 0;
-    this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
-    this.structure = Object.assign({}, this.config.structure, productable.structure);
+    this.structure = Object.assign({}, this.config.structure, (this.$productable || <any>{}).structure);
     this.transformer = new ProductTransformer(this.structure);
 
-    this.styleProduct();
-    this.updateRecord(productable.allMeta);
+    this.on('before-mount', this.styleProduct);
   }
 
-  productable(obj: any = {}) {
-    return Object.assign(obj, this.$productable, this.opts);
+  setDefaults() {
+    this.variantIndex = 0;
+    // TODO: this should come from service config dependency
+    this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
+  }
+
+  transformProductable(productable: Productable) {
+    this.updateRecord(productable.allMeta);
+    return productable;
   }
 
   updateRecord(allMeta: any) {
@@ -58,10 +62,10 @@ export class Product extends FluxTag<any> {
   }
 
   styleProduct() {
-    if (this.infinite) {
+    if (this.$productable.infinite) {
       this.root.classList.add('gb-infinite');
     }
-    if (this.tombstone) {
+    if (this.$productable.tombstone) {
       this.root.classList.add('tombstone');
     }
   }

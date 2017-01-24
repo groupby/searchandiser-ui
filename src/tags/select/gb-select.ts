@@ -1,6 +1,4 @@
-import { checkBooleanAttr } from '../../utils/common';
-import { Linkable } from '../link-list/gb-link-list';
-import { Listable } from '../list/gb-list';
+import { Linkable, LinkTag } from '../link-list/gb-link-list';
 import { FluxTag } from '../tag';
 import * as riot from 'riot'; // tslint:disable-line:no-unused-variable
 
@@ -12,14 +10,29 @@ export interface Selectable extends Linkable {
   native?: boolean;
 }
 
-export interface SelectTag<T> extends Selectable { }
+export interface LabeledOption {
+  label: string;
+  value: string;
+}
 
-export class SelectTag<T> extends FluxTag<T> { }
+export type SelectOption = string | LabeledOption;
+
+export interface SelectTag<T extends Selectable> extends Selectable { }
+
+export class SelectTag<T extends Selectable> extends LinkTag<T> { }
+
+export const DEFAULTS = {
+  items: [],
+  iconUrl: require('./arrow-down.png'),
+  label: 'Select'
+};
+export const TYPES = {
+  hover: 'boolean',
+  native: 'boolean'
+};
 
 export class Select extends FluxTag<any> {
   $selectable: Selectable;
-  $linkable: Linkable;
-  $listable: Listable;
   tags: {
     'gb-native-select': FluxTag<any> & {
       refs: { selector: HTMLSelectElement; };
@@ -29,54 +42,37 @@ export class Select extends FluxTag<any> {
     };
   };
 
-  iconUrl: string;
-  label: string;
-  hover: boolean;
-  native: boolean;
-
   clearItem: { label: string, clear: boolean };
-  onSelect: Function;
   selectedItem: any;
   default: boolean;
   selected: any;
   focused: boolean;
 
   init() {
-    const selectable = this.selectable();
-    this.alias('select');
-    this.alias(['listable', 'linkable'], selectable);
+    this.expose('select');
+    this.transform('selectable', ['linkable', 'listable'], { defaults: DEFAULTS, types: TYPES });
 
-    const items = selectable.items || [];
-    this.onSelect = selectable.onSelect;
-    this.iconUrl = selectable.iconUrl || require('./arrow-down.png');
-    this.label = selectable.label || 'Select';
-    this.hover = checkBooleanAttr('hover', selectable);
-    this.native = checkBooleanAttr('native', selectable);
+    this.on('update', this.setClearItem);
+  }
 
-    this.clearItem = { label: selectable.clear || 'Unselect', clear: true };
-    this.default = !selectable.clear;
+  setDefaults() {
+    this.clearItem = { label: this.$selectable.clear || 'Unselect', clear: true };
+    this.default = !this.$selectable.clear;
 
     if (this.default) {
+      const items = this.$selectable.items;
       this.selectedItem = typeof items[0] === 'object' ? items[0].label : items[0];
     }
-
-    this.on('update', this.updateAliases);
   }
 
-  updateAliases() {
-    // this should also update $listable as they reference the same object
-    this.selectable(this.$linkable);
-    if (!this.default) {
-      this.$linkable.items = [this.clearItem, ...this.$linkable.items];
+  setClearItem() {
+    if (!this.default && !this.$selectable.items.includes(this.clearItem)) {
+      this.$selectable.items.unshift(this.clearItem);
     }
-  }
-
-  selectable(obj: any = {}) {
-    return Object.assign(obj, this.$selectable, this.opts);
   }
 
   selectLabel(): string {
-    return this.selectedItem || (this.selected ? this.clearItem : this.label);
+    return this.selectedItem || (this.selected ? this.clearItem : this.$selectable.label);
   }
 
   prepFocus() {
@@ -84,8 +80,7 @@ export class Select extends FluxTag<any> {
   }
 
   selectButton() {
-    const customSelect = this.tags['gb-custom-select'];
-    return customSelect.tags['gb-select-button'].root;
+    return this.tags['gb-custom-select'].tags['gb-select-button'].root;
   }
 
   nativeSelect() {
@@ -97,17 +92,19 @@ export class Select extends FluxTag<any> {
   }
 
   unfocus() {
-    this.focused = this.hover || !this.focused;
-    if (!this.focused) this.selectButton().blur();
+    this.focused = this.$selectable.hover || !this.focused;
+    if (!this.focused) {
+      this.selectButton().blur();
+    }
   }
 
   selectItem(selectedItem: string, value: any): void {
     this.update({ selectedItem });
-    if (this.onSelect) {
+    if (this.$selectable.onSelect) {
       try {
-        this.onSelect(JSON.parse(value));
+        this.$selectable.onSelect(JSON.parse(value));
       } catch (e) {
-        this.onSelect(value || '*');
+        this.$selectable.onSelect(value || '*');
       }
     }
   }

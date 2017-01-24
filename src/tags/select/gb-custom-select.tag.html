@@ -1,5 +1,5 @@
 <gb-custom-select>
-  <div class="gb-select { $select.hover ? 'hoverable' : 'clickable' } { _style }">
+  <div class="gb-select { $selectable.hover ? 'hoverable' : 'clickable' } { _style }">
     <button data-is="gb-select-button" type="button"></button>
     <gb-list should-render="{ $select.shouldRender }">
       <yield>
@@ -7,6 +7,10 @@
       </yield>
     </gb-list>
   </div>
+
+  <script>
+    this.inherits('listable');
+  </script>
 
   <style scoped>
     .gb-select {

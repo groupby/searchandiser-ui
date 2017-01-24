@@ -8,18 +8,20 @@ suite('gb-icon', Icon, ({
 }) => {
 
   describe('init()', () => {
-    it('should call setImage()', () => {
-      const setImage = tag().setImage = spy();
-
-      tag().init();
-
-      expect(setImage).to.have.been.called;
-    });
-
     it('should listen for update', () => {
       tag().opts = { value: '' };
 
       expectSubscriptions(() => tag().init(), { update: tag().setImage }, tag());
+    });
+  });
+
+  describe('setDefaults()', () => {
+    it('should call setImage()', () => {
+      const setImage = tag().setImage = spy();
+
+      tag().setDefaults();
+
+      expect(setImage).to.be.called;
     });
   });
 
@@ -32,7 +34,7 @@ suite('gb-icon', Icon, ({
 
       tag().setImage();
 
-      expect(isImage).to.have.been.calledWith(dataUri);
+      expect(isImage).to.be.calledWith(dataUri);
       expect(tag().url).to.eq(dataUri);
       expect(tag()).to.not.have.property('classes');
     });

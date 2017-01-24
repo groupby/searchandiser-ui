@@ -1,11 +1,11 @@
 import { FluxTag } from '../tag';
 import { Events, Results } from 'groupby-api';
 
-export interface TemplateConfig {
+export interface TemplateOpts {
   target: string;
 }
 
-export class Template extends FluxTag<TemplateConfig> {
+export class Template extends FluxTag<TemplateOpts> {
 
   target: string;
 
@@ -14,7 +14,7 @@ export class Template extends FluxTag<TemplateConfig> {
   zoneMap: any;
 
   init() {
-    this.alias('template');
+    this.expose('template');
 
     this.flux.on(Events.RESULTS, this.updateActive);
   }

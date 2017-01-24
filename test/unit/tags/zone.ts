@@ -22,7 +22,7 @@ suite('gb-zone', Zone, ({
 
       tag().init();
 
-      expect(add).to.have.been.calledWith('gb-zone-MyZone');
+      expect(add).to.be.calledWith('gb-zone-MyZone');
     });
   });
 });

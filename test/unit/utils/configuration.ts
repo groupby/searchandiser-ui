@@ -20,7 +20,7 @@ describe('Configuration', () => {
 
       configuration.apply();
 
-      expect(validate).to.have.been.calledWith(RAW_CONFIG);
+      expect(validate).to.be.calledWith(RAW_CONFIG);
     });
 
     it('should applyDefaults() to rawConfig', () => {
@@ -30,7 +30,7 @@ describe('Configuration', () => {
 
       configuration.apply();
 
-      expect(applyDefaults).to.have.been.calledWith(RAW_CONFIG, DEFAULT_CONFIG);
+      expect(applyDefaults).to.be.calledWith(RAW_CONFIG, DEFAULT_CONFIG);
     });
 
     it('should transform() config and return it', () => {
@@ -43,7 +43,7 @@ describe('Configuration', () => {
       const result = configuration.apply();
 
       expect(result).to.eq(transformed);
-      expect(transform).to.have.been.calledWith(config, configuration.handlers);
+      expect(transform).to.be.calledWith(config, configuration.handlers);
     });
   });
 
@@ -153,7 +153,7 @@ describe('Configuration', () => {
         const rawConfig: any = {
           tags: {
             sort: {
-              options: [
+              items: [
                 { value: { field: 'A', order: 'B' } },
                 { value: { field: 'C', order: 'D' } }
               ]

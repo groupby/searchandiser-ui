@@ -23,7 +23,7 @@ suite('gb-related-queries', RelatedQueries, ({
 
       tag().updatedRelatedQueries(<any>{ relatedQueries: items });
 
-      expect(update).to.have.been.calledWith({ items });
+      expect(update).to.be.calledWith({ items });
     });
   });
 
@@ -34,7 +34,7 @@ suite('gb-related-queries', RelatedQueries, ({
 
       tag().onSelect(<any>{ target: { text } });
 
-      expect(rewrite).to.have.been.calledWith(text);
+      expect(rewrite).to.be.calledWith(text);
     });
   });
 });

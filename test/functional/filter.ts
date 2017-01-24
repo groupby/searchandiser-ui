@@ -55,8 +55,8 @@ suite<Filter>('gb-filter', ({
         const refine = stub(flux(), 'refine');
         flux().results = <any>{ availableNavigation: [NAVIGATION] };
         flux().reset = (): any => {
-          expect(refine).to.have.been.called;
-          expect(unrefine).to.have.been.calledWith(tag.selected);
+          expect(refine).to.be.called;
+          expect(unrefine).to.be.calledWith(tag.selected);
           done();
         };
         model.items[0].click();

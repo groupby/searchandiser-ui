@@ -1,4 +1,4 @@
-import { Submit } from '../../../src/tags/submit/gb-submit';
+import { META, Submit } from '../../../src/tags/submit/gb-submit';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,44 +6,15 @@ import { Query } from 'groupby-api';
 
 suite('gb-submit', Submit, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Submit, META);
 
   describe('init()', () => {
     const ROOT: any = { addEventListener: () => null };
 
     beforeEach(() => tag().root = ROOT);
-
-    it('should set defaults', () => {
-      tag().init();
-
-      expect(tag().label).to.eq('Search');
-      expect(tag().staticSearch).to.be.false;
-    });
-
-    it('should set properties from opts', () => {
-      const label = 'Search here!';
-      tag().opts = { staticSearch: true, label };
-
-      tag().init();
-
-      expect(tag().label).to.eq(label);
-      expect(tag().staticSearch).to.be.true;
-    });
-
-    it('should set label for input tag', () => {
-      tag().root = Object.assign({}, ROOT, { tagName: 'INPUT' });
-
-      tag().init();
-
-      expect(tag().root.value).to.eq('Search');
-    });
-
-    it('should not set label for input tag', () => {
-      tag().init();
-
-      expect(tag().root.value).to.be.undefined;
-    });
 
     it('should listen for mount event', () => {
       expectSubscriptions(() => tag().init(), {
@@ -57,7 +28,26 @@ suite('gb-submit', Submit, ({
 
       tag().init();
 
-      expect(addEventListener).to.have.been.calledWith('click', tag().submitQuery);
+      expect(addEventListener).to.be.calledWith('click', tag().submitQuery);
+    });
+  });
+
+  describe('setDefaults()', () => {
+    it('should set root value when root is input tag', () => {
+      const root = tag().root = <any>{ tagName: 'INPUT' };
+      const label = tag().label = 'label';
+
+      tag().setDefaults();
+
+      expect(root.value).to.eq(label);
+    });
+
+    it('should not set root value', () => {
+      const root = tag().root = <any>{ tagName: 'not input' };
+
+      tag().setDefaults();
+
+      expect(root.value).to.not.be.ok;
     });
   });
 
@@ -94,8 +84,8 @@ suite('gb-submit', Submit, ({
       tag().submitQuery()
         .then(() => {
           expect(tag().searchBox.value).to.eq(query);
-          expect(reset).to.have.been.called;
-          expect(search).to.have.been.called;
+          expect(reset).to.be.called;
+          expect(search).to.be.called;
           done();
         });
     });
@@ -121,8 +111,8 @@ suite('gb-submit', Submit, ({
 
       tag().submitQuery()
         .then(() => {
-          expect(update).to.have.been.calledWith(sinon.match.instanceOf(Query));
-          expect(update).to.have.been.calledWithMatch({
+          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.be.calledWithMatch({
             raw: {
               query,
               refinements: [],

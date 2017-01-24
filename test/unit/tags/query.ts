@@ -1,4 +1,4 @@
-import { Query } from '../../../src/tags/query/gb-query';
+import { META, Query } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
@@ -7,29 +7,12 @@ import { Events, Query as FluxQuery } from 'groupby-api';
 
 suite('gb-query', Query, ({
   tag, flux, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Query, META);
 
   describe('init()', () => {
-    it('should set default values', () => {
-      tag().init();
-
-      expect(tag().sayt).to.be.true;
-      expect(tag().autoSearch).to.be.true;
-      expect(tag().staticSearch).to.be.false;
-      expect(tag().enterKeyHandlers).to.eql([]);
-    });
-
-    it('should set properties from opts', () => {
-      tag().opts = { sayt: false, autoSearch: false, staticSearch: true };
-
-      tag().init();
-
-      expect(tag().sayt).to.be.false;
-      expect(tag().autoSearch).to.be.false;
-      expect(tag().staticSearch).to.be.true;
-    });
-
     it('should attachListeners on mount', () => {
       expectSubscriptions(() => tag().init(), {
         mount: tag().attachListeners
@@ -40,6 +23,14 @@ suite('gb-query', Query, ({
       expectSubscriptions(() => tag().init(), {
         [Events.REWRITE_QUERY]: tag().rewriteQuery
       });
+    });
+  });
+
+  describe('setDefaults()', () => {
+    it('should set defaults', () => {
+      tag().setDefaults();
+
+      expect(tag().enterKeyHandlers).to.eql([]);
     });
   });
 
@@ -55,7 +46,7 @@ suite('gb-query', Query, ({
       tag().attachListeners();
 
       expect(tag().searchBox).to.eq(searchBox);
-      expect(addEventListener).to.have.been.calledWith('keydown', tag().keydownListener);
+      expect(addEventListener).to.be.calledWith('keydown', tag().keydownListener);
     });
 
     it('should attach sayt listeners', (done) => {
@@ -78,7 +69,7 @@ suite('gb-query', Query, ({
 
       tag().attachListeners();
 
-      expect(listenForInput).to.have.been.called;
+      expect(listenForInput).to.be.called;
     });
 
     it('should listen for enter keypress event', () => {
@@ -88,7 +79,7 @@ suite('gb-query', Query, ({
 
       tag().attachListeners();
 
-      expect(listenForStaticSearch).to.have.been.called;
+      expect(listenForStaticSearch).to.be.called;
     });
 
     it('should listen for submit event', () => {
@@ -98,7 +89,7 @@ suite('gb-query', Query, ({
 
       tag().attachListeners();
 
-      expect(listenForInput).to.have.been.called;
+      expect(listenForInput).to.be.called;
     });
   });
 
@@ -120,7 +111,7 @@ suite('gb-query', Query, ({
 
       tag().listenForInput();
 
-      expect(addEventListener).to.have.been.calledWith('input', tag().resetToInputValue);
+      expect(addEventListener).to.be.calledWith('input', tag().resetToInputValue);
     });
   });
 
@@ -166,8 +157,8 @@ suite('gb-query', Query, ({
 
       tag().resetToInputValue()
         .then(() => {
-          expect(reset).to.have.been.called;
-          expect(search).to.have.been.called;
+          expect(reset).to.be.called;
+          expect(search).to.be.called;
           done();
         });
     });
@@ -189,7 +180,7 @@ suite('gb-query', Query, ({
 
       tag().keydownListener(<any>{});
 
-      expect(findTag).to.have.been.called;
+      expect(findTag).to.be.called;
     });
 
     it('should call sayt autocomplete.keyboardListener()', () => {
@@ -201,7 +192,7 @@ suite('gb-query', Query, ({
 
       tag().keydownListener(keyboardEvent);
 
-      expect(keyboardListener).to.have.been.calledWith(keyboardEvent, tag().onSubmit);
+      expect(keyboardListener).to.be.calledWith(keyboardEvent, tag().onSubmit);
     });
 
     it('should call sayt onSubmit()', () => {
@@ -221,7 +212,7 @@ suite('gb-query', Query, ({
 
       tag().onSubmit();
 
-      expect(handler).to.have.been.calledThrice;
+      expect(handler).to.be.calledThrice;
     });
 
     it('should emit autocomplete:hide', () => {
@@ -230,7 +221,7 @@ suite('gb-query', Query, ({
 
       tag().onSubmit();
 
-      expect(emit).to.have.been.calledWith(AUTOCOMPLETE_HIDE_EVENT);
+      expect(emit).to.be.calledWith(AUTOCOMPLETE_HIDE_EVENT);
     });
   });
 
@@ -272,8 +263,8 @@ suite('gb-query', Query, ({
 
       tag().setLocation();
 
-      expect(update).to.have.been.calledWith(sinon.match.instanceOf(FluxQuery));
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWith(sinon.match.instanceOf(FluxQuery));
+      expect(update).to.be.calledWithMatch({
         raw: {
           query,
           refinements: [],
@@ -290,7 +281,7 @@ suite('gb-query', Query, ({
 
       tag().setLocation();
 
-      expect(reset).to.have.been.calledWith(query);
+      expect(reset).to.be.calledWith(query);
     });
   });
 

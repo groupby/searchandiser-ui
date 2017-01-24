@@ -34,9 +34,9 @@ export class Configuration {
     },
     sort: (sort: Sort) => {
       if (!sort) {
-        const sortOptions = oget(this.rawConfig, 'tags.sort.options');
-        if (sortOptions && sortOptions.length > 0) {
-          [sort] = sortOptions.map((val) => val.value);
+        const sortItems = oget(this.rawConfig, 'tags.sort.items');
+        if (sortItems && sortItems.length > 0) {
+          [sort] = sortItems.map((val) => val.value);
         }
       }
       return Array.isArray(sort) ? sort : [sort];

@@ -1,37 +1,50 @@
 import { getParam } from '../../utils/common';
-import { ProductTransformer } from '../../utils/product-transformer';
-import { FluxTag } from '../tag';
-import * as clone from 'clone';
+import { meta } from '../../utils/decorators';
+import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
+import { Product } from '../product/gb-product';
+import { FluxTag, TagMeta } from '../tag';
 import { Events, Record } from 'groupby-api';
 
-export interface DetailsConfig {
+export interface DetailsOpts {
   idParam: string;
+  structure?: ProductStructure;
 }
 
-export class Details extends FluxTag<any> {
+export const META: TagMeta = {
+  defaults: { idParam: 'id' }
+};
+
+@meta(META)
+export class Details extends FluxTag<DetailsOpts> {
+
+  tags: { 'gb-product': Product };
+
   idParam: string;
 
-  query: string;
-  structure: any;
+  structure: ProductStructure;
   transformer: ProductTransformer;
-  metadata: any;
-  variants: any[];
+  allMeta: any;
 
   init() {
-    this.idParam = this.opts.idParam || 'id';
+    this.flux.on(Events.DETAILS, this.updateRecord);
+  }
 
-    this.query = getParam(this.idParam);
-    this.structure = this.config.structure || {};
+  setDefaults(config: DetailsOpts) {
+    this.structure = config.structure || this.config.structure;
     this.transformer = new ProductTransformer(this.structure);
 
-    this.flux.on(Events.DETAILS, this.updateRecord);
-    if (this.query) {
-      this.flux.details(this.query, this.transformer.idField);
+    this.requestDetails();
+  }
+
+  requestDetails() {
+    const query = getParam(this.idParam);
+    if (query) {
+      this.flux.details(query, this.transformer.idField);
     }
   }
 
   updateRecord({ allMeta }: Record) {
-    const variants = this.transformer.transform(clone(allMeta, false));
-    this.update({ variants, metadata: variants[0] });
+    this.tags['gb-product'].updateRecord(allMeta);
+    this.tags['gb-product'].update();
   }
 }

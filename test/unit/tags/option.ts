@@ -37,7 +37,7 @@ suite('gb-option', Option, ({ tag, spy }) => {
 
       tag().onSelect();
 
-      expect(clearSelection).to.have.been.called;
+      expect(clearSelection).to.be.called;
     });
 
     it('should call $select.selectCustom()', () => {
@@ -47,7 +47,7 @@ suite('gb-option', Option, ({ tag, spy }) => {
 
       tag().onSelect();
 
-      expect(selectCustom).to.have.been.calledWith(tag());
+      expect(selectCustom).to.be.calledWith(tag());
     });
   });
 });

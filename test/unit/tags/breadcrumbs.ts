@@ -1,4 +1,4 @@
-import { Breadcrumbs } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
+import { Breadcrumbs, META } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,19 +6,21 @@ import { Events } from 'groupby-api';
 
 suite('gb-breadcrumbs', Breadcrumbs, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldHaveMeta,
+  itShouldAlias
 }) => {
+  itShouldHaveMeta(Breadcrumbs, META);
 
   describe('init()', () => {
-    it('should set default values', () => {
+    itShouldAlias(['breadcrumbs', 'listable']);
+
+    it('should mixin toView()', () => {
+      const mixin = tag().mixin = spy();
+
       tag().init();
 
-      expect(tag().hideQuery).to.be.false;
-      expect(tag().hideRefinements).to.be.false;
-      expect(tag().labels).to.be.true;
-      expect(tag().resultsLabel).to.eq('Results for:');
-      expect(tag().noResultsLabel).to.eq('No results for:');
-      expect(tag().correctedResultsLabel).to.eq('Showing results for:');
+      expect(mixin).to.be.calledWith({ toView: utils.displayRefinement });
     });
 
     it('should listen for events', () => {
@@ -34,7 +36,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
       const update = tag().update = spy();
       tag().clearRefinements();
 
-      expect(update).to.have.been.calledWith({ items: [] });
+      expect(update).to.be.calledWith({ items: [] });
     });
   });
 
@@ -45,7 +47,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>{ originalQuery });
 
-      expect(update).to.have.been.calledWith({
+      expect(update).to.be.calledWith({
         items: undefined,
         originalQuery,
         correctedQuery: undefined
@@ -58,7 +60,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>{ selectedNavigation });
 
-      expect(update).to.have.been.calledWith({
+      expect(update).to.be.calledWith({
         items: selectedNavigation,
         originalQuery: undefined,
         correctedQuery: undefined
@@ -71,7 +73,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>{ correctedQuery });
 
-      expect(update).to.have.been.calledWith({
+      expect(update).to.be.calledWith({
         items: undefined,
         originalQuery: undefined,
         correctedQuery
@@ -87,7 +89,7 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().updateQueryState(<any>queryState);
 
-      expect(update).to.have.been.calledWith({ originalQuery, correctedQuery, items });
+      expect(update).to.be.calledWith({ originalQuery, correctedQuery, items });
     });
   });
 
@@ -101,8 +103,8 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
       tag().remove(refinement, navigation);
 
-      expect(toRefinement).to.have.been.calledWith(refinement, navigation);
-      expect(unrefine).to.have.been.calledWith(constructedRefinement);
+      expect(toRefinement).to.be.calledWith(refinement, navigation);
+      expect(unrefine).to.be.calledWith(constructedRefinement);
     });
   });
 });

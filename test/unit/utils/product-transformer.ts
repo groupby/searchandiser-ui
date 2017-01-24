@@ -117,7 +117,7 @@ describe('ProductTransformer', () => {
 
       transformer.transform(VARIANT_META);
 
-      expect(productTransform).to.have.been.calledWith(VARIANT_META);
+      expect(productTransform).to.be.calledWith(VARIANT_META);
     });
 
     it('should call unpackVariants()', () => {
@@ -126,7 +126,7 @@ describe('ProductTransformer', () => {
 
       transformer.transform(VARIANT_META);
 
-      expect(unpackVariants).to.have.been.calledWith(VARIANT_META);
+      expect(unpackVariants).to.be.calledWith(VARIANT_META);
     });
   });
 
@@ -624,7 +624,7 @@ describe('ProductTransformer', () => {
         c: 'd'
       });
 
-      expect(remap).to.have.been.calledWith(originalVariant);
+      expect(remap).to.be.calledWith(originalVariant);
     });
   });
 

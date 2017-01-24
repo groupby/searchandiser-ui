@@ -1,12 +1,19 @@
-import { checkBooleanAttr } from '../../utils/common';
-import { FluxTag } from '../tag';
+import { meta } from '../../utils/decorators';
+import { FluxTag, TagMeta } from '../tag';
 
-export interface SnippetConfig {
+export interface SnippetOpts {
   raw?: boolean;
   url: string;
 }
 
-export class Snippet extends FluxTag<any> {
+export const META: TagMeta = {
+  types: {
+    raw: 'boolean'
+  }
+};
+
+@meta(META)
+export class Snippet extends FluxTag<SnippetOpts> {
 
   raw: boolean;
   url: string;
@@ -14,9 +21,6 @@ export class Snippet extends FluxTag<any> {
   responseText: string;
 
   init() {
-    this.raw = checkBooleanAttr('raw', this.opts);
-    this.url = this.opts.url;
-
     this.on('mount', this.loadFile);
   }
 

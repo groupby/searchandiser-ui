@@ -46,10 +46,10 @@ suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
 
   it('should render alternate labels', () => {
     const nextLabel = 'next page!';
-    const fistLabel = 'first page!';
-    const model = new Model(mount({ nextLabel, fistLabel }));
+    const firstLabel = 'first page!';
+    const model = new Model(mount({ nextLabel, firstLabel }));
 
-    expect(model.terminalSpan('first').textContent).to.eq(fistLabel);
+    expect(model.terminalSpan('first').textContent).to.eq(firstLabel);
     expect(model.pagerSpan('next').textContent).to.eq(nextLabel);
   });
 

@@ -1,11 +1,6 @@
-import {
-  addDollarSigns,
-  camelizeTagName,
-  setAliases,
-  setTagName,
-  FluxTag,
-  MixinFlux
-} from '../../../src/tags/tag';
+import { FluxTag, META } from '../../../src/tags/tag';
+import * as utils from '../../../src/utils/tag';
+import { expectSubscriptions } from '../../utils/expectations';
 import { expect } from 'chai';
 
 describe('base tag logic', () => {
@@ -26,7 +21,8 @@ describe('base tag logic', () => {
       beforeEach(() => {
         tag.root = <any>{ tagName: 'gb-test-tag' };
         tag.opts = {};
-        tag.config = {};
+        tag.config = <any>{};
+        tag.on = () => null;
       });
 
       it('should not set _style empty', () => {
@@ -36,15 +32,44 @@ describe('base tag logic', () => {
       });
 
       it('should set _style', () => {
-        tag.config = { stylish: true };
+        tag.config = <any>{ stylish: true };
 
         tag.init();
 
         expect(tag._style).to.eq('gb-stylish');
       });
+
+      it('should call setTagName()', () => {
+        const setTagName = sandbox.stub(utils, 'setTagName');
+
+        tag.init();
+
+        expect(setTagName).to.be.calledWith(tag);
+      });
+
+      it('should call inheritAliases()', () => {
+        const inheritAliases = sandbox.stub(utils, 'inheritAliases');
+
+        tag.init();
+
+        expect(inheritAliases).to.be.calledWith(tag);
+      });
+
+      it('should listen for before-mount', () => {
+        const configure = sandbox.stub(utils, 'configure');
+
+        expectSubscriptions(() => tag.init(), {
+          'before-mount': {
+            test: (cb) => {
+              cb();
+              expect(configure).to.be.calledWith(tag);
+            }
+          }
+        }, tag);
+      });
     });
 
-    describe('alias()', () => {
+    describe('expose()', () => {
 
       beforeEach(() => {
         tag._aliases = {};
@@ -53,7 +78,7 @@ describe('base tag logic', () => {
       it('should accept alias name as a string', () => {
         const alias = 'item';
 
-        tag.alias(alias);
+        tag.expose(alias);
 
         expect(tag._aliases[alias]).to.eq(tag);
       });
@@ -61,7 +86,7 @@ describe('base tag logic', () => {
       it('should accept alias name as a array of strings', () => {
         const aliases = ['item', 'item2', 'item3'];
 
-        tag.alias(aliases);
+        tag.expose(aliases);
 
         aliases.forEach((alias) => expect(tag._aliases[alias]).to.eq(tag));
       });
@@ -70,7 +95,7 @@ describe('base tag logic', () => {
         const alias = 'item';
         const obj = { a: 'b' };
 
-        tag.alias(alias, obj);
+        tag.expose(alias, obj);
 
         expect(tag._aliases[alias]).to.eq(obj);
       });
@@ -79,24 +104,63 @@ describe('base tag logic', () => {
         const aliases = ['item', 'item2', 'item3'];
         const obj = { a: 'b' };
 
-        tag.alias(aliases, obj);
+        tag.expose(aliases, obj);
 
         aliases.forEach((alias) => expect(tag._aliases[alias]).to.eq(obj));
       });
     });
 
-    describe('unalias()', () => {
+    describe('unexpose()', () => {
       it('should remove alias from _aliases', () => {
         const alias = 'item';
         tag._aliases = { [alias]: {} };
 
-        tag.unalias(alias);
+        tag.unexpose(alias);
 
         expect(tag._aliases).to.not.have.property(alias);
       });
     });
 
+    describe('inherits()', () => {
+      it('should call transform()', () => {
+        const alias = 'alias';
+        const options = { a: 'b' };
+        const transform = tag.transform = sinon.spy();
+
+        tag.inherits(alias, options, transform);
+
+        expect(transform).to.be.calledWith(alias, alias, options, transform);
+      });
+    });
+
+    describe('transform()', () => {
+      it('should listen for update and before-mount', () => {
+        const alias = 'alias';
+        const realias = 'realias';
+        const options = { a: 'b' };
+        const updateDependency = sandbox.stub(utils, 'updateDependency');
+        const test = (cb) => {
+          updateDependency.reset();
+          cb();
+          expect(updateDependency).to.be.calledWith(tag, {
+            alias, realias,
+            transform: sinon.match.func
+          }, options);
+        };
+
+        expectSubscriptions(() => tag.transform(alias, realias, options),
+          {
+            'before-mount': { test },
+            update: { test }
+          }, tag);
+      });
+    });
+
     describe('_mixin()', () => {
+      const METADATA = { a: 'b' };
+      class Mixin { }
+      before(() => Mixin[META] = METADATA);
+
       it('should call mixin() with the __proto__ of every new instance', () => {
         const proto = { a: 'b' };
         class Mixin {
@@ -105,159 +169,34 @@ describe('base tag logic', () => {
           }
         }
         const mixin = tag.mixin = sinon.spy();
+        sandbox.stub(utils, 'addMeta', () => expect.fail());
 
         tag._mixin(Mixin, Mixin, Mixin);
 
-        expect(mixin).to.have.been.calledWith(proto, proto, proto);
+        expect(mixin).to.be.calledWith(proto, proto, proto);
       });
-    });
-  });
 
-  describe('setTagName()', () => {
-    it('should not set _tagName', () => {
-      const tag: FluxTag<any> = <any>{
-        root: {
-          tagName: 'SOMENAME',
-          dataset: {},
-          getAttribute: () => null
+      it('should call addMeta() for all found tag metadata', () => {
+        const addMeta = sandbox.stub(utils, 'addMeta');
+        tag.mixin = () => null;
+
+        tag._mixin(Mixin);
+
+        expect(addMeta).to.be.calledWith(tag, METADATA, 'defaults', 'types', 'services');
+      });
+
+      it('should add final mixed-in metadata', () => {
+        class NoMetaMixin { }
+        class MetaMixin {
+          static meta: any = { a: 'b' };
         }
-      };
+        const addMeta = sandbox.stub(utils, 'addMeta');
+        tag.mixin = () => null;
 
-      setTagName(tag);
+        tag._mixin(MetaMixin, NoMetaMixin, Mixin);
 
-      expect(tag._tagName).to.not.be.ok;
-    });
-
-    it('should fall back to root.tagName', () => {
-      const tag: FluxTag<any> = <any>{
-        root: {
-          tagName: 'MY-SOME-NAME',
-          dataset: {},
-          getAttribute: () => null
-        }
-      };
-
-      setTagName(tag);
-
-      expect(tag._tagName).to.eq('my-some-name');
-    });
-
-    it('should set _tagName from root.tagName', () => {
-      const tag: FluxTag<any> = <any>{
-        root: {
-          tagName: 'GB-TEST-TAG'
-        }
-      };
-
-      setTagName(tag);
-
-      expect(tag._tagName).to.eq('gb-test-tag');
-    });
-
-    it('should set _tagName from dataset.is', () => {
-      const tag: FluxTag<any> = <any>{
-        root: {
-          tagName: 'SOMENAME',
-          dataset: {
-            is: 'gb-test-tag'
-          }
-        }
-      };
-
-      setTagName(tag);
-
-      expect(tag._tagName).to.eq('gb-test-tag');
-    });
-  });
-
-  describe('setAliases()', () => {
-    it('should inherit parent aliases', () => {
-      const tag: any = {
-        parent: {
-          _aliases: {
-            c: 'd'
-          }
-        },
-        opts: {}
-      };
-
-      setAliases(tag);
-
-      expect(tag._aliases).to.eql({ c: 'd' });
-    });
-
-    it('should expose alias from opts', () => {
-      const tag: any = {
-        opts: {
-          alias: 'idk'
-        }
-      };
-
-      setAliases(tag);
-
-      expect(tag._aliases).to.eql({ idk: tag });
-    });
-
-    it('should override alias from parent', () => {
-      const tag: any = {
-        parent: {
-          _aliases: {
-            a: 'b',
-            c: 'd'
-          }
-        },
-        opts: {
-          alias: 'a'
-        }
-      };
-
-      setAliases(tag);
-
-      expect(tag._aliases).to.eql({ a: tag, c: 'd' });
-    });
-
-    it('should expose aliases', () => {
-      const tag: any = {
-        parent: {
-          _aliases: {
-            a: 'b',
-            c: 'd'
-          }
-        },
-        opts: {}
-      };
-
-      setAliases(tag);
-
-      expect(tag.$a).to.eq('b');
-      expect(tag.$c).to.eq('d');
-    });
-  });
-
-  describe('addDollarSigns()', () => {
-    it('should add dollar sign prefix to every key', () => {
-      expect(addDollarSigns({ a: 1, b: 2 })).to.eql({ $a: 1, $b: 2 });
-    });
-  });
-
-  describe('camelizeTagName()', () => {
-    it('should remove prefix and camelcase string', () => {
-      expect(camelizeTagName('gb-my-tag')).to.eq('myTag');
-    });
-  });
-
-  describe('MixinFlux()', () => {
-    it('should return a new FluxTag', () => {
-      const flux: any = {};
-      const config: any = {};
-      const services: any = {};
-
-      const fluxTag = MixinFlux(flux, config, services);
-
-      expect(fluxTag).to.be.ok;
-      expect(fluxTag.flux).to.be.eq(flux);
-      expect(fluxTag.config).to.be.eq(config);
-      expect(fluxTag.services).to.be.eq(services);
+        expect(addMeta).to.be.calledWith(tag, METADATA, 'defaults', 'types', 'services');
+      });
     });
   });
 });

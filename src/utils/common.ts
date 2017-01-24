@@ -1,3 +1,4 @@
+import { FluxTag, TypeMap } from '../tags/tag';
 import * as debounce from 'debounce';
 import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
 import * as queryString from 'query-string';
@@ -100,4 +101,26 @@ export function checkNumericAttr(attribute: string, opts: any, defaultValue?: nu
 
 export function scopeCss(tag: string, selector: string) {
   return `${tag} ${selector}, [data-is="${tag}"] ${selector}`;
+}
+
+export function collectServiceConfigs(tag: FluxTag<any>, services: string[]) {
+  return services.reduce((configs, service) => {
+    const config = oget(tag.services, `${service}._config`);
+    if (config) {
+      configs.push(config);
+    }
+    return configs;
+  }, []);
+}
+
+export function coerceAttributes(opts: any, types: TypeMap) {
+  return Object.keys(opts)
+    .reduce((coerced, key) => {
+      switch (types[key]) {
+        case 'boolean':
+          return Object.assign(coerced, { [key]: checkBooleanAttr(key, opts) });
+        default:
+          return Object.assign(coerced, { [key]: opts[key] });
+      }
+    }, {});
 }

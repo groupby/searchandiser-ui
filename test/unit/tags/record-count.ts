@@ -23,7 +23,7 @@ suite('gb-record-count', RecordCount, ({ tag, spy, expectSubscriptions }) => {
 
       tag().updatePageInfo(results);
 
-      expect(update).to.have.been.calledWith({
+      expect(update).to.be.calledWith({
         first: recordStart,
         last: recordEnd,
         total: totalRecordCount

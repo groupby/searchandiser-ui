@@ -1,20 +1,29 @@
-import { checkBooleanAttr } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { Selectable, SelectTag } from '../select/gb-select';
+import { TagMeta } from '../tag';
 
-export interface PageSizeConfig extends Selectable {
+export interface PageSizeOpts extends Selectable {
   resetOffset?: boolean;
 }
 
-export class PageSize extends SelectTag<any> {
+export const META: TagMeta = {
+  types: {
+    resetOffset: 'boolean'
+  }
+};
+export const DEFAULT_PAGE_SIZES = [10, 25, 50, 100];
 
+@meta(META)
+export class PageSize extends SelectTag<PageSizeOpts> {
   resetOffset: boolean;
 
   init() {
-    this.alias('selectable');
+    this.expose('selectable');
+  }
 
-    this.resetOffset = checkBooleanAttr('resetOffset', this.opts);
-
-    this.items = this.config.pageSizes || [10, 25, 50, 100];
+  setDefaults() {
+    // TODO: this should come from service config dependency
+    this.items = this.config.pageSizes || DEFAULT_PAGE_SIZES;
   }
 
   onSelect(value: number) {

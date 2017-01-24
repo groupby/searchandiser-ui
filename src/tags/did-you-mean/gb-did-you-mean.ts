@@ -1,10 +1,10 @@
-import { LinkTag } from '../link-list/gb-link-list';
+import { Linkable, LinkTag } from '../link-list/gb-link-list';
 import { Events, Results } from 'groupby-api';
 
-export class DidYouMean extends LinkTag<any> {
+export class DidYouMean extends LinkTag<Linkable> {
 
   init() {
-    this.alias('linkable');
+    this.expose('linkable');
 
     this.flux.on(Events.RESULTS, this.updateDidYouMean);
   }

@@ -3,19 +3,21 @@ import { FluxTag } from '../tag';
 export const IMAGE_PATTERN = /.*\..*/;
 export const DATA_URL_PREFIX = 'data:image/';
 
-export interface IconConfig {
+export interface IconOpts {
   value: string;
 }
 
-export class Icon extends FluxTag<any> {
+export class Icon extends FluxTag<IconOpts> {
 
   url: string;
   classes: string;
 
   init() {
-    this.setImage();
-
     this.on('update', this.setImage);
+  }
+
+  setDefaults() {
+    this.setImage();
   }
 
   setImage() {

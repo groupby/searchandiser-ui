@@ -31,7 +31,7 @@ describe(`${TAG} logic`, () => {
 
         tag().send();
 
-        expect(send).to.have.been.calledWith(refinement, navigation);
+        expect(send).to.be.calledWith(refinement, navigation);
       });
     });
   });
@@ -46,7 +46,7 @@ describe(`${TAG} logic`, () => {
 
         tag().remove();
 
-        expect(remove).to.have.been.calledWith(refinement, navigation);
+        expect(remove).to.be.calledWith(refinement, navigation);
       });
     });
   });

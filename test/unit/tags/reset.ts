@@ -20,7 +20,7 @@ suite('gb-reset', Reset, ({ flux, tag, stub, spy, expectSubscriptions }) => {
 
       tag().init();
 
-      expect(addEventListener).to.have.been.calledWith('click', tag().clearQuery);
+      expect(addEventListener).to.be.calledWith('click', tag().clearQuery);
     });
   });
 
@@ -30,7 +30,7 @@ suite('gb-reset', Reset, ({ flux, tag, stub, spy, expectSubscriptions }) => {
 
       tag().setSearchBox();
 
-      expect(findSearchBox).to.have.been.called;
+      expect(findSearchBox).to.be.called;
     });
   });
 
@@ -54,7 +54,7 @@ suite('gb-reset', Reset, ({ flux, tag, stub, spy, expectSubscriptions }) => {
       tag().clearQuery()
         .then(() => {
           expect(tag().searchBox.value).to.eq('');
-          expect(search).to.have.been.called;
+          expect(search).to.be.called;
           done();
         });
     });

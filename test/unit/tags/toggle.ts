@@ -1,4 +1,4 @@
-import { Toggle } from '../../../src/tags/toggle/gb-toggle';
+import { DEFAULTS, Toggle, TYPES } from '../../../src/tags/toggle/gb-toggle';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -8,53 +8,26 @@ suite('gb-toggle', Toggle, ({
 }) => {
 
   describe('init()', () => {
-    it('should set default values', () => {
-      tag().addStyleTag = () => null;
+    it('should inherits on toggleable', () => {
+      const inherits = tag().inherits = spy();
 
       tag().init();
 
-      expect(tag().height).to.eq(30);
-      expect(tag().switchHeight).to.eq(22);
-      expect(tag().animationSpeed).to.eq(0.4);
-      expect(tag().checked).to.be.false;
+      expect(inherits).to.be.calledWith('toggleable', { defaults: DEFAULTS, types: TYPES });
     });
 
-    it('should set properties from toggleable()', () => {
-      const height = 40;
-      const switchHeight = 10;
-      const animationSpeed = 0.4;
-      const checked = true;
-      tag().addStyleTag = () => null;
-      tag().toggleable = () => ({ height, switchHeight, animationSpeed, checked });
-
-      tag().init();
-
-      expect(tag().height).to.eq(height);
-      expect(tag().switchHeight).to.eq(switchHeight);
-      expect(tag().animationSpeed).to.eq(animationSpeed);
-      expect(tag().checked).to.be.true;
-    });
-
-    it('should listen for mount', () => {
-      tag().addStyleTag = () => null;
-
+    it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
+        'before-mount': tag().addStyleTag,
         mount: tag().onMount
       }, tag());
-    });
-
-    it('should call addStyleTag()', (done) => {
-      tag().refs.input = <any>{};
-      tag().addStyleTag = () => done();
-
-      tag().init();
     });
   });
 
   describe('onMount()', () => {
     it('should set input checked', () => {
       const input = tag().refs.input = <any>{};
-      tag().checked = true;
+      tag().$toggleable = { checked: true };
 
       tag().onMount();
 
@@ -64,23 +37,25 @@ suite('gb-toggle', Toggle, ({
 
   describe('onClick()', () => {
     it('should not error on missing trigger method', () => {
+      tag().$toggleable = {};
+
       expect(() => tag().onClick()).not.to.throw();
     });
 
     it('should call the configured trigger method', () => {
-      const trigger = spy();
-      tag().opts = { trigger };
+      const onToggle = spy();
+      tag().$toggleable = { onToggle };
       tag().refs.input = <any>{ checked: true };
 
       tag().onClick();
 
-      expect(trigger).to.have.been.calledWith(true);
+      expect(onToggle).to.be.calledWith(true);
     });
   });
 
   describe('calculateSwitchHeight()', () => {
     it('should force height difference to be even', () => {
-      tag().switchHeight = 40;
+      tag().$toggleable = { switchHeight: 40 };
 
       const switchHeight = tag().calculateSwitchHeight(41);
 
@@ -88,7 +63,7 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should not alter switchHeight', () => {
-      tag().switchHeight = 40;
+      tag().$toggleable = { switchHeight: 40 };
 
       const switchHeight = tag().calculateSwitchHeight(42);
 
@@ -96,7 +71,7 @@ suite('gb-toggle', Toggle, ({
     });
 
     it('should not allow switchHeight > height', () => {
-      tag().switchHeight = 50;
+      tag().$toggleable = { switchHeight: 50 };
 
       const switchHeight = tag().calculateSwitchHeight(40);
 
@@ -110,9 +85,11 @@ suite('gb-toggle', Toggle, ({
       const appendChild = spy();
       const createElement = stub(document, 'createElement').returns(node);
       tag().root = <any>{ appendChild };
-      tag().switchHeight = 20;
-      tag().height = 30;
-      tag().animationSpeed = 0.5;
+      tag().$toggleable = {
+        switchHeight: 20,
+        height: 30,
+        animationSpeed: 0.5
+      };
 
       tag().addStyleTag();
 
@@ -145,17 +122,8 @@ suite('gb-toggle', Toggle, ({
            transform: translateX(30px);
          }
       `);
-      expect(createElement).to.have.been.calledWith('style');
-      expect(appendChild).to.have.been.calledWith(node);
-    });
-  });
-
-  describe('toggleable()', () => {
-    it('should mix $toggleable with opts', () => {
-      tag().$toggleable = <any>{ a: 'b', c: 'd' };
-      tag().opts = { a: 'e' };
-
-      expect(tag().toggleable()).to.eql({ a: 'e', c: 'd' });
+      expect(createElement).to.be.calledWith('style');
+      expect(appendChild).to.be.calledWith(node);
     });
   });
 });

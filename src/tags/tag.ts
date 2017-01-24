@@ -1,47 +1,73 @@
+import { SearchandiserConfig } from '../searchandiser';
 import { Services } from '../services/init';
-import { checkBooleanAttr, getPath } from '../utils/common';
+import { addMeta, configure, inheritAliases, setTagName, updateDependency } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
 
-const TAG_PREFIX_REGEX = /^[a-z]*?-/;
-const TAG_WORD_BREAK_REGEX = /-([a-z])/g;
+export const META = Symbol('meta');
 
 const sayt = new Sayt();
 
 export interface FluxTag<T> extends riot.Tag.Instance {
-  parent: FluxTag<any> & any;
+  parent: FluxTag<any>;
+  opts: T;
 
   flux: FluxCapacitor;
   services: Services;
-  config: any;
+  config: SearchandiserConfig;
+
+  setDefaults(config: T): void;
 }
 
 export class FluxTag<T> {
   _tagName: string;
+  _state: any;
   _aliases: any;
+
   // TODO: should get rid of this
   _style: string;
 
   init() {
+    this._state = {};
     this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
-    setAliases(this);
+    inheritAliases(this);
+
+    this.on('before-mount', () => configure(this));
   }
 
-  alias(aliases: string | string[], obj: any = this) {
+  expose(aliases: string | string[], obj: any = this) {
     if (!Array.isArray(aliases)) {
       aliases = [aliases];
     }
     aliases.forEach((alias) => this[`$${alias}`] = this._aliases[alias] = obj);
   }
 
-  unalias(alias: string) {
+  unexpose(alias: string) {
     delete this._aliases[alias];
   }
 
+  // tslint:disable-next-line:max-line-length
+  transform(alias: string, realias: string | string[], options: DependencyOptions = {}, transform: (obj: any) => any = (obj) => obj) {
+    const dependency = { alias, realias, transform };
+    this.on('before-mount', () => updateDependency(this, dependency, options));
+    this.on('update', () => updateDependency(this, dependency, options));
+  }
+
+  inherits(alias: string, options?: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
+    this.transform(alias, alias, options, transform);
+  }
+
   _mixin(...mixins: any[]) {
-    this.mixin(...mixins.map((mixin) => new mixin().__proto__));
+    let meta;
+    this.mixin(...mixins.map((mixin) => {
+      meta = meta || mixin[META];
+      return new mixin().__proto__;
+    }));
+    if (meta) {
+      addMeta(this, meta, 'defaults', 'types', 'services');
+    }
   }
 }
 
@@ -56,44 +82,23 @@ export class SaytTag<T> {
   }
 }
 
-export function setTagName(tag: FluxTag<any>) {
-  const htmlTagName = tag.root.tagName.toLowerCase();
-  let tagName = htmlTagName;
-
-  if (htmlTagName.indexOf('-') === -1) {
-    tagName = tag.root.dataset['is'];
-  }
-
-  if (tagName) {
-    tag._tagName = tagName;
-  }
+export interface TagMeta {
+  defaults?: any;
+  types?: TypeMap;
+  services?: string[];
 }
-
-export function setAliases(tag: FluxTag<any>) {
-  let aliases = {};
-  if (tag.parent && tag.parent._aliases) {
-    Object.assign(aliases, tag.parent._aliases);
-  }
-
-  if (tag.opts.alias) {
-    aliases[tag.opts.alias] = tag;
-  }
-
-  Object.assign(tag, addDollarSigns(aliases));
-
-  tag._aliases = aliases;
+export interface TypeMap { [key: string]: string; }
+export interface ConfigureOptions {
+  defaults?: any;
+  services?: string[];
+  types?: TypeMap;
 }
-
-export function addDollarSigns(obj: any) {
-  return Object.keys(obj)
-    .reduce((renamed, key) => Object.assign(renamed, { [`$${key}`]: obj[key] }), {});
+export interface Dependency {
+  alias: string;
+  realias: string | string[];
+  transform: (obj: any) => any;
 }
-
-export function camelizeTagName(tagName: string) {
-  return tagName.replace(TAG_PREFIX_REGEX, '')
-    .replace(TAG_WORD_BREAK_REGEX, (match) => match[1].toUpperCase());
-}
-
-export function MixinFlux(flux: FluxCapacitor, config: any, services: any): FluxTag<any> {
-  return Object.assign(new FluxTag()['__proto__'], { flux, config, services });
+export interface DependencyOptions {
+  defaults?: any;
+  types?: TypeMap;
 }

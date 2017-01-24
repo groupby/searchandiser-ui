@@ -10,10 +10,9 @@ suite('collections', ({ spy, stub }) => {
     it('should set properties', () => {
       const service = new Collections(<any>{}, <any>{});
 
-      expect(service.collectionsConfig).to.eql({});
       expect(service.fetchCounts).to.be.true;
       expect(service.collections).to.eql([]);
-      expect(service.items).to.eql([]);
+      expect(service._config).to.eql({ items: [] });
     });
 
     it('should take overrides for properties', () => {
@@ -23,10 +22,9 @@ suite('collections', ({ spy, stub }) => {
 
       const service = new Collections(<any>{}, config);
 
-      expect(service.collectionsConfig).to.eq(collections);
       expect(service.fetchCounts).to.be.false;
       expect(service.collections).to.eql(['b']);
-      expect(service.items).to.eq(items);
+      expect(service._config).to.eql({ items });
     });
   });
 
@@ -84,7 +82,7 @@ suite('collections', ({ spy, stub }) => {
 
       service.updateCollectionCounts()
         .then(() => {
-          expect(emit).to.have.been.calledWith(COLLECTIONS_UPDATED_EVENT, counts);
+          expect(emit).to.be.calledWith(COLLECTIONS_UPDATED_EVENT, counts);
           expect(service.inProgress).to.be.an.instanceof(Promise);
           done();
         });
@@ -119,7 +117,7 @@ suite('collections', ({ spy, stub }) => {
 
       expect(service.inProgress).to.be.an.instanceof(Promise);
       expect(service.inProgress.cancelled).to.be.undefined;
-      expect(search).to.have.been.called;
+      expect(search).to.be.called;
     });
 
     it('should not update results if cancelled', (done) => {
@@ -137,8 +135,8 @@ suite('collections', ({ spy, stub }) => {
       service.updateCollectionCounts();
 
       setTimeout(() => {
-        expect(search).to.have.been.called;
-        expect(extractCounts).to.have.been.called;
+        expect(search).to.be.called;
+        expect(extractCounts).to.be.called;
         expect(flux.emit).to.not.have.been.called;
         done();
       }, 100);
@@ -174,7 +172,7 @@ suite('collections', ({ spy, stub }) => {
 
       service.updateSelectedCollectionCount(<any>{ totalRecordCount });
 
-      expect(emit).to.have.been.calledWith(COLLECTIONS_UPDATED_EVENT, {
+      expect(emit).to.be.calledWith(COLLECTIONS_UPDATED_EVENT, {
         [collection]: totalRecordCount
       });
     });
@@ -189,7 +187,7 @@ suite('collections', ({ spy, stub }) => {
 
       service.updateSelectedCollectionCount(<any>{ totalRecordCount });
 
-      expect(emit).to.have.been.calledWith(COLLECTIONS_UPDATED_EVENT, {
+      expect(emit).to.be.calledWith(COLLECTIONS_UPDATED_EVENT, {
         [collection]: totalRecordCount,
         prod: 403,
         test: 330

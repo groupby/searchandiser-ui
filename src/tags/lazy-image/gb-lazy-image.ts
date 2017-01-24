@@ -2,11 +2,11 @@ import { WINDOW } from '../../utils/common';
 import { Product } from '../product/gb-product';
 import { FluxTag } from '../tag';
 
-export interface LazyImageConfig {
+export interface LazyImageOpts {
   src: string;
 }
 
-export class LazyImage extends FluxTag<LazyImageConfig> {
+export class LazyImage extends FluxTag<LazyImageOpts> {
   $product: Product;
   refs: { lazyImage: HTMLImageElement };
 

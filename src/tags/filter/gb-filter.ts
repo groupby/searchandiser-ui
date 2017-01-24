@@ -1,25 +1,29 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
 import { toRefinement } from '../../utils/common';
-import { Select, Selectable, SelectTag } from '../select/gb-select';
+import { meta } from '../../utils/decorators';
+import { Selectable, SelectTag } from '../select/gb-select';
+import { TagMeta } from '../tag';
 import { Results } from 'groupby-api';
 
-export interface FilterConfig extends Selectable {
+export interface FilterOpts extends Selectable {
   field: string;
 }
 
-export class Filter extends SelectTag<any> {
-  tags: { 'gb-select': Select };
+export const META: TagMeta = {
+  defaults: {
+    label: 'Filter',
+    clear: 'Unfiltered'
+  }
+};
 
+@meta(META)
+export class Filter extends SelectTag<FilterOpts> {
   field: string;
 
   selected: any;
 
   init() {
-    this.alias('selectable');
-
-    this.field = this.opts.field;
-    this.label = this.opts.label || 'Filter';
-    this.clear = this.opts.clear || 'Unfiltered';
+    this.expose('selectable');
 
     this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
   }

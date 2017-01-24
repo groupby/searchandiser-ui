@@ -1,75 +1,89 @@
-import { Details } from '../../../src/tags/details/gb-details';
+import { Details, META } from '../../../src/tags/details/gb-details';
 import * as utils from '../../../src/utils/common';
-import { ProductTransformer } from '../../../src/utils/product-transformer';
+import * as transform from '../../../src/utils/product-transformer';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-details', Details, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Details, META);
 
   describe('init()', () => {
-    it('should have default values', () => {
-      tag().init();
-
-      expect(tag().idParam).to.eq('id');
-      expect(tag().query).to.not.be.ok;
-      expect(tag().structure).to.eql({});
-      expect(tag().transformer).to.be.an.instanceof(ProductTransformer);
-    });
-
-    it('should set properties from opts', () => {
-      const idParam = 'myId';
-      tag().opts = { idParam };
-
-      tag().init();
-
-      expect(tag().idParam).to.eq(idParam);
-    });
-
-    it('should allow override from config', () => {
-      const structure = { a: 'b', c: 'd' };
-      tag().config = { structure };
-
-      tag().init();
-
-      expect(tag().structure).to.eq(structure);
-    });
-
     it('should listen for details event', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.DETAILS]: tag().updateRecord
       });
     });
+  });
 
-    it('should call flux.details() if query is found', () => {
-      const id = 1632;
-      const idField = 'productId';
+  describe('setDefaults()', () => {
+    it('should set structure from config', () => {
+      const structure = { a: 'b' };
+
+      tag().setDefaults(<any>{ structure });
+
+      expect(tag().structure).to.eq(structure);
+    });
+
+    it('should set structure from global', () => {
+      const structure = { a: 'b' };
+      tag().config = <any>{ structure };
+
+      tag().setDefaults(<any>{ structure });
+
+      expect(tag().structure).to.eq(structure);
+    });
+
+    it('should initialize transformer', () => {
+      const transformer = { a: 'b' };
+      const structure = { c: 'd' };
+      const productTransformer = stub(transform, 'ProductTransformer', () => transformer);
+
+      tag().setDefaults(<any>{ structure });
+
+      expect(tag().transformer).to.eq(transformer);
+      expect(productTransformer).to.be.calledWith(structure);
+    });
+  });
+
+  describe('requestDetails()', () => {
+    it('should call flux.details()', () => {
+      const idField = 'myId';
+      const query = { a: 'b' };
+      const idParam = tag().idParam = 'myQuery';
+      const getParam = stub(utils, 'getParam', () => query);
       const details = stub(flux(), 'details');
-      const getParam = stub(utils, 'getParam').returns(id);
-      tag().config = { structure: { id: idField } };
+      tag().transformer = <any>{ idField };
 
-      tag().init();
+      tag().requestDetails();
 
-      expect(getParam).to.have.been.calledWith('id');
-      expect(details).to.have.been.calledWith(id, idField);
+      expect(getParam).to.be.calledWith(idParam);
+      expect(details).to.be.calledWith(query, idField);
+    });
+
+    it('should not call flux.details()', () => {
+      stub(utils, 'getParam', () => false);
+      stub(flux(), 'details', () => expect.fail());
+
+      tag().requestDetails();
     });
   });
 
   describe('updateRecord()', () => {
-    it('should update record', () => {
+    it('should update gb-product tag', () => {
       const allMeta = { a: 'b', c: 'd' };
-      const update = tag().update = spy();
-      tag().transformer = <any>{ transform: (meta) => [meta] };
+      const updateRecord = spy();
+      const update = spy();
+      tag().tags = <any>{ 'gb-product': { updateRecord, update } };
 
       tag().updateRecord(<any>{ allMeta });
 
-      expect(update).to.have.been.calledWith({
-        metadata: allMeta,
-        variants: [allMeta]
-      });
+      expect(updateRecord).to.be.calledWith(allMeta);
+      expect(update).to.be.called;
     });
   });
 });

@@ -2,7 +2,7 @@ import { Collections } from '../../src/tags/collections/gb-collections';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-const MIXIN = { services: { collections: {} } };
+const MIXIN = { services: { collections: { _config: {} } } };
 
 suite<Collections>('gb-collections', MIXIN, ({
   flux, mount, spy, stub,
@@ -92,7 +92,7 @@ suite<Collections>('gb-collections', MIXIN, ({
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('.gb-collection')[1]).click();
 
-        expect(onSelect).to.have.been.calledWith(ITEMS[1].value);
+        expect(onSelect).to.be.calledWith(ITEMS[1].value);
       });
     });
 
@@ -103,7 +103,7 @@ suite<Collections>('gb-collections', MIXIN, ({
 
         (<HTMLAnchorElement>tag.root.querySelectorAll('gb-collection-dropdown-item a')[1]).click();
 
-        expect(switchCollection).to.have.been.calledWith(ITEMS[1].value);
+        expect(switchCollection).to.be.calledWith(ITEMS[1].value);
       });
     });
   });

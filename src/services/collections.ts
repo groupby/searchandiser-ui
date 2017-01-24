@@ -1,5 +1,5 @@
 import { SearchandiserConfig } from '../searchandiser';
-import { CollectionsConfig, CollectionOption } from '../tags/collections/gb-collections';
+import { LabeledOption, SelectOption } from '../tags/select/gb-select';
 import { getPath, unless } from '../utils/common';
 import { Events, FluxCapacitor, Results } from 'groupby-api';
 
@@ -9,22 +9,19 @@ export type CancelablePromise<T> = Promise<T> & { cancelled: boolean; };
 
 export class Collections {
 
-  collectionsConfig: CollectionsConfig;
+  _config: { items: SelectOption[] };
   fetchCounts: boolean;
   counts: any = {};
   inProgress: CancelablePromise<any>;
   collections: string[];
-  items: string[] | CollectionOption[];
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
-    this.collectionsConfig = getPath(config, 'tags.collections') || {};
-    this.fetchCounts = unless(this.collectionsConfig.showCounts, true);
-    this.items = this.collectionsConfig.items || [];
-    if (this.isLabeled(this.items)) {
-      this.collections = this.items.map((item) => item.value);
-    } else {
-      this.collections = this.items;
-    }
+    const collectionsConfig = getPath(config, 'tags.collections') || {};
+    const items = collectionsConfig.items || [];
+    this.fetchCounts = unless(collectionsConfig.showCounts, true);
+    this.collections = this.isLabeled(items) ? items.map((item) => item.value) : items;
+
+    this._config = { items };
   }
 
   init() {
@@ -71,7 +68,7 @@ export class Collections {
     return collection === this.selectedCollection;
   }
 
-  isLabeled(items: Array<string | CollectionOption>): items is CollectionOption[] {
+  isLabeled(items: SelectOption[]): items is LabeledOption[] {
     return items.length !== 0 && typeof items[0] === 'object';
   }
 

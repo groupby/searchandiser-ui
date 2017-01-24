@@ -37,7 +37,7 @@ suite('url', ({ spy, stub }) => {
           search: (queryString) => {
             expect(queryString).to.eq('test');
             expect(flux.query).to.eq(query);
-            expect(parseUrl).to.have.been.calledWith(sinon.match.instanceOf(SimpleBeautifier));
+            expect(parseUrl).to.be.calledWith(sinon.match.instanceOf(SimpleBeautifier));
             done();
           }
         };
@@ -66,7 +66,7 @@ suite('url', ({ spy, stub }) => {
           search: (queryString) => {
             expect(queryString).to.eq('test');
             expect(flux.query).to.eq(query);
-            expect(parseBeautifiedUrl).to.have.been.calledWith(sinon.match.instanceOf(UrlBeautifier));
+            expect(parseBeautifiedUrl).to.be.calledWith(sinon.match.instanceOf(UrlBeautifier));
             done();
           }
         };
@@ -94,7 +94,7 @@ suite('url', ({ spy, stub }) => {
       const service = new Url(<any>{}, config, <any>{});
 
       expect(service.isActive()).to.be.true;
-      expect(pathname).to.have.been.called;
+      expect(pathname).to.be.called;
     });
 
     it('should return false', () => {
@@ -103,7 +103,7 @@ suite('url', ({ spy, stub }) => {
       const service = new Url(<any>{}, <any>{ url: { searchUrl } }, <any>{});
 
       expect(service.isActive()).to.be.false;
-      expect(pathname).to.have.been.called;
+      expect(pathname).to.be.called;
     });
   });
 
@@ -119,8 +119,8 @@ suite('url', ({ spy, stub }) => {
 
         urlService.update(query);
 
-        expect(setLocation).to.have.been.calledWith(newUrl);
-        expect(build).to.have.been.calledWith(query);
+        expect(setLocation).to.be.calledWith(newUrl);
+        expect(build).to.be.calledWith(query);
       });
     });
 
@@ -136,8 +136,8 @@ suite('url', ({ spy, stub }) => {
 
         urlService.update(query);
 
-        expect(setLocation).to.have.been.calledWith(newUrl);
-        expect(build).to.have.been.calledWith(query);
+        expect(setLocation).to.be.calledWith(newUrl);
+        expect(build).to.be.calledWith(query);
       });
     });
   });
@@ -149,7 +149,7 @@ suite('url', ({ spy, stub }) => {
 
       Url.parseUrl(beautifier);
 
-      expect(parse).to.have.been.calledWith(window.location.href);
+      expect(parse).to.be.calledWith(window.location.href);
     });
   });
 
@@ -160,7 +160,7 @@ suite('url', ({ spy, stub }) => {
 
       Url.parseBeautifiedUrl(beautifier);
 
-      expect(parse).to.have.been.calledWith(window.location.href);
+      expect(parse).to.be.calledWith(window.location.href);
     });
   });
 
@@ -169,7 +169,7 @@ suite('url', ({ spy, stub }) => {
     let pathname: Sinon.SinonStub;
 
     beforeEach(() => pathname = stub(LOCATION, 'pathname').returns(SEARCH_URL));
-    afterEach(() => expect(pathname).to.have.been.called);
+    afterEach(() => expect(pathname).to.be.called);
 
     it('should update search', () => {
       const newUrl = 'example.com/search?q=hats';
@@ -177,7 +177,7 @@ suite('url', ({ spy, stub }) => {
 
       Url.setLocation(newUrl, { searchUrl: SEARCH_URL });
 
-      expect(setSearch).to.have.been.calledWith('?q=hats');
+      expect(setSearch).to.be.calledWith('?q=hats');
     });
 
     it('should replace url', () => {
@@ -186,7 +186,7 @@ suite('url', ({ spy, stub }) => {
 
       Url.setLocation(newUrl, { searchUrl: '/search' });
 
-      expect(replace).to.have.been.calledWith(newUrl);
+      expect(replace).to.be.calledWith(newUrl);
     });
   });
 });

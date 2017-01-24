@@ -1,34 +1,42 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { checkBooleanAttr } from '../../utils/common';
-import { Selectable, SelectTag } from '../select/gb-select';
+import { meta } from '../../utils/decorators';
+import { Selectable, SelectOption, SelectTag } from '../select/gb-select';
+import { TagMeta } from '../tag';
 
-export interface CollectionOption {
-  label: string;
-  value: string;
-}
-
-export interface CollectionsConfig extends Selectable {
-  items: string[] | CollectionOption[];
+export interface CollectionsOpts extends Selectable {
+  items: SelectOption[];
   dropdown?: boolean;
   showCounts?: boolean;
 }
 
-export class Collections extends SelectTag<any> {
+export const META: TagMeta = {
+  defaults: {
+    items: [],
+    showCounts: true
+  },
+  types: {
+    showCounts: 'boolean',
+    dropdown: 'boolean'
+  },
+  services: ['collections']
+};
+
+@meta(META)
+export class Collections extends SelectTag<CollectionsOpts> {
+
   dropdown: boolean;
   showCounts: boolean;
 
   counts: { [key: string]: number };
 
   init() {
-    this.alias(['collections', 'listable', 'selectable']);
-
-    this.showCounts = checkBooleanAttr('showCounts', this.opts, true);
-    this.dropdown = checkBooleanAttr('dropdown', this.opts);
-
-    this.items = this.services.collections.items;
-    this.counts = {};
+    this.expose(['collections', 'listable', 'selectable']);
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
+  }
+
+  setDefaults() {
+    this.counts = {};
   }
 
   updateCounts(counts: any) {

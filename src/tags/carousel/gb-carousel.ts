@@ -1,16 +1,16 @@
 import { FluxTag } from '../tag';
 
-export interface CarouselConfig {
+export interface CarouselOpts {
   items: any[];
 }
 
-export class Carousel extends FluxTag<CarouselConfig> {
+export class Carousel extends FluxTag<CarouselOpts> {
 
   currentIndex: number;
   items: any[];
 
   init() {
-    this.alias('listable');
+    this.expose('listable');
 
     this.currentIndex = 0;
     this.items = this.opts.items || [];

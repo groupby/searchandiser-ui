@@ -1,4 +1,5 @@
-import { Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { META, Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { displayRefinement } from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,24 +7,21 @@ import { Events } from 'groupby-api';
 
 suite('gb-navigation', Navigation, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldHaveMeta,
+  itShouldAlias
 }) => {
+  itShouldHaveMeta(Navigation, META);
 
   describe('init()', () => {
-    it('should set defaults', () => {
-      tag().init();
+    itShouldAlias('navigable');
 
-      expect(tag().badge).to.be.true;
-      expect(tag().showSelected).to.be.true;
-    });
-
-    it('should set properties from opts', () => {
-      tag().opts = { badge: false, showSelected: false };
+    it('should mixin toView()', () => {
+      const mixin = tag().mixin = spy();
 
       tag().init();
 
-      expect(tag().badge).to.be.false;
-      expect(tag().showSelected).to.be.false;
+      expect(mixin).to.be.calledWith({ toView: displayRefinement });
     });
 
     it('should listen for flux events', () => {
@@ -43,8 +41,8 @@ suite('gb-navigation', Navigation, ({
 
       tag().updateRefinements(results);
 
-      expect(replaceRefinements).to.have.been.calledWith(results);
-      expect(update).to.have.been.calledWith({ processed });
+      expect(replaceRefinements).to.be.calledWith(results);
+      expect(update).to.be.calledWith({ processed });
     });
   });
 
@@ -107,7 +105,7 @@ suite('gb-navigation', Navigation, ({
 
       tag().send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(refine).to.have.been.calledWith(refinement('price', 4, 6));
+      expect(refine).to.be.calledWith(refinement('price', 4, 6));
     });
   });
 
@@ -117,7 +115,7 @@ suite('gb-navigation', Navigation, ({
 
       tag().remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(unrefine).to.have.been.calledWith(refinement('price', 4, 6));
+      expect(unrefine).to.be.calledWith(refinement('price', 4, 6));
     });
   });
 });

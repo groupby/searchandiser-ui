@@ -1,8 +1,8 @@
-import { checkBooleanAttr } from '../../utils/common';
-import { FluxTag } from '../tag';
+import { meta } from '../../utils/decorators';
+import { FluxTag, TagMeta } from '../tag';
 import { Events } from 'groupby-api';
 
-export interface PagingConfig {
+export interface PagingOpts {
   limit?: number;
   pages?: boolean;
   numeric?: boolean;
@@ -21,7 +21,32 @@ export interface PagingConfig {
   lastIcon?: string;
 }
 
-export class Paging extends FluxTag<any> {
+export const META: TagMeta = {
+  defaults: {
+    limit: 5,
+    terminals: true,
+    labels: true,
+    icons: true,
+    firstLabel: 'First',
+    nextLabel: 'Next',
+    prevLabel: 'Prev',
+    lastLabel: 'Last',
+    firstIcon: require('./double-arrow-left.png'),
+    nextIcon: require('./arrow-right.png'),
+    prevIcon: require('./arrow-left.png'),
+    lastIcon: require('./double-arrow-right.png')
+  },
+  types: {
+    pages: 'boolean',
+    numeric: 'boolean',
+    terminals: 'boolean',
+    labels: 'boolean',
+    icons: 'boolean'
+  }
+};
+
+@meta(META)
+export class Paging extends FluxTag<PagingOpts> {
   limit: number;
   pages: boolean;
   numeric: boolean;
@@ -30,7 +55,7 @@ export class Paging extends FluxTag<any> {
   icons: boolean;
   prevLabel: string;
   nextLabel: string;
-  fistLabel: string;
+  firstLabel: string;
   lastLabel: string;
   prevIcon: string;
   nextIcon: string;
@@ -46,29 +71,15 @@ export class Paging extends FluxTag<any> {
   pageNumbers: number[];
 
   init() {
-    this.alias('paging');
-
-    this.limit = this.opts.limit || 5;
-    this.pages = checkBooleanAttr('pages', this.opts);
-    this.numeric = checkBooleanAttr('numeric', this.opts);
-    this.terminals = checkBooleanAttr('terminals', this.opts, true);
-    this.labels = checkBooleanAttr('labels', this.opts, true);
-    this.icons = checkBooleanAttr('icons', this.opts, true);
-    this.fistLabel = this.opts.fistLabel || 'First';
-    this.prevLabel = this.opts.prevLabel || 'Prev';
-    this.nextLabel = this.opts.nextLabel || 'Next';
-    this.lastLabel = this.opts.lastLabel || 'Last';
-    this.firstIcon = this.opts.firstIcon || require('./double-arrow-left.png');
-    this.prevIcon = this.opts.prevIcon || require('./arrow-left.png');
-    this.nextIcon = this.opts.nextIcon || require('./arrow-right.png');
-    this.lastIcon = this.opts.lastIcon || require('./double-arrow-right.png');
-
-    // default initial state
-    this.backDisabled = true;
-    this.currentPage = 1;
+    this.expose('paging');
 
     this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
     this.flux.on(Events.RESULTS, this.pageInfo);
+  }
+
+  setDefaults() {
+    this.backDisabled = true;
+    this.currentPage = 1;
   }
 
   pageInfo() {

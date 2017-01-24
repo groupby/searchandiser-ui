@@ -1,4 +1,4 @@
-import { Paging } from '../../../src/tags/paging/gb-paging';
+import { META, Paging } from '../../../src/tags/paging/gb-paging';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
@@ -6,74 +6,28 @@ import { Events } from 'groupby-api';
 suite('gb-paging', Paging, ({
   flux, tag, spy, stub,
   expectSubscriptions,
+  itShouldHaveMeta,
   itShouldAlias
 }) => {
+  itShouldHaveMeta(Paging, META);
 
   describe('init()', () => {
     itShouldAlias('paging');
-
-    it('should have default initial state', () => {
-      tag().init();
-
-      expect(tag().limit).to.eq(5);
-      expect(tag().pages).to.be.false;
-      expect(tag().numeric).to.be.false;
-      expect(tag().terminals).to.be.true;
-      expect(tag().labels).to.be.true;
-      expect(tag().icons).to.be.true;
-      expect(tag().fistLabel).to.eq('First');
-      expect(tag().prevLabel).to.eq('Prev');
-      expect(tag().nextLabel).to.eq('Next');
-      expect(tag().lastLabel).to.eq('Last');
-      expect(tag().firstIcon).to.have.string('data:image/png');
-      expect(tag().prevIcon).to.have.string('data:image/png');
-      expect(tag().nextIcon).to.have.string('data:image/png');
-      expect(tag().lastIcon).to.have.string('data:image/png');
-      expect(tag().currentPage).to.eq(1);
-      expect(tag().backDisabled).to.be.true;
-    });
-
-    it('should set properties from opts', () => {
-      tag().opts = {
-        limit: 10,
-        pages: true,
-        numeric: true,
-        terminals: false,
-        labels: false,
-        icons: false,
-        fistLabel: 'first',
-        prevLabel: 'prev',
-        nextLabel: 'next',
-        lastLabel: 'last',
-        firstIcon: 'firstIcon',
-        prevIcon: 'prevIcon',
-        nextIcon: 'nextIcon',
-        lastIcon: 'lastIcon'
-      };
-
-      tag().init();
-
-      expect(tag().limit).to.eq(10);
-      expect(tag().pages).to.be.true;
-      expect(tag().numeric).to.be.true;
-      expect(tag().terminals).to.be.false;
-      expect(tag().labels).to.be.false;
-      expect(tag().icons).to.be.false;
-      expect(tag().fistLabel).to.eq('first');
-      expect(tag().prevLabel).to.eq('prev');
-      expect(tag().nextLabel).to.eq('next');
-      expect(tag().lastLabel).to.eq('last');
-      expect(tag().firstIcon).to.eq('firstIcon');
-      expect(tag().prevIcon).to.eq('prevIcon');
-      expect(tag().nextIcon).to.eq('nextIcon');
-      expect(tag().lastIcon).to.eq('lastIcon');
-    });
 
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
         [Events.PAGE_CHANGED]: tag().updateCurrentPage,
         [Events.RESULTS]: tag().pageInfo
       });
+    });
+  });
+
+  describe('setDefaults()', () => {
+    it('should set defaults', () => {
+      tag().setDefaults();
+
+      expect(tag().backDisabled).to.be.true;
+      expect(tag().currentPage).to.eq(1);
     });
   });
 
@@ -93,7 +47,7 @@ suite('gb-paging', Paging, ({
 
       tag().pageInfo();
 
-      expect(updatePageInfo).to.have.been.calledWith(pageNumbers, 9, 16);
+      expect(updatePageInfo).to.be.calledWith(pageNumbers, 9, 16);
     });
   });
 
@@ -120,7 +74,7 @@ suite('gb-paging', Paging, ({
 
       tag().updatePageInfo([2, 3, 4], 1, 6);
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         lowOverflow: true,
         highOverflow: true
       });
@@ -131,7 +85,7 @@ suite('gb-paging', Paging, ({
 
       tag().updatePageInfo([1, 2, 3, 4], 1, 4);
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         lowOverflow: false,
         highOverflow: false
       });
@@ -142,7 +96,7 @@ suite('gb-paging', Paging, ({
 
       tag().updatePageInfo([1], 1, 1);
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         backDisabled: true,
         forwardDisabled: true
       });
@@ -153,7 +107,7 @@ suite('gb-paging', Paging, ({
 
       tag().updatePageInfo([1, 2, 3], 2, 3);
 
-      expect(update).to.have.been.calledWithMatch({
+      expect(update).to.be.calledWithMatch({
         backDisabled: false,
         forwardDisabled: false
       });
@@ -166,7 +120,7 @@ suite('gb-paging', Paging, ({
 
       tag().updateCurrentPage({ pageNumber: 10 });
 
-      expect(update).to.have.been.calledWithMatch({ currentPage: 10 });
+      expect(update).to.be.calledWithMatch({ currentPage: 10 });
     });
   });
 
@@ -175,7 +129,7 @@ suite('gb-paging', Paging, ({
       const reset = spy(() => Promise.resolve());
       flux().page = <any>{ reset };
       tag().emitEvent = () => {
-        expect(reset).to.have.been.called;
+        expect(reset).to.be.called;
         done();
       };
 
@@ -195,7 +149,7 @@ suite('gb-paging', Paging, ({
       const prev = spy(() => Promise.resolve());
       flux().page = <any>{ prev };
       tag().emitEvent = () => {
-        expect(prev).to.have.been.called;
+        expect(prev).to.be.called;
         done();
       };
 
@@ -215,7 +169,7 @@ suite('gb-paging', Paging, ({
       const next = spy(() => Promise.resolve());
       flux().page = <any>{ next };
       tag().emitEvent = () => {
-        expect(next).to.have.been.called;
+        expect(next).to.be.called;
         done();
       };
 
@@ -235,7 +189,7 @@ suite('gb-paging', Paging, ({
       const last = spy(() => Promise.resolve());
       flux().page = <any>{ last };
       tag().emitEvent = () => {
-        expect(last).to.have.been.called;
+        expect(last).to.be.called;
         done();
       };
 
@@ -255,7 +209,7 @@ suite('gb-paging', Paging, ({
       const switchPage = spy(() => Promise.resolve());
       flux().page = <any>{ switchPage };
       tag().emitEvent = () => {
-        expect(switchPage).to.have.been.calledWith(8);
+        expect(switchPage).to.be.calledWith(8);
         done();
       };
 

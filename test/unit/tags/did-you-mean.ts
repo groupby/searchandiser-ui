@@ -34,8 +34,8 @@ suite('gb-did-you-mean', DidYouMean, ({
 
       tag().onSelect(<any>{ target: {} })
         .then(() => {
-          expect(didYouMean).to.have.been.called;
-          expect(rewrite).to.have.been.called;
+          expect(didYouMean).to.be.called;
+          expect(rewrite).to.be.called;
           done();
         });
     });
@@ -56,7 +56,7 @@ suite('gb-did-you-mean', DidYouMean, ({
 
       tag().updateDidYouMean(<any>{ didYouMean: items });
 
-      expect(update).to.have.been.calledWith({ items });
+      expect(update).to.be.calledWith({ items });
     });
   });
 });

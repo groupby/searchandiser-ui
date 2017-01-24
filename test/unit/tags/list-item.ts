@@ -5,14 +5,16 @@ import { expect } from 'chai';
 suite('gb-list-item', ListItem, ({ tag, spy, expectAliases }) => {
 
   describe('init()', () => {
+    beforeEach(() => tag().$listable = <any>{});
+
     it('should alias item as $list.itemAlias and i as $list.indexAlias', () => {
       const item = tag().item = { a: 'b' };
       const index = tag().i = 8;
-      tag().$list = <any>{
+      tag().$listable = <any>{
         itemAlias: 'item',
-        indexAlias: 'index',
-        isActive: () => null
+        indexAlias: 'index'
       };
+      tag().$list = <any>{ isActive: () => null };
 
       expectAliases(() => tag().init(), { item, index });
     });
@@ -24,7 +26,7 @@ suite('gb-list-item', ListItem, ({ tag, spy, expectAliases }) => {
 
       tag().init();
 
-      expect(add).to.have.been.calledWith('active');
+      expect(add).to.be.calledWith('active');
     });
 
     it('should not add active class if not $list.isActive()', () => {
@@ -34,13 +36,13 @@ suite('gb-list-item', ListItem, ({ tag, spy, expectAliases }) => {
       tag().init();
     });
 
-    it('should unalias() $list', () => {
-      const unalias = tag().unalias = spy();
+    it('should unexpose() $list', () => {
+      const unexpose = tag().unexpose = spy();
       tag().$list = <any>{ isActive: () => null };
 
       tag().init();
 
-      expect(unalias).to.have.been.calledWith('list');
+      expect(unexpose).to.be.calledWith('list');
     });
   });
 });

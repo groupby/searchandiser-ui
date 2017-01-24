@@ -1,19 +1,24 @@
+import { meta } from '../../utils/decorators';
 import { Selectable, SelectTag } from '../select/gb-select';
+import { TagMeta } from '../tag';
 import { Results, Sort as SortModel } from 'groupby-api';
 
-export const DEFAULT_SORTS = [
-  { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
-  { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
-];
+export interface SortOpts extends Selectable { }
 
-export interface SortConfig extends Selectable { }
+export const META: TagMeta = {
+  defaults: {
+    items: [
+      { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
+      { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
+    ]
+  }
+};
 
-export class Sort extends SelectTag<any> {
+@meta(META)
+export class Sort extends SelectTag<SortOpts> {
 
   init() {
-    this.alias('selectable');
-
-    this.items = this.opts.items || DEFAULT_SORTS;
+    this.expose('selectable');
   }
 
   sortValues() {
