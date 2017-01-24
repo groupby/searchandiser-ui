@@ -58,7 +58,10 @@ export class FluxTag<T> {
   }
 
   _mixin(...mixins: any[]) {
-    this.mixin(...mixins.map((mixin) => new mixin().__proto__));
+    this.mixin(...mixins.map((mixin) => {
+
+      return new mixin().__proto__;
+    }));
   }
 }
 
