@@ -1,4 +1,4 @@
-import { ConfigureOptions, Dependency, DependencyOptions, FluxTag, TagConfigure } from '../tags/tag';
+import { ConfigureOptions, Dependency, DependencyOptions, FluxTag, META, TagConfigure } from '../tags/tag';
 import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
 import oget = require('oget');
@@ -62,6 +62,9 @@ export function configure(tag: FluxTag<any>) {
   if (typeof tag.onConfigure === 'function') {
     tag.onConfigure(doConfigure);
   }
+  // else if (tag[META]) {
+  //   doConfigure(tag[META]);
+  // }
 }
 
 export function updateDependency(tag: FluxTag<any>, dependency: Dependency, options: DependencyOptions = {}) {

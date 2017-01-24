@@ -5,7 +5,7 @@ import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
 
-const META = Symbol('meta');
+export const META = Symbol('meta');
 
 const sayt = new Sayt();
 
@@ -62,12 +62,11 @@ export class FluxTag<T> {
 
   _mixin(...mixins: any[]) {
     this.mixin(...mixins.map((mixin) => {
-      if (mixin.meta) {
-        addMeta(this, mixin.meta, 'defaults');
-        addMeta(this, mixin.meta, 'types');
-        addMeta(this, mixin.meta, 'services');
-      }
-      console.log(mixin.meta);
+      // if (mixin.meta) {
+      //   addMeta(this, mixin.meta, 'defaults');
+      //   addMeta(this, mixin.meta, 'types');
+      //   addMeta(this, mixin.meta, 'services');
+      // }
       return new mixin().__proto__;
     }));
   }

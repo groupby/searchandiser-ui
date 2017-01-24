@@ -50,9 +50,9 @@ export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
     this.flux.on(Events.RESET, this.clearRefinements);
   }
 
-  onConfigure(configure: TagConfigure) {
-    configure({ defaults: DEFAULTS, types: TYPES });
-  }
+  // onConfigure(configure: TagConfigure) {
+  //   configure({ defaults: DEFAULTS, types: TYPES });
+  // }
 
   clearRefinements() {
     this.update({ items: [] });
