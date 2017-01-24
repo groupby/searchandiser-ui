@@ -336,6 +336,7 @@ describe('tag utils', () => {
   describe.only('addMeta()', () => {
     it('should create a META property if it does not exist', () => {
       const tag: any = {};
+
       addMeta(tag, {});
 
       expect(tag[META]).to.eql({});
@@ -344,6 +345,7 @@ describe('tag utils', () => {
     it('should not set META property if already exists', () => {
       const meta = { a: 'b' };
       const tag: any = { [META]: meta };
+
       addMeta(tag, {});
 
       expect(tag[META]).to.eq(meta);
@@ -351,9 +353,12 @@ describe('tag utils', () => {
 
     it('should add every existing property parameter', () => {
       const tag: any = {};
-      addMeta(tag, {});
+      const prop1 = { a: 'b' };
+      const prop2 = { c: 'd' };
 
-      expect(tag[META]).to.eql({});
+      addMeta(tag, { prop1, prop2 }, 'prop1', 'prop3');
+
+      expect(tag[META]).to.eql({ prop1 });
     });
   });
 
