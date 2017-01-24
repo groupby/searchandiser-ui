@@ -261,22 +261,22 @@ describe('tag utils', () => {
     });
 
     it('should configure if tag[META] availalbe', () => {
+      const defaults = { a: 'b' };
+      const types = { c: 'd' };
+      const services = ['e', 'f'];
       const tag: any = {
         _tagName: '',
-        opts: { a: 'b', c: 'd' },
-        [META]:
+        opts: {},
+        [META]: { defaults, types, services }
       };
-
       const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
-      const services = ['a', 'b'];
-      const tag: any = { onConfigure: (config) => config({ services }), opts: {}, _tagName: '' };
-      sandbox.stub(utils, 'coerceAttributes');
+      const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
 
-      configure(tag);
+      const config = configure(tag);
 
+      expect(config).to.eql(defaults);
       expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
-
-      configure(tag);
+      expect(coerceAttributes).to.have.been.calledWith(sinon.match.any, types);
     });
   });
 

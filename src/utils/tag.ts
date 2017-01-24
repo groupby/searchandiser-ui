@@ -62,7 +62,7 @@ export function configure(tag: FluxTag<any>) {
   if (typeof tag.onConfigure === 'function') {
     tag.onConfigure(doConfigure);
   } else if (tag[META]) {
-    doConfigure(tag[META]);
+    return doConfigure(tag[META]);
   }
 }
 
