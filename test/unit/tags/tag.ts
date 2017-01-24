@@ -157,6 +157,11 @@ describe('base tag logic', () => {
     });
 
     describe('_mixin()', () => {
+      const META = { a: 'b' };
+      class Mixin {
+        static meta: any = META;
+      }
+
       it('should call mixin() with the __proto__ of every new instance', () => {
         const proto = { a: 'b' };
         class Mixin {
@@ -173,21 +178,25 @@ describe('base tag logic', () => {
       });
 
       it('should call addMeta() for all found tag metadata', () => {
-        const meta = { a: 'b' };
-        class Mixin {
-          static meta: any = meta;
-
-          constructor() {
-            return { __proto__: {} };
-          }
-        }
         const addMeta = sandbox.stub(utils, 'addMeta');
         tag.mixin = () => null;
 
         tag._mixin(Mixin);
 
-        expect(addMeta).to.have.been.called;
-        expect(addMeta).to.have.been.calledWith(tag, meta, 'defaults', 'types', 'services');
+        expect(addMeta).to.have.been.calledWith(tag, META, 'defaults', 'types', 'services');
+      });
+
+      it('should add final mixed-in metadata', () => {
+        class NoMetaMixin { }
+        class MetaMixin {
+          static meta: any = { a: 'b' };
+        }
+        const addMeta = sandbox.stub(utils, 'addMeta');
+        tag.mixin = () => null;
+
+        tag._mixin(MetaMixin, NoMetaMixin, Mixin);
+
+        expect(addMeta).to.have.been.calledWith(tag, META, 'defaults', 'types', 'services');
       });
     });
   });

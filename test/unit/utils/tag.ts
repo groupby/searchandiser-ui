@@ -259,6 +259,25 @@ describe('tag utils', () => {
 
       configure(tag);
     });
+
+    it('should configure if tag[META] availalbe', () => {
+      const tag: any = {
+        _tagName: '',
+        opts: { a: 'b', c: 'd' },
+        [META]:
+      };
+
+      const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
+      const services = ['a', 'b'];
+      const tag: any = { onConfigure: (config) => config({ services }), opts: {}, _tagName: '' };
+      sandbox.stub(utils, 'coerceAttributes');
+
+      configure(tag);
+
+      expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
+
+      configure(tag);
+    });
   });
 
   describe('updateDependency()', () => {
