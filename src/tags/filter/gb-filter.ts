@@ -1,19 +1,23 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
 import { toRefinement } from '../../utils/common';
 import { Selectable, SelectTag } from '../select/gb-select';
-import { TagConfigure } from '../tag';
+import { TagMeta } from '../tag';
 import { Results } from 'groupby-api';
 
 export interface FilterOpts extends Selectable {
   field: string;
 }
 
-export const DEFAULTS = {
-  label: 'Filter',
-  clear: 'Unfiltered'
+export const META: TagMeta = {
+  defaults: {
+    label: 'Filter',
+    clear: 'Unfiltered'
+  }
 };
 
 export class Filter extends SelectTag<FilterOpts> {
+
+  static meta: any = META;
 
   field: string;
 
@@ -23,10 +27,6 @@ export class Filter extends SelectTag<FilterOpts> {
     this.expose('selectable');
 
     this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
-  }
-
-  onConfigure(configure: TagConfigure) {
-    configure({ defaults: DEFAULTS });
   }
 
   convertRefinements(navigations: any[]): any[] {

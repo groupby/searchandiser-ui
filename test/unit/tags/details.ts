@@ -1,4 +1,4 @@
-import { Details, DEFAULTS } from '../../../src/tags/details/gb-details';
+import { Details, META } from '../../../src/tags/details/gb-details';
 import * as utils from '../../../src/utils/common';
 import * as transform from '../../../src/utils/product-transformer';
 import suite from './_suite';
@@ -10,6 +10,12 @@ suite('gb-details', Details, ({
   expectSubscriptions
 }) => {
 
+  describe('static', () => {
+    it('should have meta', () => {
+      expect(Details.meta).to.eq(META);
+    });
+  });
+
   describe('init()', () => {
     it('should listen for details event', () => {
       expectSubscriptions(() => tag().init(), {
@@ -18,31 +24,20 @@ suite('gb-details', Details, ({
     });
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy(() => ({}));
-      tag().config = <any>{ structure: {} };
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS });
-    });
-
+  describe('setDefaults()', () => {
     it('should set structure from config', () => {
       const structure = { a: 'b' };
-      const configure = spy(() => ({ structure }));
 
-      tag().onConfigure(configure);
+      tag().setDefaults(<any>{ structure });
 
       expect(tag().structure).to.eq(structure);
     });
 
     it('should set structure from global', () => {
       const structure = { a: 'b' };
-      const configure = spy(() => ({}));
       tag().config = <any>{ structure };
 
-      tag().onConfigure(configure);
+      tag().setDefaults(<any>{ structure });
 
       expect(tag().structure).to.eq(structure);
     });
@@ -50,10 +45,9 @@ suite('gb-details', Details, ({
     it('should initialize transformer', () => {
       const transformer = { a: 'b' };
       const structure = { c: 'd' };
-      const configure = spy(() => ({ structure }));
       const productTransformer = stub(transform, 'ProductTransformer', () => transformer);
 
-      tag().onConfigure(configure);
+      tag().setDefaults(<any>{ structure });
 
       expect(tag().transformer).to.eq(transformer);
       expect(productTransformer).to.have.been.calledWith(structure);

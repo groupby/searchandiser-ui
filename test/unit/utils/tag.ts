@@ -292,7 +292,7 @@ describe('tag utils', () => {
 
       configure(tag);
 
-      expect(setDefaults).to.be.calledWith(sinon.match.any);
+      expect(setDefaults).to.be.calledWith(sinon.match.object);
     });
   });
 

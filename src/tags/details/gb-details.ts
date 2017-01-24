@@ -1,18 +1,22 @@
 import { getParam } from '../../utils/common';
 import { ProductTransformer } from '../../utils/product-transformer';
 import { Product } from '../product/gb-product';
-import { FluxTag, TagConfigure } from '../tag';
+import { FluxTag, TagMeta } from '../tag';
 import { Events, Record } from 'groupby-api';
 
 export interface DetailsOpts {
   idParam: string;
+  structure: any;
 }
 
-export const DEFAULTS = {
-  idParam: 'id'
+export const META: TagMeta = {
+  defaults: { idParam: 'id' }
 };
 
 export class Details extends FluxTag<DetailsOpts> {
+
+  static meta: TagMeta = META;
+
   tags: { 'gb-product': Product };
 
   idParam: string;
@@ -25,9 +29,7 @@ export class Details extends FluxTag<DetailsOpts> {
     this.flux.on(Events.DETAILS, this.updateRecord);
   }
 
-  onConfigure(configure: TagConfigure) {
-    const config = configure({ defaults: DEFAULTS });
-
+  setDefaults(config: DetailsOpts) {
     this.structure = config.structure || this.config.structure;
     this.transformer = new ProductTransformer(this.structure);
 

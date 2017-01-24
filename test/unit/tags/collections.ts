@@ -1,5 +1,5 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
-import { Collections, DEFAULTS, SERVICES, TYPES } from '../../../src/tags/collections/gb-collections';
+import { Collections, META } from '../../../src/tags/collections/gb-collections';
 import suite from './_suite';
 import { expect } from 'chai';
 
@@ -8,6 +8,12 @@ suite('gb-collections', Collections, ({
   expectSubscriptions,
   itShouldAlias
 }) => {
+
+  describe('static', () => {
+    it('should have meta', () => {
+      expect(Collections.meta).to.eq(META);
+    });
+  });
 
   describe('init()', () => {
     beforeEach(() => tag().services = <any>{ collections: {} });
@@ -21,18 +27,9 @@ suite('gb-collections', Collections, ({
     });
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-      tag().services = <any>{ collections: {} };
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES, services: SERVICES });
-    });
-
+  describe('setDefaults()', () => {
     it('should set empty counts', () => {
-      tag().onConfigure(() => null);
+      tag().setDefaults();
 
       expect(tag().counts).to.eql({});
     });
