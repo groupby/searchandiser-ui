@@ -1,5 +1,5 @@
 import { displayRefinement as toView, toRefinement } from '../../utils/common';
-import { FluxTag, TagConfigure } from '../tag';
+import { FluxTag, TagMeta } from '../tag';
 import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Results } from 'groupby-api';
 
@@ -14,16 +14,20 @@ export interface SelectionNavigation extends NavModel {
   selected: any[];
 }
 
-export const DEFAULTS = {
-  badge: true,
-  showSelected: true
-};
-export const TYPES = {
-  badge: 'boolean',
-  showSelected: 'boolean'
+export const META: TagMeta = {
+  defaults: {
+    badge: true,
+    showSelected: true
+  },
+  types: {
+    badge: 'boolean',
+    showSelected: 'boolean'
+  }
 };
 
 export class Navigation extends FluxTag<NavigationOpts> {
+
+  static meta: TagMeta = META;
 
   badge: boolean;
   showSelected: boolean;
@@ -36,10 +40,6 @@ export class Navigation extends FluxTag<NavigationOpts> {
 
     this.flux.on(Events.RESULTS, this.updateNavigations);
     this.flux.on(Events.REFINEMENT_RESULTS, this.updateRefinements);
-  }
-
-  onConfigure(configure: TagConfigure) {
-    configure({ defaults: DEFAULTS, types: TYPES });
   }
 
   updateNavigations(res: Results) {

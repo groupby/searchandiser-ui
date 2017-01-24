@@ -15,11 +15,11 @@ suite('gb-icon', Icon, ({
     });
   });
 
-  describe('onConfigure()', () => {
+  describe('setDefaults()', () => {
     it('should call setImage()', () => {
       const setImage = tag().setImage = spy();
 
-      tag().onConfigure();
+      tag().setDefaults();
 
       expect(setImage).to.have.been.called;
     });

@@ -1,4 +1,4 @@
-import { DEFAULTS, Navigation, TYPES } from '../../../src/tags/navigation/gb-navigation';
+import { Navigation, META } from '../../../src/tags/navigation/gb-navigation';
 import { displayRefinement } from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
@@ -10,6 +10,12 @@ suite('gb-navigation', Navigation, ({
   expectSubscriptions,
   itShouldAlias
 }) => {
+
+  describe('static', () => {
+    it('should have meta', () => {
+      expect(Navigation.meta).to.eq(META);
+    });
+  });
 
   describe('init()', () => {
     itShouldAlias('navigable');
@@ -27,16 +33,6 @@ suite('gb-navigation', Navigation, ({
         [Events.RESULTS]: tag().updateNavigations,
         [Events.REFINEMENT_RESULTS]: tag().updateRefinements
       });
-    });
-  });
-
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
     });
   });
 

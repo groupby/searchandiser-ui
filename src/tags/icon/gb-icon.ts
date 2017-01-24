@@ -16,7 +16,7 @@ export class Icon extends FluxTag<IconOpts> {
     this.on('update', this.setImage);
   }
 
-  onConfigure() {
+  setDefaults() {
     this.setImage();
   }
 

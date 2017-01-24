@@ -1,4 +1,4 @@
-import { DEFAULTS, InfiniteScroll, MIN_REQUEST_SIZE } from '../../../src/tags/infinite-scroll/gb-infinite-scroll';
+import { InfiniteScroll, META, MIN_REQUEST_SIZE } from '../../../src/tags/infinite-scroll/gb-infinite-scroll';
 import * as renderer from '../../../src/tags/infinite-scroll/renderer';
 import { WINDOW } from '../../../src/utils/common';
 import suite from './_suite';
@@ -9,6 +9,12 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
   flux, tag, spy, stub,
   expectSubscriptions
 }) => {
+
+  describe('static', () => {
+    it('should have meta', () => {
+      expect(InfiniteScroll.meta).to.eq(META);
+    });
+  });
 
   describe('init()', () => {
     const SCROLLER: any = { addEventListener: () => null };
@@ -44,17 +50,10 @@ suite('gb-infinite-scroll', InfiniteScroll, ({
     });
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS });
-    });
+  describe('setDefaults()', () => {
 
     it('should set defaults', () => {
-      tag().onConfigure(() => null);
+      tag().setDefaults();
 
       expect(tag().items).to.eql([]);
       expect(tag().loadedItems).to.eq(0);

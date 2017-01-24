@@ -1,36 +1,32 @@
-import { DEFAULT_PAGE_SIZES, PageSize, TYPES } from '../../../src/tags/page-size/gb-page-size';
+import { DEFAULT_PAGE_SIZES, META, PageSize } from '../../../src/tags/page-size/gb-page-size';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-page-size', PageSize, ({
   tag, flux, spy, stub,
-  itShouldAlias
+  itShouldAlias, itShouldHaveMeta
 }) => {
+
+  describe('static', () => {
+    itShouldHaveMeta(PageSize, META);
+  });
 
   describe('init()', () => {
     itShouldAlias('selectable');
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ types: TYPES });
-    });
-
+  describe('setDefaults()', () => {
     it('should set items from global config', () => {
       const pageSizes = [1, 2, 3, 4];
       tag().config = <any>{ pageSizes };
 
-      tag().onConfigure(() => null);
+      tag().setDefaults();
 
       expect(tag().items).to.eq(pageSizes);
     });
 
     it('should fallback to default items', () => {
-      tag().onConfigure(() => null);
+      tag().setDefaults();
 
       expect(tag().items).to.eq(DEFAULT_PAGE_SIZES);
     });

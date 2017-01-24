@@ -1,6 +1,7 @@
-import { FluxTag } from '../../../src/tags/tag';
+import { FluxTag, META, TagMeta } from '../../../src/tags/tag';
 import { expectAliases, expectSubscriptions, ExpectedAliases } from '../../utils/expectations';
 import { baseSuite, buildSuite, SuiteModifier } from '../../utils/suite';
+import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
 function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) { // tslint:disable-line:max-line-length
@@ -30,6 +31,7 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
       spy,
       stub,
       itShouldAlias,
+      itShouldHaveMeta,
       tagName
     });
 
@@ -44,6 +46,12 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string
     function itShouldAlias(aliases: ExpectedAliases) {
       it('should expose aliases', () => {
         _expectAliases(() => _tag.init(), aliases);
+      });
+    }
+
+    function itShouldHaveMeta(tagClass: { new (): FluxTag<any> }, meta: TagMeta) {
+      it('should have meta', () => {
+        expect(tagClass[META]).to.eq(meta);
       });
     }
   });
@@ -90,5 +98,6 @@ export interface UnitUtils<T> {
   expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
   expectAliases: (func: Function, aliases: ExpectedAliases) => void;
   itShouldAlias: (aliases: ExpectedAliases) => void;
+  itShouldHaveMeta: (tagClass: { new (): FluxTag<any> }, meta: TagMeta) => void;
   tagName: string;
 }

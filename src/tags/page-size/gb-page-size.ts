@@ -1,26 +1,27 @@
+import { meta } from '../../utils/decorators';
 import { Selectable, SelectTag } from '../select/gb-select';
-import { TagConfigure } from '../tag';
+import { TagMeta } from '../tag';
 
 export interface PageSizeOpts extends Selectable {
   resetOffset?: boolean;
 }
 
-export const TYPES = {
-  resetOffset: 'boolean'
+export const META: TagMeta = {
+  types: {
+    resetOffset: 'boolean'
+  }
 };
 export const DEFAULT_PAGE_SIZES = [10, 25, 50, 100];
 
+@meta(META)
 export class PageSize extends SelectTag<PageSizeOpts> {
-
   resetOffset: boolean;
 
   init() {
     this.expose('selectable');
   }
 
-  onConfigure(configure: TagConfigure) {
-    configure({ types: TYPES });
-
+  setDefaults() {
     this.items = this.config.pageSizes || DEFAULT_PAGE_SIZES;
   }
 

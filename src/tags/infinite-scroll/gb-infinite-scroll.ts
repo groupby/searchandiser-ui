@@ -1,5 +1,5 @@
 import { WINDOW } from '../../utils/common';
-import { FluxTag, TagConfigure } from '../tag';
+import { FluxTag, TagMeta } from '../tag';
 import { Renderer } from './renderer';
 import { Events, Record } from 'groupby-api';
 import * as riot from 'riot';
@@ -11,11 +11,16 @@ export interface InfiniteScrollOpts {
   maxRecords?: number;
 }
 
-export const DEFAULTS = {
-  maxRecords: 500
+export const META: TagMeta = {
+  defaults: {
+    maxRecords: 500
+  }
 };
 
 export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
+
+  static meta: TagMeta = META;
+
   refs: {
     scroller: HTMLUListElement;
     runway: HTMLElement;
@@ -43,9 +48,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
     this.on('mount', this.onMount);
   }
 
-  onConfigure(configure: TagConfigure) {
-    configure({ defaults: DEFAULTS });
-
+  setDefaults() {
     this.items = [];
     this.loadedItems = 0;
     this.runwayEnd = 0;
