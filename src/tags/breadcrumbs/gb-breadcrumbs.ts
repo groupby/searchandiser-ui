@@ -26,6 +26,11 @@ export const TYPES = {
 
 export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
 
+  static meta: any = {
+    defaults: DEFAULTS,
+    types: TYPES
+  };
+
   items: any[];
   hideQuery: boolean;
   hideRefinements: boolean;
