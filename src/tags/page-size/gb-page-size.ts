@@ -22,6 +22,7 @@ export class PageSize extends SelectTag<PageSizeOpts> {
   }
 
   setDefaults() {
+    // TODO: this should come from service config dependency
     this.items = this.config.pageSizes || DEFAULT_PAGE_SIZES;
   }
 

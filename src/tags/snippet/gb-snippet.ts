@@ -1,14 +1,18 @@
-import { FluxTag, TagConfigure } from '../tag';
+import { meta } from '../../utils/decorators';
+import { FluxTag, TagMeta } from '../tag';
 
 export interface SnippetOpts {
   raw?: boolean;
   url: string;
 }
 
-export const TYPES = {
-  raw: 'boolean'
+export const META: TagMeta = {
+  types: {
+    raw: 'boolean'
+  }
 };
 
+@meta(META)
 export class Snippet extends FluxTag<SnippetOpts> {
 
   raw: boolean;
@@ -18,10 +22,6 @@ export class Snippet extends FluxTag<SnippetOpts> {
 
   init() {
     this.on('mount', this.loadFile);
-  }
-
-  onConfigure(configure: TagConfigure) {
-    configure({ types: TYPES });
   }
 
   loadFile() {

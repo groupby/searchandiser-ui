@@ -28,7 +28,10 @@ suite('gb-product', Product, ({
 
       tag().init();
 
-      expect(inherits).to.be.calledWith('productable', { defaults: DEFAULTS, types: TYPES }, tag().transformProductable);
+      expect(inherits).to.be.calledWith('productable', {
+        defaults: DEFAULTS,
+        types: TYPES
+      }, tag().transformProductable);
     });
 
     it('should set structure and initialize ProductTransformer', () => {
@@ -42,6 +45,24 @@ suite('gb-product', Product, ({
       expect(tag().structure).to.eql({ a: 'e', c: 'd' });
       expect(tag().transformer).to.eq(transformerInstance);
       expect(productTransformer).to.have.been.calledWith(tag().structure);
+    });
+  });
+
+  describe('setDefaults()', () => {
+    it('should set default values', () => {
+      tag().setDefaults();
+
+      expect(tag().variantIndex).to.eq(0);
+      expect(tag().detailsUrl).to.eq('details.html');
+    });
+
+    it('should set detailsUrl from url service', () => {
+      const detailsUrl = 'myurl.html';
+      tag().services = <any>{ url: { urlConfig: { detailsUrl } } };
+
+      tag().setDefaults();
+
+      expect(tag().detailsUrl).to.eq(detailsUrl);
     });
   });
 

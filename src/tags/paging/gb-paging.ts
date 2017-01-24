@@ -1,4 +1,5 @@
-import { FluxTag, TagConfigure } from '../tag';
+import { meta } from '../../utils/decorators';
+import { FluxTag, TagMeta } from '../tag';
 import { Events } from 'groupby-api';
 
 export interface PagingOpts {
@@ -20,28 +21,31 @@ export interface PagingOpts {
   lastIcon?: string;
 }
 
-export const DEFAULTS = {
-  limit: 5,
-  terminals: true,
-  labels: true,
-  icons: true,
-  firstLabel: 'First',
-  nextLabel: 'Next',
-  prevLabel: 'Prev',
-  lastLabel: 'Last',
-  firstIcon: require('./double-arrow-left.png'),
-  nextIcon: require('./arrow-right.png'),
-  prevIcon: require('./arrow-left.png'),
-  lastIcon: require('./double-arrow-right.png')
-};
-export const TYPES = {
-  pages: 'boolean',
-  numeric: 'boolean',
-  terminals: 'boolean',
-  labels: 'boolean',
-  icons: 'boolean'
+export const META: TagMeta = {
+  defaults: {
+    limit: 5,
+    terminals: true,
+    labels: true,
+    icons: true,
+    firstLabel: 'First',
+    nextLabel: 'Next',
+    prevLabel: 'Prev',
+    lastLabel: 'Last',
+    firstIcon: require('./double-arrow-left.png'),
+    nextIcon: require('./arrow-right.png'),
+    prevIcon: require('./arrow-left.png'),
+    lastIcon: require('./double-arrow-right.png')
+  },
+  types: {
+    pages: 'boolean',
+    numeric: 'boolean',
+    terminals: 'boolean',
+    labels: 'boolean',
+    icons: 'boolean'
+  }
 };
 
+@meta(META)
 export class Paging extends FluxTag<PagingOpts> {
   limit: number;
   pages: boolean;
@@ -73,10 +77,7 @@ export class Paging extends FluxTag<PagingOpts> {
     this.flux.on(Events.RESULTS, this.pageInfo);
   }
 
-  onConfigure(configure: TagConfigure) {
-    configure({ defaults: DEFAULTS, types: TYPES });
-
-    // default initial state
+  setDefaults() {
     this.backDisabled = true;
     this.currentPage = 1;
   }

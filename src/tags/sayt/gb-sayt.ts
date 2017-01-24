@@ -1,7 +1,8 @@
 import { debounce } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
-import { SaytTag, TagConfigure } from '../tag';
+import { SaytTag, TagMeta } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
 import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
 import escapeStringRegexp = require('escape-string-regexp');
@@ -26,24 +27,27 @@ export interface SaytOpts {
 }
 
 export const MIN_DELAY = 100;
-export const DEFAULTS = {
-  allCategoriesLabel: 'All Departments',
-  highlight: true,
-  autoSearch: true,
-  delay: 100,
-  minimumCharacters: 1,
-  navigationNames: {},
-  allowedNavigations: [],
-  productCount: 4,
-  queryCount: 5
-};
-export const TYPES = {
-  highlight: 'boolean',
-  autoSearch: 'boolean',
-  staticSearch: 'boolean',
-  https: 'boolean'
+export const META: TagMeta = {
+  defaults: {
+    allCategoriesLabel: 'All Departments',
+    highlight: true,
+    autoSearch: true,
+    delay: 100,
+    minimumCharacters: 1,
+    navigationNames: {},
+    allowedNavigations: [],
+    productCount: 4,
+    queryCount: 5
+  },
+  types: {
+    highlight: 'boolean',
+    autoSearch: 'boolean',
+    staticSearch: 'boolean',
+    https: 'boolean'
+  }
 };
 
+@meta(META)
 export class Sayt extends SaytTag<SaytOpts> {
   structure: ProductStructure;
   navigationNames: { [key: string]: string };
@@ -80,12 +84,13 @@ export class Sayt extends SaytTag<SaytOpts> {
     this.flux.on(AUTOCOMPLETE_HIDE_EVENT, this.reset);
   }
 
-  onConfigure(configure: TagConfigure) {
-    const { structure, collection, language, area } = this.config;
-    const defaults = Object.assign({ structure, collection, language, area }, DEFAULTS);
-    configure({ defaults, types: TYPES });
-
+  setDefaults(config: SaytOpts) {
     this.showProducts = this.productCount > 0;
+    // TODO: should use service configuraiton dependency
+    this.area = config.area || this.config.area;
+    this.collection = config.collection || this.config.collection;
+    this.language = config.language || this.config.language;
+    this.structure = config.structure || this.config.structure;
 
     this.sayt.configure(this.generateSaytConfig());
   }

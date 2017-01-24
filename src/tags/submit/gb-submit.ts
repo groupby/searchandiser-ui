@@ -1,5 +1,6 @@
 import { findSearchBox } from '../../utils/common';
-import { FluxTag, TagConfigure } from '../tag';
+import { meta } from '../../utils/decorators';
+import { FluxTag, TagMeta } from '../tag';
 import * as riot from 'riot';
 
 export interface SubmitOpts {
@@ -7,13 +8,16 @@ export interface SubmitOpts {
   staticSearch?: boolean;
 }
 
-export const DEFAULTS = {
-  label: 'Search'
-};
-export const TYPES = {
-  staticSearch: 'boolean'
+export const META: TagMeta = {
+  defaults: {
+    label: 'Search'
+  },
+  types: {
+    staticSearch: 'boolean'
+  }
 };
 
+@meta(META)
 export class Submit extends FluxTag<SubmitOpts> {
   root: riot.TagElement & { value: any };
 
@@ -27,9 +31,7 @@ export class Submit extends FluxTag<SubmitOpts> {
     this.root.addEventListener('click', this.submitQuery);
   }
 
-  onConfigure(configure: TagConfigure) {
-    configure({ defaults: DEFAULTS, types: TYPES });
-
+  setDefaults() {
     if (this.root.tagName === 'INPUT') {
       this.root.value = this.label;
     }

@@ -1,24 +1,19 @@
-import { Snippet, TYPES } from '../../../src/tags/snippet/gb-snippet';
+import { META, Snippet } from '../../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite('gb-snippet', Snippet, ({ tag, spy, expectSubscriptions }) => {
+suite('gb-snippet', Snippet, ({
+  tag, spy,
+  expectSubscriptions,
+  itShouldHaveMeta
+}) => {
+  itShouldHaveMeta(Snippet, META);
 
   describe('init()', () => {
     it('should listen for mount', () => {
       expectSubscriptions(() => tag().init(), {
         mount: tag().loadFile
       }, tag());
-    });
-  });
-
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ types: TYPES });
     });
   });
 

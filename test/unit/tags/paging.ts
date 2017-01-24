@@ -1,4 +1,4 @@
-import { DEFAULTS, Paging, TYPES } from '../../../src/tags/paging/gb-paging';
+import { META, Paging } from '../../../src/tags/paging/gb-paging';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
@@ -6,8 +6,10 @@ import { Events } from 'groupby-api';
 suite('gb-paging', Paging, ({
   flux, tag, spy, stub,
   expectSubscriptions,
+  itShouldHaveMeta,
   itShouldAlias
 }) => {
+  itShouldHaveMeta(Paging, META);
 
   describe('init()', () => {
     itShouldAlias('paging');
@@ -20,17 +22,9 @@ suite('gb-paging', Paging, ({
     });
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
-    });
-
+  describe('setDefaults()', () => {
     it('should set defaults', () => {
-      tag().onConfigure(() => null);
+      tag().setDefaults();
 
       expect(tag().backDisabled).to.be.true;
       expect(tag().currentPage).to.eq(1);

@@ -1,4 +1,4 @@
-import { DEFAULTS, Query, TYPES } from '../../../src/tags/query/gb-query';
+import { META, Query } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
@@ -7,8 +7,10 @@ import { Events, Query as FluxQuery } from 'groupby-api';
 
 suite('gb-query', Query, ({
   tag, flux, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Query, META);
 
   describe('init()', () => {
     it('should attachListeners on mount', () => {
@@ -24,17 +26,9 @@ suite('gb-query', Query, ({
     });
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
-    });
-
+  describe('setDefaults()', () => {
     it('should set defaults', () => {
-      tag().onConfigure(() => null);
+      tag().setDefaults();
 
       expect(tag().enterKeyHandlers).to.eql([]);
     });

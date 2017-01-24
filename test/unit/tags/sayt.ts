@@ -1,5 +1,5 @@
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
-import { DEFAULTS, MIN_DELAY, Sayt, TYPES } from '../../../src/tags/sayt/gb-sayt';
+import { META, MIN_DELAY, Sayt } from '../../../src/tags/sayt/gb-sayt';
 import * as utils from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
@@ -9,8 +9,10 @@ import { Events, Query } from 'groupby-api';
 suite('gb-sayt', Sayt, ({
   flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldAlias
+  itShouldAlias,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Sayt, META);
 
   describe('init()', () => {
     itShouldAlias(['sayt', 'productable']);
@@ -28,28 +30,40 @@ suite('gb-sayt', Sayt, ({
     });
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-      const config = tag().config = <any>{
-        collection: 'a',
-        area: 'b',
-        language: 'c',
-        structure: { d: 'e' }
-      };
+  describe('setDefaults()', () => {
+    it('should set defaults', () => {
+      const collection = 'a';
+      const area = 'b';
+      const language = 'c';
+      const structure = 'd';
+      tag().config = <any>{ collection, area, language, structure };
       tag().sayt = { configure: () => null };
-      tag().onConfigure(configure);
 
-      expect(configure).to.have.been.calledWith({
-        defaults: Object.assign(config, DEFAULTS),
-        types: TYPES
-      });
+      tag().setDefaults({});
+
+      expect(tag().collection).to.eq(collection);
+      expect(tag().area).to.eq(area);
+      expect(tag().language).to.eq(language);
+      expect(tag().structure).to.eq(structure);
+    });
+
+    it('should override defaults from computed config', () => {
+      const collection = 'a';
+      const area = 'b';
+      const language = 'c';
+      const structure = 'd';
+      tag().sayt = { configure: () => null };
+
+      tag().setDefaults({ collection, area, language, structure });
+
+      expect(tag().collection).to.eq(collection);
     });
 
     it('should set showProducts true if productCount is not 0', () => {
       tag().productCount = 3;
       tag().sayt = { configure: () => null };
-      tag().onConfigure(() => ({}));
+
+      tag().setDefaults({});
 
       expect(tag().showProducts).to.be.true;
     });
@@ -57,7 +71,8 @@ suite('gb-sayt', Sayt, ({
     it('should set showProducts false if productCount is 0', () => {
       tag().productCount = 0;
       tag().sayt = { configure: () => null };
-      tag().onConfigure(() => ({}));
+
+      tag().setDefaults({});
 
       expect(tag().showProducts).to.be.false;
     });
@@ -67,7 +82,8 @@ suite('gb-sayt', Sayt, ({
       const configure = spy();
       const generateSaytConfig = tag().generateSaytConfig = spy(() => saytConfig);
       tag().sayt = { configure };
-      tag().onConfigure(() => ({}));
+
+      tag().setDefaults({});
 
       expect(generateSaytConfig).to.have.been.called;
       expect(configure).to.have.been.calledWith(saytConfig);

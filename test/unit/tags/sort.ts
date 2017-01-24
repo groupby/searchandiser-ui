@@ -1,29 +1,21 @@
-import { DEFAULTS, Sort } from '../../../src/tags/sort/gb-sort';
+import { META, Sort } from '../../../src/tags/sort/gb-sort';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-sort', Sort, ({
-  flux, tag, stub, spy,
-  itShouldAlias
+  flux, tag, stub,
+  itShouldAlias,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Sort, META);
 
   describe('init()', () => {
     itShouldAlias('selectable');
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS });
-    });
-  });
-
   describe('sortValues()', () => {
     it('should return option values', () => {
-      tag().items = DEFAULTS.items;
+      tag().items = META.defaults.items;
 
       const values = tag().sortValues();
 

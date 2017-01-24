@@ -1,4 +1,4 @@
-import { Dependency, DependencyOptions, FluxTag, META, TagConfigure, TagMeta } from '../tags/tag';
+import { Dependency, DependencyOptions, FluxTag, META, TagMeta } from '../tags/tag';
 import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
 import oget = require('oget');
@@ -35,42 +35,38 @@ export function inheritAliases(tag: FluxTag<any>) {
 }
 
 export function configure(tag: FluxTag<any>) {
-  const doConfigure: TagConfigure = (options: TagMeta) => {
-    const defaultConfig = options.defaults || {};
-    const types = options.types || {};
-    const services = options.services || [];
-
-    const serviceConfigs = collectServiceConfigs(tag, services);
-
-    const globalTagConfig = oget(tag.config, `tags.${camelizeTagName(tag._tagName)}`, {});
-
-    const coercedOpts = coerceAttributes(tag.opts, types);
-
-    const config = Object.assign(
-      {},
-      defaultConfig,
-      ...serviceConfigs,
-      globalTagConfig,
-      tag.opts.__proto__,
-      coercedOpts
-    );
-
-    Object.assign(tag, config);
-
-    return config;
-  };
-  if (typeof tag.onConfigure === 'function') {
-    tag.onConfigure(doConfigure);
-  } else {
-    let config = {};
-    if (tag[META]) {
-      config = doConfigure(tag[META]);
-    }
-    if (typeof tag.setDefaults === 'function') {
-      tag.setDefaults(config);
-    }
-    return config;
+  let meta = {};
+  if (tag[META]) {
+    meta = tag[META];
   }
+
+  const config = buildConfiguration(tag, meta);
+  if (typeof tag.setDefaults === 'function') {
+    tag.setDefaults(config);
+  }
+  Object.assign(tag, config);
+  return config;
+}
+
+export function buildConfiguration(tag: FluxTag<any>, meta: TagMeta) {
+  const defaultConfig = meta.defaults || {};
+  const types = meta.types || {};
+  const services = meta.services || [];
+
+  const serviceConfigs = collectServiceConfigs(tag, services);
+
+  const globalTagConfig = tag._tagName ? oget(tag.config, `tags.${camelizeTagName(tag._tagName)}`, {}) : {};
+
+  const coercedOpts = coerceAttributes(tag.opts, types);
+
+  return Object.assign(
+    {},
+    defaultConfig,
+    ...serviceConfigs,
+    globalTagConfig,
+    tag.opts.__proto__,
+    coercedOpts
+  );
 }
 
 export function updateDependency(tag: FluxTag<any>, dependency: Dependency, options: DependencyOptions = {}) {

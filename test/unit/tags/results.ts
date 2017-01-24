@@ -1,4 +1,4 @@
-import { Results, TYPES } from '../../../src/tags/results/gb-results';
+import { META, Results } from '../../../src/tags/results/gb-results';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
@@ -6,8 +6,10 @@ import { Events } from 'groupby-api';
 suite('gb-results', Results, ({
   flux, tag, spy,
   expectSubscriptions,
-  itShouldAlias
+  itShouldAlias,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Results, META);
 
   describe('init()', () => {
     beforeEach(() => tag().config = <any>{ structure: {} });
@@ -21,20 +23,12 @@ suite('gb-results', Results, ({
     });
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy(() => ({}));
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ types: TYPES });
-    });
-
+  describe('setDefaults()', () => {
     it('should set structure from config', () => {
       const structure = { a: 'b' };
       tag().config = <any>{ structure: { c: 'd' } };
 
-      tag().onConfigure(() => ({ structure }));
+      tag().setDefaults({ structure });
 
       expect(tag().structure).to.eq(structure);
     });
@@ -43,7 +37,7 @@ suite('gb-results', Results, ({
       const structure = { a: 'b' };
       tag().config = <any>{ structure };
 
-      tag().onConfigure(() => ({}));
+      tag().setDefaults({});
 
       expect(tag().structure).to.eq(structure);
     });

@@ -1,13 +1,13 @@
 import { getParam } from '../../utils/common';
 import { meta } from '../../utils/decorators';
-import { ProductTransformer } from '../../utils/product-transformer';
+import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
 import { Product } from '../product/gb-product';
 import { FluxTag, TagMeta } from '../tag';
 import { Events, Record } from 'groupby-api';
 
 export interface DetailsOpts {
   idParam: string;
-  structure: any;
+  structure?: ProductStructure;
 }
 
 export const META: TagMeta = {
@@ -21,7 +21,7 @@ export class Details extends FluxTag<DetailsOpts> {
 
   idParam: string;
 
-  structure: any;
+  structure: ProductStructure;
   transformer: ProductTransformer;
   allMeta: any;
 

@@ -1,17 +1,23 @@
+import { meta } from '../../utils/decorators';
 import { ProductStructure } from '../../utils/product-transformer';
-import { FluxTag, TagConfigure } from '../tag';
+import { FluxTag, TagMeta } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
 export interface ResultsOptions {
   lazy?: boolean;
   css?: { [key: string]: string };
+  structure?: ProductStructure;
 }
 
-export const TYPES = {
-  lazy: 'boolean'
+export const META: TagMeta = {
+  types: {
+    lazy: 'boolean'
+  }
 };
 
+@meta(META)
 export class Results extends FluxTag<ResultsOptions> {
+
   lazy: boolean;
 
   structure: ProductStructure;
@@ -25,9 +31,7 @@ export class Results extends FluxTag<ResultsOptions> {
     this.flux.on(Events.RESULTS, this.updateRecords);
   }
 
-  onConfigure(configure: TagConfigure) {
-    const config = configure({ types: TYPES });
-
+  setDefaults(config: ResultsOptions) {
     this.structure = config.structure || this.config.structure;
   }
 

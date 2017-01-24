@@ -40,8 +40,9 @@ export class Product extends FluxTag<any> {
     this.on('before-mount', this.styleProduct);
   }
 
-  onConfigure() {
+  setDefaults() {
     this.variantIndex = 0;
+    // TODO: this should come from service config dependency
     this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
   }
 

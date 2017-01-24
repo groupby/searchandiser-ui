@@ -1,7 +1,8 @@
 import { findTag } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
-import { FluxTag, TagConfigure } from '../tag';
+import { FluxTag, TagMeta } from '../tag';
 import { Events } from 'groupby-api';
 import * as riot from 'riot';
 
@@ -13,16 +14,19 @@ export interface QueryOpts {
   staticSearch?: boolean;
 }
 
-export const DEFAULTS = {
-  sayt: true,
-  autoSearch: true
-};
-export const TYPES = {
-  sayt: 'boolean',
-  autoSearch: 'boolean',
-  staticSearch: 'boolean'
+export const META: TagMeta = {
+  defaults: {
+    sayt: true,
+    autoSearch: true
+  },
+  types: {
+    sayt: 'boolean',
+    autoSearch: 'boolean',
+    staticSearch: 'boolean'
+  }
 };
 
+@meta(META)
 export class Query extends FluxTag<QueryOpts> {
   root: riot.TagElement & HTMLInputElement;
   tags: {
@@ -44,9 +48,7 @@ export class Query extends FluxTag<QueryOpts> {
     this.flux.on(Events.REWRITE_QUERY, this.rewriteQuery);
   }
 
-  onConfigure(configure: TagConfigure) {
-    configure({ defaults: DEFAULTS, types: TYPES });
-
+  setDefaults() {
     this.enterKeyHandlers = [];
   }
 

@@ -3,6 +3,7 @@ import * as utils from '../../../src/utils/common';
 import {
   addDollarSigns,
   addMeta,
+  buildConfiguration,
   camelizeTagName,
   configure,
   inheritAliases,
@@ -140,36 +141,61 @@ describe('tag utils', () => {
   });
 
   describe('configure()', () => {
-    it('should pass function to onConfigure()', () => {
-      const onConfigure = sinon.spy();
-      const tag: any = { onConfigure };
+    it('should mix configuration into tag', () => {
+      const tag: any = { opts: { a: 'b', c: 'd' } };
 
       configure(tag);
 
-      expect(onConfigure).to.have.been.calledWith(sinon.match.func);
+      expect(tag).to.have.property('a', 'b');
+      expect(tag).to.have.property('c', 'd');
     });
 
-    it('should not call onConfigure() if it does not exist', () => {
-      expect(() => configure(<any>{})).to.not.throw;
+    it('should configure if tag[META] available', () => {
+      const defaults = { a: 'b' };
+      const types = { c: 'd' };
+      const services = ['e', 'f'];
+      const tag: any = {
+        opts: {},
+        [META]: { defaults, types, services }
+      };
+      const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
+      const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
+
+      const config = configure(tag);
+
+      expect(config).to.eql(defaults);
+      expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
+      expect(coerceAttributes).to.have.been.calledWith(sinon.match.any, types);
     });
 
+    it('should call setDefaults() if it exists', () => {
+      const setDefaults = sinon.spy();
+      const tag: any = { opts: {}, setDefaults };
+
+      configure(tag);
+
+      expect(setDefaults).to.be.calledWith(sinon.match.object);
+    });
+  });
+
+  describe('buildConfiguration()', () => {
     it('should call collectServiceConfigs()', () => {
       const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
       const services = ['a', 'b'];
-      const tag: any = { onConfigure: (config) => config({ services }), opts: {}, _tagName: '' };
+      const tag: any = { opts: {} };
       sandbox.stub(utils, 'coerceAttributes');
 
-      configure(tag);
+      buildConfiguration(tag, { services });
 
       expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
     });
 
     it('should call collectServiceConfigs() default to empty services list', () => {
       const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
-      const tag: any = { onConfigure: (config) => config({}), opts: {}, _tagName: '' };
+      const tag: any = { opts: {} };
       sandbox.stub(utils, 'coerceAttributes');
 
-      configure(tag);
+      buildConfiguration(tag, {});
 
       expect(collectServiceConfigs).to.have.been.calledWith(tag, []);
     });
@@ -177,18 +203,18 @@ describe('tag utils', () => {
     it('should call coerceAttributes() with opts and types', () => {
       const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
       const types = { a: 'b' };
-      const tag: any = { onConfigure: (config) => config({ types }), opts: {}, _tagName: '' };
+      const tag: any = { opts: {} };
 
-      configure(tag);
+      buildConfiguration(tag, { types });
 
       expect(coerceAttributes).to.have.been.calledWith(tag.opts, types);
     });
 
     it('should call coerceAttributes() with opts and empty types', () => {
       const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
-      const tag: any = { onConfigure: (config) => config({}), opts: {}, _tagName: '' };
+      const tag: any = { opts: {} };
 
-      configure(tag);
+      buildConfiguration(tag, {});
 
       expect(coerceAttributes).to.have.been.calledWith(tag.opts, {});
     });
@@ -198,28 +224,20 @@ describe('tag utils', () => {
       const tag: any = {
         _tagName: 'gb-my-tag',
         config: { tags: { myTag: globalConfig } },
-        opts: {},
-        onConfigure: (config) => {
-          const finalConfig = config({});
-          expect(finalConfig).to.eql(globalConfig);
-        }
+        opts: {}
       };
 
-      configure(tag);
+      const finalConfig = buildConfiguration(tag, {});
+
+      expect(finalConfig).to.eql(globalConfig);
     });
 
     it('should use provided defaults', () => {
       const defaults = { a: 'b', c: 'd' };
-      const tag: any = {
-        _tagName: '',
-        opts: {},
-        onConfigure: (config) => {
-          const finalConfig = config({ defaults });
-          expect(finalConfig).to.eql(defaults);
-        }
-      };
+      const tag: any = { opts: {} };
 
-      configure(tag);
+      const finalConfig = buildConfiguration(tag, { defaults });
+      expect(finalConfig).to.eql(defaults);
     });
 
     it('should return combined config', () => {
@@ -236,63 +254,11 @@ describe('tag utils', () => {
         opts: {
           __proto__: { i: 'j4', k: 'l4' },
           k: 'l5'
-        },
-        onConfigure: (config) => {
-          const finalConfig = config({ defaults, types, services });
-          expect(finalConfig).to.eql({ a: 'b', c: 'd1', e: 'f2', g: 'h3', i: 'j4', k: true });
         }
       };
 
-      configure(tag);
-    });
-
-    it('should mix configuration into tag', () => {
-      const tag: any = {
-        _tagName: '',
-        opts: { a: 'b', c: 'd' },
-        onConfigure: (config) => {
-          config({});
-          expect(tag).to.have.property('a', 'b');
-          expect(tag).to.have.property('c', 'd');
-        }
-      };
-
-      configure(tag);
-    });
-
-    it('should configure if tag[META] availalbe', () => {
-      const defaults = { a: 'b' };
-      const types = { c: 'd' };
-      const services = ['e', 'f'];
-      const tag: any = {
-        _tagName: '',
-        opts: {},
-        [META]: { defaults, types, services }
-      };
-      const collectServiceConfigs = sandbox.stub(utils, 'collectServiceConfigs');
-      const coerceAttributes = sandbox.stub(utils, 'coerceAttributes');
-
-      const config = configure(tag);
-
-      expect(config).to.eql(defaults);
-      expect(collectServiceConfigs).to.have.been.calledWith(tag, services);
-      expect(coerceAttributes).to.have.been.calledWith(sinon.match.any, types);
-    });
-
-    it('should call setDefaults() if it exists', () => {
-      const setDefaults = sinon.spy();
-      const tag: any = {
-        _tagName: '',
-        opts: {},
-        [META]: {},
-        setDefaults
-      };
-      sandbox.stub(utils, 'collectServiceConfigs');
-      sandbox.stub(utils, 'coerceAttributes');
-
-      configure(tag);
-
-      expect(setDefaults).to.be.calledWith(sinon.match.object);
+      const finalConfig = buildConfiguration(tag, { defaults, types, services });
+      expect(finalConfig).to.eql({ a: 'b', c: 'd1', e: 'f2', g: 'h3', i: 'j4', k: true });
     });
   });
 

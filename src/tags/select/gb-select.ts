@@ -55,7 +55,7 @@ export class Select extends FluxTag<any> {
     this.on('update', this.setClearItem);
   }
 
-  onConfigure() {
+  setDefaults() {
     this.clearItem = { label: this.$selectable.clear || 'Unselect', clear: true };
     this.default = !this.$selectable.clear;
 

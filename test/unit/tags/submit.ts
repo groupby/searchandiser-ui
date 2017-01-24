@@ -1,4 +1,4 @@
-import { DEFAULTS, Submit, TYPES } from '../../../src/tags/submit/gb-submit';
+import { META, Submit } from '../../../src/tags/submit/gb-submit';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -6,8 +6,10 @@ import { Query } from 'groupby-api';
 
 suite('gb-submit', Submit, ({
   flux, tag, spy, stub,
-  expectSubscriptions
+  expectSubscriptions,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Submit, META);
 
   describe('init()', () => {
     const ROOT: any = { addEventListener: () => null };
@@ -30,21 +32,12 @@ suite('gb-submit', Submit, ({
     });
   });
 
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-      tag().root = <any>{};
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
-    });
-
+  describe('setDefaults()', () => {
     it('should set root value when root is input tag', () => {
       const root = tag().root = <any>{ tagName: 'INPUT' };
       const label = tag().label = 'label';
 
-      tag().onConfigure(() => null);
+      tag().setDefaults();
 
       expect(root.value).to.eq(label);
     });
@@ -52,7 +45,7 @@ suite('gb-submit', Submit, ({
     it('should not set root value', () => {
       const root = tag().root = <any>{ tagName: 'not input' };
 
-      tag().onConfigure(() => null);
+      tag().setDefaults();
 
       expect(root.value).to.not.be.ok;
     });

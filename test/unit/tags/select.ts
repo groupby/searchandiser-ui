@@ -27,7 +27,7 @@ suite('gb-select', Select, ({
     });
   });
 
-  describe('onConfigure()', () => {
+  describe('setDefaults()', () => {
     it('should override selectedOption with first label when items set and clear undefined', () => {
       const items = [
         { label: 'Value Descending' },
@@ -35,7 +35,7 @@ suite('gb-select', Select, ({
       ];
       tag().$selectable = <any>{ items };
 
-      tag().onConfigure();
+      tag().setDefaults();
 
       expect(tag().default).to.be.true;
       expect(tag().selectedItem).to.eq(items[0].label);
@@ -45,7 +45,7 @@ suite('gb-select', Select, ({
       const items = ['first', 'second'];
       tag().$selectable = <any>{ items };
 
-      tag().onConfigure();
+      tag().setDefaults();
 
       expect(tag().default).to.be.true;
       expect(tag().selectedItem).to.eq(items[0]);

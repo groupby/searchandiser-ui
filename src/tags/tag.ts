@@ -17,7 +17,6 @@ export interface FluxTag<T> extends riot.Tag.Instance {
   services: Services;
   config: SearchandiserConfig;
 
-  onConfigure(configure: TagConfigure): void;
   setDefaults(config: T): void;
 }
 
@@ -102,7 +101,4 @@ export interface Dependency {
 export interface DependencyOptions {
   defaults?: any;
   types?: TypeMap;
-}
-export interface TagConfigure {
-  (opts: ConfigureOptions): any;
 }
