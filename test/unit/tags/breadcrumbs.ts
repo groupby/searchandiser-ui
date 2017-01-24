@@ -1,4 +1,4 @@
-import { Breadcrumbs, DEFAULTS, TYPES } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
+import { Breadcrumbs, META } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -9,6 +9,12 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
   expectSubscriptions,
   itShouldAlias
 }) => {
+
+  describe('static', () => {
+    it('should have meta', () => {
+      expect(Breadcrumbs.meta).to.eq(META);
+    });
+  });
 
   describe('init()', () => {
     itShouldAlias(['breadcrumbs', 'listable']);
@@ -26,16 +32,6 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
         [Events.RESULTS]: tag().updateQueryState,
         [Events.RESET]: tag().clearRefinements
       });
-    });
-  });
-
-  describe('onConfigure()', () => {
-    it('should call configure()', () => {
-      const configure = spy();
-
-      tag().onConfigure(configure);
-
-      expect(configure).to.have.been.calledWith({ defaults: DEFAULTS, types: TYPES });
     });
   });
 

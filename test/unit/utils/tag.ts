@@ -333,7 +333,7 @@ describe('tag utils', () => {
     });
   });
 
-  describe.only('addMeta()', () => {
+  describe('addMeta()', () => {
     it('should create a META property if it does not exist', () => {
       const tag: any = {};
 

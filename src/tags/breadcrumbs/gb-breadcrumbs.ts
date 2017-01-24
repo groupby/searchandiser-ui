@@ -12,24 +12,23 @@ export interface BreadcrumbsOpts {
   correctedResultsLabel?: string;
 }
 
-export const DEFAULTS = {
-  labels: true,
-  resultsLabel: 'Results for:',
-  noResultsLabel: 'No results for:',
-  correctedResultsLabel: 'Showing results for:'
-};
-export const TYPES = {
-  hideQuery: 'boolean',
-  hideRefinements: 'boolean',
-  labels: 'boolean'
+export const META: TagMeta = {
+  defaults: {
+    labels: true,
+    resultsLabel: 'Results for:',
+    noResultsLabel: 'No results for:',
+    correctedResultsLabel: 'Showing results for:'
+  },
+  types: {
+    hideQuery: 'boolean',
+    hideRefinements: 'boolean',
+    labels: 'boolean'
+  }
 };
 
 export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
 
-  static meta: TagMeta = {
-    defaults: DEFAULTS,
-    types: TYPES
-  };
+  static meta: TagMeta = META;
 
   items: any[];
   hideQuery: boolean;
@@ -49,10 +48,6 @@ export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
     this.flux.on(Events.RESULTS, this.updateQueryState);
     this.flux.on(Events.RESET, this.clearRefinements);
   }
-
-  // onConfigure(configure: TagConfigure) {
-  //   configure({ defaults: DEFAULTS, types: TYPES });
-  // }
 
   clearRefinements() {
     this.update({ items: [] });

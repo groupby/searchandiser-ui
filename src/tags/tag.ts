@@ -60,12 +60,14 @@ export class FluxTag<T> {
   }
 
   _mixin(...mixins: any[]) {
+    let meta;
     this.mixin(...mixins.map((mixin) => {
-      if (mixin.meta) {
-        addMeta(this, mixin.meta, 'defaults', 'types', 'services');
-      }
+      meta = meta || mixin.meta;
       return new mixin().__proto__;
     }));
+    if (meta) {
+      addMeta(this, meta, 'defaults', 'types', 'services');
+    }
   }
 }
 

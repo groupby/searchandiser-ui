@@ -1,4 +1,4 @@
-import { ConfigureOptions, Dependency, DependencyOptions, FluxTag, META, TagConfigure } from '../tags/tag';
+import { Dependency, DependencyOptions, FluxTag, META, TagConfigure, TagMeta } from '../tags/tag';
 import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
 import oget = require('oget');
@@ -35,7 +35,7 @@ export function inheritAliases(tag: FluxTag<any>) {
 }
 
 export function configure(tag: FluxTag<any>) {
-  const doConfigure: TagConfigure = (options: ConfigureOptions) => {
+  const doConfigure: TagConfigure = (options: TagMeta) => {
     const defaultConfig = options.defaults || {};
     const types = options.types || {};
     const services = options.services || [];
