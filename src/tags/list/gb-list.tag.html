@@ -1,5 +1,5 @@
 <gb-list>
-  <ul class="{ _style } { inline: $listable.inline }">
+  <ul class="{ inline: $listable.inline }">
     <li data-is="gb-list-item" each="{ item, i in $listable.items }" if="{ $list.shouldRender(item) }">
       <yield/>
     </li>
@@ -11,22 +11,22 @@
   </script>
 
   <style scoped>
-    gb-list > ul.gb-stylish {
+    :scope.gb-stylish > ul {
       list-style: none;
       margin: 0;
       padding: 0;
     }
-    gb-list > ul.gb-stylish > li {
+    :scope.gb-stylish > ul > li {
       margin: 0 10px;
     }
-    gb-list > ul.gb-stylish.inline > li {
+    :scope.gb-stylish > ul.inline > li {
       display: inline-block;
     }
-    gb-list > ul.gb-stylish a {
+    :scope.gb-stylish > ul a {
       color: #888;
       cursor: pointer;
     }
-    gb-list > ul.gb-stylish a:hover {
+    :scope.gb-stylish > ul a:hover {
       color: black;
     }
   </style>

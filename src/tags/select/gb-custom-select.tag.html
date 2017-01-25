@@ -1,5 +1,5 @@
 <gb-custom-select>
-  <div class="gb-select { $selectable.hover ? 'hoverable' : 'clickable' } { _style }">
+  <div class="gb-select { $selectable.hover ? 'hoverable' : 'clickable' }">
     <button data-is="gb-select-button" type="button"></button>
     <gb-list should-render="{ $select.shouldRender }">
       <yield>
@@ -50,8 +50,8 @@
     gb-list:hover {
       display: block;
     }
-    .gb-stylish.gb-select:hover button,
-    .gb-stylish.gb-select button:focus {
+    :scope.gb-stylish > .gb-select:hover button,
+    :scope.gb-stylish > .gb-select button:focus {
       border-color: #aaa;
     }
     button {
@@ -68,7 +68,7 @@
       border-radius: 4px;
       white-space: nowrap;
     }
-    .gb-stylish button:focus {
+    scope:.gb-stylish button:focus {
       outline: none;
     }
   </style>

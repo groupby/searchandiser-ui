@@ -1,5 +1,5 @@
 <gb-selected-refinement>
-  <div class="gb-ref { _style }">
+  <div class="gb-ref">
     <a class="gb-ref__link" onclick="{ remove }">&times;</a>
     <span class="gb-ref__value">{ $navigable.toView($refinement) }</span>
   </div>
@@ -10,14 +10,14 @@
   </script>
 
   <style scoped>
-    .gb-stylish {
+    :scope.gb-stylish > .gb-ref {
       position: relative;
       list-style: none;
       padding: 4px 6px;
       font-size: 14px;
     }
 
-    .gb-stylish .gb-ref__link {
+    :scope.gb-stylish .gb-ref__link {
       cursor: pointer;
       left: -8px;
       position: absolute;
@@ -25,7 +25,7 @@
       text-decoration: none;
     }
 
-    .gb-stylish .gb-ref__link:hover {
+    :scope.gb-stylish .gb-ref__link:hover {
       color: red;
       font-weight: bold;
     }
