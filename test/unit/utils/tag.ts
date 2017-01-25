@@ -1,4 +1,4 @@
-import { FluxTag, META } from '../../../src/tags/tag';
+import { FluxTag, META, STYLISH } from '../../../src/tags/tag';
 import * as utils from '../../../src/utils/common';
 import {
   addDollarSigns,
@@ -7,9 +7,11 @@ import {
   camelizeTagName,
   configure,
   inheritAliases,
+  setStylish,
   setTagName,
   updateDependency,
-  MixinFlux
+  MixinFlux,
+  STYLISH_CLASS
 } from '../../../src/utils/tag';
 import { expect } from 'chai';
 
@@ -360,6 +362,62 @@ describe('tag utils', () => {
       addMeta(tag, { prop1, prop2 }, 'prop1', 'prop3');
 
       expect(tag[META]).to.eql({ prop1 });
+    });
+  });
+
+  describe('setStylish()', () => {
+    const ROOT = { classList: { add: () => null } };
+
+    it('should set from config', () => {
+      const tag: any = {
+        root: ROOT,
+        config: { stylish: true },
+        opts: {}
+      };
+
+      setStylish(tag);
+
+      expect(tag[STYLISH]).to.be.true;
+    });
+
+    it('should set from opts', () => {
+      const tag: any = {
+        root: ROOT,
+        config: { stylish: true },
+        opts: { stylish: null }
+      };
+      const checkBooleanAttr = sandbox.stub(utils, 'checkBooleanAttr', () => 'this');
+
+      setStylish(tag);
+
+      expect(tag[STYLISH]).to.be.true;
+      expect(checkBooleanAttr).to.be.calledWith('stylish', tag.opts, true);
+    });
+
+    it('should set from parent', () => {
+      const tag: any = {
+        root: ROOT,
+        config: { stylish: true },
+        parent: { [STYLISH]: 'this' },
+        opts: {}
+      };
+
+      setStylish(tag);
+
+      expect(tag[STYLISH]).to.be.true;
+    });
+
+    it('should add class to root', () => {
+      const add = sinon.spy();
+      const tag: any = {
+        root: { classList: { add } },
+        config: { stylish: true },
+        opts: {}
+      };
+
+      setStylish(tag);
+
+      expect(add).to.be.calledWith(STYLISH_CLASS);
     });
   });
 

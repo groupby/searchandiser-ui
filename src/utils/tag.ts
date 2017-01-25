@@ -1,8 +1,10 @@
-import { Dependency, DependencyOptions, FluxTag, META, TagMeta } from '../tags/tag';
+import { Dependency, DependencyOptions, FluxTag, META, STYLISH, TagMeta } from '../tags/tag';
+import { checkBooleanAttr } from './common';
 import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
 import oget = require('oget');
 
+export const STYLISH_CLASS = 'gb-stylish';
 const TAG_PREFIX_REGEX = /^[a-z]*?-/;
 const TAG_WORD_BREAK_REGEX = /-([a-z])/g;
 
@@ -94,6 +96,20 @@ export function addMeta(tag: FluxTag<any>, meta: any, ...properties: string[]) {
       tag[META][property] = meta[property];
     }
   });
+}
+
+export function setStylish(tag: FluxTag<any>) {
+  let stylish = tag.config.stylish;
+  if ('stylish' in tag.opts) {
+    stylish = checkBooleanAttr('stylish', tag.opts, stylish);
+  } else if (tag.parent) {
+    stylish = tag.parent[STYLISH];
+  }
+
+  if (stylish) {
+    tag[STYLISH] = !!stylish;
+    tag.root.classList.add(STYLISH_CLASS);
+  }
 }
 
 export function addDollarSigns(obj: any) {
