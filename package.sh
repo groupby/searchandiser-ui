@@ -10,14 +10,14 @@ echo '== processing typescript files' | tee -a package.log
 
 # compile typescript files
 echo ' `-- transpiling ts files' | tee -a package.log
-npm run 'ts:build' >> package.log
+yarn run 'ts:build' >> package.log
 
 # -- RIOT TAGS --
 echo '== processing riot tags files' | tee -a package.log
 
 # compile riot tags to es5
 echo ' |-- compiling tags to es5' | tee -a package.log
-npm run 'riot:build' >> package.log
+yarn run 'riot:build' >> package.log
 
 # remove references to .tag.html files
 echo ' |-- updating require statements for tags' | tee -a package.log
