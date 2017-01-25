@@ -43,10 +43,10 @@ export function configure(tag: FluxTag<any>) {
   }
 
   const config = buildConfiguration(tag, meta);
+  Object.assign(tag, config);
   if (typeof tag.setDefaults === 'function') {
     tag.setDefaults(config);
   }
-  Object.assign(tag, config);
   return config;
 }
 

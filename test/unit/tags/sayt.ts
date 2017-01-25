@@ -60,19 +60,17 @@ suite('gb-sayt', Sayt, ({
     });
 
     it('should set showProducts true if productCount is not 0', () => {
-      tag().productCount = 3;
       tag().sayt = { configure: () => null };
 
-      tag().setDefaults({});
+      tag().setDefaults({ productCount: 3 });
 
       expect(tag().showProducts).to.be.true;
     });
 
     it('should set showProducts false if productCount is 0', () => {
-      tag().productCount = 0;
       tag().sayt = { configure: () => null };
 
-      tag().setDefaults({});
+      tag().setDefaults({ productCount: 0 });
 
       expect(tag().showProducts).to.be.false;
     });

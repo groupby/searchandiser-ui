@@ -85,7 +85,7 @@ export class Sayt extends SaytTag<SaytOpts> {
   }
 
   setDefaults(config: SaytOpts) {
-    this.showProducts = this.productCount > 0;
+    this.showProducts = config.productCount > 0;
     // TODO: should use service configuraiton dependency
     this.area = config.area || this.config.area;
     this.collection = config.collection || this.config.collection;
