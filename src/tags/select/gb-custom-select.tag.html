@@ -35,16 +35,6 @@
     gb-list ul:hover {
       display: block;
     }
-    gb-option a {
-      cursor: pointer;
-      display: block;
-      text-decoration: none;
-      color: black;
-      padding: 10px 12px;
-    }
-    gb-option a:hover {
-      background-color: #eee;
-    }
     .gb-select.hoverable:hover gb-list,
     .gb-select.clickable button:focus + gb-list,
     gb-list:hover {
@@ -53,6 +43,9 @@
     :scope.gb-stylish > .gb-select:hover button,
     :scope.gb-stylish > .gb-select button:focus {
       border-color: #aaa;
+    }
+    :scope.gb-stylish gb-list > ul > li {
+      margin: 0;
     }
     button {
       overflow-x: hidden;
