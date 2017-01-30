@@ -1,4 +1,4 @@
-function configureSearchandiser() {
+function configureSearchandiser () {
   searchandiser({
     customerId: 'gbipoccvspilot',
     area: 'ProductionSemanticDemo',
@@ -10,7 +10,6 @@ function configureSearchandiser() {
       24,
       50
     ],
-
 
     bridge: {
       https: true
@@ -38,7 +37,7 @@ function configureSearchandiser() {
     tags: {
 
       collections: {
-        options: [{
+        items: [{
           label: 'Products',
           value: 'products2'
         }, {
@@ -78,7 +77,7 @@ function configureSearchandiser() {
       },
 
       sort: {
-        options: [{
+        items: [{
           label: 'Relevance',
           value: {
             field: '_relevance',
@@ -122,10 +121,10 @@ function configureSearchandiser() {
     stylish: true
   });
 
-  function transformRecord(record) {
+  function transformRecord (record) {
     if (record.child) {
       record.child = record.child.map(
-        function(child) {
+        function (child) {
           child.image = 'http://www.cvs.com/bizcontent/merchandising/productimages/large/' + child.PRODUCT_UPCNUMBER + '.jpg';
           return child;
         }
