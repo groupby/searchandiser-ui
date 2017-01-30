@@ -29,4 +29,4 @@ deployment:
       - yarn run e2e:ci
       - ./shipit.sh
       - yarn run package
-      - yarn publish
+      - npm publish
