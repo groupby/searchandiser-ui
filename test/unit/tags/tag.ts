@@ -25,20 +25,6 @@ describe('base tag logic', () => {
         tag.on = () => null;
       });
 
-      it('should not set _style empty', () => {
-        tag.init();
-
-        expect(tag._style).to.eq('');
-      });
-
-      it('should set _style', () => {
-        tag.config = <any>{ stylish: true };
-
-        tag.init();
-
-        expect(tag._style).to.eq('gb-stylish');
-      });
-
       it('should call setTagName()', () => {
         const setTagName = sandbox.stub(utils, 'setTagName');
 
@@ -55,8 +41,9 @@ describe('base tag logic', () => {
         expect(inheritAliases).to.be.calledWith(tag);
       });
 
-      it('should listen for before-mount', () => {
+      it('should listen for events', () => {
         const configure = sandbox.stub(utils, 'configure');
+        const setStylish = sandbox.stub(utils, 'setStylish');
 
         expectSubscriptions(() => tag.init(), {
           'before-mount': {
@@ -64,13 +51,18 @@ describe('base tag logic', () => {
               cb();
               expect(configure).to.be.calledWith(tag);
             }
+          },
+          mount: {
+            test: (cb) => {
+              cb();
+              expect(setStylish).to.be.calledWith(tag);
+            }
           }
         }, tag);
       });
     });
 
     describe('expose()', () => {
-
       beforeEach(() => {
         tag._aliases = {};
       });

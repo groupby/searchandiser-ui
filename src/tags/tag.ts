@@ -1,11 +1,12 @@
 import { SearchandiserConfig } from '../searchandiser';
 import { Services } from '../services/init';
-import { addMeta, configure, inheritAliases, setTagName, updateDependency } from '../utils/tag';
+import { addMeta, configure, inheritAliases, setStylish, setTagName, updateDependency } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
 
 export const META = Symbol('meta');
+export const STYLISH = Symbol('stylish');
 
 const sayt = new Sayt();
 
@@ -25,16 +26,13 @@ export class FluxTag<T> {
   _state: any;
   _aliases: any;
 
-  // TODO: should get rid of this
-  _style: string;
-
   init() {
     this._state = {};
-    this._style = this.config.stylish ? 'gb-stylish' : '';
     setTagName(this);
     inheritAliases(this);
 
     this.on('before-mount', () => configure(this));
+    this.on('mount', () => setStylish(this));
   }
 
   expose(aliases: string | string[], obj: any = this) {

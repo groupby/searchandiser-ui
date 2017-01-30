@@ -1,5 +1,5 @@
 <gb-terminal-pager>
-  <div class="gb-terminal-pager { _style }">
+  <div class="gb-terminal-pager">
     <a class="gb-terminal__link first { disabled: $paging.backDisabled }" if="{ $paging.terminals }" onclick="{ $paging.firstPage }">
       <gb-icon if="{ $paging.icons }" value="{ $paging.firstIcon }"></gb-icon>
       <span if="{ $paging.labels }">{ $paging.numeric ? 1 : $paging.firstLabel }</span>
@@ -12,36 +12,36 @@
   </div>
 
   <style scoped>
-    .gb-stylish a {
+    :scope.gb-stylish a {
       cursor: pointer;
     }
 
-    .gb-stylish.gb-terminal-pager {
+    :scope.gb-stylish > .gb-terminal-pager {
       display: flex;
       width: 100%;
     }
 
-    .gb-stylish .gb-terminal__link {
+    :scope.gb-stylish .gb-terminal__link {
       display: flex;
       text-decoration: none;
       color: #888;
       padding: 5px 14px;
     }
 
-    .gb-stylish .gb-terminal__link:hover {
+    :scope.gb-stylish .gb-terminal__link:hover {
       color: black;
     }
 
-    .gb-stylish .gb-terminal__link.disabled {
+    :scope.gb-stylish .gb-terminal__link.disabled {
       color: #ddd;
       cursor: not-allowed;
     }
 
-    .gb-stylish gb-pager {
+    :scope.gb-stylish gb-pager {
       flex: 1;
     }
 
-    .gb-stylish gb-icon img {
+    :scope.gb-stylish gb-icon img {
       width: 20px;
     }
   </style>

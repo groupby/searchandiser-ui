@@ -1,5 +1,5 @@
 <gb-pages>
-  <ul class="gb-pages { _style }" if="{ $paging.pages }">
+  <ul class="gb-pages" if="{ $paging.pages }">
     <span class="gb-pages__ellipsis" if="{ $paging.lowOverflow }">&hellip;</span>
     <li each="{ pageNumber in $paging.pageNumbers }">
       <a class="gb-pages__page { selected: $paging.currentPage === pageNumber }" onclick="{ $paging.switchPage }">{ pageNumber }</a>
@@ -8,11 +8,11 @@
   </ul>
 
   <style scoped>
-    .gb-stylish a {
+    :scope.gb-stylish a {
       cursor: pointer;
     }
 
-    .gb-stylish.gb-pages {
+    :scope.gb-stylish > .gb-pages {
       margin: 0;
       padding: 0;
       list-style: none;
@@ -22,22 +22,22 @@
       height: 100%;
     }
 
-    .gb-stylish.gb-pages li {
+    :scope.gb-stylish > .gb-pages > li {
       display: inline;
     }
 
-    .gb-stylish .gb-pages__page,
-    .gb-stylish .gb-pages__ellipsis {
+    :scope.gb-stylish .gb-pages__page,
+    :scope.gb-stylish .gb-pages__ellipsis {
       text-decoration: none;
       color: #888;
     }
 
-    .gb-stylish .gb-pages__page {
+    :scope.gb-stylish .gb-pages__page {
       padding: 0 4px;
     }
 
-    .gb-stylish .gb-pages__page:hover,
-    .gb-stylish .gb-pages__page.selected {
+    :scope.gb-stylish .gb-pages__page:hover,
+    :scope.gb-stylish .gb-pages__page.selected {
       color: black;
     }
   </style>

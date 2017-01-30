@@ -1,5 +1,5 @@
 <gb-available-refinement>
-  <div class="gb-ref { _style }">
+  <div class="gb-ref">
     <a class="gb-ref__link" onclick="{ send }">
       <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
       <span class="gb-filler"></span>
@@ -13,15 +13,15 @@
   </script>
 
   <style scoped>
-    .gb-stylish {
+    :scope.gb-stylish > .gb-ref {
       list-style: none;
     }
 
-    .gb-stylish .gb-filler {
+    :scope.gb-stylish .gb-filler {
       flex-grow: 1;
     }
 
-    .gb-stylish .gb-ref__link {
+    :scope.gb-stylish .gb-ref__link {
       cursor: pointer;
       display: flex;
       padding: 4px 6px;
@@ -32,7 +32,7 @@
       align-items: baseline;
     }
 
-    .gb-stylish .gb-ref__link:hover {
+    :scope.gb-stylish .gb-ref__link:hover {
       background-color: #ddd;
     }
   </style>

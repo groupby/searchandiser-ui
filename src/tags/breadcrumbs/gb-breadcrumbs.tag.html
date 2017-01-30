@@ -1,6 +1,6 @@
 <gb-breadcrumbs>
   <yield>
-    <div class="gb-breadcrumbs { _style }">
+    <div class="gb-breadcrumbs">
       <gb-query-crumb if="{ !$breadcrumbs.hideQuery }"></gb-query-crumb>
       <gb-list if="{ !$breadcrumbs.hideRefinements }" item-alias="navigation">
         <gb-list class="gb-navigation-crumb" items="{ $navigation.refinements }" item-alias="refinement" inline>
@@ -16,7 +16,7 @@
   </script>
 
   <style scoped>
-    .gb-stylish.gb-breadcrumbs {
+    :scope.gb-stylish > .gb-breadcrumbs {
       display: flex;
       justify-content: flex-start;
       align-items: baseline;

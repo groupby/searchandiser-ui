@@ -1,5 +1,5 @@
 <gb-refinement-list>
-  <div id="{ $navigation.name }" class="{ _style }">
+  <div id="{ $navigation.name }">
     <h4 class="gb-navigation-title">{ $navigation.displayName }</h4>
     <ul>
       <li data-is="gb-selected-refinement" if="{ $navigable.showSelected }" each="{ refinement in $navigation.selected }"></li>
@@ -14,13 +14,14 @@
   </script>
 
   <style scoped>
-    .gb-stylish.gb-refinement-list .gb-navigation-title {
+    :scope.gb-stylish .gb-navigation-title {
       font-size: 18px;
       margin: 10px 0;
     }
-    .gb-stylish.gb-refinement-list ul {
+    :scope.gb-stylish ul {
       margin: 0;
       padding-left: 8px;
+      list-style: none;
     }
   </style>
 </gb-refinement-list>

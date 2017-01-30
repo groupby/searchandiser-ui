@@ -1,5 +1,5 @@
 <gb-product-image>
-  <a class="gb-product-image { _style }" href="{ $product.link() }">
+  <a class="gb-product-image" href="{ $product.link() }">
     <gb-lazy-image if="{ $productable.lazy }" src="{ $product.imageLink() }"></gb-lazy-image>
     <img if="{ !$productable.lazy }" src="{ $product.imageLink() }" alt="" />
   </a>

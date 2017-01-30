@@ -1,5 +1,5 @@
 <gb-pager>
-  <div class="gb-pager { _style }">
+  <div class="gb-pager">
     <a class="gb-pager__link prev { disabled: $paging.backDisabled }" onclick="{ $paging.prevPage }">
       <gb-icon if="{ $paging.icons }" value="{ $paging.prevIcon }"></gb-icon>
       <span if="{ $paging.labels }">{ $paging.prevLabel }</span>
@@ -12,35 +12,35 @@
   </div>
 
   <style scoped>
-    .gb-stylish a {
+    :scope.gb-stylish a {
       cursor: pointer;
     }
 
-    .gb-stylish.gb-pager {
+    :scope.gb-stylish > .gb-pager {
       display: flex;
     }
 
-    .gb-stylish .gb-pager__link {
+    :scope.gb-stylish .gb-pager__link {
       display: flex;
       text-decoration: none;
       color: #888;
       padding: 5px 14px;
     }
 
-    .gb-stylish .gb-pager__link:hover {
+    :scope.gb-stylish .gb-pager__link:hover {
       color: black;
     }
 
-    .gb-stylish .gb-pager__link.disabled {
+    :scope.gb-stylish .gb-pager__link.disabled {
       color: #ddd;
       cursor: not-allowed;
     }
 
-    .gb-stylish gb-pages {
+    :scope.gb-stylish gb-pages {
       flex: 1;
     }
 
-    .gb-stylish gb-icon img {
+    :scope.gb-stylish gb-icon img {
       width: 20px;
     }
   </style>

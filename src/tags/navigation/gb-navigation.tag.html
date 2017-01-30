@@ -1,6 +1,6 @@
 <gb-navigation>
   <yield>
-    <ul class="gb-side-nav { _style }">
+    <ul class="gb-side-nav">
       <li data-is="gb-refinement-list" each="{ navigation in $navigable.processed }"></li>
     </ul>
   </yield>
@@ -11,8 +11,9 @@
   </script>
 
   <style scoped>
-    .gb-stylish.gb-side-nav {
+    :scope.gb-stylish > ul {
       padding: 12px;
+      list-style: none;
     }
   </style>
 </gb-navigation>

@@ -1,6 +1,6 @@
 <gb-sayt>
   <yield>
-    <div class="{ _style }" if="{ ($sayt.queries && $sayt.queries.length) || ($sayt.navigations && $sayt.navigations.length) }">
+    <div if="{ ($sayt.queries && $sayt.queries.length) || ($sayt.navigations && $sayt.navigations.length) }">
       <gb-sayt-autocomplete></gb-sayt-autocomplete>
       <gb-sayt-products if="{ $sayt.showProducts }"></gb-sayt-products>
     </div>
@@ -13,23 +13,23 @@
   </script>
 
   <style scoped>
-    div.gb-stylish {
+    :scope.gb-stylish > div {
       display: flex;
     }
 
-    .gb-stylish ul {
+    :scope.gb-stylish ul {
       list-style: none;
       margin: 0;
       padding: 0;
     }
 
-    .gb-stylish gb-sayt-link:hover,
-    .gb-stylish gb-sayt-link.active {
+    :scope.gb-stylish gb-sayt-link:hover,
+    :scope.gb-stylish gb-sayt-link.active {
       background-color: #f1f1f1;
       display: block;
     }
 
-    .gb-stylish gb-list li {
+    :scope.gb-stylish gb-list li {
       margin: 0px;
     }
   </style>

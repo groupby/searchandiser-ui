@@ -1,6 +1,6 @@
 <gb-query>
   <yield>
-    <div class="gb-query { _style }">
+    <div class="gb-query">
       <gb-search-box></gb-search-box>
       <gb-submit></gb-submit>
       <gb-reset></gb-reset>
@@ -14,13 +14,13 @@
   </script>
 
   <style scoped>
-    .gb-stylish.gb-query {
+    :scope.gb-stylish .gb-query {
       position: relative;
       display: flex;
       align-items: baseline;
     }
 
-    .gb-stylish.gb-query gb-sayt {
+    :scope.gb-stylish .gb-query gb-sayt {
       top: 31px;
       left: 0;
       z-index: 10;
