@@ -1,5 +1,7 @@
 GroupBy Searchandiser UI
 ========
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/groupby/searchandiser-ui.svg)](https://greenkeeper.io/)
 [![CircleCI](https://circleci.com/gh/groupby/searchandiser-ui.svg?style=svg)](https://circleci.com/gh/groupby/searchandiser-ui)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dab4007ef110453aa99d923e55634eb7)](https://www.codacy.com/app/GroupByInc/searchandiser-ui?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=groupby/searchandiser-ui&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/dab4007ef110453aa99d923e55634eb7)](https://www.codacy.com/app/GroupByInc/searchandiser-ui?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=groupby/searchandiser-ui&amp;utm_campaign=Badge_Coverage)
