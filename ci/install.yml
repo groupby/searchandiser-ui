@@ -8,9 +8,7 @@ outputs:
 
 run:
   dir: components
-  path: sh
+  path: yarn
   args:
-    - -exc
-    - |
-      yarn
-      git clone ./node_modules ../node_modules
+    - --modules-folder
+    - ../node_modules

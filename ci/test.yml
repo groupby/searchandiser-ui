@@ -6,9 +6,9 @@ inputs:
 
 run:
   dir: components
-  path: sh
+  path: yarn
   args:
-    - -exc
-    - |
-      git clone ../node_modules ./node_modules
-      yarn run test+coverage
+    - --modules-folder
+    - ../node_modules
+    - run
+    - test+coverage
