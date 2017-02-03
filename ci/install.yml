@@ -8,7 +8,9 @@ outputs:
 
 run:
   dir: components
-  path: yarn
+  path: sh
   args:
-    - --modules-folder
-    - ../node_modules
+    - -exc
+    - |
+      yarn --modules-folder ../node_modules
+      cp -R ./node_modules ../node_modules

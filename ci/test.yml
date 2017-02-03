@@ -6,9 +6,9 @@ inputs:
 
 run:
   dir: components
-  path: yarn
+  path: sh
   args:
-    - --modules-folder
-    - ../node_modules
-    - run
-    - test+coverage
+    - -exc
+    - |
+      cp -R ../node_modules ./node_modules
+      yarn run test+coverage
