@@ -12,5 +12,6 @@ run:
     - -exc
     - |
       cp -R ../node_modules/* ./node_modules
+      yarn run postinstall
       yarn run test+coverage
 # cp -R ../typings/* ./typings
