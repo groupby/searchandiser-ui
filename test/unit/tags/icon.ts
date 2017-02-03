@@ -9,7 +9,7 @@ suite('gb-icon', Icon, ({
 
   describe('init()', () => {
     it('should listen for update', () => {
-      tag().opts = { value: '' };
+      tag().opts = { img: '' };
 
       expectSubscriptions(() => tag().init(), { update: tag().setImage }, tag());
     });
@@ -29,7 +29,7 @@ suite('gb-icon', Icon, ({
     it('should set url and remove classes', () => {
       const dataUri = 'myImage.png';
       const isImage = tag().isImage = spy(() => true);
-      tag().opts = { value: dataUri };
+      tag().opts = { img: dataUri };
       tag().classes = 'these classes';
 
       tag().setImage();
@@ -42,7 +42,7 @@ suite('gb-icon', Icon, ({
     it('should set classes and remove url', () => {
       const classes = 'these classes';
       tag().isImage = () => false;
-      tag().opts = { value: classes };
+      tag().opts = { img: classes };
       tag().url = 'myImage.png';
 
       tag().setImage();
