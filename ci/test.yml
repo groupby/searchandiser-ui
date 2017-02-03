@@ -3,11 +3,12 @@ platform: linux
 inputs:
   - name: components
   - name: node_modules
-    path: components/node_modules
 
 run:
   dir: components
-  path: yarn
+  path: sh
   args:
-    - run
-    - test+coverage
+    - -exc
+    - |
+      git clone ../node_modules ./node_modules
+      yarn run test+coverage

@@ -5,8 +5,12 @@ inputs:
 
 outputs:
   - name: node_modules
-    path: components/node_modules
 
 run:
   dir: components
-  path: yarn
+  path: sh
+  args:
+    - -exc
+    - |
+      yarn
+      git clone ./node_modules ../node_modules
