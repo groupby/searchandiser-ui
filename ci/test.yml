@@ -11,6 +11,6 @@ run:
   args:
     - -exc
     - |
-      mv ../node_modules .
+      cp -R ../node_modules/* ./node_modules
       yarn run test+coverage
 # cp -R ../typings/* ./typings
