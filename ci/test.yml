@@ -2,10 +2,11 @@ platform: linux
 
 inputs:
   - name: components
-    path: .
   - name: node_modules
+    path: components/node_modules
 
 run:
+  dir: components
   path: yarn
   args:
     - run
