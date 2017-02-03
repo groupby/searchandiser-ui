@@ -12,5 +12,5 @@ run:
   args:
     - -exc
     - |
-      yarn --modules-folder ../node_modules
+      yarn
       cp -R ./node_modules ../node_modules
