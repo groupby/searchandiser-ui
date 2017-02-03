@@ -4,7 +4,7 @@ inputs:
   - name: components
 
 run:
-  path: yarn run test+coverage
+  path: yarn
   args:
     - run
     - test+coverage
