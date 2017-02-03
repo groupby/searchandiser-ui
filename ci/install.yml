@@ -4,8 +4,8 @@ inputs:
   - name: components
 
 outputs:
-  - name: node_modules
-  - name: typings
+  # - name: node_modules
+  # - name: typings
 
 run:
   dir: components
@@ -14,5 +14,5 @@ run:
     - -exc
     - |
       yarn
-      cp -R ./node_modules ../node_modules
-      cp -R ./typings ../typings
+# cp -R ./node_modules ../node_modules
+# cp -R ./typings ../typings
