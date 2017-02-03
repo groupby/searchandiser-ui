@@ -1,0 +1,7 @@
+platform: linux
+
+inputs:
+  - name: components
+
+run:
+  path: yarn
