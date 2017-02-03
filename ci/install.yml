@@ -4,5 +4,8 @@ inputs:
   - name: components
     path: .
 
+outputs:
+  - name: node_modules
+
 run:
   path: yarn
