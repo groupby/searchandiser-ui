@@ -21,7 +21,8 @@ function preLoaders() {
   return [{
     test: /\.tag(\.html)?$/,
     exclude: /node_modules/,
-    loader: 'riotjs'
+    loader: 'riot-tag',
+    query: { type: 'none' }
   }];
 }
 

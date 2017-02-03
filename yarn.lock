@@ -3075,7 +3075,7 @@ load-json-file@^1.0.0:
     pinkie-promise "^2.0.0"
     strip-bom "^2.0.0"
 
-loader-utils@0.2.x, loader-utils@0.x.x, loader-utils@^0.2.11, loader-utils@^0.2.5, loader-utils@^0.2.6, loader-utils@^0.2.7, loader-utils@~0.2.2, loader-utils@~0.2.5:
+loader-utils@0.2.x, loader-utils@0.x.x, loader-utils@^0.2.11, loader-utils@^0.2.16, loader-utils@^0.2.5, loader-utils@^0.2.6, loader-utils@^0.2.7, loader-utils@~0.2.2, loader-utils@~0.2.5:
   version "0.2.16"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-0.2.16.tgz#f08632066ed8282835dff88dfb52704765adee6d"
   dependencies:
@@ -4691,10 +4691,6 @@ riot-cli@^3.0.0:
     rollup "^0.36.3"
     shelljs "^0.7.5"
 
-riot-compiler@^2.3.22:
-  version "2.5.7"
-  resolved "https://registry.yarnpkg.com/riot-compiler/-/riot-compiler-2.5.7.tgz#dc418366f1178d39c6c18fd9fc0190cbeecc1695"
-
 riot-compiler@^3.0.0, riot-compiler@^3.1.1:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/riot-compiler/-/riot-compiler-3.1.2.tgz#96cd034ada77b59a06847e9c14248d0ebaa885a0"
@@ -4702,6 +4698,12 @@ riot-compiler@^3.0.0, riot-compiler@^3.1.1:
 riot-observable@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/riot-observable/-/riot-observable-3.0.0.tgz#8bbd2daf72a2141bb043082df4023dc504bad2eb"
+
+riot-tag-loader@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/riot-tag-loader/-/riot-tag-loader-1.0.0.tgz#bbd94290f5cf946ac684985275d977442ee4868e"
+  dependencies:
+    loader-utils "^0.2.16"
 
 riot-tmpl@^3.0.1:
   version "3.0.1"
@@ -4717,13 +4719,6 @@ riot@^3.0.3:
     riot-tmpl "^3.0.1"
     simple-dom "0.3.2"
     simple-html-tokenizer "^0.2.6"
-
-riotjs-loader@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/riotjs-loader/-/riotjs-loader-3.0.0.tgz#51f640d7e3ac32cfa106fa240dac26077fa43b3c"
-  dependencies:
-    loader-utils "^0.2.6"
-    riot-compiler "^2.3.22"
 
 ripemd160@0.2.0:
   version "0.2.0"

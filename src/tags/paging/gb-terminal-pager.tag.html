@@ -1,13 +1,13 @@
 <gb-terminal-pager>
   <div class="gb-terminal-pager">
     <a class="gb-terminal__link first { disabled: $paging.backDisabled }" if="{ $paging.terminals }" onclick="{ $paging.firstPage }">
-      <gb-icon if="{ $paging.icons }" value="{ $paging.firstIcon }"></gb-icon>
+      <gb-icon if="{ $paging.icons }" img="{ $paging.firstIcon }"></gb-icon>
       <span if="{ $paging.labels }">{ $paging.numeric ? 1 : $paging.firstLabel }</span>
     </a>
     <yield/>
     <a class="gb-terminal__link last { disabled: $paging.forwardDisabled }" if="{ $paging.terminals }" onclick="{ $paging.lastPage }">
       <span if="{ $paging.labels }">{ $paging.numeric ? $paging.finalPage : $paging.lastLabel }</span>
-      <gb-icon if="{ $paging.icons }" value="{ $paging.lastIcon }"></gb-icon>
+      <gb-icon if="{ $paging.icons }" img="{ $paging.lastIcon }"></gb-icon>
     </a>
   </div>
 

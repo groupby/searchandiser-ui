@@ -4,7 +4,7 @@ export const IMAGE_PATTERN = /.*\..*/;
 export const DATA_URL_PREFIX = 'data:image/';
 
 export interface IconOpts {
-  value: string;
+  img: string;
 }
 
 export class Icon extends FluxTag<IconOpts> {
@@ -21,17 +21,17 @@ export class Icon extends FluxTag<IconOpts> {
   }
 
   setImage() {
-    if (this.isImage(this.opts.value)) {
-      this.url = this.opts.value;
+    if (this.isImage(this.opts.img)) {
+      this.url = this.opts.img;
       delete this.classes;
     } else {
-      this.classes = this.opts.value;
+      this.classes = this.opts.img;
       delete this.url;
     }
   }
 
-  isImage(value: string) {
-    const matches = value.match(IMAGE_PATTERN);
-    return (matches && matches.length > 0) || value.startsWith(DATA_URL_PREFIX);
+  isImage(img: string) {
+    const matches = img.match(IMAGE_PATTERN);
+    return (matches && matches.length > 0) || img.startsWith(DATA_URL_PREFIX);
   }
 }
