@@ -80,7 +80,7 @@
     "phantomjs-prebuilt": "^2.1.14",
     "remap-istanbul": "^0.6.4",
     "rimraf": "^2.5.4",
-    "riotjs-loader": "^3.0.0",
+    "riot-tag-loader": "^1.0.0",
     "script-loader": "^0.7.0",
     "selenium-server-standalone-jar": "^3.0.1",
     "sinon": "^1.16.1",

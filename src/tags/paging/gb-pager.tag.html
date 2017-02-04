@@ -1,17 +1,17 @@
 <gb-pager>
   <div class="gb-pager">
     <a class="gb-pager__link prev { disabled: $paging.backDisabled }" onclick="{ $paging.prevPage }">
-      <gb-icon if="{ $paging.icons }" value="{ $paging.prevIcon }"></gb-icon>
+      <gb-icon if="{ $paging.icons }" img="{ $paging.prevIcon }"></gb-icon>
       <span if="{ $paging.labels }">{ $paging.prevLabel }</span>
     </a>
     <yield/>
     <a class="gb-pager__link next { disabled: $paging.forwardDisabled }" onclick="{ $paging.nextPage }">
       <span if="{ $paging.labels }">{ $paging.nextLabel }</span>
-      <gb-icon if="{ $paging.icons }" value="{ $paging.nextIcon }"></gb-icon>
+      <gb-icon if="{ $paging.icons }" img="{ $paging.nextIcon }"></gb-icon>
     </a>
   </div>
 
-  <style scoped>
+  <style>
     :scope.gb-stylish a {
       cursor: pointer;
     }
