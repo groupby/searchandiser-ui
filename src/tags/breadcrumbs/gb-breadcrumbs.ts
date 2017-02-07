@@ -4,7 +4,6 @@ import { FluxTag, TagMeta } from '../tag';
 import { Events, Results } from 'groupby-api';
 
 export interface BreadcrumbsOpts {
-  items: any[];
   hideQuery?: boolean;
   hideRefinements?: boolean;
   labels?: boolean;
@@ -30,7 +29,6 @@ export const META: TagMeta = {
 @meta(META)
 export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
 
-  items: any[];
   hideQuery: boolean;
   hideRefinements: boolean;
   labels: boolean;
@@ -38,6 +36,7 @@ export class Breadcrumbs extends FluxTag<BreadcrumbsOpts> {
   noResultsLabel: string;
   correctedResultsLabel: string;
 
+  items: any[];
   originalQuery: string;
   correctedQuery: string;
 
