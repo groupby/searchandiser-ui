@@ -29,6 +29,7 @@ export function initSearchandiser() {
     const services = initServices(flux, config);
     riot.mixin(MixinFlux(flux, config, services));
     Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
+    (<any>configure).init();
   };
 }
 
