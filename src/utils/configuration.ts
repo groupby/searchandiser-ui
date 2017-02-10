@@ -3,7 +3,6 @@ import { Sort } from 'groupby-api';
 import oget = require('oget');
 
 export const DEFAULT_CONFIG: SearchandiserConfig = <any>{
-  initialSearch: true,
   simpleAttach: true,
 
   url: {
