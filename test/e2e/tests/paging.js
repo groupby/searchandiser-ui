@@ -51,7 +51,7 @@ module.exports = {
       .click('.gb-terminal__link.last')
       .expect.element('.gb-pager__link.next.disabled').to.be.present.before(1000);
     browser.expect.element('.gb-terminal__link.last.disabled').to.be.present;
-    browser.expect.element('.gb-pages__page.selected').text.to.eq('833');
+    browser.expect.element('.gb-pages__page.selected').text.to.eq('1000');
     browser.expect.element('.gb-pages__ellipsis:nth-child(1)').to.be.visible;
     browser.expect.element('.gb-pages__ellipsis:nth-child(6)').to.not.be.present;
     browser.end();
