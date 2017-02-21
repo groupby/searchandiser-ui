@@ -119,7 +119,7 @@ describe('Configuration', () => {
 
       it('should override defaults', () => {
         const originalConfig: any = {
-          sort: [{ field: '_relevance'}],
+          sort: [{ field: '_relevance' }],
           pageSize: 20,
           initialSearch: false,
           simpleAttach: false,
