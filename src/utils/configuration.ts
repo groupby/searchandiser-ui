@@ -3,6 +3,9 @@ import { Sort } from 'groupby-api';
 import oget = require('oget');
 
 export const DEFAULT_CONFIG: SearchandiserConfig = <any>{
+  pageSize: 10,
+  sort: [],
+
   simpleAttach: true,
 
   url: {
@@ -80,14 +83,14 @@ export class Configuration {
 
   static validate(config: SearchandiserConfig) {
     if (!config.structure) {
-      throw 'must provide a record structure';
+      throw new Error('must provide a record structure');
     }
     const struct = Object.assign({}, config.structure, config.structure._variantStructure);
     if (!(struct.title && struct.title.trim())) {
-      throw 'structure.title must be the path to the title field';
+      throw new Error('structure.title must be the path to the title field');
     }
     if (!(struct.price && struct.price.trim())) {
-      throw 'structure.price must be the path to the price field';
+      throw new Error('structure.price must be the path to the price field');
     }
   }
 }
