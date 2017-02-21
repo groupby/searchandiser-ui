@@ -13,6 +13,14 @@ describe('Configuration', () => {
 
     beforeEach(() => configuration = new Configuration(RAW_CONFIG));
 
+    it('should return defaults in unspecified', () => {
+      const config: any = { structure: { title: 'title', price: 'price' } };
+      const transformed = new Configuration(config).apply();
+
+      expect(transformed.sort).to.eql([]);
+      expect(transformed.pageSize).to.eq(10);
+    });
+
     it('should validate() rawConfig', () => {
       const validate = sandbox.stub(Configuration, 'validate');
       sandbox.stub(Configuration, 'applyDefaults');
@@ -111,6 +119,8 @@ describe('Configuration', () => {
 
       it('should override defaults', () => {
         const originalConfig: any = {
+          sort: [{ field: '_relevance'}],
+          pageSize: 20,
           initialSearch: false,
           simpleAttach: false,
           url: {
