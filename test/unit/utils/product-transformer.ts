@@ -24,6 +24,7 @@ describe('ProductTransformer', () => {
       expect(transformer.productTransform).to.be.a('function');
       expect(transformer.hasVariants).to.be.false;
       expect(transformer.variantStructure).to.eq(transformer.structure);
+      expect(transformer.variantTransform).to.be.a('function');
       expect(transformer.idField).to.eq('id');
     });
 
@@ -44,12 +45,24 @@ describe('ProductTransformer', () => {
     });
 
     it('should recognize configured variants', () => {
-      const struct = Object.assign({ variants: 'child' }, STRUCT);
+      const _variantStructure = { title: 'innerTitle' };
+      const struct = Object.assign({ variants: 'child', _variantStructure }, STRUCT);
 
       transformer = new ProductTransformer(struct);
 
       expect(transformer.hasVariants).to.be.true;
+      expect(transformer.variantStructure).to.eq(_variantStructure);
+      expect(transformer.variantTransform).to.be.a('function');
       expect(transformer.idField).to.eq('id');
+    });
+
+    it('should recognize variant _transform', () => {
+      const _transform = (meta) => meta;
+      const struct = Object.assign({ variants: 'child', _variantStructure: { _transform } }, STRUCT);
+
+      transformer = new ProductTransformer(struct);
+
+      expect(transformer.variantTransform).to.eq(_transform);
     });
 
     it('should recognize configured variants with unique id', () => {
@@ -626,6 +639,28 @@ describe('ProductTransformer', () => {
 
       expect(remap).to.be.calledWith(originalVariant);
     });
+
+    it('should apply variantTransform', () => {
+      const remapped = { a: 'b', c: 'd' };
+      const transformed = { e: 'f', g: 'h' };
+      const variantTransform = transformer.variantTransform = sandbox.spy(() => transformed);
+      sandbox.stub(utils, 'remap').returns(remapped);
+
+      const mapping = transformer.remapVariant({}, { colour: 'mainColour', size: 'usSize' });
+
+      expect(mapping({ mainColour: 'blue', size: '12.5' })).to.eql(transformed);
+      expect(variantTransform).to.be.calledWith(remapped);
+    });
+
+    it('should not apply variantTransform if the same function as productTransform', () => {
+      const transform = transformer.productTransform = sandbox.spy();
+      const variantTransform = transformer.variantTransform = transform;
+      sandbox.stub(utils, 'remap');
+
+      transformer.remapVariant({}, {})({});
+
+      expect(variantTransform).to.not.be.called;
+    });
   });
 
   describe('extractIdField()', () => {
@@ -649,6 +684,34 @@ describe('ProductTransformer', () => {
       transformer.variantStructure = _variantStructure;
 
       expect(transformer.extractIdField()).to.eq('child.childId');
+    });
+  });
+
+  describe('static', () => {
+    describe('getTransform()', () => {
+      it('should return structure._transform if a function', () => {
+        const _transform = (meta) => meta;
+
+        const transform = ProductTransformer.getTransform({ _transform });
+
+        expect(transform).to.eq(_transform);
+      });
+
+      it('should return a simple mapping function if no _transform', () => {
+        const meta = {};
+
+        const transform = ProductTransformer.getTransform({});
+
+        expect(transform(meta)).to.eq(meta);
+      });
+
+      it('should return a simple mapping function if invalid _transform', () => {
+        const meta = {};
+
+        const transform = ProductTransformer.getTransform({ _transform: 's' });
+
+        expect(transform(meta)).to.eq(meta);
+      });
     });
   });
 });

@@ -11,7 +11,9 @@ export interface BaseStructure {
   id?: string;
   url?: string;
   variants?: string;
-  _variantStructure?: any;
+  _variantStructure?: {
+    _transform?: (vairantMeta: any, allMeta: any) => any;
+  };
   _transform?: (allMeta: any) => any;
 }
 
@@ -30,13 +32,15 @@ export class ProductTransformer {
   hasVariants: boolean;
   idField: string;
   productTransform: (allMeta: any) => any;
+  variantTransform: (variantMeta: any, allMeta: any) => any;
   variants: any[];
 
   constructor(structure: ProductStructure) {
     this.structure = Object.assign({}, DEFAULT_STRUCTURE, structure);
-    this.setTransform();
+    this.productTransform = ProductTransformer.getTransform(this.structure);
     this.hasVariants = 'variants' in structure;
     this.variantStructure = this.structure._variantStructure || this.structure;
+    this.variantTransform = ProductTransformer.getTransform(this.variantStructure);
     this.idField = this.extractIdField();
   }
 
@@ -67,7 +71,10 @@ export class ProductTransformer {
 
   remapVariant(remappedMeta: any, variantStruct: any) {
     return (variant) => {
-      const remappedVariant = remap(variant, variantStruct);
+      let remappedVariant = remap(variant, variantStruct);
+      if (this.productTransform !== this.variantTransform) {
+        remappedVariant = this.variantTransform(remappedVariant, remappedMeta);
+      }
       return filterObject(Object.assign({}, remappedMeta, remappedVariant), '!variants');
     };
   }
@@ -81,15 +88,11 @@ export class ProductTransformer {
     }
   }
 
-  private setTransform() {
-    if (typeof this.structure._transform === 'function') {
-      this.productTransform = this.structure._transform;
+  static getTransform(structure: ProductStructure) {
+    if (typeof structure._transform === 'function') {
+      return structure._transform;
     } else {
-      this.productTransform = this.defaultTransform;
+      return (meta) => meta;
     }
-  }
-
-  private defaultTransform(allMeta: any) {
-    return allMeta;
   }
 }
