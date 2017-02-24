@@ -1,8 +1,10 @@
 <gb-selected-refinement>
-  <div class="gb-ref">
-    <a class="gb-ref__link" onclick="{ remove }">&times;</a>
-    <span class="gb-ref__value">{ $navigable.toView($refinement) }</span>
-  </div>
+  <yield>
+    <div class="gb-ref">
+      <a class="gb-ref__link" onclick="{ remove }">&times;</a>
+      <span class="gb-ref__value">{ $navigable.toView($refinement) }</span>
+    </div>
+  </yield>
 
   <script>
     import { SelectedRefinement } from './gb-refinement';
