@@ -1,11 +1,13 @@
 <gb-available-refinement>
-  <div class="gb-ref">
-    <a class="gb-ref__link" onclick="{ send }">
-      <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
-      <span class="gb-filler"></span>
-      <gb-badge if="{ $navigable.badge }">{ $refinement.count }</gb-badge>
-    </a>
-  </div>
+  <yield>
+    <div class="gb-ref">
+      <a class="gb-ref__link" onclick="{ send }">
+        <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
+        <span class="gb-filler"></span>
+        <gb-badge if="{ $navigable.badge }">{ $refinement.count }</gb-badge>
+      </a>
+    </div>
+  </yield>
 
   <script>
     import { AvailableRefinement } from './gb-refinement';
