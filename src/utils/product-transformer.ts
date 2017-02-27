@@ -12,7 +12,7 @@ export interface BaseStructure {
   url?: string;
   variants?: string;
   _variantStructure?: {
-    _transform?: (vairantMeta: any, allMeta: any) => any;
+    _transform?: (variantMeta: any, allMeta: any) => any;
   };
   _transform?: (allMeta: any) => any;
 }
