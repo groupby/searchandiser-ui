@@ -12,12 +12,38 @@ suite('gb-filter', Filter, ({
   itShouldHaveMeta(Filter, META);
 
   describe('init()', () => {
+    beforeEach(() => tag().services.filter = <any>{ register: () => null });
+
     itShouldAlias('selectable');
 
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
         [FILTER_UPDATED_EVENT]: tag().updateValues
       });
+    });
+
+    it('should listen for unmount', () => {
+      expectSubscriptions(() => tag().init(), {
+        ['unmount']: {
+          test: (listener) => {
+            const unregister = spy();
+            tag().services.filter = <any>{ unregister, register: ()=> null };
+
+            listener();
+
+            expect(unregister).to.be.calledWith(tag());
+          }
+        }
+      }, tag());
+    });
+
+    it('should register with filter service', () => {
+      const register = spy();
+      tag().services.filter = <any>{ register };
+
+      tag().init();
+
+      expect(register).to.be.calledWith(tag());
     });
   });
 

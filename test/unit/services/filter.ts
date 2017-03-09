@@ -1,4 +1,5 @@
 import { Filter, FILTER_UPDATED_EVENT } from '../../../src/services/filter';
+import * as serviceInit from '../../../src/services/init';
 import { expectSubscriptions } from '../../utils/expectations';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -10,6 +11,14 @@ suite('filter', ({ spy, stub }) => {
     let service: Filter;
 
     beforeEach(() => service = new Filter(<any>{}, <any>{}));
+
+    it('should mixin register methods', () => {
+      const lazyMixin = stub(serviceInit, 'lazyMixin');
+
+      service = new Filter(<any>{}, <any>{});
+
+      expect(lazyMixin).to.be.calledWith(service);
+    });
 
     it('should initialize flux clone', () => {
       expect(service.fluxClone).to.be.an.instanceof(FluxCapacitor);
@@ -28,13 +37,37 @@ suite('filter', ({ spy, stub }) => {
   });
 
   describe('init()', () => {
+    it('should not throw any error', () => {
+      expect(() => new Filter(<any>{}, <any>{}).init()).to.not.throw();
+    });
+  });
+
+  describe('lazyInit()', () => {
     it('should listen for results', () => {
       const flux: any = {};
       const service = new Filter(flux, <any>{});
+      service.updateFluxClone = () => null;
 
-      expectSubscriptions(() => service.init(), {
-        [Events.RESULTS]: null
+      expectSubscriptions(() => service.lazyInit(), {
+        [Events.RESULTS]: {
+          test: (listener) => {
+            const updateFluxClone = service.updateFluxClone = spy();
+
+            listener();
+
+            expect(updateFluxClone).to.be.called;
+          }
+        }
       }, flux);
+    });
+
+    it('should call updateFluxClone', () => {
+      const service = new Filter(<any>{ on: () => null }, <any>{});
+      const updateFluxClone = service.updateFluxClone = spy();
+
+      service.lazyInit();
+
+      expect(updateFluxClone).to.be.called;
     });
   });
 

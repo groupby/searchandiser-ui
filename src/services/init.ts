@@ -1,4 +1,5 @@
 import { SearchandiserConfig } from '../searchandiser';
+import { FluxTag } from '../tags/tag';
 import { Collections } from './collections';
 import { Filter } from './filter';
 import { Redirect } from './redirect';
@@ -16,6 +17,38 @@ const CORE_SERVICES = {
   collections: Collections,
   filter: Filter
 };
+
+export interface LazyService {
+
+  registered: FluxTag<any>[];
+
+  register(tag: FluxTag<any>): void;
+
+  unregister(tag: FluxTag<any>): void;
+}
+
+export interface LazyInitializer {
+
+  lazyInit(): void;
+}
+
+export function lazyMixin(service: any) {
+  Object.assign(service, {
+    registered: [],
+    register(tag: FluxTag<any>) {
+      if (!this.registered.length) {
+        this.lazyInit();
+      }
+      this.registered.push(tag);
+    },
+    unregister(tag: FluxTag<any>) {
+      const index = this.registered.findIndex((registered) => registered === tag);
+      if (index >= 0) {
+        this.registered.splice(index, 1);
+      }
+    }
+  });
+}
 
 export interface Services {
   collections: Collections;

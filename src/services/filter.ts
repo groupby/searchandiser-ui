@@ -1,22 +1,31 @@
 import { CONFIGURATION_MASK, SearchandiserConfig } from '../searchandiser';
 import { FilterOpts } from '../tags/filter/gb-filter';
 import { getPath } from '../utils/common';
+import { lazyMixin, LazyInitializer, LazyService } from './init';
 import { Events, FluxCapacitor } from 'groupby-api';
 
 export const FILTER_UPDATED_EVENT = 'filter_updated';
 
-export class Filter {
+export interface Filter extends LazyService { }
+
+export class Filter implements LazyInitializer {
 
   filterConfig: FilterOpts;
   fluxClone: FluxCapacitor;
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
+    lazyMixin(this);
     this.fluxClone = this.clone();
     this.filterConfig = getPath(config, 'tags.filter') || {};
   }
 
   init() {
+    // lazy service
+  }
+
+  lazyInit() {
     this.flux.on(Events.RESULTS, () => this.updateFluxClone());
+    this.updateFluxClone();
   }
 
   updateFluxClone() {
