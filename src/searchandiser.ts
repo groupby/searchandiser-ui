@@ -30,6 +30,7 @@ export function initSearchandiser() {
     riot.mixin(MixinFlux(flux, config, services));
     Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
     (<any>configure).init();
+    console.log(`StoreFront v${configure['version']} Loaded 🏬`);
   };
 }
 

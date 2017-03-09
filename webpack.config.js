@@ -3,6 +3,7 @@ const pjson = require('./package.json');
 const CleanPlugin = require('clean-webpack-plugin');
 const UnminifiedPlugin = require('unminified-webpack-plugin');
 
+const definePlugin = new webpack.DefinePlugin({ VERSION: `"${pjson.version}"` });
 let isProd = false;
 let isCi = false;
 let isTest = false;
@@ -69,6 +70,8 @@ switch (process.env.NODE_ENV) {
 
       devtool: 'inline-source-map',
 
+      plugins: [definePlugin],
+
       module: {
         preLoaders: isCi ? preLoaders() : preLoaders().concat({
           test: /\.ts$/,
@@ -104,7 +107,7 @@ switch (process.env.NODE_ENV) {
 
       devtool: 'source-map',
 
-      plugins: [new CleanPlugin(['dist'])]
+      plugins: [definePlugin, new CleanPlugin(['dist'])]
         .concat(isProd ? [
           new webpack.optimize.DedupePlugin(),
           new webpack.optimize.UglifyJsPlugin({ comments: false }),
