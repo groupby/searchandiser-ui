@@ -1,6 +1,6 @@
 import { Collections } from '../../../src/services/collections';
 import { Filter } from '../../../src/services/filter';
-import { initServices, startServices } from '../../../src/services/init';
+import { initServices, lazyMixin, startServices } from '../../../src/services/init';
 import { Redirect } from '../../../src/services/redirect';
 import { Url } from '../../../src/services/url';
 import { expect } from 'chai';
@@ -94,6 +94,66 @@ describe('service initializer', () => {
       startServices({ a: null, b: undefined, c: { init } });
 
       expect(init).to.be.calledOnce;
+    });
+  });
+
+  describe('lazyMixins()', () => {
+    it('should add properties and methods', () => {
+      const obj: any = {};
+
+      lazyMixin(obj);
+
+      expect(obj.registered).to.eql([]);
+      expect(obj.register).to.be.a('function');
+      expect(obj.unregister).to.be.a('function');
+    });
+
+    describe('register()', () => {
+      it('should call lazyInit() on first item registered', () => {
+        const lazyInit = sinon.spy();
+        const obj: any = { lazyInit };
+        lazyMixin(obj);
+
+        obj.register({});
+        obj.register({});
+
+        expect(lazyInit).to.be.calledOnce;
+      });
+
+      it('should save registered tags', () => {
+        const obj: any = { lazyInit: () => null };
+        const tag1 = { a: 'b' };
+        const tag2 = { c: 'd' };
+        lazyMixin(obj);
+
+        obj.register(tag1);
+        obj.register(tag2);
+
+        expect(obj.registered).to.eql([tag1, tag2]);
+      });
+    });
+
+    describe('unregister()', () => {
+      it('should remove tag from registered', () => {
+        const obj: any = {};
+        const tag = { a: 'b' };
+        lazyMixin(obj);
+        obj.registered = [tag];
+
+        obj.unregister(tag);
+
+        expect(obj.registered).to.eql([]);
+      });
+
+      it('should no unregister if not found', () => {
+        const obj: any = {};
+        lazyMixin(obj);
+        obj.registered = [{ a: 'b' }];
+
+        obj.unregister({ a: 'b' });
+
+        expect(obj.registered).to.have.length(1);
+      });
     });
   });
 });
