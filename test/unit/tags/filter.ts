@@ -12,8 +12,6 @@ suite('gb-filter', Filter, ({
   itShouldHaveMeta(Filter, META);
 
   describe('init()', () => {
-    beforeEach(() => tag().services.filter = <any>{ register: () => null });
-
     itShouldAlias('selectable');
 
     it('should listen for events', () => {
@@ -22,28 +20,12 @@ suite('gb-filter', Filter, ({
       });
     });
 
-    it('should listen for unmount', () => {
-      expectSubscriptions(() => tag().init(), {
-        ['unmount']: {
-          test: (listener) => {
-            const unregister = spy();
-            tag().services.filter = <any>{ unregister, register: () => null };
-
-            listener();
-
-            expect(unregister).to.be.calledWith(tag());
-          }
-        }
-      }, tag());
-    });
-
     it('should register with filter service', () => {
-      const register = spy();
-      tag().services.filter = <any>{ register };
+      const register = tag().register = spy();
 
       tag().init();
 
-      expect(register).to.be.calledWith(tag());
+      expect(register).to.be.calledWith('filter');
     });
   });
 

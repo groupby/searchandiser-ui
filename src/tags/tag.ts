@@ -46,6 +46,11 @@ export class FluxTag<T> {
     delete this._aliases[alias];
   }
 
+  register(serviceName: string) {
+    this.services[serviceName].register(this);
+    this.on('unmount', () => this.services[serviceName].unregister(this));
+  }
+
   // tslint:disable-next-line:max-line-length
   transform(alias: string, realias: string | string[], options: DependencyOptions = {}, transform: (obj: any) => any = (obj) => obj) {
     const dependency = { alias, realias, transform };
