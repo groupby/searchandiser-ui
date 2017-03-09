@@ -26,7 +26,7 @@ deployment:
       - echo "//registry.npmjs.org/:_authToken=${NPM_API_KEY}" > ~/.npmrc
       - sudo apt-get update && sudo apt-get install jq
       - yarn run prod
-      - yarn run e2e:ci
+      # - yarn run e2e:ci
       - ./shipit.sh
       - yarn run package
       - npm publish
