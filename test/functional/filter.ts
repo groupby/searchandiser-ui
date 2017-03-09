@@ -2,7 +2,9 @@ import { Filter } from '../../src/tags/filter/gb-filter';
 import suite, { SelectModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Filter>('gb-filter', ({
+const MIXIN = { services: { filter: { register: () => null } } };
+
+suite<Filter>('gb-filter', MIXIN, ({
   flux, html, mount, stub,
   itMountsTag
 }) => {
@@ -28,7 +30,7 @@ suite<Filter>('gb-filter', ({
     beforeEach(() => {
       tag = mount();
       model = new Model(tag);
-      tag.services.filter = <any>{ isTargetNav: () => true };
+      tag.services.filter = <any>{ isTargetNav: () => true, register: () => null };
       tag.updateValues(<any>{ availableNavigation: [NAVIGATION] });
     });
 

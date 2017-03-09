@@ -113,6 +113,34 @@ describe('base tag logic', () => {
       });
     });
 
+    describe('register()', () => {
+      it('should register serviceName', () => {
+        const serviceName = 'filter';
+        const register = sinon.spy();
+        tag.services = <any>{ [serviceName]: { register } };
+        tag.on = () => null;
+
+        tag.register(serviceName);
+
+        expect(register).to.be.calledWith(tag);
+      });
+
+      it('should unregister on unmount', () => {
+        const serviceName = 'filter';
+        const unregister = sinon.spy();
+        const on = tag.on = sinon.spy();
+        tag.services = <any>{ [serviceName]: { register: () => null, unregister } };
+
+        tag.register(serviceName);
+
+        expect(on).to.be.calledWith('unmount', sinon.match((listener) => {
+          listener();
+
+          return expect(unregister).to.be.calledWith(tag);
+        }));
+      });
+    });
+
     describe('inherits()', () => {
       it('should call transform()', () => {
         const alias = 'alias';

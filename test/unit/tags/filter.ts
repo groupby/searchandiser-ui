@@ -19,6 +19,14 @@ suite('gb-filter', Filter, ({
         [FILTER_UPDATED_EVENT]: tag().updateValues
       });
     });
+
+    it('should register with filter service', () => {
+      const register = tag().register = spy();
+
+      tag().init();
+
+      expect(register).to.be.calledWith('filter');
+    });
   });
 
   describe('convertRefinements()', () => {

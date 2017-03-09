@@ -38,7 +38,7 @@ export class Url {
         query = Url.parseUrl(this.simple);
       }
 
-      if (query) {
+      if (query && (query.raw.query || query.raw.refinements.length)) {
         this.flux.query = query;
         this.flux.search(query.raw.query)
           .then(() => this.services.tracker && this.services.tracker.search());

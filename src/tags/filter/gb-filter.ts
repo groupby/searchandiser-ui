@@ -26,6 +26,7 @@ export class Filter extends SelectTag<FilterOpts> {
     this.expose('selectable');
 
     this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
+    this.register('filter');
   }
 
   convertRefinements(navigations: any[]): any[] {
