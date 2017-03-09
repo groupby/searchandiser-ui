@@ -15,7 +15,6 @@ declare var VERSION;
 const searchandiser = initSearchandiser();
 searchandiser['version'] = VERSION;
 
-
 export {
   searchandiser,
   utils,
