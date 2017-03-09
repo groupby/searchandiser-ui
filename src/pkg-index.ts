@@ -10,7 +10,10 @@ import {
 } from 'groupby-api';
 import { Sayt } from 'sayt';
 
+declare var VERSION;
+
 const searchandiser = initSearchandiser();
+searchandiser['version'] = VERSION;
 
 export {
   searchandiser,
