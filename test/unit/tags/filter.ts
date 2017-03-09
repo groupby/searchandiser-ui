@@ -27,7 +27,7 @@ suite('gb-filter', Filter, ({
         ['unmount']: {
           test: (listener) => {
             const unregister = spy();
-            tag().services.filter = <any>{ unregister, register: ()=> null };
+            tag().services.filter = <any>{ unregister, register: () => null };
 
             listener();
 
