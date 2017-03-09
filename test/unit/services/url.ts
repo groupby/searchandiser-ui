@@ -46,6 +46,26 @@ suite('url', ({ spy, stub }) => {
         service.init();
       });
 
+      it('should search with refinements', (done) => {
+        const origConfig: any = { url: { queryParam: 'q' } };
+        const query = new Query().withRefinements('brand', { type: 'Value', value: 'Nike' });
+        const flux: any = { search: (queryString) => done() };
+        const service = new Url(flux, origConfig, <any>{});
+        stub(Url, 'parseUrl').returns(query);
+
+        service.init();
+      });
+
+      it('should not search if no recall fields specified', () => {
+        const origConfig: any = { url: { queryParam: 'q' } };
+        const query = new Query();
+        const flux: any = { search: (queryString) => expect.fail() };
+        const service = new Url(flux, origConfig, <any>{});
+        stub(Url, 'parseUrl').returns(query);
+
+        service.init();
+      });
+
       it('should emit tracker event', (done) => {
         const origConfig: any = { url: { queryParam: 'q' } };
         const query = new Query('test');
