@@ -145,7 +145,7 @@ describe('service initializer', () => {
         expect(obj.registered).to.eql([]);
       });
 
-      it('should no unregister if not found', () => {
+      it('should not unregister if not found', () => {
         const obj: any = {};
         lazyMixin(obj);
         obj.registered = [{ a: 'b' }];
