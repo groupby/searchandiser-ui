@@ -1,6 +1,9 @@
 <gb-or-refinement>
   <yield>
     <div class="gb-ref">
+      <div if="{ $refinement.selected }" class="gb-indication">
+        <gb-icon img="https://www.queness.com/resources/images/png/apple_web.png"></gb-icon>
+      </div>
       <a class="gb-ref__link" onclick="{ send }">
         <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
         <!-- get rid of filler  -->

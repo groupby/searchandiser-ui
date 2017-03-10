@@ -82,10 +82,14 @@ export class Navigation extends FluxTag<NavigationOpts> {
                 }
               }
             });
+            if (selectedRefinement) {
+              refinement['selected'] = true;
+            }
           });
         }
       }
     });
+    console.log(processed);
     return processed;
   }
 
