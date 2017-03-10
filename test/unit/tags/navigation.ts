@@ -80,7 +80,7 @@ suite('gb-navigation', Navigation, ({
   });
 
   describe('processNavigations()', () => {
-    it('should process navigations', () => {
+    it('should process and navigations', () => {
       const availableNavigation = [
         { name: 'a', refinements: [{ type: 'Value', value: 'b' }] },
         { name: 'c', refinements: [{ type: 'Value', value: 'b' }] },
@@ -96,6 +96,20 @@ suite('gb-navigation', Navigation, ({
         Object.assign(availableNavigation[1], { selected: selectedNavigation[0].refinements }),
         availableNavigation[2]
       ]);
+    });
+
+    it('should process or navigations', () => {
+      const availableNavigation = [
+        { name: 'a', refinements: [{ type: 'Value', value: 'b' }] },
+        { name: 'c', refinements: [{ type: 'Value', value: 'b' }], or: true },
+        { name: 'e', refinements: [{ type: 'Value', value: 'f' }] }
+      ];
+      const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }], or: true }];
+      const results: any = { availableNavigation, selectedNavigation };
+
+      const processed = tag().processNavigations(results);
+
+      expect(processed).to.eql(availableNavigation);
     });
   });
 

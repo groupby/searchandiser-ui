@@ -14,4 +14,29 @@
     import { Refinement } from './gb-refinement';
     this._mixin(Refinement);
   </script>
+
+  <style>
+    :scope.gb-stylish > .gb-ref {
+      list-style: none;
+    }
+
+    :scope.gb-stylish .gb-filler {
+      flex-grow: 1;
+    }
+
+    :scope.gb-stylish .gb-ref__link {
+      cursor: pointer;
+      display: flex;
+      padding: 4px 6px;
+      border-radius: 4px;
+      color: black;
+      font-size: 14px;
+      text-decoration: none;
+      align-items: baseline;
+    }
+
+    :scope.gb-stylish .gb-ref__link:hover {
+      background-color: #ddd;
+    }
+  </style>
 </gb-or-refinement>

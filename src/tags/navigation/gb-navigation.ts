@@ -61,11 +61,15 @@ export class Navigation extends FluxTag<NavigationOpts> {
   processNavigations({ selectedNavigation, availableNavigation }: Results) {
     const processed = <SelectionNavigation[]>clone(availableNavigation);
     selectedNavigation.forEach((selNav) => {
-      const availNav = processed.find((nav) => nav.name === selNav.name);
-      if (availNav) {
-        availNav.selected = selNav.refinements;
+      if (!selNav.or) {
+        const availNav = processed.find((nav) => nav.name === selNav.name);
+        if (availNav) {
+          availNav.selected = selNav.refinements;
+        } else {
+          processed.unshift(Object.assign({}, selNav, { selected: selNav.refinements, refinements: [] }));
+        }
       } else {
-        processed.unshift(Object.assign({}, selNav, { selected: selNav.refinements, refinements: [] }));
+        const availNav = processed.find((nav) => nav.name === selNav.name);
       }
     });
     return processed;
