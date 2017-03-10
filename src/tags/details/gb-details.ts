@@ -46,6 +46,5 @@ export class Details extends FluxTag<DetailsOpts> {
   updateRecord({ allMeta }: Record) {
     this.tags['gb-product'].updateRecord(allMeta);
     this.tags['gb-product'].update();
-    console.log(this.tags['gb-product'].metadata);
   }
 }
