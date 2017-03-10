@@ -69,7 +69,21 @@ export class Navigation extends FluxTag<NavigationOpts> {
           processed.unshift(Object.assign({}, selNav, { selected: selNav.refinements, refinements: [] }));
         }
       } else {
-        const availNav = processed.find((nav) => nav.name === selNav.name);
+        const availNav = processed.find((nav) => nav.name === selNav.name && nav.or);
+        if (availNav) {
+          availNav.refinements.forEach((refinement) => {
+            const selectedRefinement = selNav.refinements.find((selectedRef) => {
+              if (selectedRef.type === refinement.type) {
+                if (selectedRef.type === 'Value') {
+                  return (<any>selectedRef).value === (<any>refinement).value;
+                } else {
+                  return (<any>selectedRef).low === (<any>refinement).low &&
+                    (<any>selectedRef).high === (<any>refinement).high;
+                }
+              }
+            });
+          });
+        }
       }
     });
     return processed;
