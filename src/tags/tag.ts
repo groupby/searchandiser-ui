@@ -55,7 +55,7 @@ export class FluxTag<T> {
   transform(alias: string, realias: string | string[], options: DependencyOptions = {}, transform: (obj: any) => any = (obj) => obj) {
     const dependency = { alias, realias, transform };
     this.on('before-mount', () => updateDependency(this, dependency, options));
-    this.on('update', () => updateDependency(this, dependency, options));
+    // this.on('update', () => updateDependency(this, dependency, options));
   }
 
   inherits(alias: string, options?: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {

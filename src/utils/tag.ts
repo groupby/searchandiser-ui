@@ -72,6 +72,7 @@ export function buildConfiguration(tag: FluxTag<any>, meta: TagMeta) {
 }
 
 export function updateDependency(tag: FluxTag<any>, dependency: Dependency, options: DependencyOptions = {}) {
+  console.log('updateDependency', tag);
   const parentAlias = tag.parent ? tag.parent._aliases[dependency.alias] : undefined;
   const coercedOpts = coerceAttributes(tag.opts, options.types || {});
   const updated = Object.assign(
