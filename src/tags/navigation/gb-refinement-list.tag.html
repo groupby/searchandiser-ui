@@ -3,8 +3,10 @@
     <div id="{ $navigation.name }">
       <h4 class="gb-navigation-title">{ $navigation.displayName }</h4>
       <ul>
-        <li data-is="gb-selected-refinement" if="{ $navigable.showSelected }" each="{ refinement in $navigation.selected }"></li>
-        <li data-is="gb-available-refinement" each="{ refinement in $navigation.refinements }"></li>
+        { console.log($navigation) }
+        <li data-is="gb-or-refinement" if="{ $navigation.or }" each="{ refinement in $navigation.refinements }"></li>
+        <li data-is="gb-selected-refinement" if="{ !$navigation.or && $navigable.showSelected }" each="{ refinement in $navigation.selected }"></li>
+        <li data-is="gb-available-refinement" if="{ !$navigation.or }" each="{ refinement in $navigation.refinements }"></li>
         <li data-is="gb-more-refinements" if="{ $navigation.moreRefinements }"></li>
       </ul>
     </div>
