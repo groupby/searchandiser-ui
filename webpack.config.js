@@ -3,6 +3,7 @@ const pjson = require('./package.json');
 const CleanPlugin = require('clean-webpack-plugin');
 const UnminifiedPlugin = require('unminified-webpack-plugin');
 
+const definePlugin = new webpack.DefinePlugin({ VERSION: `"${pjson.version}"` });
 let isProd = false;
 let isCi = false;
 let isTest = false;
@@ -21,7 +22,8 @@ function preLoaders() {
   return [{
     test: /\.tag(\.html)?$/,
     exclude: /node_modules/,
-    loader: 'riotjs'
+    loader: 'riot-tag',
+    query: { type: 'none' }
   }];
 }
 
@@ -68,6 +70,8 @@ switch (process.env.NODE_ENV) {
 
       devtool: 'inline-source-map',
 
+      plugins: [definePlugin],
+
       module: {
         preLoaders: isCi ? preLoaders() : preLoaders().concat({
           test: /\.ts$/,
@@ -103,12 +107,12 @@ switch (process.env.NODE_ENV) {
 
       devtool: 'source-map',
 
-      plugins: isProd ? [
-        new CleanPlugin(['dist']),
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin({ comments: false }),
-        new UnminifiedPlugin()
-      ] : [new CleanPlugin(['dist'])],
+      plugins: [definePlugin, new CleanPlugin(['dist'])]
+        .concat(isProd ? [
+          new webpack.optimize.DedupePlugin(),
+          new webpack.optimize.UglifyJsPlugin({ comments: false }),
+          new UnminifiedPlugin()
+        ] : []),
 
       module: {
         preLoaders: preLoaders().concat({

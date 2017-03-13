@@ -1,19 +1,17 @@
 <gb-results>
   <yield>
-    <gb-list items={ records }>
-      <gb-product all_meta={ item.allMeta }></gb-product>
+    <gb-list items="{ $productable.records }" item-alias="product">
+      <gb-product all-meta="{ $product.allMeta }" lazy="{ $product.lazy }"></gb-product>
     </gb-list>
   </yield>
 
   <script>
-    import '../list/gb-list.tag.html';
-    import '../product/gb-product.tag.html';
     import { Results } from './gb-results';
     this._mixin(Results);
   </script>
 
-  <style scoped>
-    .gb-stylish gb-list {
+  <style>
+    :scope.gb-stylish gb-list {
       padding: 0;
       list-style: none;
       display: flex;
@@ -21,7 +19,7 @@
       justify-content: space-around;
     }
 
-    .gb-stylish gb-product {
+    :scope.gb-stylish gb-product {
       display: flex;
       flex-direction: column;
       align-items: center;

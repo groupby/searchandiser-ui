@@ -1,37 +1,21 @@
-import { DEFAULT_SORTS, Sort } from '../../../src/tags/sort/gb-sort';
+import { META, Sort } from '../../../src/tags/sort/gb-sort';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-sort', Sort, ({
-  flux, tag, sandbox,
-  itShouldConfigure
+  flux, tag, stub,
+  itShouldAlias,
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Sort, META);
 
   describe('init()', () => {
-    itShouldConfigure();
-
-    it('should have default values', () => {
-      tag().init();
-
-      expect(tag().options).to.eq(DEFAULT_SORTS);
-    });
-
-    it('should set options from computed config', () => {
-      const options = [
-        { label: 'Value Descending', value: { field: 'value', order: 'Descending' } },
-        { label: 'Value Ascending', value: { field: 'value', order: 'Ascending' } }
-      ];
-      tag().configure = () => tag()._config = { options };
-
-      tag().init();
-
-      expect(tag().options).to.eq(options);
-    });
+    itShouldAlias('selectable');
   });
 
   describe('sortValues()', () => {
     it('should return option values', () => {
-      tag().options = DEFAULT_SORTS;
+      tag().items = META.defaults.items;
 
       const values = tag().sortValues();
 
@@ -42,19 +26,16 @@ suite('gb-sort', Sort, ({
     });
   });
 
-  describe('onselect()', () => {
+  describe('onSelect()', () => {
     it('should sort on value', () => {
       const nextSort = { a: 'b', c: 'd' };
       const pastSorts = [{ e: 'f' }, { g: 'h' }];
-      const stub = sandbox().stub(flux(), 'sort', (newSort, oldSorts): any => {
-        expect(newSort).to.eq(nextSort);
-        expect(oldSorts).to.eq(pastSorts);
-      });
+      const sort = stub(flux(), 'sort');
       tag().sortValues = () => pastSorts;
 
-      tag().onselect(<any>nextSort);
+      tag().onSelect(<any>nextSort);
 
-      expect(stub.called).to.be.true;
+      expect(sort).to.be.calledWith(nextSort, pastSorts);
     });
   });
 });

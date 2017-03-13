@@ -1,69 +1,76 @@
-
+import { SearchandiserConfig } from '../searchandiser';
 import { Services } from '../services/init';
-import { checkBooleanAttr, getPath } from '../utils/common';
+import { addMeta, configure, inheritAliases, setStylish, setTagName, updateDependency } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 import { Sayt } from 'sayt';
 
+export const META = Symbol('meta');
+export const STYLISH = Symbol('stylish');
+
 const sayt = new Sayt();
 
 export interface FluxTag<T> extends riot.Tag.Instance {
-  parent: riot.Tag.Instance & FluxTag<any> & any;
+  parent: FluxTag<any>;
+  opts: T;
 
   flux: FluxCapacitor;
   services: Services;
-  config: any;
+  config: SearchandiserConfig;
+
+  setDefaults(config: T): void;
 }
 
 export class FluxTag<T> {
   _tagName: string;
-  _simpleTagName: string;
-  _camelTagName: string;
-  _parents: any;
-  _parentsList: any[];
-  _scope: FluxTag<any> & any;
-  _top: FluxTag<any> & any;
-  _style: string;
-  _config: T;
+  _state: any;
+  _aliases: any;
 
   init() {
-    this._style = this.config.stylish ? 'gb-stylish' : '';
+    this._state = {};
     setTagName(this);
-    setParents(this);
-    setScope(this);
+    inheritAliases(this);
+
+    this.on('before-mount', () => configure(this));
+    this.on('mount', () => setStylish(this));
+  }
+
+  expose(aliases: string | string[], obj: any = this) {
+    if (!Array.isArray(aliases)) {
+      aliases = [aliases];
+    }
+    aliases.forEach((alias) => this[`$${alias}`] = this._aliases[alias] = obj);
+  }
+
+  unexpose(alias: string) {
+    delete this._aliases[alias];
+  }
+
+  register(serviceName: string) {
+    this.services[serviceName].register(this);
+    this.on('unmount', () => this.services[serviceName].unregister(this));
+  }
+
+  // tslint:disable-next-line:max-line-length
+  transform(alias: string, realias: string | string[], options: DependencyOptions = {}, transform: (obj: any) => any = (obj) => obj) {
+    const dependency = { alias, realias, transform };
+    this.on('before-mount', () => updateDependency(this, dependency, options));
+    this.on('update', () => updateDependency(this, dependency, options));
+  }
+
+  inherits(alias: string, options?: DependencyOptions, transform: (obj: any) => any = (obj) => obj) {
+    this.transform(alias, alias, options, transform);
   }
 
   _mixin(...mixins: any[]) {
-    this.mixin(...mixins.map((mixin) => new mixin().__proto__));
-  }
-
-  _scopeTo(scope: string) {
-    this._scope = this._parents[scope];
-  }
-
-  findParent(tag: riot.Tag.Instance, name: string) {
-    let parentTag: riot.Tag.Instance = tag;
-    while (parentTag.root.localName !== name && parentTag.parent) {
-      parentTag = parentTag.parent;
+    let meta;
+    this.mixin(...mixins.map((mixin) => {
+      meta = meta || mixin[META];
+      return new mixin().__proto__;
+    }));
+    if (meta) {
+      addMeta(this, meta, 'defaults', 'types', 'services');
     }
-    return parentTag;
-  }
-
-  configure(defaultConfig: any = {}) {
-    const rawConfig = Object.assign(
-      {},
-      defaultConfig,
-      getPath(this.config, `tags.${this._camelTagName}`),
-      this.opts.__proto__,
-      this.opts);
-    for (let key of Object.keys(rawConfig)) {
-      if (typeof defaultConfig[key] === 'boolean'
-        || rawConfig[key] == true // tslint:disable-line:triple-equals
-        || rawConfig[key] == false) { // tslint:disable-line:triple-equals
-        rawConfig[key] = checkBooleanAttr(key, rawConfig);
-      }
-    }
-    this._config = rawConfig;
   }
 }
 
@@ -78,43 +85,23 @@ export class SaytTag<T> {
   }
 }
 
-function setTagName(tag: FluxTag<any>) {
-  const htmlTagName = tag.root.tagName.toLowerCase();
-  const tagName = htmlTagName.startsWith('gb-') ?
-    htmlTagName :
-    tag.root.dataset['is'] || tag.root.getAttribute('riot-tag');
-
-  if (tagName) {
-    tag._tagName = tagName;
-    tag._simpleTagName = tag._tagName.replace(/^gb-/, '');
-    tag._camelTagName = tag._simpleTagName.replace(/-([a-z])/g, (match) => match[1].toUpperCase());
-  }
+export interface TagMeta {
+  defaults?: any;
+  types?: TypeMap;
+  services?: string[];
 }
-
-function setParents(tag: FluxTag<any>) {
-  tag._parents = tag.parent ? Object.assign({}, tag.parent['_parents']) : {};
-  if (tag._tagName) {
-    tag._parents[tag._tagName] = tag;
-  }
-
-  tag._parentsList = [];
-  let currTag = tag;
-  while (currTag = currTag.parent) tag._parentsList.push(currTag);
+export interface TypeMap { [key: string]: string; }
+export interface ConfigureOptions {
+  defaults?: any;
+  services?: string[];
+  types?: TypeMap;
 }
-
-// somehow this function isn't working for the gb-select inside gb-sort
-function setScope(tag: FluxTag<any>) {
-  if (tag.opts.scope in tag._parents) {
-    tag._scope = tag._parents[tag.opts.scope];
-  } else if (tag.parent && tag.parent._scope) {
-    tag._scope = tag.parent._scope;
-  } else {
-    let parent: any = tag;
-    while (parent.parent) tag._scope = parent = parent.parent;
-    tag._top = tag._scope;
-  }
+export interface Dependency {
+  alias: string;
+  realias: string | string[];
+  transform: (obj: any) => any;
 }
-
-export function MixinFlux(flux: FluxCapacitor, config: any, services: any) {
-  return Object.assign(new FluxTag()['__proto__'], { flux, config, services });
+export interface DependencyOptions {
+  defaults?: any;
+  types?: TypeMap;
 }

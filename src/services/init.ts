@@ -1,10 +1,54 @@
 import { SearchandiserConfig } from '../searchandiser';
+import { FluxTag } from '../tags/tag';
 import { Collections } from './collections';
 import { Filter } from './filter';
 import { Redirect } from './redirect';
 import { Tracker } from './tracker';
 import { Url } from './url';
 import { FluxCapacitor } from 'groupby-api';
+
+const SERVICES = {
+  redirect: Redirect,
+  tracker: Tracker,
+  url: Url
+};
+
+const CORE_SERVICES = {
+  collections: Collections,
+  filter: Filter
+};
+
+export interface LazyService {
+
+  registered: FluxTag<any>[];
+
+  register(tag: FluxTag<any>): void;
+
+  unregister(tag: FluxTag<any>): void;
+}
+
+export interface LazyInitializer {
+
+  lazyInit(): void;
+}
+
+export function lazyMixin(service: any) {
+  Object.assign(service, {
+    registered: [],
+    register(tag: FluxTag<any>) {
+      if (!this.registered.length) {
+        this.lazyInit();
+      }
+      this.registered.push(tag);
+    },
+    unregister(tag: FluxTag<any>) {
+      const index = this.registered.findIndex((registered) => registered === tag);
+      if (index >= 0) {
+        this.registered.splice(index, 1);
+      }
+    }
+  });
+}
 
 export interface Services {
   collections: Collections;
@@ -14,23 +58,31 @@ export interface Services {
   url: Url;
 }
 
+export interface Service {
+  new (flux: FluxCapacitor, config: SearchandiserConfig, services: { [name: string]: any }): { init: () => null };
+}
+
+type ServiceMap = { [name: string]: Service };
+
 export function initServices(flux: FluxCapacitor, config: SearchandiserConfig) {
+  const servicesConstructors: ServiceMap = Object.assign({}, SERVICES, config.services || {}, CORE_SERVICES);
   const services: Services = <any>{};
 
-  services.collections = new Collections(flux, config);
-  services.filter = new Filter(flux, config);
-  services.redirect = new Redirect(flux);
-  services.tracker = new Tracker(flux, config);
-  services.url = new Url(flux, config, services);
+  for (let key of Object.keys(servicesConstructors)) {
+    const Service = servicesConstructors[key]; // tslint:disable-line:variable-name
+    if (Service) {
+      services[key] = new Service(flux, config, services);
+    }
+  }
 
   startServices(services);
   return services;
 }
 
 export function startServices(services: any) {
-  for (let service in services) {
-    if (services.hasOwnProperty(service)) {
-      services[service].init();
+  for (let key of Object.keys(services)) {
+    if (services[key]) {
+      services[key].init();
     }
   }
 }

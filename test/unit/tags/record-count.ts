@@ -3,7 +3,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite('gb-record-count', RecordCount, ({ tag, expectSubscriptions }) => {
+suite('gb-record-count', RecordCount, ({ tag, spy, expectSubscriptions }) => {
 
   describe('init()', () => {
     it('should listen for events', () => {
@@ -15,22 +15,19 @@ suite('gb-record-count', RecordCount, ({ tag, expectSubscriptions }) => {
 
   describe('updatePageInfo()', () => {
     it('should call update with first, last, total', () => {
-      const results = {
-        pageInfo: {
-          recordStart: 20,
-          recordEnd: 40
-        },
-        totalRecordCount: 300
-      };
-      const spy = tag().update = sinon.spy((obj) => {
-        expect(obj.first).to.eq(results.pageInfo.recordStart);
-        expect(obj.last).to.eq(results.pageInfo.recordEnd);
-        expect(obj.total).to.eq(results.totalRecordCount);
-      });
+      const recordStart = 20;
+      const recordEnd = 40;
+      const totalRecordCount = 300;
+      const results = { pageInfo: { recordStart, recordEnd }, totalRecordCount };
+      const update = tag().update = spy();
 
       tag().updatePageInfo(results);
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWith({
+        first: recordStart,
+        last: recordEnd,
+        total: totalRecordCount
+      });
     });
   });
 });

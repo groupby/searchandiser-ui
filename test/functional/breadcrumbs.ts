@@ -2,16 +2,17 @@ import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => {
+suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
 
   itMountsTag();
 
   describe('render', () => {
-    it('should not render query-crumb', () => {
+    it('should not render query-crumb queries', () => {
       const tag = mount();
       const model = new Model(tag);
 
-      expect(model.queryCrumb).to.not.be.ok;
+      expect(model.originalQuery).to.not.be.ok;
+      expect(model.correctedQuery).to.not.be.ok;
     });
 
     it('should not render refinement crumbs', () => {
@@ -25,33 +26,76 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => 
   });
 
   describe('render with query', () => {
-    const ORIGINAL_QUERY = 'red sneakers';
+    const ORIGINAL_QUERY = 'red sneakres';
+    const CORRECTED_QUERY = 'red sneakers';
     let tag: Breadcrumbs;
     let model: Model;
 
     beforeEach(() => {
       tag = mount();
       model = new Model(tag);
-      tag.updateQuery(ORIGINAL_QUERY);
+      tag.updateQueryState(<any>{ originalQuery: ORIGINAL_QUERY, correctedQuery: CORRECTED_QUERY });
     });
 
-    it('should set the textContent of query-crumb', () => {
+    it('should render query-crumb', () => {
       expect(model.queryCrumb).to.be.ok;
-      expect(model.queryCrumb.textContent).to.eq(ORIGINAL_QUERY);
     });
 
-    it('should not render query-crumb if empty query', () => {
-      tag.updateQuery('');
+    it('should render query-crumb originalQuery and correctedQuery', () => {
+      expect(model.originalQuery.textContent).to.eq(ORIGINAL_QUERY);
+      expect(model.correctedQuery.textContent).to.eq(CORRECTED_QUERY);
+    });
 
-      expect(model.queryCrumb).to.not.be.ok;
+    it('should not render query-crumb originalQuery if empty query', () => {
+      tag.updateQueryState(<any>{ originalQuery: '', correctedQuery: '' });
+
+      expect(model.originalQuery).to.not.be.ok;
+      expect(model.correctedQuery).to.not.be.ok;
     });
 
     it('should not render query-crumb if configured', () => {
-      tag._config.hideQuery = true;
+      tag.hideQuery = true;
 
       tag.update();
 
       expect(model.queryCrumb).to.not.be.ok;
+    });
+
+    describe('render with labels', () => {
+      it('should render with defaults', () => {
+        expect(model.labels[0].textContent).to.eq('No results for:');
+        expect(model.labels[1].textContent).to.eq('Showing results for:');
+
+        tag.updateQueryState(<any>{ originalQuery: ORIGINAL_QUERY });
+        expect(model.labels[0].textContent).to.eq('Results for:');
+      });
+
+      it('should not render', () => {
+        tag.labels = false;
+
+        tag.update();
+
+        expect(model.labels).to.have.length(0);
+      });
+
+      it('should render configured labels', () => {
+        const noResultsLabel = 'No available results for: ';
+        const correctedResultsLabel = 'Here are the results for: ';
+        const resultsLabel = 'Showing current results for: ';
+        Object.assign(tag, {
+          noResultsLabel,
+          correctedResultsLabel,
+          resultsLabel,
+          labels: true
+        });
+
+        tag.update();
+        expect(model.labels[0].textContent).to.eq(noResultsLabel);
+        expect(model.labels[1].textContent).to.eq(correctedResultsLabel);
+
+        tag.updateQueryState(<any>{ originalQuery: ORIGINAL_QUERY });
+        expect(model.labels[0].textContent).to.eq(resultsLabel);
+      });
     });
   });
 
@@ -81,7 +125,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => 
     beforeEach(() => {
       tag = mount();
       model = new Model(tag);
-      tag.updateRefinements(SELECTED);
+      tag.updateQueryState(<any>{ originalQuery: '', selectedNavigation: SELECTED });
     });
 
     it('renders a list of navigations', () => {
@@ -102,7 +146,7 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => 
     });
 
     it('should not render refinements if configured', () => {
-      tag._config.hideRefinements = true;
+      tag.hideRefinements = true;
 
       tag.update();
 
@@ -118,11 +162,11 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => 
 
       it('should unrefine on click', () => {
         const refinement = { type: 'Value', value: 'B', navigationName: 'first' };
-        const stub = sandbox().stub(flux(), 'unrefine');
+        const unrefine = stub(flux(), 'unrefine');
 
         model.refinementLinks()[1].click();
 
-        expect(stub.calledWith(refinement)).to.be.true;
+        expect(unrefine).to.be.calledWith(refinement);
       });
     });
   });
@@ -131,7 +175,19 @@ suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, sandbox, itMountsTag }) => 
 export class Model extends BaseModel<Breadcrumbs> {
 
   get queryCrumb() {
-    return this.element(this.html, 'div > .gb-query-crumb');
+    return this.element(this.html, 'div gb-query-crumb');
+  }
+
+  get originalQuery() {
+    return this.element(this.queryCrumb, '.gb-original-query');
+  }
+
+  get correctedQuery() {
+    return this.element(this.queryCrumb, '.gb-corrected-query');
+  }
+
+  get labels() {
+    return this.queryCrumb.querySelectorAll('.gb-query-label');
   }
 
   get navigationList() {

@@ -1,17 +1,27 @@
-import { Breadcrumbs, DEFAULT_CONFIG } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
+import { Breadcrumbs, META } from '../../../src/tags/breadcrumbs/gb-breadcrumbs';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-breadcrumbs', Breadcrumbs, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldHaveMeta,
+  itShouldAlias
 }) => {
+  itShouldHaveMeta(Breadcrumbs, META);
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    itShouldAlias(['breadcrumbs', 'listable']);
+
+    it('should mixin toView()', () => {
+      const mixin = tag().mixin = spy();
+
+      tag().init();
+
+      expect(mixin).to.be.calledWith({ toView: utils.displayRefinement });
+    });
 
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
@@ -23,62 +33,63 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
 
   describe('clearRefinements()', () => {
     it('should update refinements with empty array', () => {
-      const stub = sandbox().stub(tag(), 'updateRefinements', (refinements) =>
-        expect(refinements).to.eql([]));
-
+      const update = tag().update = spy();
       tag().clearRefinements();
 
-      expect(stub.called).to.be.true;
+      expect(update).to.be.calledWith({ items: [] });
     });
   });
 
   describe('updateQueryState()', () => {
-    it('should call updateQuery()', () => {
+    it('should update originalQuery', () => {
       const originalQuery = 'red sneakers';
-      const stub = sandbox().stub(tag(), 'updateQuery', (newQuery) =>
-        expect(newQuery).to.eq(originalQuery));
-      tag().updateRefinements = () => null;
+      const update = tag().update = spy();
 
       tag().updateQueryState(<any>{ originalQuery });
 
-      expect(stub.called).to.be.true;
+      expect(update).to.be.calledWith({
+        items: undefined,
+        originalQuery,
+        correctedQuery: undefined
+      });
     });
 
-    it('should call updateRefinements', () => {
+    it('should update refinements', () => {
       const selectedNavigation = ['a', 'b', 'c'];
-      const stub = sandbox().stub(tag(), 'updateRefinements', (selected) =>
-        expect(selected).to.eql(selectedNavigation));
-      tag().updateQuery = () => null;
+      const update = tag().update = spy();
 
       tag().updateQueryState(<any>{ selectedNavigation });
 
-      expect(stub.called).to.be.true;
+      expect(update).to.be.calledWith({
+        items: selectedNavigation,
+        originalQuery: undefined,
+        correctedQuery: undefined
+      });
     });
-  });
 
-  describe('updateRefinements()', () => {
-    it('should call update with selected', () => {
-      const refinements = [{ a: 'b' }];
-      const spy =
-        tag().update =
-        sinon.spy(({ selected }) => expect(selected).to.eq(refinements));
+    it('should update correctedQuery', () => {
+      const correctedQuery = 'tylenol';
+      const update = tag().update = spy();
 
-      tag().updateRefinements(refinements);
+      tag().updateQueryState(<any>{ correctedQuery });
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWith({
+        items: undefined,
+        originalQuery: undefined,
+        correctedQuery
+      });
     });
-  });
 
-  describe('updateQuery()', () => {
-    it('should call update() with originalQuery', () => {
-      const query = 'leather belt';
-      const spy =
-        tag().update =
-        sinon.spy(({ originalQuery }) => expect(originalQuery).to.eq(query));
+    it('should update the whole query state', () => {
+      const originalQuery = 'tylenolt';
+      const items = ['a', 'b', 'c'];
+      const correctedQuery = 'tylenol';
+      const queryState: any = { originalQuery, correctedQuery, selectedNavigation: items };
+      const update = tag().update = spy();
 
-      tag().updateQuery(query);
+      tag().updateQueryState(<any>queryState);
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWith({ originalQuery, correctedQuery, items });
     });
   });
 
@@ -87,17 +98,13 @@ suite('gb-breadcrumbs', Breadcrumbs, ({
       const refinement = { a: 'b' };
       const navigation = { c: 'd' };
       const constructedRefinement = { e: 'f' };
-      const stub = sandbox().stub(flux(), 'unrefine', (ref) =>
-        expect(ref).to.eq(constructedRefinement));
-      sandbox().stub(utils, 'toRefinement', (ref, nav) => {
-        expect(ref).to.eq(refinement);
-        expect(nav).to.eq(navigation);
-        return constructedRefinement;
-      });
+      const unrefine = stub(flux(), 'unrefine');
+      const toRefinement = stub(utils, 'toRefinement').returns(constructedRefinement);
 
       tag().remove(refinement, navigation);
 
-      expect(stub.called).to.be.true;
+      expect(toRefinement).to.be.calledWith(refinement, navigation);
+      expect(unrefine).to.be.calledWith(constructedRefinement);
     });
   });
 });

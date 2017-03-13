@@ -1,21 +1,17 @@
 import { FluxTag } from '../tag';
 
-export interface RawConfig {
+export interface RawOpts {
   content: string;
 }
 
-export interface Raw extends FluxTag<RawConfig> { }
-
-export class Raw {
+export class Raw extends FluxTag<RawOpts> {
 
   init() {
-    this.configure();
-
     this.on('update', this.updateContent);
     this.on('mount', this.updateContent);
   }
 
   updateContent() {
-    this.root.innerHTML = this._config.content;
+    this.root.innerHTML = this.opts.content;
   }
 }

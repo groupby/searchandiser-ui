@@ -1,6 +1,7 @@
 import { UrlBeautifier, UrlGenerator, UrlParser } from '../../../src/utils/url-beautifier';
+import { refinement } from '../../utils/fixtures';
 import { expect } from 'chai';
-import { Query, SelectedRangeRefinement, SelectedValueRefinement } from 'groupby-api';
+import { Query } from 'groupby-api';
 
 describe('URL beautifier', () => {
   let beautifier: UrlBeautifier;
@@ -362,14 +363,4 @@ describe('URL beautifier', () => {
       expect(() => new UrlBeautifier(config)).to.throw('query token must be unique from refinement tokens');
     });
   });
-
-  function refinement(field: string, value: string): SelectedValueRefinement;
-  function refinement(field: string, low: number, high: number): SelectedRangeRefinement;
-  function refinement(navigationName: string, valueOrLow: any, high?: number): any {
-    if (high) {
-      return { navigationName, low: valueOrLow, high, type: 'Range' };
-    } else {
-      return { navigationName, value: valueOrLow, type: 'Value' };
-    }
-  }
 });

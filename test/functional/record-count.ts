@@ -2,30 +2,35 @@ import { RecordCount } from '../../src/tags/record-count/gb-record-count';
 import suite from './_suite';
 import { expect } from 'chai';
 
-suite<RecordCount>('gb-record-count', ({ html, mount }) => {
+suite<RecordCount>('gb-record-count', ({ html, mount, itMountsTag }) => {
+
   beforeEach(() => {
     const template = document.createElement('div');
     template.innerHTML = '{ first } - { last } of { total } Products';
     html().appendChild(template);
   });
 
-  it('mounts tag', () => {
-    const tag = mount();
+  itMountsTag();
 
-    expect(tag).to.be.ok;
-    expect(html().querySelector('div')).to.be.ok;
-  });
+  describe('render', () => {
+    it('should render inner div', () => {
+      const tag = mount();
 
-  it('renders template', () => {
-    const tag = mount();
-    tag.updatePageInfo({
-      pageInfo: {
-        recordStart: 10,
-        recordEnd: 40
-      },
-      totalRecordCount: 300
+      expect(tag.root.querySelector('div')).to.be.ok;
     });
 
-    expect(tag.root.textContent).to.eq('10 - 40 of 300 Products');
+    it('should render template', () => {
+      const tag = mount();
+
+      tag.updatePageInfo({
+        pageInfo: {
+          recordStart: 10,
+          recordEnd: 40
+        },
+        totalRecordCount: 300
+      });
+
+      expect(tag.root.textContent).to.eq('10 - 40 of 300 Products');
+    });
   });
 });

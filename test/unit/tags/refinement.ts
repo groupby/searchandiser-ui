@@ -3,57 +3,50 @@ import {
   Refinement,
   SelectedRefinement
 } from '../../../src/tags/navigation/gb-refinement';
-import { displayRefinement } from '../../../src/utils/common';
+import { expectAliases } from '../../utils/expectations';
 import suite from './_suite';
 import { expect } from 'chai';
 
 const TAG = 'gb-refinement';
-const MIXIN = { _scopeTo: () => null };
 
 describe(`${TAG} logic`, () => {
 
-  suite('gb-refinement', Refinement, MIXIN, ({ tag }) => {
+  suite('gb-refinement', Refinement, ({ tag }) => {
     describe('init()', () => {
-      it('should have default values', () => {
-        tag().init();
+      it('should alias refinement', () => {
+        const refinement = tag().refinement = { a: 'b' };
 
-        expect(tag().toView).to.eq(displayRefinement);
+        expectAliases(() => tag().init(), tag(), { refinement });
       });
     });
   });
 
-  suite('gb-available-refinement', AvailableRefinement, MIXIN, ({ tag }) => {
+  suite('gb-available-refinement', AvailableRefinement, ({ tag, spy }) => {
     describe('send()', () => {
       it('should make refinement', () => {
-        const refinement = tag().ref = { type: 'Range', low: 4, high: 6 };
-        const navigation = tag().nav = { name: 'price' };
-        const send = sinon.spy((ref, nav) => {
-          expect(ref).to.eq(refinement);
-          expect(nav).to.eq(navigation);
-        });
-        tag()._scope = { send };
+        const refinement = tag().refinement = { type: 'Range', low: 4, high: 6 };
+        const navigation = tag().$navigation = { name: 'price' };
+        const send = spy();
+        tag().$navigable = <any>{ send };
 
         tag().send();
 
-        expect(send.called).to.be.true;
+        expect(send).to.be.calledWith(refinement, navigation);
       });
     });
   });
 
-  suite('gb-selected-refinement', SelectedRefinement, MIXIN, ({ tag }) => {
+  suite('gb-selected-refinement', SelectedRefinement, ({ tag, spy }) => {
     describe('remove()', () => {
       it('should remove refinement', () => {
-        const refinement = tag().ref = { type: 'Range', low: 4, high: 6 };
-        const navigation = tag().nav = { name: 'price' };
-        const remove = sinon.spy((ref, nav) => {
-          expect(ref).to.eq(refinement);
-          expect(nav).to.eq(navigation);
-        });
-        tag()._scope = { remove };
+        const refinement = tag().refinement = { type: 'Range', low: 4, high: 6 };
+        const navigation = tag().$navigation = { name: 'price' };
+        const remove = spy();
+        tag().$navigable = <any>{ remove };
 
         tag().remove();
 
-        expect(remove.called).to.be.true;
+        expect(remove).to.be.calledWith(refinement, navigation);
       });
     });
   });

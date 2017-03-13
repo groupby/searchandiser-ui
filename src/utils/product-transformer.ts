@@ -6,10 +6,14 @@ const DEFAULT_STRUCTURE = {
 };
 
 export interface BaseStructure {
+  title: string;
+  price: string;
   id?: string;
   url?: string;
   variants?: string;
-  _variantStructure?: any;
+  _variantStructure?: {
+    _transform?: (variantMeta: any, allMeta: any) => any;
+  };
   _transform?: (allMeta: any) => any;
 }
 
@@ -23,40 +27,35 @@ export type ProductStructure = BaseStructure & any;
 
 export class ProductTransformer {
 
-  struct: ProductStructure;
-  variantStruct: any;
+  structure: ProductStructure;
+  variantStructure: any;
   hasVariants: boolean;
   idField: string;
   productTransform: (allMeta: any) => any;
+  variantTransform: (variantMeta: any, allMeta: any) => any;
   variants: any[];
 
-  constructor(struct: ProductStructure) {
-    this.struct = Object.assign({}, DEFAULT_STRUCTURE, struct);
-    this.setTransform();
-    this.hasVariants = 'variants' in struct;
-    this.variantStruct = this.struct._variantStructure || this.struct;
+  constructor(structure: ProductStructure) {
+    this.structure = Object.assign({}, DEFAULT_STRUCTURE, structure);
+    this.productTransform = ProductTransformer.getTransform(this.structure);
+    this.hasVariants = 'variants' in structure;
+    this.variantStructure = this.structure._variantStructure || this.structure;
+    this.variantTransform = ProductTransformer.getTransform(this.variantStructure);
     this.idField = this.extractIdField();
   }
 
-  transform(allMeta: any): ProductMeta {
-    const transformedMeta = this.productTransform(allMeta);
-    const variants = this.unpackVariants(transformedMeta);
-    const productMeta: ProductMeta = (variant: number = 0) => {
-      if (variant >= variants.length) {
-        throw new Error(`cannot access the variant at index ${variant}`);
-      } else {
-        return variants[variant];
-      }
-    };
-    productMeta.variants = variants;
-    productMeta.transformedMeta = transformedMeta;
-
-    return productMeta;
+  transform(allMeta: any) {
+    if (allMeta) {
+      const transformedMeta = this.productTransform(allMeta);
+      return this.unpackVariants(transformedMeta);
+    } else {
+      return [{}];
+    }
   }
 
   unpackVariants(allMeta: any): any[] {
-    const struct = filterObject(this.struct, '!_*');
-    const variantStruct = filterObject(this.variantStruct, '!_*');
+    const struct = filterObject(this.structure, '!_*');
+    const variantStruct = filterObject(this.variantStructure, '!_*');
     const remappedMeta = remap(allMeta, struct);
     const variantMapping = this.remapVariant(remappedMeta, variantStruct);
 
@@ -72,29 +71,28 @@ export class ProductTransformer {
 
   remapVariant(remappedMeta: any, variantStruct: any) {
     return (variant) => {
-      const remappedVariant = remap(variant, variantStruct);
+      let remappedVariant = remap(variant, variantStruct);
+      if (this.productTransform !== this.variantTransform) {
+        remappedVariant = this.variantTransform(remappedVariant, remappedMeta);
+      }
       return filterObject(Object.assign({}, remappedMeta, remappedVariant), '!variants');
     };
   }
 
   extractIdField() {
     // ensure we actually want the nested id
-    if (this.hasVariants && this.struct._variantStructure && this.variantStruct.id) {
-      return `${this.struct.variants}.${this.variantStruct.id}`;
+    if (this.hasVariants && this.structure._variantStructure && this.variantStructure.id) {
+      return `${this.structure.variants}.${this.variantStructure.id}`;
     } else {
-      return this.struct.id;
+      return this.structure.id;
     }
   }
 
-  private setTransform() {
-    if (typeof this.struct._transform === 'function') {
-      this.productTransform = this.struct._transform;
+  static getTransform(structure: ProductStructure) {
+    if (typeof structure._transform === 'function') {
+      return structure._transform;
     } else {
-      this.productTransform = this.defaultTransform;
+      return (meta) => meta;
     }
-  }
-
-  private defaultTransform(allMeta: any) {
-    return allMeta;
   }
 }

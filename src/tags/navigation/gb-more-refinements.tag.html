@@ -1,0 +1,22 @@
+<gb-more-refinements>
+  <yield>
+    <a onclick="{ loadMore }">More</a>
+  </yield>
+
+  <script>
+    import { MoreRefinements } from './gb-more-refinements';
+    this._mixin(MoreRefinements);
+  </script>
+
+  <style>
+    :scope.gb-stylish a {
+      cursor: pointer;
+      color: #999;
+      text-decoration: underline;
+    }
+
+    :scope.gb-stylish a:hover {
+      color: black;
+    }
+  </style>
+</gb-more-refinements>

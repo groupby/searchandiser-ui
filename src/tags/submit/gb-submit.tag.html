@@ -1,6 +1,6 @@
 <gb-submit>
   <yield>
-    <a class="gb-submit { _style }">&#128269;</a>
+    <a class="gb-submit">&#128269;</a>
   </yield>
 
   <script>
@@ -8,11 +8,11 @@
     this._mixin(Submit);
   </script>
 
-  <style scoped>
-    .gb-stylish.gb-submit {
+  <style>
+    :scope.gb-stylish a {
       padding: 4px;
     }
-    .gb-stylish.gb-submit:hover {
+    :scope.gb-stylish a:hover {
       cursor: pointer;
     }
   </style>

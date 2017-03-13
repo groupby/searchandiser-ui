@@ -1,71 +1,39 @@
-import { initServices } from './services/init';
-import { CollectionsConfig } from './tags/collections/gb-collections';
-import { FilterConfig } from './tags/filter/gb-filter';
-import { MixinFlux } from './tags/tag';
-import { checkNested } from './utils/common';
+import { initServices, Service } from './services/init';
+import { TrackerConfig } from './services/tracker';
+import { UrlConfig } from './services/url';
+import { BreadcrumbsOpts } from './tags/breadcrumbs/gb-breadcrumbs';
+import { CollectionsOpts } from './tags/collections/gb-collections';
+import { DetailsOpts } from './tags/details/gb-details';
+import { FilterOpts } from './tags/filter/gb-filter';
+import { NavigationOpts } from './tags/navigation/gb-navigation';
+import { PageSizeOpts } from './tags/page-size/gb-page-size';
+import { PagingOpts } from './tags/paging/gb-paging';
+import { QueryOpts } from './tags/query/gb-query';
+import { SaytOpts } from './tags/sayt/gb-sayt';
+import { SortOpts } from './tags/sort/gb-sort';
+import { SubmitOpts } from './tags/submit/gb-submit';
+import { Configuration } from './utils/configuration';
 import { ProductStructure } from './utils/product-transformer';
-import { BeautifierConfig } from './utils/url-beautifier';
-import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
+import { MixinFlux } from './utils/tag';
+import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
-export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams}';
-export const DEFAULT_CONFIG = { initialSearch: true };
-export const DEFAULT_URL_CONFIG = { queryParam: 'q', searchUrl: 'search' };
+// tslint:disable-next-line:max-line-length
+export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection,visitorId,sessionId}';
 
 export function initSearchandiser() {
-  return function configure(rawConfig: SearchandiserConfig & any = {}) {
-    const config: SearchandiserConfig = applyDefaultConfig(rawConfig);
-    validateConfig(config);
-    const flux = Object.assign(initCapacitor(config), Events);
+  return function configure(rawConfig: SearchandiserConfig = <any>{}) {
+    const config = new Configuration(rawConfig).apply();
+    const flux = new FluxCapacitor(config.customerId, config, CONFIGURATION_MASK);
+    Object.assign(flux, Events);
     const services = initServices(flux, config);
     riot.mixin(MixinFlux(flux, config, services));
     Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
+    (<any>configure).init();
+
+    // tslint:disable-next-line:no-console
+    console.log(`StoreFront v${configure['version']} Loaded 🏬`);
   };
-}
-
-export function initCapacitor(config: SearchandiserConfig) {
-  const finalConfig = transformConfig(config);
-  return new FluxCapacitor(finalConfig.customerId, finalConfig, CONFIGURATION_MASK);
-}
-
-export function applyDefaultConfig(rawConfig: SearchandiserConfig): SearchandiserConfig {
-  const config = Object.assign({}, DEFAULT_CONFIG, rawConfig);
-  config.url = Object.assign(DEFAULT_URL_CONFIG, config.url);
-  return config;
-}
-
-export function validateConfig(config: SearchandiserConfig) {
-  if (!config.structure) {
-    throw new Error('must provide a record structure');
-  }
-  const struct = Object.assign(config.structure, config.structure._variantStructure);
-  if (!(struct.title && struct.title.trim())) {
-    throw new Error('structure.title must be the path to the title field');
-  }
-  if (!(struct.price && struct.price.trim())) {
-    throw new Error('structure.price must be the path to the price field');
-  }
-}
-
-export function transformConfig(config: SearchandiserConfig): SearchandiserConfig & any {
-  let finalConfig: FluxConfiguration & { sort: any[] } = <any>config;
-  if (config.pageSizes) finalConfig.pageSize = config.pageSizes[0];
-  if (config.bridge) {
-    const bridgeConfig: BridgeConfig = {};
-
-    const headers = config.bridge.headers || {};
-    if (config.bridge.skipCache) headers['Skip-Caching'] = true;
-    if (config.bridge.skipSemantish) headers['Skip-Semantish'] = true;
-    bridgeConfig.headers = headers;
-
-    if (config.bridge.https) bridgeConfig.https = true;
-
-    Object.assign(finalConfig.bridge, bridgeConfig);
-  }
-  if (checkNested(config, 'tags', 'sort', 'options')) {
-    finalConfig.sort = [config.tags.sort.options.map((val) => val.value)[0]];
-  }
-  return finalConfig;
 }
 
 export class Searchandiser {
@@ -75,7 +43,9 @@ export class Searchandiser {
   config: SearchandiserConfig;
 
   init() {
-    if (this.config.initialSearch) this.search();
+    if (this.config.initialSearch) {
+      this.search();
+    }
   }
 
   attach(tagName: string, opts?: any);
@@ -112,66 +82,50 @@ export class Searchandiser {
   }
 
   private riotTagName(tagName: string) {
-    return tagName.startsWith('gb-') ? tagName : `gb-${tagName}`;
+    return tagName.startsWith('gb-') || !this.config.simpleAttach ? tagName : `gb-${tagName}`;
   }
 }
 
-export interface BridgeConfig {
-  https?: boolean;
-  headers?: any;
+export interface BridgeConfig extends FluxBridgeConfig {
   skipCache?: boolean;
   skipSemantish?: boolean;
 }
 
-export interface UrlConfig {
-  beautifier?: boolean | BeautifierConfig;
-  queryParam?: string;
-  searchUrl?: string;
-  detailsUrl?: string;
-}
-
-export interface TrackerConfig {
-  sessionId?: string;
-  visitorId?: string;
-}
-
 export interface SearchandiserConfig {
+  customerId: string;
+  structure: ProductStructure;
+
+  // services
   bridge?: BridgeConfig;
-
   url?: UrlConfig;
-
   tracker?: TrackerConfig;
 
-  customerId: string;
   area?: string;
   collection?: string;
   customUrlParams?: any[];
+  disableAutocorrection?: boolean;
   language?: string;
   pageSize?: number;
   pageSizes?: number[];
   sort?: Sort[];
-  tags: {
-    sort?: {
-      options?: any[];
-    };
-    sayt?: {
-      structure?: ProductStructure;
-      products?: number;
-      queries?: number;
-      autoSearch?: boolean;
-      staticSearch?: boolean;
-      highlight?: boolean;
-      categoryField?: string;
-      navigationNames?: any;
-      allowedNavigations?: string[];
-      minimumCharacters?: number;
-      delay?: number;
-      https?: boolean;
-    };
-    collections?: CollectionsConfig;
-    filter?: FilterConfig;
+  visitorId?: string;
+  sessionId?: string;
+
+  tags?: {
+    breadcrumbs?: BreadcrumbsOpts;
+    collections?: CollectionsOpts;
+    details?: DetailsOpts;
+    filter?: FilterOpts;
+    navigation?: NavigationOpts;
+    pageSize?: PageSizeOpts;
+    paging?: PagingOpts;
+    query?: QueryOpts;
+    sayt?: SaytOpts;
+    sort?: SortOpts;
+    submit?: SubmitOpts;
   };
+  services?: { [name: string]: Service | boolean };
   stylish?: boolean;
   initialSearch?: boolean;
-  structure?: ProductStructure;
+  simpleAttach?: boolean;
 }

@@ -1,30 +1,31 @@
 <gb-refinement-list>
-  <div class="gb-refinement-list { _style }">
-    <h4 class="gb-navigation-title">{ nav.displayName }</h4>
-    <ul>
-      <gb-selected-refinement if={ _config.showSelected } each={ ref in nav.selected }></gb-selected-refinement>
-      <gb-available-refinement each={ ref in nav.refinements }></gb-available-refinement>
-      <li class="gb-more-refinements" if={ nav.moreRefinements }>
-        <a href="#" onclick={ moreRefinements }>More</a>
-      </li>
-    </ul>
-  </div>
+  <yield>
+    <div id="{ $navigation.name }">
+      <h4 class="gb-navigation-title">{ $navigation.displayName }</h4>
+      <ul>
+        { console.log($navigation) }
+        <li data-is="gb-or-refinement" if="{ $navigation.or }" each="{ refinement in $navigation.refinements }"></li>
+        <li data-is="gb-selected-refinement" if="{ !$navigation.or && $navigable.showSelected }" each="{ refinement in selectedRefinements() }"></li>
+        <li data-is="gb-available-refinement" if="{ !$navigation.or }" each="{ refinement in availableRefinements() }"></li>
+        <li data-is="gb-more-refinements" if="{ $navigation.moreRefinements }"></li>
+      </ul>
+    </div>
+  </yield>
 
   <script>
-    this.moreRefinements = () => {
-      this.flux.refinements(this.nav.name);
-      this.nav.moreRefinements = false;
-    };
+    import { RefinementList } from './gb-refinement-list';
+    this._mixin(RefinementList);
   </script>
 
-  <style scoped>
-    .gb-stylish.gb-refinement-list .gb-navigation-title {
+  <style>
+    :scope.gb-stylish .gb-navigation-title {
       font-size: 18px;
       margin: 10px 0;
     }
-    .gb-stylish.gb-refinement-list ul {
+    :scope.gb-stylish ul {
       margin: 0;
       padding-left: 8px;
+      list-style: none;
     }
   </style>
 </gb-refinement-list>

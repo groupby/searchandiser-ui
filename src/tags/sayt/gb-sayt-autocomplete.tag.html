@@ -4,18 +4,11 @@
     <gb-sayt-divider></gb-sayt-divider>
     <gb-sayt-search-terms></gb-sayt-search-terms>
     <gb-sayt-divider></gb-sayt-divider>
-    <gb-sayt-refinements each={ navigations }></gb-sayt-refinements>
+    <gb-sayt-refinements each="{ navigation in $sayt.navigations }"></gb-sayt-refinements>
   </yield>
 
-  <script>
-    import './gb-sayt-categories.tag.html';
-    import './gb-sayt-search-terms.tag.html';
-    import './gb-sayt-refinements.tag.html';
-    import './gb-sayt-divider.tag.html';
-  </script>
-
-  <style scoped>
-    .gb-stylish :scope {
+  <style>
+    :scope.gb-stylish {
       min-width: 210px;
     }
   </style>

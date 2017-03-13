@@ -1,36 +1,18 @@
-import { DEFAULT_CONFIG, Paging } from '../../../src/tags/paging/gb-paging';
+import { META, Paging } from '../../../src/tags/paging/gb-paging';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-paging', Paging, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldHaveMeta,
+  itShouldAlias
 }) => {
+  itShouldHaveMeta(Paging, META);
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
-
-    it('should have default initial state', () => {
-      tag().init();
-
-      expect(tag().currentPage).to.eq(1);
-      expect(tag().backDisabled).to.be.true;
-    });
-
-    it('should wrap flux.page as pager', () => {
-      const fluxPager = flux().page = <any>{ a: 'b' };
-      const wrappedPager = { c: 'd' };
-      tag().wrapPager = (pager) => {
-        expect(pager).to.eq(fluxPager);
-        return wrappedPager;
-      };
-
-      tag().init();
-
-      expect(tag().pager).to.eq(wrappedPager);
-    });
+    itShouldAlias('paging');
 
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
@@ -40,16 +22,20 @@ suite('gb-paging', Paging, ({
     });
   });
 
+  describe('setDefaults()', () => {
+    it('should set defaults', () => {
+      tag().setDefaults();
+
+      expect(tag().backDisabled).to.be.true;
+      expect(tag().currentPage).to.eq(1);
+    });
+  });
+
   describe('pageInfo()', () => {
     it('should update page position', () => {
       const pageNumbers = [1, 2, 3, 4, 5];
-      const limit = 7;
-      const stub = sandbox().stub(tag(), 'updatePageInfo', (pages, current, last) => {
-        expect(pages).to.eq(pageNumbers);
-        expect(current).to.eq(9);
-        expect(last).to.eq(16);
-      });
-      tag()._config = { limit };
+      const limit = tag().limit = 7;
+      const updatePageInfo = stub(tag(), 'updatePageInfo');
       flux().page = <any>{
         pageNumbers: (pages) => {
           expect(pages).to.eq(limit);
@@ -61,179 +47,185 @@ suite('gb-paging', Paging, ({
 
       tag().pageInfo();
 
-      expect(stub.called).to.be.true;
+      expect(updatePageInfo).to.be.calledWith(pageNumbers, 9, 16);
     });
   });
 
   describe('updatePageInfo()', () => {
     it('should update page info', () => {
-      const spy =
-        tag().update =
-        sinon.spy((obj) => {
-          expect(obj.backDisabled).to.be.false;
-          expect(obj.forwardDisabled).to.be.true;
-          expect(obj.lowOverflow).to.be.false;
-          expect(obj.highOverflow).to.be.true;
-          expect(obj.pageNumbers).to.eql([1, 2, 3, 4, 5, 6]);
-          expect(obj.lastPage).to.eq(43);
-          expect(obj.currentPage).to.eq(43);
-        });
+      const pageNumbers = [1, 2, 3, 4, 5, 6];
+      const update = tag().update = spy();
 
-      tag().updatePageInfo([1, 2, 3, 4, 5, 6], 43, 43);
+      tag().updatePageInfo(pageNumbers, 43, 43);
 
-      expect(spy.called).to.be.true;
+      expect(update.calledWith({
+        pageNumbers,
+        backDisabled: false,
+        forwardDisabled: true,
+        lowOverflow: false,
+        highOverflow: true,
+        finalPage: 43,
+        currentPage: 43
+      })).to.be.true;
     });
 
     it('should set lowOverflow and highOverflow true', () => {
-      const spy =
-        tag().update =
-        sinon.spy((obj) => {
-          expect(obj.lowOverflow).to.be.true;
-          expect(obj.highOverflow).to.be.true;
-        });
+      const update = tag().update = spy();
 
       tag().updatePageInfo([2, 3, 4], 1, 6);
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWithMatch({
+        lowOverflow: true,
+        highOverflow: true
+      });
     });
 
     it('should set lowOverflow and highOverflow to false', () => {
-      const spy =
-        tag().update =
-        sinon.spy((obj) => {
-          expect(obj.lowOverflow).to.be.false;
-          expect(obj.highOverflow).to.be.false;
-        });
+      const update = tag().update = spy();
 
       tag().updatePageInfo([1, 2, 3, 4], 1, 4);
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWithMatch({
+        lowOverflow: false,
+        highOverflow: false
+      });
     });
 
     it('should set backDisabled and forwardDisabled to true', () => {
-      const spy =
-        tag().update =
-        sinon.spy((obj) => {
-          expect(obj.backDisabled).to.be.true;
-          expect(obj.forwardDisabled).to.be.true;
-        });
+      const update = tag().update = spy();
 
       tag().updatePageInfo([1], 1, 1);
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWithMatch({
+        backDisabled: true,
+        forwardDisabled: true
+      });
     });
 
     it('should set backDisabled and forwardDisabled to false', () => {
-      const spy =
-        tag().update =
-        sinon.spy((obj) => {
-          expect(obj.backDisabled).to.be.false;
-          expect(obj.forwardDisabled).to.be.false;
-        });
+      const update = tag().update = spy();
 
       tag().updatePageInfo([1, 2, 3], 2, 3);
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWithMatch({
+        backDisabled: false,
+        forwardDisabled: false
+      });
     });
   });
 
   describe('updateCurrentPage()', () => {
     it('should update current page', () => {
-      const spy =
-        tag().update =
-        sinon.spy((obj) => expect(obj.currentPage).to.eq(10));
+      const update = tag().update = spy();
 
       tag().updateCurrentPage({ pageNumber: 10 });
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWithMatch({ currentPage: 10 });
     });
   });
 
-  describe('wrapPager()', () => {
-    it('first()', (done) => {
-      const reset = sinon.spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ reset });
+  describe('firstPage()', () => {
+    it('should call flux.page.reset()', (done) => {
+      const reset = spy(() => Promise.resolve());
+      flux().page = <any>{ reset };
       tag().emitEvent = () => {
-        expect(reset.called).to.be.true;
+        expect(reset).to.be.called;
         done();
       };
 
-      pager.first();
+      tag().firstPage();
     });
 
-    it('prev()', (done) => {
-      const prev = sinon.spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ prev });
-      tag().emitEvent = () => {
-        expect(prev.called).to.be.true;
-        done();
-      };
-
-      pager.prev();
-    });
-
-    it('next()', (done) => {
-      const next = sinon.spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ next });
-      tag().emitEvent = () => {
-        expect(next.called).to.be.true;
-        done();
-      };
-
-      pager.next();
-    });
-
-    it('last()', (done) => {
-      const last = sinon.spy(() => Promise.resolve());
-      const pager = tag().wrapPager(<any>{ last });
-      tag().emitEvent = () => {
-        expect(last.called).to.be.true;
-        done();
-      };
-
-      pager.last();
-    });
-
-    it('switchPage()', (done) => {
-      const newPage = 7;
-      const switchPage = sinon.spy((page) => Promise.resolve(expect(page).to.eq(newPage)));
-      const pager = tag().wrapPager(<any>{ switchPage });
-      tag().emitEvent = () => {
-        expect(switchPage.called).to.be.true;
-        done();
-      };
-
-      pager.switchPage(newPage);
-    });
-
-    it('should not allow page forward', () => {
-      tag().forwardDisabled = true;
-
-      const pager = tag().wrapPager(<any>{
-        next: () => expect.fail(),
-        last: () => expect.fail()
-      });
-
-      pager.next();
-      pager.last();
-    });
-
-    it('should not allow page backward', () => {
+    it('should not allow paging back', () => {
       tag().backDisabled = true;
+      flux().page = <any>{ reset: () => expect.fail() };
 
-      const pager = tag().wrapPager(<any>{
-        prev: () => expect.fail(),
-        first: () => expect.fail()
-      });
+      tag().firstPage();
+    });
+  });
 
-      pager.prev();
-      pager.first();
+  describe('prevPage()', () => {
+    it('should call flux.page.prev()', (done) => {
+      const prev = spy(() => Promise.resolve());
+      flux().page = <any>{ prev };
+      tag().emitEvent = () => {
+        expect(prev).to.be.called;
+        done();
+      };
+
+      tag().prevPage();
+    });
+
+    it('should not allow paging back', () => {
+      tag().backDisabled = true;
+      flux().page = <any>{ prev: () => expect.fail() };
+
+      tag().prevPage();
+    });
+  });
+
+  describe('nextPage()', () => {
+    it('should call flux.page.next()', (done) => {
+      const next = spy(() => Promise.resolve());
+      flux().page = <any>{ next };
+      tag().emitEvent = () => {
+        expect(next).to.be.called;
+        done();
+      };
+
+      tag().nextPage();
+    });
+
+    it('should not allow paging forward', () => {
+      tag().forwardDisabled = true;
+      flux().page = <any>{ next: () => expect.fail() };
+
+      tag().nextPage();
+    });
+  });
+
+  describe('lastPage()', () => {
+    it('should call flux.page.last()', (done) => {
+      const last = spy(() => Promise.resolve());
+      flux().page = <any>{ last };
+      tag().emitEvent = () => {
+        expect(last).to.be.called;
+        done();
+      };
+
+      tag().lastPage();
+    });
+
+    it('should not allow paging forward', () => {
+      tag().forwardDisabled = true;
+      flux().page = <any>{ last: () => expect.fail() };
+
+      tag().lastPage();
+    });
+  });
+
+  describe('switchPage()', () => {
+    it('should call flux.page.switchPage()', (done) => {
+      const switchPage = spy(() => Promise.resolve());
+      flux().page = <any>{ switchPage };
+      tag().emitEvent = () => {
+        expect(switchPage).to.be.calledWith(8);
+        done();
+      };
+
+      tag().switchPage(<any>{ target: { text: '8' } });
     });
   });
 
   describe('emitEvent()', () => {
     it('should emit search event', (done) => {
       tag().services = <any>{ tracker: { search: () => done() } };
+
+      tag().emitEvent();
+    });
+
+    it('should check for tracker service', () => {
+      tag().services = <any>{};
 
       tag().emitEvent();
     });

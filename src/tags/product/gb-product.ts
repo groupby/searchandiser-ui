@@ -1,48 +1,94 @@
-import { ProductMeta, ProductTransformer } from '../../utils/product-transformer';
+import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
 import * as clone from 'clone';
 import oget = require('oget');
 
-export interface Product extends FluxTag<any> { }
+export interface Productable {
+  lazy?: boolean;
+  infinite?: boolean;
+  tombstone?: boolean;
+  structure?: ProductStructure;
+  allMeta: any;
+}
 
-export class Product {
+export const DEFAULTS = {
+  lazy: true
+};
+export const TYPES = {
+  lazy: 'boolean',
+  infinite: 'boolean',
+  tombstone: 'boolean'
+};
+
+export class Product extends FluxTag<any> {
+  $productable: Productable;
 
   variantIndex: number;
-  variants: any[];
   detailsUrl: string;
-  allMeta: any;
-  struct: any;
-  productMeta: ProductMeta;
+  metadata: any;
+  variants: any[];
+  structure: ProductStructure;
   transformer: ProductTransformer;
 
   init() {
-    this.variantIndex = 0;
-    this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
-    this.struct = this._scope.struct || this.config.structure || {};
-    this.transformer = new ProductTransformer(this.struct);
+    this.expose('product');
+    this.inherits('productable', { defaults: DEFAULTS, types: TYPES }, this.transformProductable);
 
-    this.transformRecord(this.opts.all_meta);
+    this.structure = Object.assign({}, this.config.structure, (this.$productable || <any>{}).structure);
+    this.transformer = new ProductTransformer(this.structure);
+
+    this.on('before-mount', this.styleProduct);
   }
 
-  transformRecord(allMeta: any) {
-    const productMeta = this.transformer.transform(clone(allMeta, false));
-    this.update({
-      productMeta: () => productMeta(this.variantIndex),
-      variants: productMeta.variants || [],
-      allMeta: productMeta.transformedMeta
-    });
+  setDefaults() {
+    this.variantIndex = 0;
+    // TODO: this should come from service config dependency
+    this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
+  }
+
+  transformProductable(productable: Productable) {
+    this.updateRecord(productable.allMeta);
+    return productable;
+  }
+
+  updateRecord(allMeta: any) {
+    const variants = this.transformRecord(allMeta);
+    this.variants = variants;
+    this.metadata = variants[0];
+  }
+
+  transformRecord(record: any): any {
+    return this.transformer.transform(clone(record, false));
+  }
+
+  styleProduct() {
+    if (this.$productable.infinite) {
+      this.root.classList.add('gb-infinite');
+    }
+    if (this.$productable.tombstone) {
+      this.root.classList.add('tombstone');
+    }
+  }
+
+  variant() {
+    if (this.variants && this.variants.length > this.variantIndex) {
+      return this.variants[this.variantIndex];
+    } else {
+      return this.metadata || {};
+    }
   }
 
   link() {
-    return this.productMeta().url || `${this.detailsUrl}?id=${this.productMeta().id}`;
+    return this.variant().url || `${this.detailsUrl}?id=${this.variant().id}`;
   }
 
-  image(imageObj: string | string[]) {
-    return Array.isArray(imageObj) ? imageObj[0] : imageObj;
+  imageLink() {
+    const image = this.variant().image;
+    return Array.isArray(image) ? image[0] : image;
   }
 
-  switchVariant(event: MouseEvent) {
-    const variantIndex = (<HTMLElement>event.target).dataset['index'];
+  switchVariant({ target }: { target: HTMLElement }) {
+    const variantIndex = target.dataset['index'];
     this.update({ variantIndex });
   }
 }

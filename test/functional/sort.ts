@@ -1,31 +1,41 @@
 import { Sort } from '../../src/tags/sort/gb-sort';
-import { clearOption, label, selectOptions } from '../utils/select';
-import suite from './_suite';
+import suite, { SelectModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Sort>('gb-sort', ({ flux, html, mount }) => {
-  it('mounts tag', () => {
-    const tag = mount();
+suite<Sort>('gb-sort', ({ flux, mount, stub, itMountsTag }) => {
 
-    expect(tag).to.be.ok;
-    expect(html().querySelector('gb-select')).to.be.ok;
+  itMountsTag();
+
+  describe('render', () => {
+    it('should render as select', () => {
+      const tag = mount();
+
+      expect(tag).to.be.ok;
+      expect(tag.root.querySelector('gb-select')).to.be.ok;
+    });
   });
 
-  it('renders from sorts', () => {
-    mount();
+  describe('render with sorts', () => {
+    it('should render options list', () => {
+      const tag = mount();
+      const model = new Model(tag);
 
-    expect(html().querySelector('gb-option-list')).to.be.ok;
-    expect(label().textContent).to.eq('Name Descending');
-    expect(selectOptions().length).to.eq(2);
-    expect(selectOptions()[1].textContent).to.eq('Name Ascending');
-  });
+      expect(tag.root.querySelector('gb-list')).to.be.ok;
+      expect(model.label.textContent).to.eq('Name Descending');
+      expect(model.items).to.have.length(2);
+      expect(model.items[1].textContent).to.eq('Name Ascending');
+    });
 
-  it('should sort on option selected', () => {
-    mount();
+    it('should call flux.sort() on click', () => {
+      const model = new Model(mount());
+      const sort = stub(flux(), 'sort');
 
-    flux().sort = (sort): any => expect(sort).to.eql({ field: 'title', order: 'Ascending' });
+      model.items[1].click();
 
-    selectOptions()[1].click();
-    expect(clearOption()).to.not.be.ok;
+      expect(model.clearItem).to.not.be.ok;
+      expect(sort).to.be.calledWith({ field: 'title', order: 'Ascending' });
+    });
   });
 });
+
+class Model extends SelectModel { }

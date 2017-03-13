@@ -1,4 +1,5 @@
 import { SimpleBeautifier } from '../../../src/utils/simple-beautifier';
+import { refinement } from '../../utils/fixtures';
 import { expect } from 'chai';
 import { Query } from 'groupby-api';
 
@@ -53,10 +54,9 @@ describe('simple beautifier', () => {
     });
 
     it('should build a url with refinements', () => {
-      const jsonRefinements =
-        '%5B%7B%22navigationName%22%3A%22brand%22%2C%22value%22%3A%22DeWalt%22%2C%22type%22%3A%22Value%22%7D%5D';
+      const jsonRefinements = '%5B%7B%22navigationName%22%3A%22brand%22%2C%22value%22%3A%22DeWalt%22%2C%22type%22%3A%22Value%22%7D%5D'; // tslint:disable-line:max-line-length
       const query = new Query('my query')
-        .withSelectedRefinements({ navigationName: 'brand', value: 'DeWalt', type: 'Value' });
+        .withSelectedRefinements(refinement('brand', 'DeWalt'));
 
       const url = beautifier.build(query);
 

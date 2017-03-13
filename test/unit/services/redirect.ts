@@ -1,25 +1,42 @@
 import { Redirect } from '../../../src/services/redirect';
 import { LOCATION } from '../../../src/utils/common';
+import { expectSubscriptions } from '../../utils/expectations';
+import suite from './_suite';
 import { expect } from 'chai';
 
-describe('redirect service', () => {
-  let sandbox: Sinon.SinonSandbox;
+suite('redirect', ({ stub }) => {
 
-  beforeEach(() => sandbox = sinon.sandbox.create());
-  afterEach(() => sandbox.restore());
+  describe('init()', () => {
+    it('should listen for redirect events', () => {
+      const flux: any = {};
+      const service = new Redirect(flux);
 
-  it('should attach a handler for redirect events', () => {
-    const redirect = 'my-page.html';
-    const stub = sandbox.stub(LOCATION, 'assign', (url) => expect(url).to.eq(redirect));
-    const flux: any = {
-      on: (event, cb) => {
-        expect(event).to.eq('redirect');
-        cb(redirect);
-      }
-    };
+      expectSubscriptions(() => service.init(), {
+        redirect: null
+      }, flux);
+    });
 
-    new Redirect(flux).init();
+    it('should call redirect() on redirect event', () => {
+      const url = 'my-page.html';
+      const flux: any = { on: (event, cb) => cb(url) };
+      const service = new Redirect(flux);
+      const redirect = stub(service, 'redirect');
 
-    expect(stub.called).to.be.true;
+      service.init();
+
+      expect(redirect).to.be.calledWith(url);
+    });
+  });
+
+  describe('redirect()', () => {
+    it('should call LOCATION.assign()', () => {
+      const url = 'my-page.html';
+      const assign = stub(LOCATION, 'assign');
+      const service = new Redirect(<any>{});
+
+      service.redirect(url);
+
+      expect(assign).to.be.calledWith(url);
+    });
   });
 });

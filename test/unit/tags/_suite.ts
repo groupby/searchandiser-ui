@@ -1,83 +1,104 @@
-import { FluxTag } from '../../../src/tags/tag';
-import { expectSubscriptions } from '../../utils/expectations';
+import { FluxTag, META, TagMeta } from '../../../src/tags/tag';
+import { expectAliases, expectSubscriptions, ExpectedAliases } from '../../utils/expectations';
+import { baseSuite, buildSuite, SuiteModifier } from '../../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
-/* tslint:disable:max-line-length */
-function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitSuite<T>) => void);
-function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, cb: (suite: UnitSuite<T>) => void);
-function suite<T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) {
-  /* tslint:enable:max-line-length */
+function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, tagName: string, clazz: { new (): T }, mixinOrCb: any, cb?: Function) { // tslint:disable-line:max-line-length
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
-  const tests = hasMixin ? cb : mixinOrCb;
+  const tests: (suiteUtils: UnitUtils<T>) => void = hasMixin ? cb : mixinOrCb;
 
-  describe(`${tagName} logic`, () => {
+  baseSuite(modifier, `${tagName} logic`, ({ init, teardown, spy, stub }) => {
     let _flux: FluxCapacitor;
     let _tag: T;
-    let _sandbox: Sinon.SinonSandbox;
 
     beforeEach(() => {
       // TODO: should be this vvv
       // ({ tag: _tag, flux: _flux } = fluxTag(new clazz(), mixin));
-      let { tag, flux } = fluxTag(new clazz(), mixin);
+      let { tag, flux } = fluxTag(tagName, new clazz(), mixin);
       _tag = tag;
       _flux = flux;
-      _sandbox = sinon.sandbox.create();
+      init();
     });
-    afterEach(() => _sandbox.restore());
+    afterEach(() => teardown());
 
     tests({
       flux: () => _flux,
       tag: () => _tag,
-      sandbox: () => _sandbox,
       expectSubscriptions: _expectSubscriptions,
-      itShouldConfigure,
+      expectAliases: _expectAliases,
+      spy,
+      stub,
+      itShouldAlias,
+      itShouldHaveMeta,
       tagName
     });
+
+    function _expectAliases(func: Function, aliases: ExpectedAliases) {
+      expectAliases(func, _tag, aliases);
+    }
 
     function _expectSubscriptions(func: Function, subscriptions: any, emitter: any = _flux) {
       expectSubscriptions(func, subscriptions, emitter);
     }
 
-    function itShouldConfigure(defaultConfig?: any) {
-      it(`should configure itself ${defaultConfig ? 'with defaults' : ''}`, (done) => {
-        _tag.configure = (config) => {
-          if (defaultConfig) {
-            expect(config).to.eq(defaultConfig);
-          } else {
-            expect(config).to.be.undefined;
-          }
-          done();
-        };
+    function itShouldAlias(aliases: ExpectedAliases) {
+      it('should expose aliases', () => {
+        _expectAliases(() => _tag.init(), aliases);
+      });
+    }
 
-        _tag.init();
+    function itShouldHaveMeta(tagClass: { new (): FluxTag<any> }, meta: TagMeta) {
+      it('should have meta', () => {
+        expect(tagClass[META]).to.eq(meta);
       });
     }
   });
 }
 
+export interface BaseSuite extends Suite {
+  skip?: Suite;
+  only?: Suite;
+}
+
+export interface Suite {
+  <T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, mixin: any, cb: (suite: UnitUtils<T>) => void);
+  <T extends FluxTag<any>>(tagName: string, clazz: { new (): T }, cb: (suite: UnitUtils<T>) => void);
+}
+
+const suite = buildSuite<BaseSuite>(_suite);
+
 export default suite;
 
-export function fluxTag<T extends FluxTag<any>>(tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
+// tslint:disable-next-line:max-line-length
+export function fluxTag<T extends FluxTag<any>>(tagName: string, tag: T, obj: any = {}): { flux: FluxCapacitor, tag: T } {
   const flux = new FluxCapacitor('');
   Object.assign(tag, {
     flux,
     opts: {},
+    refs: {},
     config: {},
-    _config: {},
-    configure: (cfg = {}) => tag._config = Object.assign({}, cfg, tag.opts),
+    _tagName: tagName,
+    expose: () => null,
+    inherits: () => null,
+    transform: () => null,
+    unexpose: () => null,
+    register: () => null,
+    mixin: () => null,
     on: () => null
   }, obj);
   return { flux, tag };
 }
 
-export interface UnitSuite<T> {
+export interface UnitUtils<T> {
   flux: () => FluxCapacitor;
   tag: () => T;
-  sandbox: () => Sinon.SinonSandbox;
-  mount: (opts?: any) => T;
+  spy: Sinon.SinonSpyStatic;
+  stub: Sinon.SinonStubStatic;
   expectSubscriptions: (func: Function, subscriptions: any, emitter?: any) => void;
-  itShouldConfigure: (defaultConfig?: any) => void;
+  expectAliases: (func: Function, aliases: ExpectedAliases) => void;
+  itShouldAlias: (aliases: ExpectedAliases) => void;
+  itShouldHaveMeta: (tagClass: { new (): FluxTag<any> }, meta: TagMeta) => void;
   tagName: string;
 }

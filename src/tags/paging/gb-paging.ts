@@ -1,7 +1,8 @@
-import { FluxTag } from '../tag';
-import { Events, Pager } from 'groupby-api';
+import { meta } from '../../utils/decorators';
+import { FluxTag, TagMeta } from '../tag';
+import { Events } from 'groupby-api';
 
-export interface PagingConfig {
+export interface PagingOpts {
   limit?: number;
   pages?: boolean;
   numeric?: boolean;
@@ -9,86 +10,94 @@ export interface PagingConfig {
   labels?: boolean;
   icons?: boolean;
 
-  prev_label?: string;
-  next_label?: string;
-  first_label?: string;
-  last_label?: string;
+  prevLabel?: string;
+  nextLabel?: string;
+  fistLabel?: string;
+  lastLabel?: string;
 
-  prev_icon?: string;
-  next_icon?: string;
-  first_icon?: string;
-  last_icon?: string;
+  prevIcon?: string;
+  nextIcon?: string;
+  firstIcon?: string;
+  lastIcon?: string;
 }
 
-export const DEFAULT_CONFIG: PagingConfig = {
-  limit: 5,
-  pages: false,
-  numeric: false,
-  terminals: true,
-  labels: true,
-  icons: true,
-
-  first_label: 'First',
-  prev_label: 'Prev',
-  next_label: 'Next',
-  last_label: 'Last',
-
-  first_icon: require('./double-arrow-left.png'),
-  prev_icon: require('./arrow-left.png'),
-  next_icon: require('./arrow-right.png'),
-  last_icon: require('./double-arrow-right.png')
+export const META: TagMeta = {
+  defaults: {
+    limit: 5,
+    terminals: true,
+    labels: true,
+    icons: true,
+    firstLabel: 'First',
+    nextLabel: 'Next',
+    prevLabel: 'Prev',
+    lastLabel: 'Last',
+    firstIcon: require('./double-arrow-left.png'),
+    nextIcon: require('./arrow-right.png'),
+    prevIcon: require('./arrow-left.png'),
+    lastIcon: require('./double-arrow-right.png')
+  },
+  types: {
+    pages: 'boolean',
+    numeric: 'boolean',
+    terminals: 'boolean',
+    labels: 'boolean',
+    icons: 'boolean'
+  }
 };
 
-export interface FluxPager {
-  first: () => void;
-  prev: () => void;
-  next: () => void;
-  last: () => void;
-  switchPage: (page: number) => void;
-}
-
-export interface Paging extends FluxTag<PagingConfig> { }
-
-export class Paging {
+@meta(META)
+export class Paging extends FluxTag<PagingOpts> {
+  limit: number;
+  pages: boolean;
+  numeric: boolean;
+  terminals: boolean;
+  labels: boolean;
+  icons: boolean;
+  prevLabel: string;
+  nextLabel: string;
+  firstLabel: string;
+  lastLabel: string;
+  prevIcon: string;
+  nextIcon: string;
+  firstIcon: string;
+  lastIcon: string;
 
   forwardDisabled: boolean;
   backDisabled: boolean;
   lowOverflow: boolean;
   highOverflow: boolean;
   currentPage: number;
-  lastPage: number;
+  finalPage: number;
   pageNumbers: number[];
-  pager: FluxPager;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
-
-    // default initial state
-    this.backDisabled = true;
-    this.currentPage = 1;
-
-    this.pager = this.wrapPager(this.flux.page);
+    this.expose('paging');
 
     this.flux.on(Events.PAGE_CHANGED, this.updateCurrentPage);
     this.flux.on(Events.RESULTS, this.pageInfo);
   }
 
-  pageInfo() {
-    const pageNumbers = this.flux.page.pageNumbers(this._config.limit);
-    const lastPage = this.flux.page.finalPage;
-    const currentPage = this.flux.page.currentPage;
-    this.updatePageInfo(pageNumbers, currentPage, lastPage);
+  setDefaults() {
+    this.backDisabled = true;
+    this.currentPage = 1;
   }
 
-  updatePageInfo(pageNumbers: number[], currentPage: number, lastPage: number) {
+  pageInfo() {
+    const pageNumbers = this.flux.page.pageNumbers(this.limit);
+    const finalPage = this.flux.page.finalPage;
+    const currentPage = this.flux.page.currentPage;
+    this.updatePageInfo(pageNumbers, currentPage, finalPage);
+  }
+
+  updatePageInfo(pageNumbers: number[], currentPage: number, finalPage: number) {
     this.update({
       pageNumbers,
       currentPage,
-      lastPage,
+      finalPage,
       lowOverflow: pageNumbers[0] !== 1,
-      highOverflow: pageNumbers[pageNumbers.length - 1] !== lastPage,
+      highOverflow: pageNumbers[pageNumbers.length - 1] !== finalPage,
       backDisabled: currentPage === 1,
-      forwardDisabled: currentPage === lastPage
+      forwardDisabled: currentPage === finalPage
     });
   }
 
@@ -96,17 +105,37 @@ export class Paging {
     this.update({ currentPage: pageNumber });
   }
 
-  wrapPager(pager: Pager): any {
-    return {
-      first: () => !this.backDisabled && pager.reset().then(this.emitEvent),
-      prev: () => !this.backDisabled && pager.prev().then(this.emitEvent),
-      next: () => !this.forwardDisabled && pager.next().then(this.emitEvent),
-      last: () => !this.forwardDisabled && pager.last().then(this.emitEvent),
-      switchPage: (page) => pager.switchPage(page).then(this.emitEvent)
-    };
+  firstPage() {
+    if (!this.backDisabled) {
+      this.flux.page.reset().then(this.emitEvent);
+    }
+  }
+
+  prevPage() {
+    if (!this.backDisabled) {
+      this.flux.page.prev().then(this.emitEvent);
+    }
+  }
+
+  nextPage() {
+    if (!this.forwardDisabled) {
+      this.flux.page.next().then(this.emitEvent);
+    }
+  }
+
+  lastPage() {
+    if (!this.forwardDisabled) {
+      this.flux.page.last().then(this.emitEvent);
+    }
+  }
+
+  switchPage({ target }: { target: HTMLAnchorElement }) {
+    this.flux.page.switchPage(Number(target.text)).then(this.emitEvent);
   }
 
   emitEvent() {
-    this.services.tracker.search();
+    if (this.services.tracker) {
+      this.services.tracker.search();
+    }
   }
 }

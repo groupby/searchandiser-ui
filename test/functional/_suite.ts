@@ -1,36 +1,36 @@
 import '../../src/tags/index';
-import { SelectTag } from '../../src/tags/select/gb-select';
-import { FluxTag, MixinFlux } from '../../src/tags/tag';
+import { FluxTag } from '../../src/tags/tag';
+import { MixinFlux } from '../../src/utils/tag';
+import { baseSuite, buildSuite, SuiteModifier } from '../utils/suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 
-function suite<T extends FluxTag<any>>(tagName: string, mixin: any, cb: (suite: FunctionalSuite<T>) => void);
-function suite<T extends FluxTag<any>>(tagName: string, cb: (suite: FunctionalSuite<T>) => void);
-function suite<T extends FluxTag<any>>(tagName: string, mixinOrCb: any, cb?: Function) {
+function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, description: string, mixinOrCb: any, cb?: Function) {
+  const tagName = description.split(' ')[0];
   const hasMixin = typeof mixinOrCb === 'object';
   const mixin = hasMixin ? mixinOrCb : {};
-  const tests = hasMixin ? cb : mixinOrCb;
+  const tests: (suiteUtils: FunctionalUtils<T>) => void = hasMixin ? cb : mixinOrCb;
 
-  describe(`${tagName} behaviour`, () => {
+  baseSuite(modifier, `${description} behaviour`, ({ init, teardown, spy, stub }) => {
     let _flux: FluxCapacitor;
     let _html: HTMLElement;
-    let _sandbox: Sinon.SinonSandbox;
 
     beforeEach(() => {
-      _sandbox = sinon.sandbox.create();
       _flux = mixinFlux(mixin);
       _html = createTag(tagName);
+      init();
     });
     afterEach(() => {
+      teardown();
       removeTag(_html);
-      _sandbox.restore();
     });
 
     tests({
       flux: () => _flux,
       html: () => _html,
-      sandbox: () => _sandbox,
+      spy,
+      stub,
       tagName,
       mount,
       itMountsTag
@@ -46,19 +46,28 @@ function suite<T extends FluxTag<any>>(tagName: string, mixinOrCb: any, cb?: Fun
       const tag = mount();
 
       expect(tag).to.be.ok;
+      expect(tag.root).to.be.ok;
     });
   }
 }
+
+export interface BaseSuite extends Suite {
+  skip?: Suite;
+  only?: Suite;
+}
+
+export interface Suite {
+  <T extends FluxTag<any>>(tagName: string, mixin: any, cb: (suite: FunctionalUtils<T>) => void);
+  <T extends FluxTag<any>>(tagName: string, cb: (suite: FunctionalUtils<T>) => void);
+}
+
+const suite = buildSuite<BaseSuite>(_suite);
 
 export default suite;
 
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
-  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), {
-    configure(cfg: any = {}) {
-      this._config = Object.assign({}, cfg, this.opts['__proto__'], this.opts);
-    }
-  }, obj));
+  riot.mixin('test', Object.assign(MixinFlux(flux, {}, {}), obj));
   return flux;
 }
 
@@ -72,12 +81,13 @@ export function removeTag(html: HTMLElement) {
   document.body.removeChild(html);
 }
 
-export interface FunctionalSuite<T> {
+export interface FunctionalUtils<T> {
   flux: () => FluxCapacitor;
   html: () => HTMLElement;
-  sandbox: () => Sinon.SinonSandbox;
+  spy: Sinon.SinonSpyStatic;
+  stub: Sinon.SinonStubStatic;
   mount: (opts?: any) => T;
-  itMountsTag: () => null;
+  itMountsTag: () => void;
   tagName: string;
 }
 
@@ -97,17 +107,17 @@ export abstract class BaseModel<T extends FluxTag<any>> {
   }
 }
 
-export abstract class SelectModel<T extends SelectTag<any>> extends BaseModel<T> {
+export abstract class SelectModel extends BaseModel<any> {
 
   get label() {
     return this.element(this.html, '.gb-button__label');
   }
 
-  get options() {
-    return this.list(this.html, '.gb-select__option:not(.clear) gb-option a');
+  get items() {
+    return this.list(this.html, 'gb-option:not(.clear) a');
   }
 
-  get clearOption() {
-    return this.element(this.html, '.gb-select__option.clear gb-option a');
+  get clearItem() {
+    return this.element(this.html, 'gb-option.clear a');
   }
 }

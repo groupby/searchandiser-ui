@@ -1,12 +1,9 @@
 <gb-did-you-mean>
   <yield>
-    <gb-list class={ _style } items={ didYouMean } scope="gb-did-you-mean" inline>
-      <a onclick={ _scope.send }>{ item }</a>
-    </gb-list>
+    <gb-link-list inline></gb-link-list>
   </yield>
 
   <script>
-    import '../list/gb-list.tag.html';
     import { DidYouMean } from './gb-did-you-mean';
     this._mixin(DidYouMean);
   </script>

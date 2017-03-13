@@ -1,59 +1,53 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../services/collections';
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { meta } from '../../utils/decorators';
+import { Selectable, SelectOption, SelectTag } from '../select/gb-select';
+import { TagMeta } from '../tag';
 
-export interface CollectionOption {
-  label: string;
-  value: string;
-}
-
-export interface CollectionsConfig extends SelectConfig {
-  options: string[] | CollectionOption[];
-  counts?: boolean;
+export interface CollectionsOpts extends Selectable {
+  items: SelectOption[];
   dropdown?: boolean;
+  showCounts?: boolean;
 }
 
-export const DEFAULT_CONFIG: CollectionsConfig = {
-  options: [],
-  counts: true,
-  dropdown: false
+export const META: TagMeta = {
+  defaults: {
+    items: [],
+    showCounts: true
+  },
+  types: {
+    showCounts: 'boolean',
+    dropdown: 'boolean'
+  },
+  services: ['collections']
 };
 
-export interface Collections extends SelectTag<CollectionsConfig> { }
+@meta(META)
+export class Collections extends SelectTag<CollectionsOpts> {
 
-export class Collections {
+  dropdown: boolean;
+  showCounts: boolean;
 
-  collections: string[];
-  counts: any;
-  labels: any;
+  counts: { [key: string]: number };
 
   init() {
-    this.configure(DEFAULT_CONFIG);
-
-    this.options = this._config.options;
-    const collectionsService = this.services.collections;
-    this.collections = collectionsService.collections;
-    this.labels = collectionsService.isLabeled
-      ? (<CollectionOption[]>this._config.options).reduce(this.extractLabels, {})
-      : {};
+    this.expose(['collections', 'listable', 'selectable']);
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
+  }
+
+  setDefaults() {
+    this.counts = {};
   }
 
   updateCounts(counts: any) {
     this.update({ counts });
   }
 
-  switchCollection(event: MouseEvent) {
-    let element = <HTMLElement>event.target;
-    while (element.tagName !== 'A') element = element.parentElement;
-    this.onselect(element.dataset['collection']);
+  switchCollection({ currentTarget}: { currentTarget: HTMLAnchorElement }) {
+    this.onSelect(currentTarget.dataset['collection']);
   }
 
-  onselect(collection: string) {
+  onSelect(collection: string) {
     this.flux.switchCollection(collection);
-  }
-
-  private extractLabels(labels: any, collection: { value: string; label: string; }) {
-    return Object.assign(labels, { [collection.value]: collection.label });
   }
 }

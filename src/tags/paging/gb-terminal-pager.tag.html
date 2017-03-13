@@ -1,53 +1,47 @@
 <gb-terminal-pager>
-  <div class="gb-terminal-pager { _style }">
-    <a class="gb-terminal__link first { disabled: _scope.backDisabled }" if={ _scope._config.terminals } onclick={ _scope.pager.first }>
-      <gb-icon if={ _config.icons } value={ _config.first_icon }></gb-icon>
-      <span if={ _config.labels }>{ _config.numeric ? 1 : _config.first_label }</span>
+  <div class="gb-terminal-pager">
+    <a class="gb-terminal__link first { disabled: $paging.backDisabled }" if="{ $paging.terminals }" onclick="{ $paging.firstPage }">
+      <gb-icon if="{ $paging.icons }" img="{ $paging.firstIcon }"></gb-icon>
+      <span if="{ $paging.labels }">{ $paging.numeric ? 1 : $paging.firstLabel }</span>
     </a>
     <yield/>
-    <a class="gb-terminal__link last { disabled: _scope.forwardDisabled }" if={ _config.terminals } onclick={ _scope.pager.last }>
-      <span if={ _config.labels }>{ _config.numeric ? _scope.lastPage : _config.last_label }</span>
-      <gb-icon if={ _config.icons } value={ _config.last_icon }></gb-icon>
+    <a class="gb-terminal__link last { disabled: $paging.forwardDisabled }" if="{ $paging.terminals }" onclick="{ $paging.lastPage }">
+      <span if="{ $paging.labels }">{ $paging.numeric ? $paging.finalPage : $paging.lastLabel }</span>
+      <gb-icon if="{ $paging.icons }" img="{ $paging.lastIcon }"></gb-icon>
     </a>
   </div>
 
-  <script>
-    import '../icon/gb-icon.tag.html';
-    import { TerminalPager } from './gb-terminal-pager';
-    this._mixin(TerminalPager);
-  </script>
-
-  <style scoped>
-    .gb-stylish a {
+  <style>
+    :scope.gb-stylish a {
       cursor: pointer;
     }
 
-    .gb-stylish.gb-terminal-pager {
+    :scope.gb-stylish > .gb-terminal-pager {
       display: flex;
       width: 100%;
     }
 
-    .gb-stylish .gb-terminal__link {
+    :scope.gb-stylish .gb-terminal__link {
       display: flex;
       text-decoration: none;
       color: #888;
       padding: 5px 14px;
     }
 
-    .gb-stylish .gb-terminal__link:hover {
+    :scope.gb-stylish .gb-terminal__link:hover {
       color: black;
     }
 
-    .gb-stylish .gb-terminal__link.disabled {
+    :scope.gb-stylish .gb-terminal__link.disabled {
       color: #ddd;
       cursor: not-allowed;
     }
 
-    .gb-stylish gb-pager {
+    :scope.gb-stylish gb-pager {
       flex: 1;
     }
 
-    .gb-stylish gb-icon img {
+    :scope.gb-stylish gb-icon img {
       width: 20px;
     }
   </style>

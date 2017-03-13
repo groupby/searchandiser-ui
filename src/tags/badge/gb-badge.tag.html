@@ -1,8 +1,8 @@
 <gb-badge>
-  <span class={ _style }><yield/></span>
+  <span><yield/></span>
 
-  <style scoped>
-    .gb-stylish {
+  <style>
+    :scope.gb-stylish > span {
       display: inline-block;
       min-width: 10px;
       max-height: 20px;

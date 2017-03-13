@@ -1,50 +1,20 @@
 import { COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
-import { Collections, DEFAULT_CONFIG } from '../../../src/tags/collections/gb-collections';
+import { Collections, META } from '../../../src/tags/collections/gb-collections';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-collections', Collections, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldHaveMeta,
+  itShouldAlias
 }) => {
+  itShouldHaveMeta(Collections, META);
 
   describe('init()', () => {
     beforeEach(() => tag().services = <any>{ collections: {} });
 
-    itShouldConfigure(DEFAULT_CONFIG);
-
-    it('should set options from calculated config', () => {
-      const options = [{ a: 'b' }];
-      tag().configure = () => tag()._config = <any>{ options };
-
-      tag().init();
-
-      expect(tag().options).to.eql(options);
-    });
-
-    it('should get values from collections service', () => {
-      tag().services = <any>{ collections: { collections: [] } };
-
-      tag().init();
-
-      expect(tag().collections).to.eql([]);
-    });
-
-    it('should accept collections with labels', () => {
-      const options = [
-        { value: 'a', label: 'A' },
-        { value: 'b', label: 'B' },
-        { value: 'c', label: 'C' }];
-      const collections = ['a', 'b', 'c'];
-      tag().configure = () => tag()._config = { options };
-      tag().services = <any>{ collections: { collections, isLabeled: true } };
-
-      tag().init();
-
-      expect(tag().collections).to.eq(collections);
-      expect(tag().labels).to.eql({ a: 'A', b: 'B', c: 'C' });
-    });
+    itShouldAlias(['collections', 'listable', 'selectable']);
 
     it('should listen for collections_updated event', () => {
       expectSubscriptions(() => tag().init(), {
@@ -53,50 +23,50 @@ suite('gb-collections', Collections, ({
     });
   });
 
+  describe('setDefaults()', () => {
+    it('should set empty counts', () => {
+      tag().setDefaults();
+
+      expect(tag().counts).to.eql({});
+    });
+  });
+
   describe('switchCollection()', () => {
-    it('should call onselect with collection', () => {
+    it('should call onSelect with collection', () => {
       const collection = 'my collection';
-      const stub = sandbox().stub(tag(), 'onselect', (coll) =>
-        expect(coll).to.eq(collection));
+      const onSelect = stub(tag(), 'onSelect');
 
       tag().switchCollection(<any>{
-        target: {
-          tagName: 'SPAN',
-          parentElement: {
-            tagName: 'A',
-            dataset: {
-              collection
-            }
+        currentTarget: {
+          dataset: {
+            collection
           }
         }
       });
 
-      expect(stub.called).to.be.true;
+      expect(onSelect).to.be.calledWith(collection);
     });
   });
 
   describe('updateCounts', () => {
     it('should call update() with counts', () => {
-      const newCounts = [{ a: 'b' }];
-      const spy =
-        tag().update =
-        sinon.spy(({counts}) => expect(counts).to.eq(newCounts));
+      const counts = [{ a: 'b' }];
+      const update = tag().update = spy();
 
-      tag().updateCounts(newCounts);
+      tag().updateCounts(counts);
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWith({ counts });
     });
   });
 
-  describe('onselect()', () => {
+  describe('onSelect()', () => {
     it('should call flux.switchCollection()', () => {
       const collection = 'onsale';
-      const stub = sandbox().stub(flux(), 'switchCollection', (coll) =>
-        expect(coll).to.eq(collection));
+      const switchCollection = stub(flux(), 'switchCollection');
 
-      tag().onselect(collection);
+      tag().onSelect(collection);
 
-      expect(stub.called).to.be.true;
+      expect(switchCollection).to.be.calledWith(collection);
     });
   });
 });

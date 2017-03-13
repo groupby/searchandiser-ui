@@ -1,0 +1,13 @@
+.*
+coverage/
+test/
+typings/
+custom_typings/
+src/
+docs/
+coverage/
+
+*.json
+*.yml
+*.conf.js
+*.config.js

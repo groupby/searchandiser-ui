@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-related-queries', RelatedQueries, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions
 }) => {
 
@@ -18,26 +18,23 @@ suite('gb-related-queries', RelatedQueries, ({
 
   describe('updatedRelatedQueries()', () => {
     it('should call update() with relatedQueries', () => {
-      const relatedQueries = ['a', 'b', 'c'];
-      const spy =
-        tag().update =
-        sinon.spy((obj) => expect(obj.relatedQueries).to.eq(relatedQueries));
+      const items = ['a', 'b', 'c'];
+      const update = tag().update = spy();
 
-      tag().updatedRelatedQueries(<any>{ relatedQueries });
+      tag().updatedRelatedQueries(<any>{ relatedQueries: items });
 
-      expect(spy.called).to.be.true;
+      expect(update).to.be.calledWith({ items });
     });
   });
 
-  describe('send()', () => {
+  describe('onSelect()', () => {
     it('should call flux.rewrite()', () => {
-      const newQuery = 'red sneakers';
-      const stub = sandbox().stub(flux(), 'rewrite', (query) =>
-        expect(query).to.eq(newQuery));
+      const text = 'red sneakers';
+      const rewrite = stub(flux(), 'rewrite');
 
-      tag().send(<any>{ target: { text: newQuery } });
+      tag().onSelect(<any>{ target: { text } });
 
-      expect(stub.called).to.be.true;
+      expect(rewrite).to.be.calledWith(text);
     });
   });
 });

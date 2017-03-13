@@ -1,24 +1,38 @@
-import { getPath, unless } from '../../utils/common';
+import { meta } from '../../utils/decorators';
 import { ProductStructure } from '../../utils/product-transformer';
-import { FluxTag } from '../tag';
+import { FluxTag, TagMeta } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
-export interface Results extends FluxTag<any> { }
+export interface ResultsOptions {
+  lazy?: boolean;
+  css?: { [key: string]: string };
+  structure?: ProductStructure;
+}
 
-export class Results {
+export const META: TagMeta = {
+  types: {
+    lazy: 'boolean'
+  }
+};
 
-  struct: ProductStructure;
+@meta(META)
+export class Results extends FluxTag<ResultsOptions> {
+
+  lazy: boolean;
+
+  structure: ProductStructure;
   variantStruct: ProductStructure;
   records: Record[];
   collection: string;
-  getPath: typeof getPath;
 
   init() {
-    this.struct = this.config.structure;
-    this.variantStruct = unless(this.struct._variantStructure, this.struct);
-    this.getPath = getPath;
+    this.expose('productable');
 
     this.flux.on(Events.RESULTS, this.updateRecords);
+  }
+
+  setDefaults(config: ResultsOptions) {
+    this.structure = config.structure || this.config.structure;
   }
 
   updateRecords({ records }: ResultsModel) {

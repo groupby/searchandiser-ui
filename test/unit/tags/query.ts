@@ -1,25 +1,18 @@
-import { DEFAULT_CONFIG, Query } from '../../../src/tags/query/gb-query';
+import { META, Query } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Events } from 'groupby-api';
+import { Events, Query as FluxQuery } from 'groupby-api';
 
 suite('gb-query', Query, ({
-  tag, flux, sandbox,
+  tag, flux, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Query, META);
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
-
-    it('should have default values', () => {
-      tag().init();
-
-      expect(tag().enterKeyHandlers).to.eql([]);
-    });
-
     it('should attachListeners on mount', () => {
       expectSubscriptions(() => tag().init(), {
         mount: tag().attachListeners
@@ -33,26 +26,31 @@ suite('gb-query', Query, ({
     });
   });
 
+  describe('setDefaults()', () => {
+    it('should set defaults', () => {
+      tag().setDefaults();
+
+      expect(tag().enterKeyHandlers).to.eql([]);
+    });
+  });
+
   describe('attachListeners()', () => {
-    beforeEach(() => tag().findSearchBox = () => ({ addEventListener: () => null }));
+    beforeEach(() => tag().findSearchBox = () => <any>({ addEventListener: () => null }));
 
     it('should find the search box', () => {
-      const addEventListener = sinon.spy((event, cb) => {
-        expect(event).to.eq('keydown');
-        expect(cb).to.eq(tag().keydownListener);
-      });
-      const searchBox = { addEventListener };
+      const addEventListener = spy();
+      const searchBox: any = { addEventListener };
       tag().listenForSubmit = () => null;
       tag().findSearchBox = () => searchBox;
 
       tag().attachListeners();
 
       expect(tag().searchBox).to.eq(searchBox);
-      expect(addEventListener.called).to.be.true;
+      expect(addEventListener).to.be.calledWith('keydown', tag().keydownListener);
     });
 
     it('should attach sayt listeners', (done) => {
-      tag()._config = { sayt: true };
+      tag().sayt = true;
       tag().tags = <any>{
         'gb-sayt': {
           listenForInput: (queryTag) => {
@@ -66,30 +64,32 @@ suite('gb-query', Query, ({
     });
 
     it('should listen for input event', () => {
-      const stub = sinon.stub(tag(), 'listenForInput');
-      tag()._config = { autoSearch: true };
+      const listenForInput = sinon.stub(tag(), 'listenForInput');
+      tag().autoSearch = true;
 
       tag().attachListeners();
 
-      expect(stub.called).to.be.true;
+      expect(listenForInput).to.be.called;
     });
 
     it('should listen for enter keypress event', () => {
-      const stub = sandbox().stub(tag(), 'listenForStaticSearch');
-      tag()._config = { autoSearch: false, staticSearch: true };
+      const listenForStaticSearch = stub(tag(), 'listenForStaticSearch');
+      tag().autoSearch = false;
+      tag().staticSearch = true;
 
       tag().attachListeners();
 
-      expect(stub.called).to.be.true;
+      expect(listenForStaticSearch).to.be.called;
     });
 
     it('should listen for submit event', () => {
-      const stub = sandbox().stub(tag(), 'listenForSubmit');
-      tag()._config = { autoSearch: false, staticSearch: false };
+      const listenForInput = stub(tag(), 'listenForSubmit');
+      tag().autoSearch = false;
+      tag().staticSearch = false;
 
       tag().attachListeners();
 
-      expect(stub.called).to.be.true;
+      expect(listenForInput).to.be.called;
     });
   });
 
@@ -106,15 +106,12 @@ suite('gb-query', Query, ({
 
   describe('listenForInput()', () => {
     it('should add input listener', () => {
-      const addEventListener = sinon.spy((event: string, cb: Function) => {
-        expect(event).to.eq('input');
-        expect(cb).to.eq(tag().resetToInputValue);
-      });
+      const addEventListener = spy();
       tag().searchBox = <any>{ addEventListener };
 
       tag().listenForInput();
 
-      expect(addEventListener.called).to.be.true;
+      expect(addEventListener).to.be.calledWith('input', tag().resetToInputValue);
     });
   });
 
@@ -143,7 +140,7 @@ suite('gb-query', Query, ({
   describe('resetToInputValue()', () => {
     it('should call flux.reset()', (done) => {
       const inputValue = { a: 'b' };
-      sandbox().stub(tag(), 'inputValue', () => inputValue);
+      stub(tag(), 'inputValue').returns(inputValue);
       flux().reset = (input): any => {
         expect(input).to.eq(inputValue);
         done();
@@ -153,75 +150,85 @@ suite('gb-query', Query, ({
     });
 
     it('should call emit tracker event', (done) => {
-      sandbox().stub(tag(), 'inputValue');
-      flux().reset = (): any => Promise.resolve();
-      tag().services = <any>{ tracker: { search: () => done() } };
+      const search = spy();
+      const reset = stub(flux(), 'reset').resolves();
+      stub(tag(), 'inputValue');
+      tag().services = <any>{ tracker: { search } };
 
-      tag().resetToInputValue();
+      tag().resetToInputValue()
+        .then(() => {
+          expect(reset).to.be.called;
+          expect(search).to.be.called;
+          done();
+        });
+    });
+
+    it('should check for tracker service', (done) => {
+      stub(tag(), 'inputValue');
+      stub(flux(), 'reset').resolves();
+      tag().services = <any>{};
+
+      tag().resetToInputValue()
+        .then(() => done());
     });
   });
 
   describe('keydownListener()', () => {
     it('should not call onSubmit()', () => {
-      const stub = sandbox().stub(utils, 'findTag', () => false);
+      const findTag = stub(utils, 'findTag').returns(false);
       tag().onSubmit = () => expect.fail();
 
       tag().keydownListener(<any>{});
 
-      expect(stub.called).to.be.true;
+      expect(findTag).to.be.called;
     });
 
     it('should call sayt autocomplete.keyboardListener()', () => {
       const keyboardEvent: any = {};
-      const keyboardListener = sandbox().spy((event, submit) => {
-        expect(event).to.eq(keyboardEvent);
-        expect(submit).to.eq(tag().onSubmit);
-      });
-      sandbox().stub(utils, 'findTag', () => <any>{
+      const keyboardListener = spy();
+      stub(utils, 'findTag', () => <any>{
         _tag: { autocomplete: { keyboardListener } }
       });
 
       tag().keydownListener(keyboardEvent);
 
-      expect(keyboardListener.called).to.be.true;
+      expect(keyboardListener).to.be.calledWith(keyboardEvent, tag().onSubmit);
     });
 
     it('should call sayt onSubmit()', () => {
-      const stub = sandbox().stub(tag(), 'onSubmit');
-      sandbox().stub(utils, 'findTag', () => false);
+      const onSubmit = stub(tag(), 'onSubmit');
+      stub(utils, 'findTag', () => false);
 
       tag().keydownListener(<any>{ keyCode: 13 });
 
-      expect(stub.called).to.be.true;
+      expect(onSubmit.called).to.be.true;
     });
   });
 
   describe('onSubmit()', () => {
     it('should execute enterKeyHandlers', () => {
-      const handlers = [sinon.spy(), sinon.spy(), sinon.spy()];
-      tag().enterKeyHandlers = handlers;
+      const handler = spy();
+      tag().enterKeyHandlers = [handler, handler, handler];
 
       tag().onSubmit();
 
-      expect(handlers).to.have.length(3);
-      handlers.forEach((spy: Sinon.SinonSpy) => expect(spy.called).to.be.true);
+      expect(handler).to.be.calledThrice;
     });
 
     it('should emit autocomplete:hide', () => {
-      const stub = sandbox().stub(flux(), 'emit', (event) =>
-        expect(event).to.eq(AUTOCOMPLETE_HIDE_EVENT));
+      const emit = stub(flux(), 'emit');
       tag().enterKeyHandlers = [];
 
       tag().onSubmit();
 
-      expect(stub.called).to.be.true;
+      expect(emit).to.be.calledWith(AUTOCOMPLETE_HIDE_EVENT);
     });
   });
 
   describe('findSearchBox()', () => {
     it('should return from gb-search-box', () => {
       const searchBox = { a: 'b' };
-      tag().tags = <any>{ 'gb-search-box': { searchBox } };
+      tag().tags = <any>{ 'gb-search-box': { refs: { searchBox } } };
 
       const input = tag().findSearchBox();
 
@@ -247,24 +254,43 @@ suite('gb-query', Query, ({
   describe('setLocation()', () => {
     it('should call url.update()', () => {
       const query = 'belts';
-      const update = sinon.spy((input) => expect(input).to.eq(query));
+      const update = spy();
+      flux().query = new FluxQuery('shoes')
+        .withSelectedRefinements({ navigationName: 'brand', type: 'Value', value: 'Nike' })
+        .skip(19);
       tag().searchBox = <any>{ value: query };
-      tag().services = <any>{ url: { update, active: () => true } };
+      tag().services = <any>{ url: { update, isActive: () => true } };
 
       tag().setLocation();
 
-      expect(update.called).to.be.true;
+      expect(update).to.be.calledWith(sinon.match.instanceOf(FluxQuery));
+      expect(update).to.be.calledWithMatch({
+        raw: {
+          query,
+          refinements: [],
+          skip: 19
+        }
+      });
     });
 
     it('should call flux.reset()', () => {
       const query = 'scarf';
-      const stub = sandbox().stub(flux(), 'reset', (input) => expect(input).to.eq(query));
+      const reset = stub(flux(), 'reset');
       tag().searchBox = <any>{ value: query };
-      tag().services = <any>{ url: { active: () => false } };
+      tag().services = <any>{ url: { isActive: () => false } };
 
       tag().setLocation();
 
-      expect(stub.called).to.be.true;
+      expect(reset).to.be.calledWith(query);
+    });
+  });
+
+  describe('inputValue()', () => {
+    it('should return searchBox.value', () => {
+      const query = 'red shoes';
+      tag().searchBox = <any>{ value: query };
+
+      expect(tag().inputValue()).to.eq(query);
     });
   });
 });

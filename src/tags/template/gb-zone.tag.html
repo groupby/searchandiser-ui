@@ -1,0 +1,10 @@
+<gb-zone>
+  <gb-content-zone if="{ $zone.type === 'Content' }"></gb-content-zone>
+  <gb-rich-content-zone if="{ $zone.type === 'Rich_Content' }"></gb-rich-content-zone>
+  <gb-record-zone if="{ $zone.type === 'Record' }"></gb-record-zone>
+
+  <script>
+    import { Zone } from './gb-zone';
+    this._mixin(Zone);
+  </script>
+</gb-zone>

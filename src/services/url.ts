@@ -1,10 +1,17 @@
-import { SearchandiserConfig, UrlConfig } from '../searchandiser';
+import { SearchandiserConfig } from '../searchandiser';
 import { LOCATION } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
-import { UrlBeautifier } from '../utils/url-beautifier';
+import { BeautifierConfig, UrlBeautifier } from '../utils/url-beautifier';
 import { Services } from './init';
 import { FluxCapacitor, Query } from 'groupby-api';
 import * as parseUri from 'parseUri';
+
+export interface UrlConfig {
+  beautifier?: boolean | BeautifierConfig;
+  queryParam?: string;
+  searchUrl?: string;
+  detailsUrl?: string;
+}
 
 export class Url {
 
@@ -31,28 +38,20 @@ export class Url {
         query = Url.parseUrl(this.simple);
       }
 
-      if (query) {
+      if (query && (query.raw.query || query.raw.refinements.length)) {
         this.flux.query = query;
         this.flux.search(query.raw.query)
-          .then(() => this.services.tracker.search());
+          .then(() => this.services.tracker && this.services.tracker.search());
       }
     }
   }
 
-  active() {
+  isActive() {
     return LOCATION.pathname() !== this.urlConfig.searchUrl;
   }
 
-  // TODO: better way to do this is with browser history rewrites
-  update(query: string, refinements: any[] = this.flux.query.raw.refinements) {
-    const queryObj = new Query(query).withSelectedRefinements(...refinements);
-
-    let url;
-    if (this.beautify) {
-      url = this.beautifier.build(queryObj);
-    } else {
-      url = this.simple.build(queryObj);
-    }
+  update(query: Query) {
+    const url = (this.beautify ? this.beautifier : this.simple).build(query);
 
     Url.setLocation(url, this.urlConfig);
   }
@@ -65,6 +64,7 @@ export class Url {
     return beautifier.parse(LOCATION.href());
   }
 
+  // TODO: better way to do this is with browser history rewrites
   static setLocation(url: string, config: UrlConfig) {
     if (LOCATION.pathname() === config.searchUrl) {
       LOCATION.setSearch(`?${parseUri(url).query}`);

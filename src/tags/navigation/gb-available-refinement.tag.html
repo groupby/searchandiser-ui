@@ -1,28 +1,28 @@
 <gb-available-refinement>
-  <li class="gb-ref { _style }">
-    <a class="gb-ref__link" onclick={ send }>
-      <span class="gb-ref__title">{ toView(ref) }</span>
-      <span class="gb-filler"></span>
-      <gb-badge if={ _config.badge }>{ ref.count }</gb-badge>
-    </a>
-  </li>
+  <yield>
+    <div class="gb-ref">
+      <a class="gb-ref__link" onclick="{ send }">
+        <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
+        <gb-badge if="{ $navigable.badge }">{ $refinement.count }</gb-badge>
+      </a>
+    </div>
+  </yield>
 
   <script>
-    import '../badge/gb-badge.tag.html';
-    import { AvailableRefinement } from './gb-refinement';
-    this._mixin(AvailableRefinement);
+    import { Refinement } from './gb-refinement';
+    this._mixin(Refinement);
   </script>
 
-  <style scoped>
-    .gb-stylish {
+  <style>
+    :scope.gb-stylish > .gb-ref {
       list-style: none;
     }
 
-    .gb-stylish .gb-filler {
+    :scope.gb-stylish .gb-filler {
       flex-grow: 1;
     }
 
-    .gb-stylish .gb-ref__link {
+    :scope.gb-stylish .gb-ref__link {
       cursor: pointer;
       display: flex;
       padding: 4px 6px;
@@ -31,9 +31,10 @@
       font-size: 14px;
       text-decoration: none;
       align-items: baseline;
+      justify-content: space-between;
     }
 
-    .gb-stylish .gb-ref__link:hover {
+    :scope.gb-stylish .gb-ref__link:hover {
       background-color: #ddd;
     }
   </style>

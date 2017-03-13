@@ -1,20 +1,20 @@
-import { FluxTag } from '../tag';
+import { Linkable, LinkTag } from '../link-list/gb-link-list';
 import { Events, Results } from 'groupby-api';
 
-export interface DidYouMean extends FluxTag<any> { }
-
-export class DidYouMean {
+export class DidYouMean extends LinkTag<Linkable> {
 
   init() {
+    this.expose('linkable');
+
     this.flux.on(Events.RESULTS, this.updateDidYouMean);
   }
 
-  send(event: Event) {
-    this.flux.rewrite((<HTMLAnchorElement>event.target).text)
-      .then(() => this.services.tracker.didYouMean());
+  onSelect(event: Event) {
+    return this.flux.rewrite((<HTMLAnchorElement>event.target).text)
+      .then(() => this.services.tracker && this.services.tracker.didYouMean());
   }
 
-  updateDidYouMean({ didYouMean }: Results) {
-    this.update({ didYouMean });
+  updateDidYouMean({ didYouMean: items }: Results) {
+    this.update({ items });
   }
 }

@@ -1,0 +1,11 @@
+<gb-query-crumb>
+  <div if="{ $breadcrumbs.originalQuery }">
+    <span if="{ !$breadcrumbs.correctedQuery && $breadcrumbs.labels }" class="gb-query-label">{ $breadcrumbs.resultsLabel }</span>
+    <span if="{ $breadcrumbs.correctedQuery && $breadcrumbs.labels }" class="gb-query-label">{ $breadcrumbs.noResultsLabel }</span>
+    <span class="gb-original-query">{ $breadcrumbs.originalQuery }</span>
+  </div>
+  <div if="{ $breadcrumbs.correctedQuery }">
+    <span if="{ $breadcrumbs.labels }" class="gb-query-label">{ $breadcrumbs.correctedResultsLabel }</span>
+    <span class="gb-corrected-query">{ $breadcrumbs.correctedQuery }</span>
+  </div>
+</gb-query-crumb>

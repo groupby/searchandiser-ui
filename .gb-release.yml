@@ -4,3 +4,4 @@ github:
 versionInFiles:
   - ./integration.md
   - ./README.md
+  - ./test/e2e/demo/index.html

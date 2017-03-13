@@ -1,26 +1,23 @@
 <gb-custom-select>
-  <div class="gb-select { _scope._config.hover ? 'hoverable' : 'clickable' } { _style }">
+  <div class="gb-select { $selectable.hover ? 'hoverable' : 'clickable' }">
     <button data-is="gb-select-button" type="button"></button>
-    <gb-option-list>
+    <gb-list should-render="{ $select.shouldRender }">
       <yield>
-        <gb-option option={ option } send={ option.clear ? _scope.clearSelection : _scope.selectCustom }/>
+        <gb-option></gb-option>
       </yield>
-    </gb-option-list>
+    </gb-list>
   </div>
 
   <script>
-    this._scopeTo('gb-select');
-    import './gb-select-button.tag.html';
-    import './gb-option-list.tag.html';
-    import './gb-option.tag.html';
+    this.inherits('listable');
   </script>
 
-  <style scoped>
+  <style>
     .gb-select {
       position: relative;
       display: inline-block;
     }
-    gb-option-list {
+    gb-list {
       display: none;
       z-index: 100;
       position: absolute;
@@ -30,14 +27,25 @@
       max-height: 300px;
       overflow-y: scroll;
     }
-    .gb-select.hoverable:hover gb-option-list,
-    .gb-select.clickable button:focus + gb-option-list,
-    gb-option-list:hover {
+    gb-list ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    gb-list ul:hover {
       display: block;
     }
-    .gb-stylish.gb-select:hover button,
-    .gb-stylish.gb-select button:focus {
+    .gb-select.hoverable:hover gb-list,
+    .gb-select.clickable button:focus + gb-list,
+    gb-list:hover {
+      display: block;
+    }
+    :scope.gb-stylish > .gb-select:hover button,
+    :scope.gb-stylish > .gb-select button:focus {
       border-color: #aaa;
+    }
+    :scope.gb-stylish gb-list > ul > li {
+      margin: 0;
     }
     button {
       overflow-x: hidden;
@@ -53,7 +61,7 @@
       border-radius: 4px;
       white-space: nowrap;
     }
-    .gb-stylish button:focus {
+    scope:.gb-stylish button:focus {
       outline: none;
     }
   </style>

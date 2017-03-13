@@ -1,0 +1,41 @@
+<gb-or-refinement>
+  <yield>
+    <label class="gb-ref" onclick="{ $refinement.selected ? remove : send }">
+      <input type="checkbox" checked="{ !!$refinement.selected }">
+      <div class="gb-ref__link">
+        <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
+        <gb-badge if="{ $navigable.badge && !$refinement.selected }">{ $refinement.count }</gb-badge>
+      </div>
+    </label>
+  </yield>
+
+  <script>
+    import { Refinement } from './gb-refinement';
+    this._mixin(Refinement);
+  </script>
+
+  <style>
+    :scope.gb-stylish > .gb-ref {
+      display: flex;
+      list-style: none;
+      align-items: center;
+    }
+
+    :scope.gb-stylish .gb-ref__link {
+      display: flex;
+      width: 100%;
+      padding: 4px 6px;
+      border-radius: 4px;
+      color: black;
+      font-size: 14px;
+      text-decoration: none;
+      align-items: baseline;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    :scope.gb-stylish .gb-ref__link:hover {
+      background-color: #ddd;
+    }
+  </style>
+</gb-or-refinement>

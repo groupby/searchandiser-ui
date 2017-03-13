@@ -1,16 +1,28 @@
-import { DEFAULT_CONFIG, Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { META, Navigation } from '../../../src/tags/navigation/gb-navigation';
+import { displayRefinement } from '../../../src/utils/common';
+import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite('gb-navigation', Navigation, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldHaveMeta,
+  itShouldAlias
 }) => {
+  itShouldHaveMeta(Navigation, META);
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    itShouldAlias('navigable');
+
+    it('should mixin toView()', () => {
+      const mixin = tag().mixin = spy();
+
+      tag().init();
+
+      expect(mixin).to.be.calledWith({ toView: displayRefinement });
+    });
 
     it('should listen for flux events', () => {
       expectSubscriptions(() => tag().init(), {
@@ -23,18 +35,14 @@ suite('gb-navigation', Navigation, ({
   describe('updateRefinements()', () => {
     it('should call update() with processed', () => {
       const results: any = { a: 'b' };
-      const refinements = [{ c: 'd' }];
-      const spy =
-        tag().update =
-        sinon.spy(({ processed }) => expect(processed).to.eq(refinements));
-      tag().replaceRefinements = (res): any => {
-        expect(res).to.eq(results);
-        return refinements;
-      };
+      const processed = [{ c: 'd' }];
+      const update = tag().update = spy();
+      const replaceRefinements = stub(tag(), 'replaceRefinements').returns(processed);
 
       tag().updateRefinements(results);
 
-      expect(spy.called).to.be.true;
+      expect(replaceRefinements).to.be.calledWith(results);
+      expect(update).to.be.calledWith({ processed });
     });
   });
 
@@ -72,7 +80,7 @@ suite('gb-navigation', Navigation, ({
   });
 
   describe('processNavigations()', () => {
-    it('should process navigations', () => {
+    it('should process and navigations', () => {
       const availableNavigation = [
         { name: 'a', refinements: [{ type: 'Value', value: 'b' }] },
         { name: 'c', refinements: [{ type: 'Value', value: 'b' }] },
@@ -89,37 +97,39 @@ suite('gb-navigation', Navigation, ({
         availableNavigation[2]
       ]);
     });
+
+    it('should process or navigations', () => {
+      const availableNavigation = [
+        { name: 'a', refinements: [{ type: 'Value', value: 'b' }] },
+        { name: 'c', refinements: [{ type: 'Value', value: 'b' }], or: true },
+        { name: 'e', refinements: [{ type: 'Value', value: 'f' }] }
+      ];
+      const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }], or: true }];
+      const results: any = { availableNavigation, selectedNavigation };
+
+      const processed = tag().processNavigations(results);
+
+      expect(processed).to.eql(availableNavigation);
+    });
   });
 
   describe('send()', () => {
     it('should refine on send()', () => {
-      const stub = sandbox().stub(flux(), 'refine', (ref) =>
-        expect(ref).to.eql({
-          navigationName: 'price',
-          type: 'Range',
-          low: 4,
-          high: 6
-        }));
+      const refine = stub(flux(), 'refine');
 
       tag().send({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(stub.called).to.be.true;
+      expect(refine).to.be.calledWith(refinement('price', 4, 6));
     });
   });
 
   describe('remove()', () => {
     it('should unrefine on remove()', () => {
-      const stub = sandbox().stub(flux(), 'unrefine', (ref) =>
-        expect(ref).to.eql({
-          navigationName: 'price',
-          type: 'Range',
-          low: 4,
-          high: 6
-        }));
+      const unrefine = stub(flux(), 'unrefine');
 
       tag().remove({ type: 'Range', low: 4, high: 6 }, { name: 'price' });
 
-      expect(stub.called).to.be.true;
+      expect(unrefine).to.be.calledWith(refinement('price', 4, 6));
     });
   });
 });

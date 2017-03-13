@@ -1,24 +1,20 @@
 <gb-sayt-refinements>
-  <h4>{ displayName }</h4>
-  <gb-list items={ values }>
-    <gb-sayt-link send={ _scope.searchRefinement } data-value="{ displayName }: { item }"
-        data-refinement={ item } data-field={ name }>
+  <h4>{ $navigation.displayName }</h4>
+  <gb-list items="{ $navigation.values }">
+    <gb-sayt-link send="{ $sayt.searchRefinement }" data-value="{ $navigation.displayName }: { $item }" data-refinement="{ $item }" data-field="{ $navigation.name }">
       <yield>
-        <gb-raw content={ _scope.highlightCurrentQuery(item, '<b>$&</b>') }></gb-raw>
+        <gb-raw content="{ $sayt.highlightCurrentQuery($item, '<b>$&</b>') }"></gb-raw>
       </yield>
     </gb-sayt-link>
   </gb-list>
 
   <script>
-    import '../list/gb-list.tag.html';
-    import './gb-sayt-link.tag.html';
-    import '../raw/gb-raw.tag.html';
-
-    this._scopeTo('gb-sayt');
+    import { SaytRefinements } from './gb-sayt-refinements';
+    this._mixin(SaytRefinements);
   </script>
 
-  <style scoped>
-    .gb-stylish :scope h4 {
+  <style>
+    :scope.gb-stylish > h4 {
       margin: 4px;
     }
   </style>

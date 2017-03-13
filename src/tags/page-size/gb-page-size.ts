@@ -1,25 +1,33 @@
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { meta } from '../../utils/decorators';
+import { Selectable, SelectTag } from '../select/gb-select';
+import { TagMeta } from '../tag';
 
-export interface PageSizeConfig extends SelectConfig {
+export interface PageSizeOpts extends Selectable {
   resetOffset?: boolean;
 }
 
-export const DEFAULT_CONFIG = {
-  resetOffset: false
+export const META: TagMeta = {
+  types: {
+    resetOffset: 'boolean'
+  }
 };
+export const DEFAULT_PAGE_SIZES = [10, 25, 50, 100];
 
-export interface PageSize extends SelectTag<PageSizeConfig> { }
-
-export class PageSize {
+@meta(META)
+export class PageSize extends SelectTag<PageSizeOpts> {
+  resetOffset: boolean;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
-
-    this.options = this.config.pageSizes || [10, 25, 50, 100];
+    this.expose('selectable');
   }
 
-  onselect(value: number) {
-    this.flux.resize(value, this._config.resetOffset)
-      .then(() => this.services.tracker.search());
+  setDefaults() {
+    // TODO: this should come from service config dependency
+    this.items = this.config.pageSizes || DEFAULT_PAGE_SIZES;
+  }
+
+  onSelect(value: number) {
+    return this.flux.resize(value, this.resetOffset)
+      .then(() => this.services.tracker && this.services.tracker.search());
   }
 }

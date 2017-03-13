@@ -1,12 +1,9 @@
 <gb-related-queries>
   <yield>
-    <gb-list class={ _style } items={ relatedQueries } scope="gb-related-queries" inline>
-      <a onclick={ _scope.send }>{ item }</a>
-    </gb-list>
+    <gb-link-list inline></gb-link-list>
   </yield>
 
   <script>
-    import '../list/gb-list.tag.html';
     import { RelatedQueries } from './gb-related-queries';
     this._mixin(RelatedQueries);
   </script>

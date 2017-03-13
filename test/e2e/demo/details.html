@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Searchandiser UI Demo</title>
+    <meta name="description" content="Searchandiser UI Demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/style.css" charset="utf-8">
+    <script src="lib/searchandiser-ui-0.2.35.js"></script>
+  </head>
+
+  <body>
+
+    <gb-details>
+      <h1>{  productMeta().title }</h1>
+      <h2>{ productMeta().price }</h2>
+      <img riot-src="{ productMeta().image }" alt="" />
+    </gb-details>
+
+    <script>
+      searchandiser({
+        customerId: 'gbipoccvspilot',
+        area: 'ProductionSemanticDemo',
+        collection: 'products2',
+
+        fields: ['*'],
+
+        structure: {
+          title: 'title',
+          variants: 'child',
+          _transform: transformRecord,
+          _variantStructure: {
+            id: 'id',
+            image: 'image',
+            price: 'CUSTOMER_PRICE',
+          },
+          image: 'wideImage',
+          price: 'price'
+        }
+      });
+
+      function transformRecord(record) {
+        if (record.child) {
+          record.child = record.child.map(
+            function(child) {
+              child.image = 'http://www.cvs.com/bizcontent/merchandising/productimages/large/' + child.PRODUCT_UPCNUMBER + '.jpg';
+              return child;
+            }
+          );
+        }
+        return record;
+      }
+
+      searchandiser.attach('details');
+    </script>
+  </body>
+
+</html>

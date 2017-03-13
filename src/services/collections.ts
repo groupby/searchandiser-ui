@@ -1,5 +1,5 @@
 import { SearchandiserConfig } from '../searchandiser';
-import { CollectionsConfig, CollectionOption } from '../tags/collections/gb-collections';
+import { LabeledOption, SelectOption } from '../tags/select/gb-select';
 import { getPath, unless } from '../utils/common';
 import { Events, FluxCapacitor, Results } from 'groupby-api';
 
@@ -9,23 +9,19 @@ export type CancelablePromise<T> = Promise<T> & { cancelled: boolean; };
 
 export class Collections {
 
-  collectionsConfig: CollectionsConfig;
+  _config: { items: SelectOption[] };
   fetchCounts: boolean;
-  isLabeled: boolean;
   counts: any = {};
   inProgress: CancelablePromise<any>;
   collections: string[];
-  options: string[] | CollectionOption[];
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
-    this.collectionsConfig = getPath(config, 'tags.collections') || {};
-    this.fetchCounts = unless(this.collectionsConfig.counts, true);
-    this.options = this.collectionsConfig.options || [];
-    this.isLabeled = this.options.length !== 0
-      && typeof this.options[0] === 'object';
-    this.collections = this.isLabeled
-      ? (<CollectionOption[]>this.options).map((collection) => collection.value)
-      : <string[]>this.options;
+    const collectionsConfig = getPath(config, 'tags.collections') || {};
+    const items = collectionsConfig.items || [];
+    this.fetchCounts = unless(collectionsConfig.showCounts, true);
+    this.collections = this.isLabeled(items) ? items.map((item) => item.value) : items;
+
+    this._config = { items };
   }
 
   init() {
@@ -48,7 +44,7 @@ export class Collections {
 
       const promises = this.inProgress = <CancelablePromise<any>>Promise.all(searches);
 
-      promises.then(this.extractCounts)
+      return promises.then(this.extractCounts)
         .then((counts) => {
           if (!promises.cancelled) {
             Object.assign(this.counts, counts);
@@ -72,11 +68,11 @@ export class Collections {
     return collection === this.selectedCollection;
   }
 
+  isLabeled(items: SelectOption[]): items is LabeledOption[] {
+    return items.length !== 0 && typeof items[0] === 'object';
+  }
+
   get selectedCollection() {
     return getPath(this.flux, 'query.raw.collection') || this.config.collection;
   }
-
-  // private extractCounts(counts: any, { results, collection }: { results: Results, collection: string }) {
-  //   return Object.assign(counts, { [collection]: results.totalRecordCount });
-  // }
 }

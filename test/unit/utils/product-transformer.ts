@@ -20,33 +20,49 @@ describe('ProductTransformer', () => {
 
   describe('on construction', () => {
     it('should have default values', () => {
-      expect(transformer.struct.id).to.eql('id');
+      expect(transformer.structure.id).to.eql('id');
       expect(transformer.productTransform).to.be.a('function');
       expect(transformer.hasVariants).to.be.false;
-      expect(transformer.variantStruct).to.eq(transformer.struct);
+      expect(transformer.variantStructure).to.eq(transformer.structure);
+      expect(transformer.variantTransform).to.be.a('function');
       expect(transformer.idField).to.eq('id');
     });
 
     it('should be able to override default values', () => {
       const struct = Object.assign({ id: 'productId' }, STRUCT);
+
       transformer = new ProductTransformer(struct);
 
-      expect(transformer.struct).to.eql(struct);
+      expect(transformer.structure).to.eql(struct);
     });
 
     it('should accept tranform override from struct', () => {
       const struct = Object.assign({ _transform: () => null }, STRUCT);
+
       transformer = new ProductTransformer(struct);
 
       expect(transformer.productTransform).to.eq(struct._transform);
     });
 
     it('should recognize configured variants', () => {
-      const struct = Object.assign({ variants: 'child' }, STRUCT);
+      const _variantStructure = { title: 'innerTitle' };
+      const struct = Object.assign({ variants: 'child', _variantStructure }, STRUCT);
+
       transformer = new ProductTransformer(struct);
 
       expect(transformer.hasVariants).to.be.true;
+      expect(transformer.variantStructure).to.eq(_variantStructure);
+      expect(transformer.variantTransform).to.be.a('function');
       expect(transformer.idField).to.eq('id');
+    });
+
+    it('should recognize variant _transform', () => {
+      const _transform = (meta) => meta;
+      const struct = Object.assign({ variants: 'child', _variantStructure: { _transform } }, STRUCT);
+
+      transformer = new ProductTransformer(struct);
+
+      expect(transformer.variantTransform).to.eq(_transform);
     });
 
     it('should recognize configured variants with unique id', () => {
@@ -54,6 +70,7 @@ describe('ProductTransformer', () => {
         variants: 'child',
         _variantStructure: { id: 'variantId' }
       }, STRUCT);
+
       transformer = new ProductTransformer(struct);
 
       expect(transformer.idField).to.eq('child.variantId');
@@ -102,54 +119,27 @@ describe('ProductTransformer', () => {
         image: 'thumbnail.png'
       };
 
-      const productMeta = transformer.transform(allMeta);
+      const variants = transformer.transform(allMeta);
 
-      expect(productMeta).to.be.a('function');
-      expect(productMeta.transformedMeta).to.eq(allMeta);
-      expect(productMeta.variants).to.eql([allMeta]);
+      expect(variants).to.eql([allMeta]);
     });
 
     it('should call productTransform()', () => {
       const transformedMeta = { a: 'b', c: 'd' };
-      transformer.productTransform = (allMeta) => {
-        expect(allMeta).to.eq(VARIANT_META);
-        return transformedMeta;
-      };
+      const productTransform = transformer.productTransform = sinon.spy(() => transformedMeta);
 
-      const productMeta = transformer.transform(VARIANT_META);
+      transformer.transform(VARIANT_META);
 
-      expect(productMeta.transformedMeta).to.eq(transformedMeta);
+      expect(productTransform).to.be.calledWith(VARIANT_META);
     });
 
     it('should call unpackVariants()', () => {
       const variants = [{ a: 'b' }, { c: 'd' }];
-      transformer.unpackVariants = (transformedMeta) => {
-        expect(transformedMeta).to.eq(VARIANT_META);
-        return variants;
-      };
+      const unpackVariants = transformer.unpackVariants = sinon.spy(() => variants);
 
-      const productMeta = transformer.transform(VARIANT_META);
+      transformer.transform(VARIANT_META);
 
-      expect(productMeta.variants).to.eq(variants);
-    });
-
-    it('should ignore variants if variants is not configured', () => {
-      const productMeta = transformer.transform(VARIANT_META);
-
-      expect(productMeta()).to.be.eql({
-        title: 'Orange Chili',
-        price: '$3',
-        image: 'image.bmp'
-      });
-    });
-
-    it('should throw errors when accessing improperly configured variants', () => {
-      transformer = new ProductTransformer({ variants: 'varieties' });
-
-      const productMeta = transformer.transform(VARIANT_META);
-
-      expect(productMeta(0)).to.eql({});
-      expect(() => productMeta(1)).to.throw('cannot access the variant at index 1');
+      expect(unpackVariants).to.be.calledWith(VARIANT_META);
     });
   });
 
@@ -634,11 +624,7 @@ describe('ProductTransformer', () => {
 
     it('should return a remapped variant when called', () => {
       const originalVariant = { mainColour: 'blue', size: '12.5' };
-      const remappedVariant = { a: 'b', c: 'd' };
-      const stub = sandbox.stub(utils, 'remap', (meta) => {
-        expect(meta).to.eq(originalVariant);
-        return remappedVariant;
-      });
+      const remap = sandbox.stub(utils, 'remap').returns({ a: 'b', c: 'd' });
 
       const mapping = transformer.remapVariant({ price: '$14', brand: 'nike' },
         { colour: 'mainColour', size: 'usSize' });
@@ -651,7 +637,29 @@ describe('ProductTransformer', () => {
         c: 'd'
       });
 
-      expect(stub.called).to.be.true;
+      expect(remap).to.be.calledWith(originalVariant);
+    });
+
+    it('should apply variantTransform', () => {
+      const remapped = { a: 'b', c: 'd' };
+      const transformed = { e: 'f', g: 'h' };
+      const variantTransform = transformer.variantTransform = sandbox.spy(() => transformed);
+      sandbox.stub(utils, 'remap').returns(remapped);
+
+      const mapping = transformer.remapVariant({}, { colour: 'mainColour', size: 'usSize' });
+
+      expect(mapping({ mainColour: 'blue', size: '12.5' })).to.eql(transformed);
+      expect(variantTransform).to.be.calledWith(remapped);
+    });
+
+    it('should not apply variantTransform if the same function as productTransform', () => {
+      const transform = transformer.productTransform = sandbox.spy();
+      const variantTransform = transformer.variantTransform = transform;
+      sandbox.stub(utils, 'remap');
+
+      transformer.remapVariant({}, {})({});
+
+      expect(variantTransform).to.not.be.called;
     });
   });
 
@@ -663,8 +671,8 @@ describe('ProductTransformer', () => {
 
       expect(transformer.extractIdField()).to.eq('id');
 
-      transformer.struct = { id: 'id', _variantStructure: {} };
-      transformer.variantStruct = {};
+      transformer.structure = { id: 'id', _variantStructure: {} };
+      transformer.variantStructure = {};
 
       expect(transformer.extractIdField()).to.eq('id');
     });
@@ -672,10 +680,38 @@ describe('ProductTransformer', () => {
     it('should return variant id', () => {
       const _variantStructure = { id: 'childId' };
       transformer.hasVariants = true;
-      transformer.struct = { id: 'baseId', variants: 'child', _variantStructure };
-      transformer.variantStruct = _variantStructure;
+      transformer.structure = { id: 'baseId', variants: 'child', _variantStructure };
+      transformer.variantStructure = _variantStructure;
 
       expect(transformer.extractIdField()).to.eq('child.childId');
+    });
+  });
+
+  describe('static', () => {
+    describe('getTransform()', () => {
+      it('should return structure._transform if a function', () => {
+        const _transform = (meta) => meta;
+
+        const transform = ProductTransformer.getTransform({ _transform });
+
+        expect(transform).to.eq(_transform);
+      });
+
+      it('should return a simple mapping function if no _transform', () => {
+        const meta = {};
+
+        const transform = ProductTransformer.getTransform({});
+
+        expect(transform(meta)).to.eq(meta);
+      });
+
+      it('should return a simple mapping function if invalid _transform', () => {
+        const meta = {};
+
+        const transform = ProductTransformer.getTransform({ _transform: 's' });
+
+        expect(transform(meta)).to.eq(meta);
+      });
     });
   });
 });

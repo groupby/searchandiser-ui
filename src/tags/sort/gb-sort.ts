@@ -1,30 +1,31 @@
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { meta } from '../../utils/decorators';
+import { Selectable, SelectTag } from '../select/gb-select';
+import { TagMeta } from '../tag';
 import { Results, Sort as SortModel } from 'groupby-api';
 
-export const DEFAULT_SORTS = [
-  { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
-  { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
-];
+export interface SortOpts extends Selectable { }
 
-export interface SortConfig extends SelectConfig {
-  options: any[];
-}
+export const META: TagMeta = {
+  defaults: {
+    items: [
+      { label: 'Name Descending', value: { field: 'title', order: 'Descending' } },
+      { label: 'Name Ascending', value: { field: 'title', order: 'Ascending' } }
+    ]
+  }
+};
 
-export interface Sort extends SelectTag<SortConfig> { }
-
-export class Sort {
+@meta(META)
+export class Sort extends SelectTag<SortOpts> {
 
   init() {
-    this.configure();
-
-    this.options = this._config.options || DEFAULT_SORTS;
+    this.expose('selectable');
   }
 
   sortValues() {
-    return this.options.map((option) => option.value);
+    return this.items.map((item) => item.value);
   }
 
-  onselect(value: SortModel): Promise<Results> {
+  onSelect(value: SortModel): Promise<Results> {
     return this.flux.sort(value, this.sortValues());
   }
 }

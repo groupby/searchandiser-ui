@@ -1,9 +1,7 @@
 import { findSearchBox } from '../../utils/common';
 import { FluxTag } from '../tag';
 
-export interface Reset extends FluxTag<any> { }
-
-export class Reset {
+export class Reset extends FluxTag<any> {
 
   searchBox: HTMLInputElement;
 
@@ -17,7 +15,7 @@ export class Reset {
   }
 
   clearQuery() {
-    this.flux.reset(this.searchBox.value = '')
-      .then(() => this.services.tracker.search());
+    return this.flux.reset(this.searchBox.value = '')
+      .then(() => this.services.tracker && this.services.tracker.search());
   }
 }

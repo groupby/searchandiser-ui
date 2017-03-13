@@ -1,40 +1,50 @@
 import { getParam } from '../../utils/common';
-import { ProductMeta, ProductTransformer } from '../../utils/product-transformer';
-import { FluxTag } from '../tag';
-import * as clone from 'clone';
+import { meta } from '../../utils/decorators';
+import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
+import { Product } from '../product/gb-product';
+import { FluxTag, TagMeta } from '../tag';
 import { Events, Record } from 'groupby-api';
 
-export interface DetailsConfig {
+export interface DetailsOpts {
   idParam: string;
+  structure?: ProductStructure;
 }
 
-export const DEFAULT_CONFIG: DetailsConfig = {
-  idParam: 'id'
+export const META: TagMeta = {
+  defaults: { idParam: 'id' }
 };
 
-export interface Details extends FluxTag<DetailsConfig> { }
+@meta(META)
+export class Details extends FluxTag<DetailsOpts> {
 
-export class Details {
+  tags: { 'gb-product': Product };
 
-  query: string;
-  struct: any;
-  allMeta: any;
+  idParam: string;
+
+  structure: ProductStructure;
   transformer: ProductTransformer;
-  productMeta: ProductMeta;
+  allMeta: any;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
-
-    this.query = getParam(this._config.idParam);
-    this.struct = this.config.structure || {};
-    this.transformer = new ProductTransformer(this.struct);
-
     this.flux.on(Events.DETAILS, this.updateRecord);
-    if (this.query) this.flux.details(this.query, this.transformer.idField);
+  }
+
+  setDefaults(config: DetailsOpts) {
+    this.structure = config.structure || this.config.structure;
+    this.transformer = new ProductTransformer(this.structure);
+
+    this.requestDetails();
+  }
+
+  requestDetails() {
+    const query = getParam(this.idParam);
+    if (query) {
+      this.flux.details(query, this.transformer.idField);
+    }
   }
 
   updateRecord({ allMeta }: Record) {
-    const productMeta = this.transformer.transform(clone(allMeta, false));
-    this.update({ productMeta, allMeta: productMeta() });
+    this.tags['gb-product'].updateRecord(allMeta);
+    this.tags['gb-product'].update();
   }
 }

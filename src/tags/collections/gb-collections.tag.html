@@ -1,9 +1,9 @@
 <gb-collections>
   <yield>
-    <gb-list class="gb-collections { _style }" items={ collections } if={ !_config.dropdown } scope="gb-collections" inline>
+    <gb-list class="gb-collections" if="{ !$collections.dropdown }" inline>
       <gb-collection-item></gb-collection-item>
     </gb-list>
-    <gb-select if={ _config.dropdown } scope="gb-collections">
+    <gb-select if="{ $collections.dropdown }">
       <gb-custom-select>
         <gb-collection-dropdown-item></gb-collection-dropdown-item>
       </gb-custom-select>
@@ -11,12 +11,13 @@
   </yield>
 
   <script>
-    import './gb-collection-item.tag.html';
-    import './gb-collection-dropdown-item.tag.html';
-    import '../badge/gb-badge.tag.html';
-    import '../list/gb-list.tag.html';
-    import '../select/gb-select.tag.html';
     import { Collections } from './gb-collections';
     this._mixin(Collections);
   </script>
+
+  <style>
+    :scope.gb-stylish gb-custom-select gb-list > ul > li {
+      padding: 4px 10px;
+    }
+  </style>
 </gb-collections>

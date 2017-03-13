@@ -1,24 +1,16 @@
 <gb-sayt-categories>
-  <gb-list items={ categoryResults }>
-    <gb-sayt-link send={ _scope.searchCategory } data-value={ item.value } data-refinement={ item.category } data-field={ _scope.categoryField } data-norefine={ item.noRefine }>
+  <gb-list items="{ $sayt.categoryResults }">
+    <gb-sayt-link send="{ $sayt.searchCategory }" data-value="{ $item.value }" data-refinement="{ $item.category }" data-field="{ $sayt.categoryField }" data-norefine="{ $item.noRefine }">
       <yield>
-        <gb-raw content={ _scope.highlightCurrentQuery(item.value, '<b>$&</b>') }></gb-raw>
+        <gb-raw content="{ $sayt.highlightCurrentQuery($item.value, '<b>$&</b>') }"></gb-raw>
         in
-        <span class="gb-category-query">{ item.category }</span>
+        <span class="gb-category-query">{ $item.category }</span>
       </yield>
     </gb-sayt-link>
   </gb-list>
 
-  <script>
-    import '../list/gb-list.tag.html';
-    import './gb-sayt-link.tag.html';
-    import '../raw/gb-raw.tag.html';
-
-    this._scopeTo('gb-sayt');
-  </script>
-
-  <style scoped>
-    .gb-stylish :scope .gb-category-query {
+  <style>
+    :scope.gb-stylish .gb-category-query {
       font-weight: bold;
       color: darkorange;
     }

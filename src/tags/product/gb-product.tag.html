@@ -6,10 +6,17 @@
   </yield>
 
   <script>
-    import './gb-product-image.tag.html';
-    import './gb-product-info.tag.html';
-    import './gb-variant-switcher.tag.html';
     import { Product } from './gb-product';
     this._mixin(Product);
   </script>
+
+  <style>
+    :scope.gb-infinite {
+      position: absolute;
+      opacity: 1;
+    }
+    :scope.gb-infinite.tombstone.invisible {
+      opacity: 0;
+    }
+  </style>
 </gb-product>

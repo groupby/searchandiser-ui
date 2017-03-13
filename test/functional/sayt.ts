@@ -1,45 +1,26 @@
 import { Query } from '../../src/tags/query/gb-query';
 import { Sayt } from '../../src/tags/sayt/gb-sayt';
-import { createTag, mixinFlux, removeTag } from './_suite';
+import * as utils from '../../src/utils/common';
+import suite, { createTag, mixinFlux, removeTag, BaseModel } from './_suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 import * as riot from 'riot';
 
-const TAG = 'gb-query';
 const KEY_UP = 38;
 const KEY_ENTER = 13;
 const KEY_DOWN = 40;
 
-describe(`${TAG} tag with sayt:true`, () => {
-  let html: HTMLElement;
-  let flux: FluxCapacitor;
+suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
 
-  beforeEach(() => {
-    flux = mixinFlux({
-      config: {
-        tags: { sayt: { minimumCharacters: 1, delay: 0 } }
-      }
-    });
-    html = createTag(TAG);
-  });
-  afterEach(() => {
-    removeTag(html);
-  });
+  itMountsTag();
 
-  it('mounts tag', () => {
-    const tag = mount();
-
-    expect(tag).to.be.ok;
-    expect(document.querySelector('gb-sayt')).to.be.ok;
-  });
-
-  describe('category suggestions', () => {
+  describe('render with category suggestions', () => {
     it('should render category suggestions', () => {
-      mount();
-      const saytTag = sayt();
+      const tag = mount();
       const allCategoriesLabel = 'All Categories';
+      tag.originalQuery = 'shoe';
 
-      saytTag.update({
+      tag.update({
         queries: [{ value: 'a' }],
         categoryResults: [
           { category: allCategoriesLabel, value: 'b', noRefine: true },
@@ -47,8 +28,8 @@ describe(`${TAG} tag with sayt:true`, () => {
         ]
       });
 
-      const categoryLinks = html.querySelectorAll('gb-sayt-categories gb-sayt-link');
-      expect(categoryLinks.length).to.eq(2);
+      const categoryLinks = tag.root.querySelectorAll('gb-sayt-categories gb-sayt-link');
+      expect(categoryLinks).to.have.length(2);
       expect((<HTMLElement>categoryLinks[0]).dataset['norefine']).to.eq('true');
       expect(categoryLinks[0].querySelector('.gb-category-query').textContent).to.eq(allCategoriesLabel);
       expect((<HTMLElement>categoryLinks[1]).dataset['norefine']).be.undefined;
@@ -56,84 +37,74 @@ describe(`${TAG} tag with sayt:true`, () => {
     });
   });
 
-  describe('autocomplete', () => {
-    it('highlights first element of autocomplete when you press KEY_DOWN from search box', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
+  describe('autocomplete behaviour', () => {
+    let tag: Sayt;
+    let model: Model;
 
-      saytTag.update({
+    beforeEach(() => {
+      const searchBox = document.createElement('input');
+      document.body.appendChild(searchBox);
+      stub(utils, 'findSearchBox', () => searchBox);
+      tag = mount();
+      tag.listenForInput(<any>{ searchBox });
+      tag.originalQuery = 'shoe';
+      searchBox.addEventListener('keydown', (event) => tag.autocomplete.keyboardListener(event, () => null));
+      model = new Model(tag);
+    });
+
+    it('highlights first element of autocomplete when you press KEY_DOWN from search box', () => {
+      tag.update({
         queries: [
           { value: 'a' },
           { value: 'b' }
         ]
       });
 
-      tag.on('updated', () => {
-        dispatchKeydownEvent(KEY_DOWN);
+      model.keyDown(KEY_DOWN);
 
-        expect(html.querySelectorAll('gb-sayt-link').length).to.eql(2);
-        expect((<HTMLElement>html.querySelectorAll('gb-sayt-link')[1]).dataset['value']).to.eql('b');
-        expect(html.querySelectorAll('.active').length).to.eql(1);
-        expect(html.querySelectorAll('gb-sayt-link.active').length).to.eql(1);
-        expect((<HTMLElement>html.querySelector('gb-sayt-link.active')).dataset['value']).to.eql('a');
-
-        expect(searchBox().value).to.eql('a');
-        done();
-      });
+      expect(tag.root.querySelectorAll('gb-sayt-link').length).to.eql(2);
+      expect((<HTMLElement>tag.root.querySelectorAll('gb-sayt-link')[1]).dataset['value']).to.eql('b');
+      expect(tag.root.querySelectorAll('.active')).to.have.length(1);
+      expect(tag.root.querySelectorAll('gb-sayt-link.active').length).to.eql(1);
+      expect((<HTMLElement>tag.root.querySelector('gb-sayt-link.active')).dataset['value']).to.eql('a');
+      // expect(model.searchBox.value).to.eql('a');
     });
 
-    it('highlights next element when you press down', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
-
-      saytTag.update({
+    it('highlights next element when you press down', () => {
+      tag.update({
         queries: [
           { value: 'a' },
           { value: 'b' }
         ]
       });
 
-      tag.on('updated', () => {
-        dispatchKeydownEvent(KEY_DOWN);
-        dispatchKeydownEvent(KEY_DOWN);
+      model.keyDown(KEY_DOWN);
+      model.keyDown(KEY_DOWN);
 
-        expect(html.querySelectorAll('gb-sayt-link.active').length).to.eql(1);
-        expect((<HTMLElement>html.querySelector('gb-sayt-link.active')).dataset['value']).to.eql('b');
-
-        expect(searchBox().value).to.eql('b');
-        done();
-      });
+      expect(tag.root.querySelectorAll('gb-sayt-link.active').length).to.eql(1);
+      expect((<HTMLElement>tag.root.querySelector('gb-sayt-link.active')).dataset['value']).to.eql('b');
+      // expect(model.searchBox.value).to.eql('b');
     });
 
-    it('stays selected on the last link when there are no more links to go down to', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
-
-      saytTag.update({
+    it('stays selected on the last link when there are no more links to go down to', () => {
+      tag.update({
         queries: [
           { value: 'a' },
           { value: 'b' }
         ]
       });
 
-      tag.on('updated', () => {
-        dispatchKeydownEvent(KEY_DOWN);
-        dispatchKeydownEvent(KEY_DOWN);
-        dispatchKeydownEvent(KEY_DOWN);
+      model.keyDown(KEY_DOWN);
+      model.keyDown(KEY_DOWN);
+      model.keyDown(KEY_DOWN);
 
-        expect(html.querySelectorAll('gb-sayt-link.active').length).to.eql(1);
-        expect((<HTMLElement>html.querySelector('gb-sayt-link.active')).dataset['value']).to.eql('b');
-
-        expect(searchBox().value).to.eql('b');
-        done();
-      });
+      expect(tag.root.querySelectorAll('gb-sayt-link.active').length).to.eql(1);
+      expect((<HTMLElement>tag.root.querySelector('gb-sayt-link.active')).dataset['value']).to.eql('b');
+      // expect(model.searchBox.value).to.eql('b');
     });
 
-    it('goes up a link', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
-
-      saytTag.update({
+    it('goes up a link', () => {
+      tag.update({
         queries: [
           { value: 'a' },
           { value: 'b' },
@@ -141,47 +112,128 @@ describe(`${TAG} tag with sayt:true`, () => {
         ]
       });
 
-      tag.on('updated', () => {
-        dispatchKeydownEvent(KEY_DOWN);
-        dispatchKeydownEvent(KEY_DOWN);
-        dispatchKeydownEvent(KEY_DOWN);
-        dispatchKeydownEvent(KEY_UP);
-        dispatchKeydownEvent(KEY_UP);
-        expect(html.querySelectorAll('gb-sayt-link.active').length).to.eql(1);
-        expect((<HTMLElement>html.querySelector('gb-sayt-link.active')).dataset['value']).to.eql('a');
+      model.keyDown(KEY_DOWN);
+      model.keyDown(KEY_DOWN);
+      model.keyDown(KEY_DOWN);
+      model.keyDown(KEY_UP);
+      model.keyDown(KEY_UP);
 
-        expect(searchBox().value).to.eql('a');
-        done();
-      });
+      expect(tag.root.querySelectorAll('gb-sayt-link.active').length).to.eql(1);
+      expect((<HTMLElement>tag.root.querySelector('gb-sayt-link.active')).dataset['value']).to.eql('a');
+      // expect(model.searchBox.value).to.eql('a');
     });
 
-    it(`restores original query to search box and clears selected autocomplete
-        suggestion when you press KEY_UP while at the top suggestion`, (done) => {
-        const tag = mount();
-        const saytTag = sayt();
-
-        searchBox().value = 'original';
-        saytTag.update({
-          queries: [
-            { value: 'a' },
-            { value: 'b' }
-          ]
-        });
-
-        tag.on('updated', () => {
-          dispatchKeydownEvent(KEY_DOWN);
-          dispatchKeydownEvent(KEY_UP);
-          expect(searchBox().value).to.eql('original');
-          expect(html.querySelector('gb-sayt-link.selected')).to.eql(null);
-          done();
-        });
+    it('restores original query to search box and clears selected autocomplete suggestion when you press KEY_UP while at the top suggestion', () => { // tslint:disable-line:max-line-length
+      model.searchBox.value = 'original';
+      tag.update({
+        queries: [
+          { value: 'a' },
+          { value: 'b' }
+        ]
       });
 
-    it('keeps the cursor at the end of the search term in the search box', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
+      model.keyDown(KEY_DOWN);
+      expect(model.searchBox.value).to.eq('original');
+      model.keyDown(KEY_UP);
 
-      searchBox().value = 'original';
+      expect(model.searchBox.value).to.eq('original');
+      expect(tag.root.querySelector('gb-sayt-link.selected')).to.eql(null);
+    });
+
+    it('does a search of a suggested query when you click', (done) => {
+      model.searchBox.value = 'original';
+      tag.search = () => done();
+      tag.update({
+        queries: [
+          { value: 'four' },
+          { value: 'five' }
+        ]
+      });
+
+      (<HTMLElement>tag.root.querySelectorAll('gb-sayt-link a')[1]).click();
+    });
+
+    it('does the same thing as clicking when you make .active a suggestion and press enter', (done) => {
+      tag.search = () => done();
+
+      tag.update({
+        queries: [
+          { value: 'four' }
+        ]
+      });
+
+      model.keyDown(KEY_DOWN);
+      model.keyDown(KEY_ENTER);
+    });
+
+    it('does a search of a suggested query with a category refinement when you click', (done) => {
+      model.searchBox.value = 'original';
+      tag.refine = (target, query): any => {
+        expect(target.parentElement.dataset['refinement']).to.eq('the category');
+        done();
+      };
+      tag.update({
+        categoryResults: [
+          { value: 'four', category: 'the category' }
+        ],
+        queries: [{ value: 'four' }]
+      });
+
+      (<HTMLElement>tag.root.querySelectorAll('gb-sayt-link a')[0]).click();
+    });
+
+    it('does a refinement search when you click', (done) => {
+      model.searchBox.value = 'original';
+      tag.refine = (target, query): any => {
+        expect(query).to.eq('');
+        expect(target.parentElement.dataset['value']).to.eq('Brand: 3');
+        expect(target.parentElement.dataset['refinement']).to.eq('3');
+        done();
+      };
+      tag.update({
+        navigations: [
+          {
+            displayName: 'Brand',
+            name: 'brand000',
+            values: ['0', '1', '2', '3']
+          }
+        ]
+      });
+
+      (<HTMLElement>tag.root.querySelectorAll('gb-sayt-link a')[3]).click();
+    });
+
+    it('shows navigations when there are no queries', () => {
+      tag.update({
+        navigations: [{
+          values: ['0', '1', '2']
+        }]
+      });
+
+      expect(tag.root.querySelectorAll('gb-sayt-link').length).to.eql(3);
+    });
+  });
+});
+
+const TAG = 'gb-query';
+
+describe(`${TAG} tag with sayt:true`, () => {
+  let html: HTMLElement;
+  let flux: FluxCapacitor;
+
+  beforeEach(() => {
+    flux = mixinFlux();
+    html = createTag(TAG);
+  });
+  afterEach(() => removeTag(html));
+
+  describe('autocomplete', () => {
+    it('keeps the cursor at the end of the search term in the search box', () => {
+      mount();
+      const saytTag = html.querySelector('gb-sayt')['_tag'];
+      const searchBox = html.querySelector('input');
+      saytTag.originalQuery = 'shoe';
+      searchBox.value = 'original';
       saytTag.update({
         queries: [
           { value: 'four' },
@@ -190,139 +242,47 @@ describe(`${TAG} tag with sayt:true`, () => {
         ]
       });
 
-      tag.on('updated', () => {
-        dispatchKeydownEvent(KEY_DOWN);
-        expect(searchBox().selectionStart).to.eql('four'.length);
-        dispatchKeydownEvent(KEY_DOWN);
-        expect(searchBox().selectionStart).to.eql('0123456789'.length);
-        dispatchKeydownEvent(KEY_DOWN);
-        expect(searchBox().selectionStart).to.eql('aaa'.length);
-        dispatchKeydownEvent(KEY_UP);
-        expect(searchBox().selectionStart).to.eql('0123456789'.length);
-        dispatchKeydownEvent(KEY_UP);
-        expect(searchBox().selectionStart).to.eql('four'.length);
-        dispatchKeydownEvent(KEY_UP);
-        expect(searchBox().selectionStart).to.eql('original'.length);
-        done();
-      });
-    });
+      keyDown(KEY_DOWN);
+      expect(searchBox.selectionStart).to.eql('four'.length);
 
-    it('does a search of a suggested query when you click', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
-      saytTag.search = () => done();
+      keyDown(KEY_DOWN);
+      expect(searchBox.selectionStart).to.eql('0123456789'.length);
 
-      searchBox().value = 'original';
-      saytTag.update({
-        queries: [
-          { value: 'four' },
-          { value: 'five' }
-        ]
-      });
+      keyDown(KEY_DOWN);
+      expect(searchBox.selectionStart).to.eql('aaa'.length);
 
-      tag.on('updated', () => {
-        (<HTMLElement>saytTag.root.querySelectorAll('gb-sayt-link a')[1]).click();
-      });
-    });
+      keyDown(KEY_UP);
+      expect(searchBox.selectionStart).to.eql('0123456789'.length);
 
-    it('does the same thing as clicking when you make .active a suggestion and press enter', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
-      saytTag.search = () => done();
+      keyDown(KEY_UP);
+      expect(searchBox.selectionStart).to.eql('four'.length);
 
-      saytTag.update({
-        queries: [
-          { value: 'four' }
-        ]
-      });
-
-      tag.on('updated', () => {
-        dispatchKeydownEvent(KEY_DOWN);
-        dispatchKeydownEvent(KEY_ENTER);
-      });
-    });
-
-    it('does a search of a suggested query with a category refinement when you click', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
-
-      saytTag.refine = (target, query) => {
-        expect(target.parentElement.dataset['refinement']).to.eq('the category');
-        done();
-      };
-
-      searchBox().value = 'original';
-      saytTag.update({
-        categoryResults: [
-          { value: 'four', category: 'the category' }
-        ],
-        // this is necessary in order to have autocomplete be visible
-        queries: ['four']
-      });
-
-      tag.on('updated', () => {
-        (<HTMLElement>saytTag.root.querySelectorAll('gb-sayt-link a')[0]).click();
-      });
-    });
-
-    it('does a refinement search when you click', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
-      saytTag.refine = (target, query) => {
-        expect(query).to.eq('');
-        expect(target.parentElement.dataset['field']).to.eq('brand000');
-        expect(target.parentElement.dataset['value']).to.eq('Brand: 3');
-        expect(target.parentElement.dataset['refinement']).to.eq('3');
-        done();
-      };
-
-      searchBox().value = 'original';
-      saytTag.update({
-        navigations: [
-          {
-            displayName: 'Brand',
-            name: 'brand000',
-            values: [0, 1, 2, 3]
-          }
-        ]
-      });
-
-      tag.on('updated', () => {
-        (<HTMLElement>saytTag.root.querySelectorAll('gb-sayt-link a')[3]).click();
-      });
-    });
-
-    it('shows navigations when there are no queries', (done) => {
-      const tag = mount();
-      const saytTag = sayt();
-
-      saytTag.update({
-        navigations: [{
-          values: [{}, {}, {}]
-        }]
-      });
-
-      tag.on('updated', () => {
-        expect(saytTag.root.querySelectorAll('gb-sayt-link').length).to.eql(3);
-        done();
-      });
+      keyDown(KEY_UP);
+      expect(searchBox.selectionStart).to.eql('original'.length);
     });
   });
 
-  function dispatchKeydownEvent(keyCode: number) {
+  function keyDown(keyCode: number) {
     const event = Object.assign(new Event('keydown'), { keyCode });
-    searchBox().dispatchEvent(event);
-  }
-
-  function searchBox() {
-    return html.querySelector('input');
-  }
-
-  function sayt(): Sayt {
-    return html.querySelector('gb-sayt')['_tag'];
+    html.querySelector('input').dispatchEvent(event);
   }
 
   function mount(autoSearch: boolean = true) {
-    return <Query>riot.mount(html, TAG, { sayt: true, autoSearch })[0];
+    return <Query>riot.mount(html, TAG, { autoSearch })[0];
   }
 });
+
+class Model extends BaseModel<Sayt> {
+
+  get sayt(): Sayt {
+    return this.element(this.html, 'gb-sayt')['_tag'];
+  }
+
+  get searchBox() {
+    return this.tag.autocomplete.searchInput;
+  }
+
+  keyDown(keyCode: number) {
+    this.searchBox.dispatchEvent(Object.assign(new Event('keydown'), { keyCode }));
+  }
+}

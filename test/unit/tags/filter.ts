@@ -1,21 +1,31 @@
 import { FILTER_UPDATED_EVENT } from '../../../src/services/filter';
-import { DEFAULT_CONFIG, Filter } from '../../../src/tags/filter/gb-filter';
+import { Filter, META } from '../../../src/tags/filter/gb-filter';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-filter', Filter, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldHaveMeta,
+  itShouldAlias
 }) => {
+  itShouldHaveMeta(Filter, META);
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    itShouldAlias('selectable');
 
     it('should listen for events', () => {
       expectSubscriptions(() => tag().init(), {
         [FILTER_UPDATED_EVENT]: tag().updateValues
       });
+    });
+
+    it('should register with filter service', () => {
+      const register = tag().register = spy();
+
+      tag().init();
+
+      expect(register).to.be.calledWith('filter');
     });
   });
 
@@ -39,60 +49,45 @@ suite('gb-filter', Filter, ({
   });
 
   describe('updateValues()', () => {
-    it('should update the select tag with options', () => {
-      const results: any = { x: 'y' };
-      const refinements = [{ a: 'b', c: 'd' }];
-      const updateOptions = sinon.spy((options) => expect(options).to.eq(refinements));
-      tag().tags = <any>{ 'gb-select': { updateOptions } };
-      tag().convertRefinements = () => refinements;
-
-      tag().updateValues(results);
-
-      expect(updateOptions.called).to.be.true;
-    });
-
     it('should call update() with options', () => {
       const results: any = { x: 'y' };
-      const refinements = [{ a: 'b', c: 'd' }];
-      tag().tags = <any>{};
-      tag().convertRefinements = () => refinements;
-      tag().update = ({ options }) => expect(options).to.eq(refinements);
+      const items = [{ a: 'b', c: 'd' }];
+      const update = tag().update = spy();
+      tag().convertRefinements = () => items;
 
       tag().updateValues(results);
+
+      expect(update).to.be.calledWith({ items });
     });
   });
 
-  describe('onselect()', () => {
+  describe('onSelect()', () => {
     it('should call reset on clear navigation', () => {
-      const stub = sandbox().stub(flux(), 'reset');
+      const reset = stub(flux(), 'reset');
 
-      tag().onselect('*');
+      tag().onSelect('*');
 
-      expect(stub.called).to.be.true;
+      expect(reset).to.be.called;
     });
 
     it('should call refine on navigation selected', () => {
       const selection = { type: 'Value', value: 'DeWalt' };
       const navigationName = 'brand';
-      const stub = sandbox().stub(flux(), 'refine', (selected) =>
-        expect(selected).to.eql(Object.assign(selection, { navigationName })));
-      tag()._config = { field: navigationName };
+      const refine = stub(flux(), 'refine');
+      tag().field = navigationName;
 
-      tag().onselect(selection);
+      tag().onSelect(selection);
 
-      expect(stub.called).to.be.true;
+      expect(refine).to.be.calledWith(Object.assign(selection, { navigationName }));
     });
 
     it('should call unrefine to clear current selection', () => {
       const selection = tag().selected = { a: 'b', c: 'd' };
-      const stub = sandbox().stub(flux(), 'unrefine', (selected, opts) => {
-        expect(selected).to.eq(selection);
-        expect(opts.skipSearch).to.be.true;
-      });
+      const unrefine = stub(flux(), 'unrefine');
 
-      tag().onselect('*');
+      tag().onSelect('*');
 
-      expect(stub.called).to.be.true;
+      expect(unrefine).to.be.calledWith(selection, { skipSearch: true });
     });
   });
 });

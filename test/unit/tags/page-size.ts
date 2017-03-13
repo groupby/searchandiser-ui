@@ -1,68 +1,78 @@
-import { DEFAULT_CONFIG, PageSize } from '../../../src/tags/page-size/gb-page-size';
+import { DEFAULT_PAGE_SIZES, META, PageSize } from '../../../src/tags/page-size/gb-page-size';
 import suite from './_suite';
 import { expect } from 'chai';
 
 suite('gb-page-size', PageSize, ({
-  tag, flux, sandbox,
-  itShouldConfigure
+  tag, flux, spy, stub,
+  itShouldAlias, itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(PageSize, META);
 
   describe('init()', () => {
-    itShouldConfigure(DEFAULT_CONFIG);
+    itShouldAlias('selectable');
+  });
 
-    it('should have default values', () => {
-      tag().init();
+  describe('setDefaults()', () => {
+    it('should set items from global config', () => {
+      const pageSizes = [1, 2, 3, 4];
+      tag().config = <any>{ pageSizes };
 
-      expect(tag().options).to.eql([10, 25, 50, 100]);
+      tag().setDefaults();
+
+      expect(tag().items).to.eq(pageSizes);
     });
 
-    it('should read global pageSizes', () => {
-      const pageSizes = [12, 24, 48];
-      tag().config = { pageSizes };
+    it('should fallback to default items', () => {
+      tag().setDefaults();
 
-      tag().init();
-
-      expect(tag().options).to.eq(pageSizes);
+      expect(tag().items).to.eq(DEFAULT_PAGE_SIZES);
     });
   });
 
-  describe('onselect()', () => {
+  describe('onSelect()', () => {
     it('should resize and keep offset', (done) => {
-      sandbox().stub(flux(), 'resize', (pageSize, reset) => {
+      flux().resize = (pageSize, reset): any => {
         expect(pageSize).to.eq(40);
         expect(reset).to.be.undefined;
         done();
-      });
-      flux().query.skip(43);
-
-      tag().onselect(40);
-    });
-
-    it('should resize and reset offset', (done) => {
-      sandbox().stub(flux(), 'resize', (pageSize, reset) => {
-        expect(pageSize).to.eq(20);
-        expect(reset).to.be.true;
-        done();
-      });
-      flux().query.skip(43);
-      tag()._config = { resetOffset: true };
-
-      tag().onselect(20);
-    });
-
-    it('should emit tracking event', (done) => {
-      const stub = sandbox().stub(flux(), 'resize', (pageSize, reset) => Promise.resolve());
-      tag().services = <any>{
-        tracker: {
-          search: () => {
-            expect(stub.called).to.be.true;
-            done();
-          }
-        }
       };
       flux().query.skip(43);
 
-      tag().onselect(40);
+      tag().onSelect(40);
+    });
+
+    it('should resize and reset offset', (done) => {
+      flux().resize = (pageSize, reset): any => {
+        expect(pageSize).to.eq(20);
+        expect(reset).to.be.true;
+        done();
+      };
+      flux().query.skip(43);
+      tag().resetOffset = true;
+
+      tag().onSelect(20);
+    });
+
+    it('should emit tracking event', (done) => {
+      const search = spy();
+      const resize = stub(flux(), 'resize').resolves();
+      tag().services = <any>{ tracker: { search } };
+      flux().query.skip(43);
+
+      tag().onSelect(40)
+        .then(() => {
+          expect(search).to.be.called;
+          expect(resize).to.be.called;
+          done();
+        });
+    });
+
+    it('should check for tracker service', (done) => {
+      stub(flux(), 'resize').resolves();
+      tag().services = <any>{};
+
+      tag().onSelect(40)
+        .then(() => done());
     });
   });
 });

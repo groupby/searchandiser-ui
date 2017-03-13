@@ -3,6 +3,7 @@
 .tmp
 .idea
 *.log
+*.tmp
 tmp
 
 node_modules
@@ -12,7 +13,10 @@ src/**/*.d.ts
 src/**/*.js*
 test/**/*.d.ts
 test/**/*.js*
+!test/e2e/**/*.js
 
 coverage
 dist
 docs
+screenshots
+reports

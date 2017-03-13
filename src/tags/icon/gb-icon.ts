@@ -3,28 +3,35 @@ import { FluxTag } from '../tag';
 export const IMAGE_PATTERN = /.*\..*/;
 export const DATA_URL_PREFIX = 'data:image/';
 
-export interface IconConfig {
-  value: string;
+export interface IconOpts {
+  img: string;
 }
 
-export interface Icon extends FluxTag<IconConfig> { }
-
-export class Icon {
+export class Icon extends FluxTag<IconOpts> {
 
   url: string;
   classes: string;
 
   init() {
-    this.configure();
-    if (this.isImage(this._config.value)) {
-      this.url = this._config.value;
+    this.on('update', this.setImage);
+  }
+
+  setDefaults() {
+    this.setImage();
+  }
+
+  setImage() {
+    if (this.isImage(this.opts.img)) {
+      this.url = this.opts.img;
+      delete this.classes;
     } else {
-      this.classes = this._config.value;
+      this.classes = this.opts.img;
+      delete this.url;
     }
   }
 
-  private isImage(value: string) {
-    const matches = value.match(IMAGE_PATTERN);
-    return (matches && matches.length > 0) || value.startsWith(DATA_URL_PREFIX);
+  isImage(img: string) {
+    const matches = img.match(IMAGE_PATTERN);
+    return (matches && matches.length > 0) || img.startsWith(DATA_URL_PREFIX);
   }
 }

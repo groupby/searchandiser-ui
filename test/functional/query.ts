@@ -1,39 +1,45 @@
 import { Query } from '../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../src/tags/sayt/autocomplete';
 import { LOCATION } from '../../src/utils/common';
-import suite from './_suite';
+import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount, itMountsTag }) => {
+suite<Query>('gb-query', ({ flux, stub, mount: _mount, itMountsTag }) => {
 
   itMountsTag();
 
-  it('renders search box', () => {
-    mount();
+  describe('render', () => {
+    it('should render search box', () => {
+      mount();
 
-    expect(document.querySelector('gb-search-box')).to.be.ok;
+      expect(document.querySelector('gb-search-box')).to.be.ok;
+    });
   });
 
   it('should rewrite query on rewrite_query', () => {
     const tag = mount();
+    const model = new Model(tag);
     const query = 'rewritten';
 
     tag.rewriteQuery(query);
 
-    expect(searchBox().value).to.eq(query);
+    expect(model.searchBox.value).to.eq(query);
   });
 
   describe('redirect when autoSearch off', () => {
     it('should register for input event', () => {
       const tag = mount(false);
-      const input = tag.searchBox = document.createElement('input');
-      input.addEventListener = (event) => expect(event).to.eq('input');
+      const addEventListener = sinon.spy();
+      tag.searchBox = Object.assign(document.createElement('input'), { addEventListener });
 
       tag.listenForInput();
+
+      expect(addEventListener.calledWith('input'));
     });
 
-    it('should hide autocomplete and modify URL on static search', () => {
-      sandbox().stub(LOCATION, 'replace', (url) => expect(url).to.eq('search?q='));
+    it.skip('should hide autocomplete and modify URL on static search', () => {
+      // doesn't actually test the thing
+      stub(LOCATION, 'replace', (url) => expect(url).to.eq('search?q='));
       flux().search = (): any => null;
       flux().emit = (event): any => expect(event).to.eq(AUTOCOMPLETE_HIDE_EVENT);
 
@@ -49,11 +55,13 @@ suite<Query>('gb-query', ({ flux, html, sandbox, mount: _mount, itMountsTag }) =
     });
   });
 
-  function searchBox() {
-    return html().querySelector('input');
-  }
-
   function mount(autoSearch: boolean = true) {
     return _mount({ sayt: false, autoSearch });
   }
 });
+
+class Model extends BaseModel<Query> {
+  get searchBox() {
+    return this.element<HTMLInputElement>(this.html, 'input');
+  }
+}

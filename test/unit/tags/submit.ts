@@ -1,34 +1,20 @@
-import { DEFAULT_CONFIG, Submit } from '../../../src/tags/submit/gb-submit';
+import { META, Submit } from '../../../src/tags/submit/gb-submit';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
+import { Query } from 'groupby-api';
 
 suite('gb-submit', Submit, ({
-  flux, tag, sandbox,
+  flux, tag, spy, stub,
   expectSubscriptions,
-  itShouldConfigure
+  itShouldHaveMeta
 }) => {
+  itShouldHaveMeta(Submit, META);
 
   describe('init()', () => {
     const ROOT: any = { addEventListener: () => null };
 
     beforeEach(() => tag().root = ROOT);
-
-    itShouldConfigure(DEFAULT_CONFIG);
-
-    it('should set label for input tag', () => {
-      tag().root = Object.assign({}, ROOT, { tagName: 'INPUT' });
-
-      tag().init();
-
-      expect(tag().root.value).to.eq('Search');
-    });
-
-    it('should not set label for input tag', () => {
-      tag().init();
-
-      expect(tag().root.value).to.be.undefined;
-    });
 
     it('should listen for mount event', () => {
       expectSubscriptions(() => tag().init(), {
@@ -37,22 +23,38 @@ suite('gb-submit', Submit, ({
     });
 
     it('should register click listener', () => {
-      const addEventListener = sinon.spy((event, cb) => {
-        expect(event).to.eq('click');
-        expect(cb).to.eq(tag().submitQuery);
-      });
+      const addEventListener = spy();
       tag().root = <any>{ addEventListener };
 
       tag().init();
 
-      expect(addEventListener.called).to.be.true;
+      expect(addEventListener).to.be.calledWith('click', tag().submitQuery);
+    });
+  });
+
+  describe('setDefaults()', () => {
+    it('should set root value when root is input tag', () => {
+      const root = tag().root = <any>{ tagName: 'INPUT' };
+      const label = tag().label = 'label';
+
+      tag().setDefaults();
+
+      expect(root.value).to.eq(label);
+    });
+
+    it('should not set root value', () => {
+      const root = tag().root = <any>{ tagName: 'not input' };
+
+      tag().setDefaults();
+
+      expect(root.value).to.not.be.ok;
     });
   });
 
   describe('setSearchBox()', () => {
     it('should set the searchBox', () => {
       const searchBox = { a: 'b' };
-      sandbox().stub(utils, 'findSearchBox', () => searchBox);
+      stub(utils, 'findSearchBox').returns(searchBox);
 
       tag().setSearchBox();
 
@@ -74,34 +76,51 @@ suite('gb-submit', Submit, ({
 
     it('should emit tracker event', (done) => {
       const query = 'something';
-      const stub = sandbox().stub(flux(), 'reset', () => Promise.resolve());
+      const search = spy();
+      const reset = stub(flux(), 'reset').resolves();
       tag().searchBox = <HTMLInputElement>{ value: query };
-      tag().services = <any>{
-        tracker: {
-          search: () => {
-            expect(tag().searchBox.value).to.eq(query);
-            expect(stub.called).to.be.true;
-            done();
-          }
-        }
-      };
+      tag().services = <any>{ tracker: { search } };
 
-      tag().submitQuery();
+      tag().submitQuery()
+        .then(() => {
+          expect(tag().searchBox.value).to.eq(query);
+          expect(reset).to.be.called;
+          expect(search).to.be.called;
+          done();
+        });
     });
 
-    it('should submit static query', () => {
-      const newQuery = 'something';
-      const update = sinon.spy((query, refinements) => {
-        expect(query).to.eq(newQuery);
-        expect(refinements).to.eql([]);
-      });
-      tag()._config.staticSearch = true;
-      tag().searchBox = <HTMLInputElement>{ value: newQuery };
-      tag().services = <any>{ url: { update, active: () => true } };
+    it('should check for tracker service', (done) => {
+      stub(flux(), 'reset').resolves();
+      tag().searchBox = <HTMLInputElement>{ value: 'something' };
+      tag().services = <any>{};
 
-      tag().submitQuery();
+      tag().submitQuery()
+        .then(() => done());
+    });
 
-      expect(update.called).to.be.true;
+    it('should submit static query', (done) => {
+      const query = 'something';
+      const update = spy();
+      flux().query = new Query('other')
+        .withSelectedRefinements({ navigationName: 'colour', type: 'Value', value: 'blue' })
+        .skip(20);
+      tag().staticSearch = true;
+      tag().searchBox = <HTMLInputElement>{ value: query };
+      tag().services = <any>{ url: { update, isActive: () => true } };
+
+      tag().submitQuery()
+        .then(() => {
+          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
+          expect(update).to.be.calledWithMatch({
+            raw: {
+              query,
+              refinements: [],
+              skip: 20
+            }
+          });
+          done();
+        });
     });
   });
 });

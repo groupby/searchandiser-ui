@@ -2,8 +2,10 @@ import { Filter } from '../../src/tags/filter/gb-filter';
 import suite, { SelectModel } from './_suite';
 import { expect } from 'chai';
 
-suite<Filter>('gb-filter', ({
-  flux, html, mount, sandbox,
+const MIXIN = { services: { filter: { register: () => null } } };
+
+suite<Filter>('gb-filter', MIXIN, ({
+  flux, html, mount, stub,
   itMountsTag
 }) => {
 
@@ -20,10 +22,7 @@ suite<Filter>('gb-filter', ({
   describe('render with navigation', () => {
     const NAVIGATION = {
       name: 'brand',
-      refinements: [{
-        type: 'Value',
-        value: 'DeWalt'
-      }]
+      refinements: [{ type: 'Value', value: 'DeWalt' }]
     };
     let tag: Filter;
     let model: Model;
@@ -31,44 +30,43 @@ suite<Filter>('gb-filter', ({
     beforeEach(() => {
       tag = mount();
       model = new Model(tag);
-      tag.services.filter = <any>{ isTargetNav: () => true };
+      tag.services.filter = <any>{ isTargetNav: () => true, register: () => null };
       tag.updateValues(<any>{ availableNavigation: [NAVIGATION] });
     });
 
-    it('should render options', () => {
-      expect(html().querySelector('gb-option-list')).to.be.ok;
+    it('should render items', () => {
+      expect(html().querySelector('gb-list')).to.be.ok;
       expect(model.label.textContent).to.eq('Filter');
-      expect(model.options).to.have.length(1);
-      expect(model.options[0].textContent).to.eq('DeWalt');
+      expect(model.items).to.have.length(1);
+      expect(model.items[0].textContent).to.eq('DeWalt');
     });
 
     describe('clear option', () => {
       it('should not render clear option', () => {
-        expect(model.clearOption).to.not.be.ok;
+        expect(model.clearItem).to.not.be.ok;
       });
 
       it('should render clear option when selected', () => {
-        model.options[0].click();
+        model.items[0].click();
 
-        expect(model.clearOption.textContent).to.eq('Unfiltered');
+        expect(model.clearItem.textContent).to.eq('Unfiltered');
       });
 
       it('should call flux.unrefine() on click', (done) => {
-        const unrefineStub = sandbox().stub(flux(), 'unrefine');
-        const refineStub = sandbox().stub(flux(), 'refine');
+        const unrefine = stub(flux(), 'unrefine');
+        const refine = stub(flux(), 'refine');
         flux().results = <any>{ availableNavigation: [NAVIGATION] };
-        flux().reset = () => done();
-        model.options[0].click();
+        flux().reset = (): any => {
+          expect(refine).to.be.called;
+          expect(unrefine).to.be.calledWith(tag.selected);
+          done();
+        };
+        model.items[0].click();
 
-        model.clearOption.click();
-
-        expect(refineStub.called).to.be.true;
-        expect(unrefineStub.calledWith(tag.selected)).to.be.true;
+        model.clearItem.click();
       });
     });
   });
 });
 
-class Model extends SelectModel<Filter> {
-
-}
+class Model extends SelectModel { }

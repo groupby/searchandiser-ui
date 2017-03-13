@@ -1,29 +1,32 @@
 import { FILTER_UPDATED_EVENT } from '../../services/filter';
 import { toRefinement } from '../../utils/common';
-import { SelectConfig, SelectTag } from '../select/gb-select';
+import { meta } from '../../utils/decorators';
+import { Selectable, SelectTag } from '../select/gb-select';
+import { TagMeta } from '../tag';
 import { Results } from 'groupby-api';
 
-export interface FilterConfig extends SelectConfig {
+export interface FilterOpts extends Selectable {
   field: string;
 }
 
-export const DEFAULT_CONFIG: FilterConfig = {
-  field: undefined,
-  label: 'Filter',
-  clear: 'Unfiltered'
+export const META: TagMeta = {
+  defaults: {
+    label: 'Filter',
+    clear: 'Unfiltered'
+  }
 };
 
-export interface Filter extends SelectTag<FilterConfig> { }
+@meta(META)
+export class Filter extends SelectTag<FilterOpts> {
+  field: string;
 
-export class Filter {
-
-  _config: FilterConfig;
   selected: any;
 
   init() {
-    this.configure(DEFAULT_CONFIG);
+    this.expose('selectable');
 
     this.flux.on(FILTER_UPDATED_EVENT, this.updateValues);
+    this.register('filter');
   }
 
   convertRefinements(navigations: any[]): any[] {
@@ -32,20 +35,17 @@ export class Filter {
   }
 
   updateValues(res: Results) {
-    const converted = this.convertRefinements(res.availableNavigation);
-    if (this.tags['gb-select']) {
-      this.tags['gb-select'].updateOptions(converted);
-    } else {
-      this.update({ options: converted });
-    }
+    this.update({ items: this.convertRefinements(res.availableNavigation) });
   }
 
-  onselect(value: any | '*') {
-    if (this.selected) this.flux.unrefine(this.selected, { skipSearch: true });
+  onSelect(value: any | '*') {
+    if (this.selected) {
+      this.flux.unrefine(this.selected, { skipSearch: true });
+    }
     if (value === '*') {
       this.flux.reset();
     } else {
-      this.flux.refine(this.selected = toRefinement(value, <any>{ name: this._config.field }));
+      this.flux.refine(this.selected = toRefinement(value, <any>{ name: this.field }));
     }
   }
 }
