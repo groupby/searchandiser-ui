@@ -54,6 +54,10 @@ export class Navigation extends FluxTag<NavigationOpts> {
     const found = this.processed.find((nav) => nav.name === res.navigation.name);
     if (found) {
       found.refinements = res.navigation.refinements;
+      const selected = this.flux.results.selectedNavigation.find((nav) => nav.name === res.navigation.name);
+      if (selected) {
+        this.markSelected(found, selected);
+      }
     }
     return this.processed;
   }
@@ -73,8 +77,6 @@ export class Navigation extends FluxTag<NavigationOpts> {
   }
 
   markSelected(availableNavigation: any, selectedNavigation: any) {
-    console.log('available', availableNavigation);
-    console.log('selected', selectedNavigation);
     selectedNavigation.refinements.forEach((refinement) => {
       const availableRefinement = availableNavigation.refinements.find((availableRef) => {
         if (availableRef.type === refinement.type) {
@@ -89,24 +91,9 @@ export class Navigation extends FluxTag<NavigationOpts> {
       if (availableRefinement) {
         availableRefinement['selected'] = true;
       } else {
-        selectedNavigation.refinements.unshift(Object.assign(refinement, { selected: true }));
+        availableNavigation.refinements.unshift(Object.assign(refinement, { selected: true }));
       }
     });
-    // availableNavigation.refinements.forEach((refinement) => {
-    //   const selectedRefinement = selectedNavigation.refinements.find((selectedRef) => {
-    //     if (selectedRef.type === refinement.type) {
-    //       if (selectedRef.type === 'Value') {
-    //         return (<any>selectedRef).value === (<any>refinement).value;
-    //       } else {
-    //         return (<any>selectedRef).low === (<any>refinement).low &&
-    //           (<any>selectedRef).high === (<any>refinement).high;
-    //       }
-    //     }
-    //   });
-    //   if (selectedRefinement) {
-    //     refinement['selected'] = true;
-    //   }
-    // });
   }
 
   send(refinement: any, navigation: any) {

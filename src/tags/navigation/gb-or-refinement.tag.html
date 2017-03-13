@@ -4,7 +4,7 @@
       <input type="checkbox" checked="{ !!$refinement.selected }">
       <div class="gb-ref__link">
         <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
-        <gb-badge if="{ $navigable.badge }">{ $refinement.count }</gb-badge>
+        <gb-badge if="{ $navigable.badge && !$refinement.selected }">{ $refinement.count }</gb-badge>
       </div>
     </label>
   </yield>
