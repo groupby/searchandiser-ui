@@ -1,7 +1,6 @@
-import { displayRefinement as toView, toRefinement } from '../../utils/common';
+import { clone, displayRefinement as toView, refinementMatches, toRefinement } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
-import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Results } from 'groupby-api';
 
 export { NavigationInfo }
@@ -78,16 +77,8 @@ export class Navigation extends FluxTag<NavigationOpts> {
 
   markSelected(availableNavigation: any, selectedNavigation: any) {
     selectedNavigation.refinements.forEach((refinement) => {
-      const availableRefinement = availableNavigation.refinements.find((availableRef) => {
-        if (availableRef.type === refinement.type) {
-          if (availableRef.type === 'Value') {
-            return (<any>availableRef).value === (<any>refinement).value;
-          } else {
-            return (<any>availableRef).low === (<any>refinement).low &&
-              (<any>availableRef).high === (<any>refinement).high;
-          }
-        }
-      });
+      const availableRefinement = availableNavigation.refinements
+        .find((availableRef) => refinementMatches(availableRef, refinement));
       if (availableRefinement) {
         availableRefinement['selected'] = true;
       } else {

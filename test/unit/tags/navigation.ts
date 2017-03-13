@@ -1,5 +1,6 @@
 import { META, Navigation } from '../../../src/tags/navigation/gb-navigation';
 import { displayRefinement } from '../../../src/utils/common';
+import * as common from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -48,6 +49,8 @@ suite('gb-navigation', Navigation, ({
 
   describe('replaceRefinements()', () => {
     it('should replace refinements', () => {
+      const markSelected = stub(tag(), 'markSelected');
+      tag().flux.results = <any>{ selectedNavigation: [] };
       tag().processed = <any>[
         {
           name: 'a',
@@ -76,40 +79,115 @@ suite('gb-navigation', Navigation, ({
       expect(processed[2].refinements).to.have.length(2);
       expect((<any>processed[2].refinements[0]).value).to.eq('m');
       expect((<any>processed[2].refinements[1]).value).to.eq('n');
+      expect(markSelected).to.not.be.called;
+    });
+
+    it('should not replace refinements', () => {
+      tag().processed = [];
+
+      const processed = tag().replaceRefinements(<any>{
+        navigation: {
+          name: 'e',
+          refinements: [{ type: 'Value', value: 'n' }]
+        }
+      });
+
+      expect(processed).to.have.length(0);
+    });
+
+    it('should mark selected refinements', () => {
+      const markSelected = stub(tag(), 'markSelected');
+      const availableNavigation: any = { name: 'a', refinements: [] };
+      const selectedNavigation: any = { name: 'a' };
+      tag().flux.results = <any>{ selectedNavigation: [selectedNavigation] };
+      tag().processed = [availableNavigation];
+
+      tag().replaceRefinements(<any>{ navigation: { name: 'a' } });
+
+      expect(markSelected).to.be.calledWith(availableNavigation, selectedNavigation);
     });
   });
 
   describe('processNavigations()', () => {
-    it('should process and navigations', () => {
-      const availableNavigation = [
-        { name: 'a', refinements: [{ type: 'Value', value: 'b' }] },
-        { name: 'c', refinements: [{ type: 'Value', value: 'b' }] },
-        { name: 'e', refinements: [{ type: 'Value', value: 'f' }] }
-      ];
-      const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }] }];
-      const results: any = { availableNavigation, selectedNavigation };
+    it('should clone availableNavigation', () => {
+      const availableNavigation = [{ a: 'b' }];
+      const processed = [];
+      const clone = stub(common, 'clone').returns(processed);
 
-      const processed = tag().processNavigations(results);
+      const actualProcessed = tag().processNavigations(<any>{ availableNavigation, selectedNavigation: [] });
 
-      expect(processed).to.eql([
-        availableNavigation[0],
-        Object.assign(availableNavigation[1], { selected: selectedNavigation[0].refinements }),
-        availableNavigation[2]
-      ]);
+      expect(actualProcessed).to.eq(processed);
+      expect(clone).to.be.calledWith(availableNavigation);
     });
 
-    it('should process or navigations', () => {
-      const availableNavigation = [
-        { name: 'a', refinements: [{ type: 'Value', value: 'b' }] },
-        { name: 'c', refinements: [{ type: 'Value', value: 'b' }], or: true },
-        { name: 'e', refinements: [{ type: 'Value', value: 'f' }] }
-      ];
-      const selectedNavigation = [{ name: 'c', refinements: [{ type: 'Value', value: 'd' }], or: true }];
-      const results: any = { availableNavigation, selectedNavigation };
+    it('should pass matching navigation to markSelected()', () => {
+      const available1 = { name: 'a' };
+      const available2 = { name: 'b' };
+      const selected1 = { name: 'b' };
+      const selected2 = { name: 'a' };
+      const markSelected = stub(tag(), 'markSelected');
 
-      const processed = tag().processNavigations(results);
+      tag().processNavigations(<any>{
+        availableNavigation: [available1, available2],
+        selectedNavigation: [selected1, selected2]
+      });
 
-      expect(processed).to.eql(availableNavigation);
+      expect(markSelected).to.be.calledTwice;
+      expect(markSelected).to.be.calledWith(available1, selected2);
+      expect(markSelected).to.be.calledWith(available2, selected1);
+    });
+
+    it('orphaned selected navigations should be pushed to the top', () => {
+      const selected = { name: 'a', refinements: <any[]>[{}, {}] };
+
+      const processed = tag().processNavigations(<any>{ availableNavigation: [], selectedNavigation: [selected] });
+
+      expect(processed[0]).to.eq(selected);
+      selected.refinements.forEach((refinement) => expect(refinement.selected).to.be.true);
+    });
+  });
+
+  describe('markSelected()', () => {
+    it('should check for refinement matches', () => {
+      const available1 = {};
+      const available2 = {};
+      const selected1 = {};
+      const selected2 = {};
+      const refinementMatches = stub(common, 'refinementMatches');
+
+      tag().markSelected(
+        {
+          refinements: [available1, available2]
+        },
+        {
+          refinements: [selected1, selected2]
+        });
+
+      expect(refinementMatches).to.be.calledWith(available1, selected1);
+      expect(refinementMatches).to.be.calledWith(available2, selected1);
+      expect(refinementMatches).to.be.calledWith(available1, selected2);
+      expect(refinementMatches).to.be.calledWith(available2, selected2);
+    });
+
+    it('should select matching refinements', () => {
+      const available: any = {};
+      const selected = {};
+      stub(common, 'refinementMatches').returns(true);
+
+      tag().markSelected({ refinements: [available] }, { refinements: [selected] });
+
+      expect(available.selected).to.be.true;
+    });
+
+    it('should add orphan selected refinements', () => {
+      const availableNavigation = { refinements: [{}] };
+      const selected = {};
+      stub(common, 'refinementMatches');
+
+      tag().markSelected(availableNavigation, { refinements: [selected] });
+
+      expect(availableNavigation.refinements).to.have.length(2);
+      expect(availableNavigation.refinements[0]).to.eq(selected);
     });
   });
 
