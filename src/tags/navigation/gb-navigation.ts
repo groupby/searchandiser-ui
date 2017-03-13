@@ -75,21 +75,38 @@ export class Navigation extends FluxTag<NavigationOpts> {
   markSelected(availableNavigation: any, selectedNavigation: any) {
     console.log('available', availableNavigation);
     console.log('selected', selectedNavigation);
-    availableNavigation.refinements.forEach((refinement) => {
-      const selectedRefinement = selectedNavigation.refinements.find((selectedRef) => {
-        if (selectedRef.type === refinement.type) {
-          if (selectedRef.type === 'Value') {
-            return (<any>selectedRef).value === (<any>refinement).value;
+    selectedNavigation.refinements.forEach((refinement) => {
+      const availableRefinement = availableNavigation.refinements.find((availableRef) => {
+        if (availableRef.type === refinement.type) {
+          if (availableRef.type === 'Value') {
+            return (<any>availableRef).value === (<any>refinement).value;
           } else {
-            return (<any>selectedRef).low === (<any>refinement).low &&
-              (<any>selectedRef).high === (<any>refinement).high;
+            return (<any>availableRef).low === (<any>refinement).low &&
+              (<any>availableRef).high === (<any>refinement).high;
           }
         }
       });
-      if (selectedRefinement) {
-        refinement['selected'] = true;
+      if (availableRefinement) {
+        availableRefinement['selected'] = true;
+      } else {
+        selectedNavigation.refinements.unshift(Object.assign(refinement, { selected: true }));
       }
     });
+    // availableNavigation.refinements.forEach((refinement) => {
+    //   const selectedRefinement = selectedNavigation.refinements.find((selectedRef) => {
+    //     if (selectedRef.type === refinement.type) {
+    //       if (selectedRef.type === 'Value') {
+    //         return (<any>selectedRef).value === (<any>refinement).value;
+    //       } else {
+    //         return (<any>selectedRef).low === (<any>refinement).low &&
+    //           (<any>selectedRef).high === (<any>refinement).high;
+    //       }
+    //     }
+    //   });
+    //   if (selectedRefinement) {
+    //     refinement['selected'] = true;
+    //   }
+    // });
   }
 
   send(refinement: any, navigation: any) {
