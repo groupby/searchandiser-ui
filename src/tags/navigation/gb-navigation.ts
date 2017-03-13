@@ -58,36 +58,23 @@ export class Navigation extends FluxTag<NavigationOpts> {
     return this.processed;
   }
 
-  processNavigations({ selectedNavigation, availableNavigation }: Results) {
-    const processed = <SelectionNavigation[]>clone(availableNavigation);
-    selectedNavigation.forEach((selNav) => {
-      const availNav = processed.find((nav) => nav.name === selNav.name);
-      if (availNav) {
-        availNav.refinements.forEach((refinement) => {
-          const selectedRefinement = selNav.refinements.find((selectedRef) => {
-            if (selectedRef.type === refinement.type) {
-              if (selectedRef.type === 'Value') {
-                return (<any>selectedRef).value === (<any>refinement).value;
-              } else {
-                return (<any>selectedRef).low === (<any>refinement).low &&
-                  (<any>selectedRef).high === (<any>refinement).high;
-              }
-            }
-          });
-          if (selectedRefinement) {
-            refinement['selected'] = true;
-          }
-        });
+  processNavigations({ availableNavigation: available, selectedNavigation: selected }: Results) {
+    const processed = <SelectionNavigation[]>clone(available);
+    selected.forEach((selectedNav) => {
+      const availableNav = processed.find((nav) => nav.name === selectedNav.name);
+      if (availableNav) {
+        this.markSelected(availableNav, selectedNav);
       } else {
-        selNav.refinements.forEach((refinement) => refinement['selected'] = true);
-        processed.unshift(<any>selNav);
+        selectedNav.refinements.forEach((refinement) => refinement['selected'] = true);
+        processed.unshift(<any>selectedNav);
       }
     });
-    console.log(processed);
     return processed;
   }
 
   markSelected(availableNavigation: any, selectedNavigation: any) {
+    console.log('available', availableNavigation);
+    console.log('selected', selectedNavigation);
     availableNavigation.refinements.forEach((refinement) => {
       const selectedRefinement = selectedNavigation.refinements.find((selectedRef) => {
         if (selectedRef.type === refinement.type) {
