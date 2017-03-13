@@ -19,7 +19,7 @@ suite<Navigation>('gb-navigation', ({
     });
   });
 
-  describe.skip('render with refinements', () => {
+  describe('render with refinements', () => {
     const NAVIGATIONS = [{
       name: 'main',
       displayName: 'Main',
