@@ -1,8 +1,8 @@
 <gb-or-refinement>
   <yield>
-    <label class="gb-ref">
-      <input type="checkbox" name="refinementSelected" checked="{ $refinement.selected ? true : false }">
-      <div class="gb-ref__link" id="refinementSelected" onclick="{ $refinement.selected ? remove : send }">
+    <label class="gb-ref" onclick="{ $refinement.selected ? remove : send }">
+      <input type="checkbox" checked="{ !!$refinement.selected }">
+      <div class="gb-ref__link">
         <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
         <gb-badge if="{ $navigable.badge }">{ $refinement.count }</gb-badge>
       </div>

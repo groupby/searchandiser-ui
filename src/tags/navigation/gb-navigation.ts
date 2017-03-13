@@ -61,36 +61,48 @@ export class Navigation extends FluxTag<NavigationOpts> {
   processNavigations({ selectedNavigation, availableNavigation }: Results) {
     const processed = <SelectionNavigation[]>clone(availableNavigation);
     selectedNavigation.forEach((selNav) => {
-      if (!selNav.or) {
-        const availNav = processed.find((nav) => nav.name === selNav.name);
-        if (availNav) {
-          availNav.selected = selNav.refinements;
-        } else {
-          processed.unshift(Object.assign({}, selNav, { selected: selNav.refinements, refinements: [] }));
-        }
-      } else {
-        const availNav = processed.find((nav) => nav.name === selNav.name && nav.or);
-        if (availNav) {
-          availNav.refinements.forEach((refinement) => {
-            const selectedRefinement = selNav.refinements.find((selectedRef) => {
-              if (selectedRef.type === refinement.type) {
-                if (selectedRef.type === 'Value') {
-                  return (<any>selectedRef).value === (<any>refinement).value;
-                } else {
-                  return (<any>selectedRef).low === (<any>refinement).low &&
-                    (<any>selectedRef).high === (<any>refinement).high;
-                }
+      const availNav = processed.find((nav) => nav.name === selNav.name);
+      if (availNav) {
+        availNav.refinements.forEach((refinement) => {
+          const selectedRefinement = selNav.refinements.find((selectedRef) => {
+            if (selectedRef.type === refinement.type) {
+              if (selectedRef.type === 'Value') {
+                return (<any>selectedRef).value === (<any>refinement).value;
+              } else {
+                return (<any>selectedRef).low === (<any>refinement).low &&
+                  (<any>selectedRef).high === (<any>refinement).high;
               }
-            });
-            if (selectedRefinement) {
-              refinement['selected'] = true;
             }
           });
-        }
+          if (selectedRefinement) {
+            refinement['selected'] = true;
+          }
+        });
+      } else {
+        selNav.refinements.forEach((refinement) => refinement['selected'] = true);
+        processed.unshift(<any>selNav);
       }
     });
     console.log(processed);
     return processed;
+  }
+
+  markSelected(availableNavigation: any, selectedNavigation: any) {
+    availableNavigation.refinements.forEach((refinement) => {
+      const selectedRefinement = selectedNavigation.refinements.find((selectedRef) => {
+        if (selectedRef.type === refinement.type) {
+          if (selectedRef.type === 'Value') {
+            return (<any>selectedRef).value === (<any>refinement).value;
+          } else {
+            return (<any>selectedRef).low === (<any>refinement).low &&
+              (<any>selectedRef).high === (<any>refinement).high;
+          }
+        }
+      });
+      if (selectedRefinement) {
+        refinement['selected'] = true;
+      }
+    });
   }
 
   send(refinement: any, navigation: any) {
