@@ -1,12 +1,10 @@
 <gb-and-refinement>
   <yield>
-    <div class="gb-ref">
-      <a class="gb-ref__link" onclick="{ $refinement.selected ? remove : send }">
-        <span class="gb-remove-ref" if="{ $refinement.selected }">&times;</span>
-        <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
-        <gb-badge if="{ $navigable.badge && !$refinement.selected }">{ $refinement.count }</gb-badge>
-      </a>
-    </div>
+    <a class="gb-ref__link" onclick="{ $refinement.selected ? remove : send }">
+      <span class="gb-remove-ref" if="{ $refinement.selected }">&times;</span>
+      <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
+      <gb-badge if="{ $navigable.badge && !$refinement.selected }">{ $refinement.count }</gb-badge>
+    </a>
   </yield>
 
   <script>
@@ -15,10 +13,6 @@
   </script>
 
   <style>
-    :scope.gb-stylish > .gb-ref {
-      list-style: none;
-    }
-
     :scope.gb-stylish .gb-ref__link {
       cursor: pointer;
       display: flex;
@@ -28,7 +22,6 @@
       font-size: 14px;
       text-decoration: none;
       align-items: baseline;
-      justify-content: space-between;
       position: relative;
     }
 
