@@ -4,8 +4,9 @@
       <h4 class="gb-navigation-title">{ $navigation.displayName }</h4>
       <ul>
         <li data-is="gb-or-refinement" if="{ $navigation.or }" each="{ refinement in $navigation.refinements }"></li>
-        <li data-is="gb-selected-refinement" if="{ !$navigation.or && $navigable.showSelected }" each="{ refinement in selectedRefinements() }"></li>
-        <li data-is="gb-available-refinement" if="{ !$navigation.or }" each="{ refinement in availableRefinements() }"></li>
+        <li data-is="gb-and-refinement" if="{ !$navigation.or }" each="{ refinement in $navigation.refinements }"></li>
+        <!-- <li data-is="gb-selected-refinement" if="{ !$navigation.or && $navigable.showSelected }" each="{ refinement in selectedRefinements() }"></li>
+        <li data-is="gb-available-refinement" if="{ !$navigation.or }" each="{ refinement in availableRefinements() }"></li> -->
         <li data-is="gb-more-refinements" if="{ $navigation.moreRefinements }"></li>
       </ul>
     </div>

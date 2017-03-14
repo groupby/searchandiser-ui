@@ -1,0 +1,54 @@
+<gb-and-refinement>
+  <yield>
+    <div class="gb-ref">
+      <a class="gb-ref__link" onclick="{ $refinement.selected ? remove : send }">
+        <span class="gb-remove-ref" if="{ $refinement.selected }">&times;</span>
+        <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
+        <gb-badge if="{ $navigable.badge && !$refinement.selected }">{ $refinement.count }</gb-badge>
+      </a>
+    </div>
+  </yield>
+
+  <script>
+    import { Refinement } from './gb-refinement';
+    this._mixin(Refinement);
+  </script>
+
+  <style>
+    :scope.gb-stylish > .gb-ref {
+      list-style: none;
+    }
+
+    :scope.gb-stylish .gb-ref__link {
+      cursor: pointer;
+      display: flex;
+      padding: 4px 6px;
+      border-radius: 4px;
+      color: black;
+      font-size: 14px;
+      text-decoration: none;
+      align-items: baseline;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    :scope.gb-stylish .gb-ref__link:hover {
+      background-color: #ddd;
+    }
+
+    :scope.gb-stylish .gb-ref__link .gb-remove-ref {
+      position: absolute;
+      left: -10px;
+      top: 3px;
+    }
+
+    :scope.gb-stylish .gb-ref__link:hover .gb-remove-ref {
+      color: #be0000;
+      font-weight: bold;
+    }
+
+    :scope.gb-stylish .gb-ref__title {
+      flex-grow: 1;
+    }
+  </style>
+</gb-and-refinement>

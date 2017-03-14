@@ -1,3 +1,4 @@
+import './gb-and-refinement.tag.html';
 import './gb-available-refinement.tag.html';
 import './gb-more-refinements.tag.html';
 import './gb-navigation.tag.html';
