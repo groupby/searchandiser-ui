@@ -147,7 +147,7 @@ suite('gb-navigation', Navigation, ({
     });
   });
 
-  describe.only('mergeRefinements()', () => {
+  describe('mergeRefinements()', () => {
     it('should check for refinement matches', () => {
       const available1 = {};
       const available2 = {};
@@ -194,11 +194,25 @@ suite('gb-navigation', Navigation, ({
       const ref1 = {};
       const ref2 = {};
       const availableNavigation = { refinements: [ref1, ref2] };
+      const sortRefinements = stub(tag(), 'sortRefinements');
+      tag().hoistSelected = true;
       stub(common, 'refinementMatches');
 
       tag().mergeRefinements(availableNavigation, { refinements: [] });
 
-      expect(availableNavigation.refinements).to.have.length(2);
+      expect(sortRefinements).to.be.calledOnce;
+      expect(sortRefinements).to.be.calledWith(ref1, ref2);
+    });
+
+    it('should not sort when hoistSelected is false', () => {
+      const availableNavigation = { refinements: [{}, {}] };
+      const sortRefinements = stub(tag(), 'sortRefinements');
+      tag().hoistSelected = false;
+      stub(common, 'refinementMatches');
+
+      tag().mergeRefinements(availableNavigation, { refinements: [] });
+
+      expect(sortRefinements).to.not.be.called;
     });
   });
 

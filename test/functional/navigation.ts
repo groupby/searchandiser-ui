@@ -4,7 +4,7 @@ import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite<Navigation>('gb-navigation', ({
+suite.only<Navigation>('gb-navigation', ({
   flux, html, mount, stub,
   itMountsTag
 }) => {
@@ -23,18 +23,18 @@ suite<Navigation>('gb-navigation', ({
     const NAVIGATIONS = [{
       name: 'main',
       displayName: 'Main',
+      or: true,
       refinements: [
         { value: 'Pick up', type: 'Value', count: 12345 },
-        { value: 'Deliver', type: 'Value', count: 123 }
+        { value: 'Deliver', type: 'Value', count: 123, selected: true }
       ]
     }, {
       name: 'category',
       displayName: 'Category',
       refinements: [
-        { value: 'Health', type: 'Value', count: 200 },
+        { value: 'Health', type: 'Value', count: 200, selected: true },
         { value: 'Items', type: 'Value', count: 59234 }
-      ],
-      selected: [{ value: 'Grocery', type: 'Value', count: 52 }]
+      ]
     }];
     let tag: Navigation;
     let model: Model;
@@ -45,23 +45,32 @@ suite<Navigation>('gb-navigation', ({
       tag.update({ processed: NAVIGATIONS });
     });
 
-    it('should render refinements', () => {
+    it.only('should render refinements', () => {
       expect(html().querySelector('li[data-is="gb-refinement-list"]')).to.be.ok;
       expect(html().querySelector('#main')).to.be.ok;
       expect(html().querySelector('#category')).to.be.ok;
-      expect(html().querySelector('li[data-is="gb-available-refinement"]')).to.be.ok;
-      expect(html().querySelector('li[data-is="gb-selected-refinement"]')).to.be.ok;
       expect(html().querySelectorAll('.gb-navigation-title')[0].textContent).to.eq('Main');
-      expect(html().querySelectorAll('.gb-ref__title')[0].textContent).to.eq('Pick up');
-      expect(html().querySelectorAll('gb-badge span')[0].textContent).to.eq('12345');
-      expect(html().querySelectorAll('.gb-ref__title')[1].textContent).to.eq('Deliver');
-      expect(html().querySelectorAll('gb-badge span')[1].textContent).to.eq('123');
       expect(html().querySelectorAll('.gb-navigation-title')[1].textContent).to.eq('Category');
-      expect(html().querySelectorAll('.gb-ref__title')[2].textContent).to.eq('Health');
-      expect(html().querySelectorAll('gb-badge span')[2].textContent).to.eq('200');
-      expect(html().querySelectorAll('.gb-ref__title')[3].textContent).to.eq('Items');
-      expect(html().querySelectorAll('gb-badge span')[3].textContent).to.eq('59234');
-      expect(html().querySelector('.gb-ref__value').textContent).to.eq('Grocery');
+      expect(model.refinements[0].querySelector('.gb-remove-ref')).to.not.be.ok;
+      expect(model.refinementTitles[0].textContent).to.eq('Pick up');
+      expect(model.refinementInputs[0].type).to.eq('checkbox');
+      expect(model.refinementInputs[0].checked).to.be.false;
+      expect(model.refinements[0].querySelector('gb-badge span').textContent).to.eq('12345');
+      expect(model.refinements[1].querySelector('.gb-remove-ref')).to.not.be.ok;
+      expect(model.refinementTitles[1].textContent).to.eq('Deliver');
+      expect(model.refinementInputs[1].type).to.eq('checkbox');
+      expect(model.refinementInputs[1].checked).to.be.true;
+      expect(model.refinements[1].querySelector('gb-badge span')).to.not.be.ok;
+      expect(model.refinements[2].querySelector('.gb-remove-ref')).to.be.ok;
+      expect(model.refinementTitles[2].textContent).to.eq('Health');
+      expect(model.refinementInputs[2].type).to.eq('button');
+      expect(model.refinementInputs[2].checked).to.be.true;
+      expect(model.refinements[2].querySelector('gb-badge span')).to.not.be.ok;
+      expect(model.refinements[3].querySelector('.gb-remove-ref')).to.not.be.ok;
+      expect(model.refinementTitles[3].textContent).to.eq('Items');
+      expect(model.refinementInputs[3].type).to.eq('button');
+      expect(model.refinementInputs[3].checked).to.be.false;
+      expect(model.refinements[3].querySelector('gb-badge span').textContent).to.eq('59234');
     });
 
     describe('refine()', () => {
@@ -218,11 +227,19 @@ class Model extends BaseModel<Navigation> {
     return this.list(this.html, '.gb-ref__title');
   }
 
-  get selectedRefinement() {
-    return this.element(this.html, 'li[data-is="gb-selected-refinement"]');
+  // get selectedRefinement() {
+  //   return this.element(this.html, 'li[data-is="gb-selected-refinement"]');
+  // }
+
+  get refinements() {
+    return this.list(this.html, 'li[data-is="gb-refinement"]');
   }
 
   get moreRefinementsLink() {
     return this.element(this.html, 'li[data-is="gb-more-refinements"] a');
+  }
+
+  get refinementInputs() {
+    return this.list<HTMLInputElement>(this.html, '.gb-ref input');
   }
 }

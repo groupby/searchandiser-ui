@@ -21,9 +21,3 @@ export class Refinement extends FluxTag<any> {
     return this.$navigable.remove(this.refinement, this.$navigation);
   }
 }
-
-export class AvailableRefinement extends Refinement {
-}
-
-export class SelectedRefinement extends Refinement {
-}
