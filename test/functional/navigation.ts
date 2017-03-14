@@ -4,7 +4,7 @@ import suite, { BaseModel } from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite.only<Navigation>('gb-navigation', ({
+suite<Navigation>('gb-navigation', ({
   flux, html, mount, stub,
   itMountsTag
 }) => {
@@ -220,19 +220,19 @@ suite.only<Navigation>('gb-navigation', ({
     });
 
     it('should show more refinements on click', () => {
-      const refinements = stub(flux(), 'refinements')
-      // const refinements = stub(flux(), 'refinements', () =>
-      //   flux().emit(Events.REFINEMENT_RESULTS, {
-      //     navigation: {
-      //       name: 'main', displayName: 'Main',
-      //       refinements: [
-      //         { value: 'Pick up', type: 'Value', count: 12345 },
-      //         { value: 'Deliver', type: 'Value', count: 123 },
-      //         { value: 'Third', type: 'Value', count: 3 }
-      //       ],
-      //     }
-      //   }));
-      tag.processed = <any>[{ name: 'main', moreRefinements: true }];
+      flux().results = <any>{ selectedNavigation: [] };
+      const refinements = stub(flux(), 'refinements', () =>
+        flux().emit(Events.REFINEMENT_RESULTS, {
+          navigation: {
+            name: 'main', displayName: 'Main',
+            refinements: [
+              { value: 'Pick up', type: 'Value', count: 12345 },
+              { value: 'Deliver', type: 'Value', count: 123 },
+              { value: 'Third', type: 'Value', count: 3 }
+            ]
+          }
+        }));
+      tag.processed = <any>[{ name: 'main', moreRefinements: true, selectedNavigation: {} }];
       tag.update();
 
       expect(model.refinementTitles).to.have.length(0);
