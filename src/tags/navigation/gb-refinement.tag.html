@@ -1,7 +1,8 @@
-<gb-or-refinement>
+<gb-refinement>
   <yield>
     <label class="gb-ref" onclick="{ $refinement.selected ? remove : send }">
-      <input type="checkbox" checked="{ !!$refinement.selected }">
+      <span class="gb-remove-ref" if="{ !$navigation.or && $refinement.selected }">&times;</span>
+      <input class="{ gb-ref-button: !$navigation.or }" type="{ $navigation.or ? 'checkbox' : 'button' }" checked="{ !!$refinement.selected }">
       <span class="gb-ref__title">{ $navigable.toView($refinement) }</span>
       <gb-badge if="{ $navigable.badge && !$refinement.selected }">{ $refinement.count }</gb-badge>
     </label>
@@ -14,13 +15,13 @@
 
   <style>
     :scope.gb-stylish > .gb-ref {
+      position: relative;
       display: flex;
       padding: 4px 6px;
       border-radius: 4px;
       color: black;
       font-size: 14px;
-      align-items: baseline;
-      list-style: none;
+      align-items: flex-end;
       cursor: pointer;
     }
 
@@ -28,9 +29,24 @@
       background-color: #ddd;
     }
 
+    :scope.gb-stylish .gb-remove-ref {
+      position: absolute;
+      left: -10px;
+      top: 3px;
+    }
+
+    :scope.gb-stylish .gb-ref:hover .gb-remove-ref {
+      color: #be0000;
+      font-weight: bold;
+    }
+
+    .gb-ref-button {
+      display: none;
+    }
+
     :scope.gb-stylish .gb-ref__title {
       padding-left: 6px;
       flex-grow: 1;
     }
   </style>
-</gb-or-refinement>
+</gb-refinement>

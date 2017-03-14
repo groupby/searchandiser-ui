@@ -3,8 +3,7 @@
     <div id="{ $navigation.name }">
       <h4 class="gb-navigation-title">{ $navigation.displayName }</h4>
       <ul>
-        <li data-is="gb-or-refinement" if="{ $navigation.or }" each="{ refinement in $navigation.refinements }"></li>
-        <li data-is="gb-and-refinement" if="{ !$navigation.or }" each="{ refinement in $navigation.refinements }"></li>
+        <li data-is="gb-refinement" each="{ refinement in $navigation.refinements }"></li>
         <li data-is="gb-more-refinements" if="{ $navigation.moreRefinements }"></li>
       </ul>
     </div>
