@@ -17,11 +17,13 @@ export interface SelectionNavigation extends NavModel {
 export const META: TagMeta = {
   defaults: {
     badge: true,
-    showSelected: true
+    showSelected: true,
+    hoistSelected: true
   },
   types: {
     badge: 'boolean',
-    showSelected: 'boolean'
+    showSelected: 'boolean',
+    hoistSelected: 'boolean'
   }
 };
 
@@ -30,6 +32,7 @@ export class Navigation extends FluxTag<NavigationOpts> {
 
   badge: boolean;
   showSelected: boolean;
+  hoistSelected: boolean;
 
   processed: SelectionNavigation[];
 
@@ -55,7 +58,7 @@ export class Navigation extends FluxTag<NavigationOpts> {
       found.refinements = res.navigation.refinements;
       const selected = this.flux.results.selectedNavigation.find((nav) => nav.name === res.navigation.name);
       if (selected) {
-        this.markSelected(found, selected);
+        this.mergeRefinements(found, selected);
       }
     }
     return this.processed;
@@ -66,7 +69,7 @@ export class Navigation extends FluxTag<NavigationOpts> {
     selected.forEach((selectedNav) => {
       const availableNav = processed.find((nav) => nav.name === selectedNav.name);
       if (availableNav) {
-        this.markSelected(availableNav, selectedNav);
+        this.mergeRefinements(availableNav, selectedNav);
       } else {
         selectedNav.refinements.forEach((refinement) => refinement['selected'] = true);
         processed.unshift(<any>selectedNav);
@@ -75,7 +78,7 @@ export class Navigation extends FluxTag<NavigationOpts> {
     return processed;
   }
 
-  markSelected(availableNavigation: any, selectedNavigation: any) {
+  mergeRefinements(availableNavigation: any, selectedNavigation: any) {
     selectedNavigation.refinements.forEach((refinement) => {
       const availableRefinement = availableNavigation.refinements
         .find((availableRef) => refinementMatches(availableRef, refinement));
@@ -85,6 +88,20 @@ export class Navigation extends FluxTag<NavigationOpts> {
         availableNavigation.refinements.unshift(Object.assign(refinement, { selected: true }));
       }
     });
+
+    if (this.hoistSelected) {
+      availableNavigation.refinements = availableNavigation.refinements.sort(this.sortRefinements);
+    }
+  }
+
+  sortRefinements(lhs: any, rhs: any) {
+    if (!lhs.selected && !rhs.selected) {
+      return 1;
+    } else if (lhs.selected === rhs.selected) {
+      return lhs.value.localeCompare(rhs.value);
+    } else {
+      return lhs.selected ? -1 : 1;
+    }
   }
 
   send(refinement: any, navigation: any) {

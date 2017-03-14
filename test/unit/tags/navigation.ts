@@ -49,7 +49,7 @@ suite('gb-navigation', Navigation, ({
 
   describe('replaceRefinements()', () => {
     it('should replace refinements', () => {
-      const markSelected = stub(tag(), 'markSelected');
+      const mergeRefinements = stub(tag(), 'mergeRefinements');
       tag().flux.results = <any>{ selectedNavigation: [] };
       tag().processed = <any>[
         {
@@ -79,7 +79,7 @@ suite('gb-navigation', Navigation, ({
       expect(processed[2].refinements).to.have.length(2);
       expect((<any>processed[2].refinements[0]).value).to.eq('m');
       expect((<any>processed[2].refinements[1]).value).to.eq('n');
-      expect(markSelected).to.not.be.called;
+      expect(mergeRefinements).to.not.be.called;
     });
 
     it('should not replace refinements', () => {
@@ -96,7 +96,7 @@ suite('gb-navigation', Navigation, ({
     });
 
     it('should mark selected refinements', () => {
-      const markSelected = stub(tag(), 'markSelected');
+      const mergeRefinements = stub(tag(), 'mergeRefinements');
       const availableNavigation: any = { name: 'a', refinements: [] };
       const selectedNavigation: any = { name: 'a' };
       tag().flux.results = <any>{ selectedNavigation: [selectedNavigation] };
@@ -104,7 +104,7 @@ suite('gb-navigation', Navigation, ({
 
       tag().replaceRefinements(<any>{ navigation: { name: 'a' } });
 
-      expect(markSelected).to.be.calledWith(availableNavigation, selectedNavigation);
+      expect(mergeRefinements).to.be.calledWith(availableNavigation, selectedNavigation);
     });
   });
 
@@ -120,21 +120,21 @@ suite('gb-navigation', Navigation, ({
       expect(clone).to.be.calledWith(availableNavigation);
     });
 
-    it('should pass matching navigation to markSelected()', () => {
+    it('should pass matching navigation to mergeRefinements()', () => {
       const available1 = { name: 'a' };
       const available2 = { name: 'b' };
       const selected1 = { name: 'b' };
       const selected2 = { name: 'a' };
-      const markSelected = stub(tag(), 'markSelected');
+      const mergeRefinements = stub(tag(), 'mergeRefinements');
 
       tag().processNavigations(<any>{
         availableNavigation: [available1, available2],
         selectedNavigation: [selected1, selected2]
       });
 
-      expect(markSelected).to.be.calledTwice;
-      expect(markSelected).to.be.calledWith(available1, selected2);
-      expect(markSelected).to.be.calledWith(available2, selected1);
+      expect(mergeRefinements).to.be.calledTwice;
+      expect(mergeRefinements).to.be.calledWith(available1, selected2);
+      expect(mergeRefinements).to.be.calledWith(available2, selected1);
     });
 
     it('orphaned selected navigations should be pushed to the top', () => {
@@ -147,7 +147,7 @@ suite('gb-navigation', Navigation, ({
     });
   });
 
-  describe('markSelected()', () => {
+  describe.only('mergeRefinements()', () => {
     it('should check for refinement matches', () => {
       const available1 = {};
       const available2 = {};
@@ -155,7 +155,7 @@ suite('gb-navigation', Navigation, ({
       const selected2 = {};
       const refinementMatches = stub(common, 'refinementMatches');
 
-      tag().markSelected(
+      tag().mergeRefinements(
         {
           refinements: [available1, available2]
         },
@@ -174,7 +174,7 @@ suite('gb-navigation', Navigation, ({
       const selected = {};
       stub(common, 'refinementMatches').returns(true);
 
-      tag().markSelected({ refinements: [available] }, { refinements: [selected] });
+      tag().mergeRefinements({ refinements: [available] }, { refinements: [selected] });
 
       expect(available.selected).to.be.true;
     });
@@ -184,10 +184,40 @@ suite('gb-navigation', Navigation, ({
       const selected = {};
       stub(common, 'refinementMatches');
 
-      tag().markSelected(availableNavigation, { refinements: [selected] });
+      tag().mergeRefinements(availableNavigation, { refinements: [selected] });
 
       expect(availableNavigation.refinements).to.have.length(2);
       expect(availableNavigation.refinements[0]).to.eq(selected);
+    });
+
+    it('should sort the resulting refinements', () => {
+      const ref1 = {};
+      const ref2 = {};
+      const availableNavigation = { refinements: [ref1, ref2] };
+      stub(common, 'refinementMatches');
+
+      tag().mergeRefinements(availableNavigation, { refinements: [] });
+
+      expect(availableNavigation.refinements).to.have.length(2);
+    });
+  });
+
+  describe('sortRefinements()', () => {
+    it('should return 1 if neither is selected', () => {
+      expect(tag().sortRefinements({}, {})).to.eq(1);
+    });
+
+    it('should sort selected to the top', () => {
+      expect(tag().sortRefinements({ selected: true }, {})).to.eq(-1);
+      expect(tag().sortRefinements({}, { selected: true })).to.eq(1);
+    });
+
+    it('should sort within selected by value', () => {
+      const ref1 = { selected: true, value: 'b' };
+      const ref2 = { selected: true, value: 'a' };
+
+      expect(tag().sortRefinements(ref2, ref1)).to.eq(-1);
+      expect(tag().sortRefinements(ref1, ref2)).to.eq(1);
     });
   });
 
