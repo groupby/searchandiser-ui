@@ -3,7 +3,7 @@
     <div id="{ $navigation.name }">
       <h4 class="gb-navigation-title">{ $navigation.displayName }</h4>
       <ul>
-        <li data-is="gb-refinement" each="{ refinement in $navigation.refinements }" class="{ gb-selected: refinement.selected }"></li>
+        <li data-is="gb-refinement" if="{ !refinement.selected || $navigable.showSelected }" each="{ refinement in $navigation.refinements }" class="{ gb-selected: refinement.selected }"></li>
       </ul>
       <gb-more-refinements if="{ $navigation.moreRefinements }"></gb-more-refinements>
     </div>
