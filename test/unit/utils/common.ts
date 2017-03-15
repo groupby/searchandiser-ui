@@ -9,6 +9,7 @@ import {
   findTag,
   getParam,
   getPath,
+  refinementMatches,
   remap,
   scopeCss,
   toRefinement,
@@ -78,6 +79,43 @@ describe('utils', () => {
       expect(displayRefinement(ref1)).to.eq(ref1.value);
       expect(displayRefinement(ref2)).to.eq('4 - 5');
     });
+  });
+
+  describe('refinementMatches()', () => {
+    it('should not match if different types', () => {
+      expect(refinementMatches(<any>{ type: 'a' }, <any>{ type: 'b' })).to.be.false;
+    });
+
+    it('should match Value refinements if same value', () => {
+      const ref1: any = { type: 'Value', value: 'abc' };
+      const ref2: any = { type: 'Value', value: 'abc' };
+
+      expect(refinementMatches(ref1, ref2)).to.be.true;
+    });
+
+    it('should not match Value refinements if different value', () => {
+      const ref1: any = { type: 'Value', value: 'abc' };
+      const ref2: any = { type: 'Value', value: 'def' };
+
+      expect(refinementMatches(ref1, ref2)).to.be.false;
+    });
+
+    it('should match Range refinements if same low and high', () => {
+      const ref1: any = { type: 'Range', low: 10, high: 20 };
+      const ref2: any = { type: 'Range', low: 10, high: 20 };
+
+      expect(refinementMatches(ref1, ref2)).to.be.true;
+    });
+
+    it('should not match Range refinements if different low or high', () => {
+      const ref1: any = { type: 'Range', low: 10, high: 20 };
+      const ref2: any = { type: 'Range', low: 10, high: 30 };
+      const ref3: any = { type: 'Range', low: 5, high: 20 };
+
+      expect(refinementMatches(ref1, ref2)).to.be.false;
+      expect(refinementMatches(ref1, ref3)).to.be.false;
+    });
+
   });
 
   describe('checkNested()', () => {

@@ -1,4 +1,5 @@
 import { FluxTag, TypeMap } from '../tags/tag';
+import * as clone from 'clone';
 import * as debounce from 'debounce';
 import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
 import * as queryString from 'query-string';
@@ -6,7 +7,7 @@ import filterObject = require('filter-object');
 import oget = require('oget');
 import * as riot from 'riot';
 
-export { debounce }
+export { clone, debounce };
 
 export type Refinement = ValueRefinement & RangeRefinement;
 
@@ -39,6 +40,18 @@ export function toRefinement(ref: Refinement, nav: Navigation) {
 
 export function displayRefinement(ref: Refinement) {
   return ref.type === 'Value' ? ref.value : `${ref.low} - ${ref.high}`;
+}
+
+export function refinementMatches(lhs: Refinement, rhs: Refinement): boolean {
+  if (lhs.type === rhs.type) {
+    if (lhs.type === 'Value') {
+      return lhs.value === rhs.value;
+    } else {
+      return lhs.low === rhs.low && lhs.high === rhs.high;
+    }
+  } else {
+    return false;
+  }
 }
 
 export function checkNested(obj: any, ...keys: string[]): boolean {

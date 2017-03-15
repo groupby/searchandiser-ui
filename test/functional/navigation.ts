@@ -23,18 +23,18 @@ suite<Navigation>('gb-navigation', ({
     const NAVIGATIONS = [{
       name: 'main',
       displayName: 'Main',
+      or: true,
       refinements: [
         { value: 'Pick up', type: 'Value', count: 12345 },
-        { value: 'Deliver', type: 'Value', count: 123 }
+        { value: 'Deliver', type: 'Value', count: 123, selected: true }
       ]
     }, {
       name: 'category',
       displayName: 'Category',
       refinements: [
-        { value: 'Health', type: 'Value', count: 200 },
+        { value: 'Health', type: 'Value', count: 200, selected: true },
         { value: 'Items', type: 'Value', count: 59234 }
-      ],
-      selected: [{ value: 'Grocery', type: 'Value', count: 52 }]
+      ]
     }];
     let tag: Navigation;
     let model: Model;
@@ -49,24 +49,58 @@ suite<Navigation>('gb-navigation', ({
       expect(html().querySelector('li[data-is="gb-refinement-list"]')).to.be.ok;
       expect(html().querySelector('#main')).to.be.ok;
       expect(html().querySelector('#category')).to.be.ok;
-      expect(html().querySelector('li[data-is="gb-available-refinement"]')).to.be.ok;
-      expect(html().querySelector('li[data-is="gb-selected-refinement"]')).to.be.ok;
       expect(html().querySelectorAll('.gb-navigation-title')[0].textContent).to.eq('Main');
-      expect(html().querySelectorAll('.gb-ref__title')[0].textContent).to.eq('Pick up');
-      expect(html().querySelectorAll('gb-badge span')[0].textContent).to.eq('12345');
-      expect(html().querySelectorAll('.gb-ref__title')[1].textContent).to.eq('Deliver');
-      expect(html().querySelectorAll('gb-badge span')[1].textContent).to.eq('123');
       expect(html().querySelectorAll('.gb-navigation-title')[1].textContent).to.eq('Category');
-      expect(html().querySelectorAll('.gb-ref__title')[2].textContent).to.eq('Health');
-      expect(html().querySelectorAll('gb-badge span')[2].textContent).to.eq('200');
-      expect(html().querySelectorAll('.gb-ref__title')[3].textContent).to.eq('Items');
-      expect(html().querySelectorAll('gb-badge span')[3].textContent).to.eq('59234');
-      expect(html().querySelector('.gb-ref__value').textContent).to.eq('Grocery');
+      expect(model.refinements[0].querySelector('.gb-remove-ref')).to.not.be.ok;
+      expect(model.refinementTitles[0].textContent).to.eq('Pick up');
+      expect(model.refinementInputs[0].type).to.eq('checkbox');
+      expect(model.refinementInputs[0].checked).to.be.false;
+      expect(model.refinements[0].querySelector('gb-badge span').textContent).to.eq('12345');
+      expect(model.refinements[1].querySelector('.gb-remove-ref')).to.not.be.ok;
+      expect(model.refinementTitles[1].textContent).to.eq('Deliver');
+      expect(model.refinementInputs[1].type).to.eq('checkbox');
+      expect(model.refinementInputs[1].checked).to.be.true;
+      expect(model.refinements[1].querySelector('gb-badge span')).to.not.be.ok;
+      expect(model.refinements[2].querySelector('.gb-remove-ref')).to.be.ok;
+      expect(model.refinementTitles[2].textContent).to.eq('Health');
+      expect(model.refinementInputs[2].type).to.eq('button');
+      expect(model.refinementInputs[2].checked).to.be.true;
+      expect(model.refinements[2].querySelector('gb-badge span')).to.not.be.ok;
+      expect(model.refinements[3].querySelector('.gb-remove-ref')).to.not.be.ok;
+      expect(model.refinementTitles[3].textContent).to.eq('Items');
+      expect(model.refinementInputs[3].type).to.eq('button');
+      expect(model.refinementInputs[3].checked).to.be.false;
+      expect(model.refinements[3].querySelector('gb-badge span').textContent).to.eq('59234');
+    });
+
+    it('should hoist selected refinements', () => {
+      tag.hoistSelected = true;
+      flux().emit(Events.RESULTS, {
+        availableNavigation: [{
+          name: 'main',
+          or: true,
+          refinements: [
+            { value: 'Pick up', type: 'Value', count: 12345 },
+            { value: 'Uber', type: 'Value', count: 512 }
+          ]
+        }],
+        selectedNavigation: [{
+          name: 'main',
+          refinements: [
+            { value: 'Deliver', type: 'Value', count: 123, selected: true },
+            { value: 'Absolute', type: 'Value', count: 13, selected: true }
+          ]
+        }]
+      });
+
+      expect(Array.from(model.refinementTitles)
+        .map((element) => element.textContent))
+        .to.eql(['Absolute', 'Deliver', 'Pick up', 'Uber']);
     });
 
     describe('refine()', () => {
       it('should select refinement on click', () => {
-        const refinement = { value: 'Deliver', type: 'Value', count: 123 };
+        const refinement = { value: 'Deliver', type: 'Value', count: 123, selected: true };
         const toRefinement = stub(utils, 'toRefinement');
 
         model.refinementTitles[1].click();
@@ -77,8 +111,7 @@ suite<Navigation>('gb-navigation', ({
       it('should display selected refinement', () => {
         const navigation = {
           displayName: 'Other',
-          refinements: [
-            { value: 'Random', type: 'Value', count: 888 }]
+          refinements: [{ value: 'Random', type: 'Value', count: 888 }]
         };
         const refine = stub(flux(), 'refine', (refinement) =>
           flux().emit(Events.RESULTS, {
@@ -97,35 +130,34 @@ suite<Navigation>('gb-navigation', ({
         ];
         tag.update();
 
-        expect(model.selectedRefinement).to.not.be.ok;
-        expect(model.refinementTitles[0].textContent).to.eq('Random');
+        expect(model.selectedRefinements).to.have.length(0);
         expect(refine).to.not.have.been.called;
 
-        model.refinementTitles[1].click();
+        model.refinementInputs[0].click();
 
-        expect(model.refinementTitles[0].textContent).to.eq('Random');
-        expect(model.selectedRefinement).to.be.ok;
+        expect(model.selectedRefinements[0].querySelector('.gb-ref__title').textContent).to.eq('Random');
         expect(refine).to.be.called;
       });
     });
 
     describe('unrefine()', () => {
       it('should remove selected refinements on click', () => {
-        const refinement = { value: 'Grocery', type: 'Value', count: 52 };
-        const toRefinement = stub(utils, 'toRefinement');
-        tag.processed = <any>[{
+        const refinement = { value: 'Grocery', type: 'Value', count: 52, selected: true };
+        const navigation: any = {
           displayName: 'Main',
           refinements: [
             { value: 'Pick up', type: 'Value', count: 12345 },
-            { value: 'Deliver', type: 'Value', count: 123 }
-          ],
-          selected: [{ value: 'Grocery', type: 'Value', count: 52 }]
-        }];
+            { value: 'Deliver', type: 'Value', count: 123 },
+            refinement
+          ]
+        };
+        const remove = stub(tag, 'remove');
+        tag.processed = [navigation];
         tag.update();
 
-        (<HTMLAnchorElement>html().querySelector('.gb-ref__link')).click();
+        model.refinementInputs[2].click();
 
-        expect(toRefinement).to.be.calledWith(refinement);
+        expect(remove).to.be.calledWith(refinement, navigation);
       });
 
       it('should remove unselected refinement from display', () => {
@@ -150,20 +182,18 @@ suite<Navigation>('gb-navigation', ({
           {
             displayName: 'Other',
             name: 'other',
-            selected: [{ value: 'Random', type: 'Value', count: 888 }]
+            refinements: [{ value: 'Random', type: 'Value', count: 888, selected: true }]
           }
         ];
         tag.update();
 
-        expect(model.selectedRefinement).to.be.ok;
-        expect(model.selectedRefinement.querySelector('.gb-ref__value').textContent).to.eq('Random');
-        expect(unrefine).to.not.have.been.called;
+        expect(model.selectedRefinements[0].querySelector('.gb-ref__title').textContent).to.eq('Random');
 
-        (<HTMLAnchorElement>model.selectedRefinement.querySelector('.gb-ref__link')).click();
+        model.selectedRefinements[0].querySelector('input').click();
 
-        expect(model.selectedRefinement).to.not.be.ok;
+        expect(model.selectedRefinements).to.have.length(0);
         // tslint:disable-next-line:max-line-length
-        expect(html().querySelectorAll('li[data-is="gb-available-refinement"] .gb-ref__title')[2].textContent).to.eq('Random');
+        expect(model.availableRefinements[2].querySelector('.gb-ref__title').textContent).to.eq('Random');
         expect(unrefine).to.be.called;
       });
     });
@@ -187,6 +217,7 @@ suite<Navigation>('gb-navigation', ({
     });
 
     it('should show more refinements on click', () => {
+      flux().results = <any>{ selectedNavigation: [] };
       const refinements = stub(flux(), 'refinements', () =>
         flux().emit(Events.REFINEMENT_RESULTS, {
           navigation: {
@@ -195,13 +226,13 @@ suite<Navigation>('gb-navigation', ({
               { value: 'Pick up', type: 'Value', count: 12345 },
               { value: 'Deliver', type: 'Value', count: 123 },
               { value: 'Third', type: 'Value', count: 3 }
-            ],
+            ]
           }
         }));
-      tag.processed = <any>[{ name: 'main', moreRefinements: true }];
+      tag.processed = <any>[{ name: 'main', moreRefinements: true, selectedNavigation: {} }];
       tag.update();
 
-      expect(model.refinementTitles[2]).to.not.be.ok;
+      expect(model.refinementTitles).to.have.length(0);
 
       model.moreRefinementsLink.click();
 
@@ -218,11 +249,23 @@ class Model extends BaseModel<Navigation> {
     return this.list(this.html, '.gb-ref__title');
   }
 
-  get selectedRefinement() {
-    return this.element(this.html, 'li[data-is="gb-selected-refinement"]');
+  get refinements() {
+    return this.list(this.html, 'li[data-is="gb-refinement"]');
+  }
+
+  get selectedRefinements() {
+    return this.list(this.html, 'li.gb-selected[data-is="gb-refinement"]');
+  }
+
+  get availableRefinements() {
+    return this.list(this.html, 'li[data-is="gb-refinement"]:not(.gb-selected)');
   }
 
   get moreRefinementsLink() {
-    return this.element(this.html, 'li[data-is="gb-more-refinements"] a');
+    return this.element(this.html, 'gb-more-refinements a');
+  }
+
+  get refinementInputs() {
+    return this.list<HTMLInputElement>(this.html, '.gb-ref input');
   }
 }

@@ -1,7 +1,6 @@
-import { displayRefinement as toView, toRefinement } from '../../utils/common';
+import { clone, displayRefinement as toView, refinementMatches, toRefinement } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
-import * as clone from 'clone';
 import { Events, Navigation as NavModel, NavigationInfo, RefinementResults, Results } from 'groupby-api';
 
 export { NavigationInfo }
@@ -18,11 +17,13 @@ export interface SelectionNavigation extends NavModel {
 export const META: TagMeta = {
   defaults: {
     badge: true,
-    showSelected: true
+    showSelected: true,
+    hoistSelected: true
   },
   types: {
     badge: 'boolean',
-    showSelected: 'boolean'
+    showSelected: 'boolean',
+    hoistSelected: 'boolean'
   }
 };
 
@@ -31,6 +32,7 @@ export class Navigation extends FluxTag<NavigationOpts> {
 
   badge: boolean;
   showSelected: boolean;
+  hoistSelected: boolean;
 
   processed: SelectionNavigation[];
 
@@ -54,21 +56,52 @@ export class Navigation extends FluxTag<NavigationOpts> {
     const found = this.processed.find((nav) => nav.name === res.navigation.name);
     if (found) {
       found.refinements = res.navigation.refinements;
+      const selected = this.flux.results.selectedNavigation.find((nav) => nav.name === res.navigation.name);
+      if (selected) {
+        this.mergeRefinements(found, selected);
+      }
     }
     return this.processed;
   }
 
-  processNavigations({ selectedNavigation, availableNavigation }: Results) {
-    const processed = <SelectionNavigation[]>clone(availableNavigation);
-    selectedNavigation.forEach((selNav) => {
-      const availNav = processed.find((nav) => nav.name === selNav.name);
-      if (availNav) {
-        availNav.selected = selNav.refinements;
+  processNavigations({ availableNavigation: available, selectedNavigation: selected }: Results) {
+    const processed = <SelectionNavigation[]>clone(available);
+    selected.forEach((selectedNav) => {
+      const availableNav = processed.find((nav) => nav.name === selectedNav.name);
+      if (availableNav) {
+        this.mergeRefinements(availableNav, selectedNav);
       } else {
-        processed.unshift(Object.assign({}, selNav, { selected: selNav.refinements, refinements: [] }));
+        selectedNav.refinements.forEach((refinement) => refinement['selected'] = true);
+        processed.unshift(<any>selectedNav);
       }
     });
     return processed;
+  }
+
+  mergeRefinements(availableNavigation: any, selectedNavigation: any) {
+    selectedNavigation.refinements.forEach((refinement) => {
+      const availableRefinement = availableNavigation.refinements
+        .find((availableRef) => refinementMatches(availableRef, refinement));
+      if (availableRefinement) {
+        availableRefinement['selected'] = true;
+      } else {
+        availableNavigation.refinements.unshift(Object.assign(refinement, { selected: true }));
+      }
+    });
+
+    if (this.hoistSelected) {
+      availableNavigation.refinements = availableNavigation.refinements.sort(this.sortRefinements);
+    }
+  }
+
+  sortRefinements(lhs: any, rhs: any) {
+    if (!lhs.selected && !rhs.selected) {
+      return 1;
+    } else if (lhs.selected === rhs.selected) {
+      return lhs.value.localeCompare(rhs.value);
+    } else {
+      return lhs.selected ? -1 : 1;
+    }
   }
 
   send(refinement: any, navigation: any) {

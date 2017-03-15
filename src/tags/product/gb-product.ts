@@ -1,6 +1,6 @@
+import { clone } from '../../utils/common';
 import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
-import * as clone from 'clone';
 import oget = require('oget');
 
 export interface Productable {
