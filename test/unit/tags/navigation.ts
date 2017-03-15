@@ -95,7 +95,7 @@ suite('gb-navigation', Navigation, ({
       expect(processed).to.have.length(0);
     });
 
-    it('should mark selected refinements', () => {
+    it('should call mergeRefinements', () => {
       const mergeRefinements = stub(tag(), 'mergeRefinements');
       const availableNavigation: any = { name: 'a', refinements: [] };
       const selectedNavigation: any = { name: 'a' };
@@ -190,7 +190,7 @@ suite('gb-navigation', Navigation, ({
       expect(availableNavigation.refinements[0]).to.eq(selected);
     });
 
-    it('should sort the resulting refinements', () => {
+    it('should call sortRefinements()', () => {
       const ref1 = {};
       const ref2 = {};
       const availableNavigation = { refinements: [ref1, ref2] };

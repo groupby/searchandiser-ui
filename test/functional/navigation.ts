@@ -136,7 +136,6 @@ suite<Navigation>('gb-navigation', ({
         model.refinementInputs[0].click();
 
         expect(model.selectedRefinements[0].querySelector('.gb-ref__title').textContent).to.eq('Random');
-        expect(model.selectedRefinements).to.have.length(1);
         expect(refine).to.be.called;
       });
     });
@@ -188,9 +187,7 @@ suite<Navigation>('gb-navigation', ({
         ];
         tag.update();
 
-        expect(model.selectedRefinements).to.have.length(1);
         expect(model.selectedRefinements[0].querySelector('.gb-ref__title').textContent).to.eq('Random');
-        expect(unrefine).to.not.have.been.called;
 
         model.selectedRefinements[0].querySelector('input').click();
 
