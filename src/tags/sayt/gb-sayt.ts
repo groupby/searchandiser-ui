@@ -170,7 +170,7 @@ export class Sayt extends SaytTag<SaytOpts> {
 
     const navigations = result.navigations ? result.navigations
       .map((nav) => Object.assign(nav, { displayName: this.navigationNames[nav.name] || nav.name }))
-      .filter(({name}) => this.allowedNavigations.includes(name)) : [];
+      .filter(({ name }) => this.allowedNavigations.includes(name)) : [];
     this.update({
       results: result,
       navigations,
@@ -222,13 +222,19 @@ export class Sayt extends SaytTag<SaytOpts> {
     };
 
     if (this.staticSearch && this.services.url.isActive()) {
+      //
       return Promise.resolve(this.services.url.update(this.flux.query.withQuery(queryString)
         .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] })));
+
     } else if (doRefinement) {
+      //
+
       this.flux.rewrite(queryString, { skipSearch: true });
       return this.flux.refine(refinement)
         .then(this.emitEvent);
     } else {
+      //
+
       return this.flux.reset(queryString)
         .then(this.emitEvent);
     }
@@ -241,9 +247,13 @@ export class Sayt extends SaytTag<SaytOpts> {
     const query = node.dataset['value'];
 
     if (this.staticSearch && this.services.url.isActive()) {
+      // 
+
       return Promise.resolve(this.services.url.update(this.flux.query
         .withConfiguration(<any>{ query, refinements: [] })));
     } else {
+      //
+
       this.rewriteQuery(query);
       return this.flux.reset(query)
         .then(this.emitEvent);
