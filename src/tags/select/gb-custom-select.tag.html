@@ -37,11 +37,13 @@
     }
     .gb-select.hoverable:hover gb-list,
     .gb-select.clickable button:focus + gb-list,
+    .gb-select.clickable button:active + gb-list,
     gb-list:hover {
       display: block;
     }
     :scope.gb-stylish > .gb-select:hover button,
-    :scope.gb-stylish > .gb-select button:focus {
+    :scope.gb-stylish > .gb-select button:focus,
+    :scope.gb-stylish > .gb-select button:active {
       border-color: #aaa;
     }
     :scope.gb-stylish gb-list > ul > li {
@@ -61,7 +63,8 @@
       border-radius: 4px;
       white-space: nowrap;
     }
-    scope:.gb-stylish button:focus {
+    scope:.gb-stylish button:focus,
+    scope:.gb-stylish button:active {
       outline: none;
     }
   </style>
