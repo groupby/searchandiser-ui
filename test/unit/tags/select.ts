@@ -133,6 +133,27 @@ suite('gb-select', Select, ({
     });
   });
 
+  describe('focusElement()', () => {
+    it('should set preventUpdate to true', () => {
+      const mouseEvent: any = {};
+      tag().selectButton = (): any => ({ focus: () => null });
+
+      tag().focusElement(mouseEvent);
+
+      expect(mouseEvent.preventUpdate).to.be.true;
+    });
+
+    it('should call focus on selectButton', () => {
+      const focus = spy();
+      tag().selectButton = spy(() => ({ focus }));
+
+      tag().focusElement({});
+
+      expect(tag().selectButton).to.be.called;
+      expect(focus).to.be.called;
+    });
+  });
+
   describe('unfocus()', () => {
     it('should set focused true', () => {
       tag().$selectable = <any>{ hover: true };

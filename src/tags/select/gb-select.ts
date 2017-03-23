@@ -75,11 +75,6 @@ export class Select extends FluxTag<any> {
     return this.selectedItem || (this.selected ? this.clearItem : this.$selectable.label);
   }
 
-  focusElement(e) {
-    e.preventUpdate = true;
-    this.selectButton().focus();
-  }
-
   prepFocus() {
     return this.focused = false;
   }
@@ -94,6 +89,11 @@ export class Select extends FluxTag<any> {
     } else {
       return this.root.querySelector('select');
     }
+  }
+
+  focusElement(e) {
+    e.preventUpdate = true;
+    this.selectButton().focus();
   }
 
   unfocus() {
