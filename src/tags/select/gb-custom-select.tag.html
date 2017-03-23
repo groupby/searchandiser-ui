@@ -1,6 +1,6 @@
 <gb-custom-select>
   <div class="gb-select { $selectable.hover ? 'hoverable' : 'clickable' }">
-    <button data-is="gb-select-button" type="button"></button>
+    <button data-is="gb-select-button" type="button" onclick="{ $select.focusElement }"></button>
     <gb-list should-render="{ $select.shouldRender }">
       <yield>
         <gb-option></gb-option>
@@ -9,6 +9,9 @@
   </div>
 
   <script>
+    this.on('update', () => {
+      console.log('upd8al8in 8)');
+    })
     this.inherits('listable');
   </script>
 
