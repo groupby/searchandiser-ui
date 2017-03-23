@@ -66,7 +66,6 @@ export class Select extends FluxTag<any> {
   }
 
   setClearItem() {
-    console.log('upd8in 8)');
     if (!this.default && !this.$selectable.items.includes(this.clearItem)) {
       this.$selectable.items.unshift(this.clearItem);
     }
@@ -78,8 +77,7 @@ export class Select extends FluxTag<any> {
 
   focusElement(e) {
     e.preventUpdate = true;
-    console.log(e);
-    return this.root.querySelector('.gb-select.clickable button').focus();
+    this.selectButton().focus();
   }
 
   prepFocus() {
