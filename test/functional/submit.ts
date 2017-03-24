@@ -1,4 +1,4 @@
-import { SEARCH_RESET_EVENT } from '../../src/services/search';
+import { RESET_EVENT } from '../../src/services/search';
 import { Submit } from '../../src/tags/submit/gb-submit';
 import suite, { BaseModel } from './_suite';
 
@@ -21,7 +21,7 @@ suite<Submit>('gb-submit', ({ spy, expect, flux, mount, itMountsTag }) => {
 
       tag.root.click();
 
-      expect(emit).to.be.calledWith(SEARCH_RESET_EVENT);
+      expect(emit).to.be.calledWith(RESET_EVENT);
     });
   });
 });

@@ -1,9 +1,8 @@
+import { RESET_EVENT } from '../../../src/services/search';
 import { META, Submit } from '../../../src/tags/submit/gb-submit';
-import { SEARCH_RESET_EVENT } from '../../../src/services/search';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Query } from 'groupby-api';
 
 suite('gb-submit', Submit, ({
   flux, tag, spy, stub,
@@ -71,7 +70,7 @@ suite('gb-submit', Submit, ({
 
       tag().submitQuery();
 
-      expect(emit).to.be.calledWith(SEARCH_RESET_EVENT, newQuery);
+      expect(emit).to.be.calledWith(RESET_EVENT, newQuery);
     });
   });
 });

@@ -1,3 +1,4 @@
+import { RESET_EVENT, REFINE_EVENT } from '../../services/search';
 import { debounce } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { ProductStructure } from '../../utils/product-transformer';
@@ -19,7 +20,6 @@ export interface SaytOpts {
   minimumCharacters?: number;
   delay?: number;
   autoSearch?: boolean;
-  staticSearch?: boolean;
   https?: boolean;
   highlight?: boolean;
   navigationNames?: { [name: string]: string };
@@ -42,7 +42,6 @@ export const META: TagMeta = {
   types: {
     highlight: 'boolean',
     autoSearch: 'boolean',
-    staticSearch: 'boolean',
     https: 'boolean'
   }
 };
@@ -64,7 +63,6 @@ export class Sayt extends SaytTag<SaytOpts> {
   highlight: boolean;
   https: boolean;
   autoSearch: boolean;
-  staticSearch: boolean;
 
   autocomplete: Autocomplete;
   products: Record[];
@@ -211,33 +209,17 @@ export class Sayt extends SaytTag<SaytOpts> {
     return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
   }
 
-  refine(node: HTMLElement, queryString: string) {
+  refine(node: HTMLElement, query: string) {
     while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
 
     const doRefinement = !node.dataset['norefine'];
-    const refinement: SelectedValueRefinement = {
+    const refinement: SelectedValueRefinement = doRefinement && {
       navigationName: node.dataset['field'] || this.categoryField,
       value: node.dataset['refinement'],
       type: 'Value'
     };
 
-    if (this.staticSearch && this.services.url.isActive()) {
-      //
-      return Promise.resolve(this.services.url.update(this.flux.query.withQuery(queryString)
-        .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] })));
-
-    } else if (doRefinement) {
-      //
-
-      this.flux.rewrite(queryString, { skipSearch: true });
-      return this.flux.refine(refinement)
-        .then(this.emitEvent);
-    } else {
-      //
-
-      return this.flux.reset(queryString)
-        .then(this.emitEvent);
-    }
+    this.flux.emit(REFINE_EVENT, [query, refinement]);
   }
 
   search(event: Event) {
@@ -246,18 +228,8 @@ export class Sayt extends SaytTag<SaytOpts> {
 
     const query = node.dataset['value'];
 
-    if (this.staticSearch && this.services.url.isActive()) {
-      // 
-
-      return Promise.resolve(this.services.url.update(this.flux.query
-        .withConfiguration(<any>{ query, refinements: [] })));
-    } else {
-      //
-
-      this.rewriteQuery(query);
-      return this.flux.reset(query)
-        .then(this.emitEvent);
-    }
+    this.rewriteQuery(query);
+    this.flux.emit(RESET_EVENT, query);
   }
 
   listenForInput(tag: Query) {

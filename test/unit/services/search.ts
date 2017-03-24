@@ -1,6 +1,6 @@
 import { SearchandiserConfig } from '../../../src/searchandiser';
 import { Services } from '../../../src/services/init';
-import { Search, SEARCH_RESET_EVENT } from '../../../src/services/search';
+import { Search, RESET_EVENT } from '../../../src/services/search';
 import { expectSubscriptions } from '../../utils/expectations';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -24,7 +24,7 @@ suite('search', ({ spy, stub }) => {
       const reset = search.reset = spy();
 
       expectSubscriptions(() => search.init(), {
-        [SEARCH_RESET_EVENT]: {
+        [RESET_EVENT]: {
           test: (listener) => {
             listener(newQuery);
 

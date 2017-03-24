@@ -1,4 +1,4 @@
-import { SEARCH_RESET_EVENT } from '../../services/search';
+import { RESET_EVENT } from '../../services/search';
 import { findSearchBox } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
@@ -38,6 +38,6 @@ export class Submit extends FluxTag<SubmitOpts> {
   }
 
   submitQuery() {
-    this.flux.emit(SEARCH_RESET_EVENT, this.searchBox.value);
+    this.flux.emit(RESET_EVENT, this.searchBox.value);
   }
 }

@@ -1,4 +1,4 @@
-import { SEARCH_RESET_EVENT } from '../../services/search';
+import { RESET_EVENT } from '../../services/search';
 import { meta } from '../../utils/decorators';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
@@ -76,7 +76,7 @@ export class Query extends FluxTag<QueryOpts> {
   }
 
   updateQuery() {
-    this.flux.emit(SEARCH_RESET_EVENT, this.inputValue());
+    this.flux.emit(RESET_EVENT, this.inputValue());
   }
 
   keydownListener(event: KeyboardEvent) {

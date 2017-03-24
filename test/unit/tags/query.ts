@@ -1,4 +1,4 @@
-import { SEARCH_RESET_EVENT } from '../../../src/services/search';
+import { RESET_EVENT } from '../../../src/services/search';
 import { META, Query } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
@@ -124,7 +124,7 @@ suite('gb-query', Query, ({
 
       tag().updateQuery();
 
-      expect(emit).to.be.calledWith(SEARCH_RESET_EVENT);
+      expect(emit).to.be.calledWith(RESET_EVENT);
     });
   });
 

@@ -1,12 +1,13 @@
+import { REFINE_EVENT, RESET_EVENT } from '../../../src/services/search';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import { META, MIN_DELAY, Sayt } from '../../../src/tags/sayt/gb-sayt';
 import * as utils from '../../../src/utils/common';
 import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Events, Query } from 'groupby-api';
+import { Events } from 'groupby-api';
 
-suite('gb-sayt', Sayt, ({
+suite.only('gb-sayt', Sayt, ({
   flux, tag, spy, stub,
   expectSubscriptions,
   itShouldAlias,
@@ -376,31 +377,26 @@ suite('gb-sayt', Sayt, ({
   });
 
   describe('search()', () => {
-    it('should update results with suggestion as query', (done) => {
+    it('should update results with suggestion as query', () => {
       const suggestion = 'red heels';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
-      const reset = stub(flux(), 'reset').resolves();
-      const emitEvent = stub(tag(), 'emitEvent');
+      const emit = stub(flux(), 'emit');
 
       tag().search(<any>{
         target: {
           tagName: 'GB-SAYT-LINK',
           dataset: { value: suggestion }
         }
-      })
-        .then(() => {
-          expect(rewriteQuery).to.be.calledWith(suggestion);
-          expect(reset).to.be.calledWith(suggestion);
-          expect(emitEvent).to.be.called;
-          done();
-        });
+      });
+
+      expect(rewriteQuery).to.be.calledWith(suggestion);
+      expect(emit).to.be.calledWith(RESET_EVENT, suggestion);
     });
 
-    it('should search for the gb-sayt-link node', (done) => {
+    it('should search for the gb-sayt-link node', () => {
       const suggestion = 'red heels';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
-      const reset = stub(flux(), 'reset').resolves();
-      tag().emitEvent = () => null;
+      const emit = stub(flux(), 'emit');
 
       tag().search(<any>{
         target: {
@@ -411,170 +407,50 @@ suite('gb-sayt', Sayt, ({
             }
           }
         }
-      })
-        .then(() => {
-          expect(rewriteQuery).to.be.calledWith(suggestion);
-          expect(reset).to.be.calledWith(suggestion);
-          done();
-        });
-    });
+      });
 
-    it('should perform a static search', (done) => {
-      const suggestion = 'red heels';
-      const update = spy();
-      flux().query = new Query('black heels')
-        .withSelectedRefinements({ navigationName: 'brand', type: 'Value', value: '' })
-        .skip(19);
-      tag().rewriteQuery = () => expect.fail();
-      tag().services = <any>{ url: { isActive: () => true, update } };
-      tag().staticSearch = true;
-
-      tag().search(<any>{
-        target: {
-          tagName: 'GB-SAYT-LINK',
-          dataset: { value: suggestion }
-        }
-      })
-        .then(() => {
-          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
-          expect(update).to.be.calledWithMatch({
-            raw: {
-              query: suggestion,
-              refinements: [],
-              skip: 19
-            }
-          });
-          done();
-        });
+      expect(rewriteQuery).to.be.calledWith(suggestion);
+      expect(emit).to.be.calledWith(RESET_EVENT, suggestion);
     });
   });
 
   describe('refine()', () => {
-    it('should update results with suggestion and refinement', (done) => {
-      const suggestion = 'red heels';
-      const field = 'size';
-      const value = 'medium';
-      const rewrite = stub(flux(), 'rewrite');
-      const refine = stub(flux(), 'refine').resolves();
-      const emitEvent = stub(tag(), 'emitEvent');
+    const SUGGESTION = 'red heels';
+    const FIELD = 'size';
+    const VALUE = 'medium';
+
+    it('should update results with suggestion and refinement', () => {
+      const emit = stub(flux(), 'emit');
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
-        dataset: { field, refinement: value }
-      }, suggestion)
-        .then(() => {
-          expect(rewrite).to.be.calledWith(suggestion, { skipSearch: true });
-          expect(refine).to.be.calledWith(refinement(field, value));
-          expect(emitEvent).to.be.called;
-          done();
-        });
+        dataset: { field: FIELD, refinement: VALUE }
+      }, SUGGESTION);
+
+      expect(emit).to.be.calledWith(REFINE_EVENT, [SUGGESTION, refinement(FIELD, VALUE)]);
     });
 
-    it('should skip refinement and do query', (done) => {
-      const suggestion = 'red heels';
-      const field = 'size';
-      const refinement = 8;
-      const reset = stub(flux(), 'reset').resolves();
-      flux().rewrite = (): any => expect.fail();
-      tag().emitEvent = () => null;
+    it('should skip refinement and do query', () => {
+      const emit = stub(flux(), 'emit');
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
-        dataset: { field, refinement, norefine: true }
-      }, suggestion)
-        .then(() => {
-          expect(reset).to.be.calledWith(suggestion);
-          done();
-        });
+        dataset: { field: FIELD, refinement: VALUE, norefine: true }
+      }, SUGGESTION);
+
+      expect(emit).to.be.calledWith(REFINE_EVENT, [SUGGESTION, false]);
     });
 
-    it('should perform a static refinement', (done) => {
-      const suggestion = 'red heels';
-      const field = 'size';
-      const value = 8;
-      const update = spy();
-      flux().query = new Query('blue heels').skip(13);
-      flux().rewrite = (): any => expect.fail();
-      tag().services = <any>{ url: { update, isActive: () => true } };
-      tag().staticSearch = true;
+    it('should perform refinement using configured category field', () => {
+      const emit = stub(flux(), 'emit');
+      tag().categoryField = FIELD;
 
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
-        dataset: { field, refinement: value }
-      }, suggestion)
-        .then(() => {
-          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
-          expect(update).to.be.calledWithMatch({
-            raw: {
-              query: suggestion,
-              refinements: [refinement(field, value)],
-              skip: 13
-            }
-          });
-          done();
-        });
-    });
+        dataset: { refinement: VALUE }
+      }, SUGGESTION);
 
-    it('should perform a static refinement with only query', (done) => {
-      const suggestion = 'red heels';
-      const update = spy();
-      tag().services = <any>{ url: { update, isActive: () => true } };
-      tag().staticSearch = true;
-
-      tag().refine(<any>{
-        tagName: 'GB-SAYT-LINK',
-        dataset: { norefine: true }
-      }, suggestion)
-        .then(() => {
-          expect(update).to.be.calledWithMatch({
-            raw: {
-              query: suggestion,
-              refinements: []
-            }
-          });
-          done();
-        });
-    });
-
-    it('should perform refinement using configured category field', (done) => {
-      const field = 'size';
-      const value = 'medium';
-      flux().refine = (ref): any => {
-        expect(ref).to.eql(refinement(field, value));
-        done();
-      };
-      tag().categoryField = field;
-
-      tag().refine(<any>{
-        tagName: 'GB-SAYT-LINK',
-        dataset: { refinement: value }
-      }, 'red heels');
-    });
-
-    it('should perform static refinement using configured category field', (done) => {
-      const suggestion = 'red heels';
-      const value = 8;
-      const update = spy();
-      const field = tag().categoryField = 'size';
-      flux().query = new Query('black heels').skip(30);
-      tag().services = <any>{ url: { update, isActive: () => true } };
-      tag().staticSearch = true;
-
-      tag().refine(<any>{
-        tagName: 'GB-SAYT-LINK',
-        dataset: { refinement: value }
-      }, suggestion)
-        .then(() => {
-          expect(update).to.be.calledWith(sinon.match.instanceOf(Query));
-          expect(update).to.be.calledWithMatch({
-            raw: {
-              query: suggestion,
-              refinements: [refinement(field, value)],
-              skip: 30
-            }
-          });
-          done();
-        });
+      expect(emit).to.be.calledWith(REFINE_EVENT, [SUGGESTION, refinement(FIELD, VALUE)]);
     });
   });
 
