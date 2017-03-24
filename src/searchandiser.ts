@@ -24,9 +24,11 @@ export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,field
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig = <any>{}) {
     const config = new Configuration(rawConfig).apply();
-    const flux = new FluxCapacitor(config.customerId, config, CONFIGURATION_MASK);
+    const flux = new FluxCapacitor(config.customerId);
     Object.assign(flux, Events);
     const services = initServices(flux, config);
+
+    flux.query.withConfiguration(services.search._config);
     riot.mixin(MixinFlux(flux, config, services));
     Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
     (<any>configure).init();
@@ -102,8 +104,10 @@ export interface SearchandiserConfig {
 
   area?: string;
   collection?: string;
+  fields?: string | string[];
   customUrlParams?: any[];
   disableAutocorrection?: boolean;
+  pruneRefinements?: boolean;
   language?: string;
   pageSize?: number;
   pageSizes?: number[];

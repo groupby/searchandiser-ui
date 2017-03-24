@@ -43,7 +43,8 @@ export const META: TagMeta = {
     highlight: 'boolean',
     autoSearch: 'boolean',
     https: 'boolean'
-  }
+  },
+  services: ['searchandiser']
 };
 
 @meta(META)
@@ -84,10 +85,6 @@ export class Sayt extends SaytTag<SaytOpts> {
 
   setDefaults(config: SaytOpts) {
     this.showProducts = config.productCount > 0;
-    // TODO: should use service configuraiton dependency
-    this.area = config.area || this.config.area;
-    this.collection = config.collection || this.config.collection;
-    this.language = config.language || this.config.language;
     this.structure = config.structure || this.config.structure;
 
     this.sayt.configure(this.generateSaytConfig());

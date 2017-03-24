@@ -23,9 +23,7 @@ const CORE_SERVICES = {
 export interface LazyService {
 
   registered: FluxTag<any>[];
-
   register(tag: FluxTag<any>): void;
-
   unregister(tag: FluxTag<any>): void;
 }
 

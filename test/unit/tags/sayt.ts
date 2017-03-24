@@ -33,31 +33,13 @@ suite('gb-sayt', Sayt, ({
 
   describe('setDefaults()', () => {
     it('should set defaults', () => {
-      const collection = 'a';
-      const area = 'b';
-      const language = 'c';
       const structure = 'd';
-      tag().config = <any>{ collection, area, language, structure };
+      tag().config = <any>{ structure };
       tag().sayt = { configure: () => null };
 
       tag().setDefaults({});
 
-      expect(tag().collection).to.eq(collection);
-      expect(tag().area).to.eq(area);
-      expect(tag().language).to.eq(language);
       expect(tag().structure).to.eq(structure);
-    });
-
-    it('should override defaults from computed config', () => {
-      const collection = 'a';
-      const area = 'b';
-      const language = 'c';
-      const structure = 'd';
-      tag().sayt = { configure: () => null };
-
-      tag().setDefaults({ collection, area, language, structure });
-
-      expect(tag().collection).to.eq(collection);
     });
 
     it('should set showProducts true if productCount is not 0', () => {
