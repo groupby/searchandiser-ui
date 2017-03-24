@@ -191,12 +191,12 @@ export class Sayt extends SaytTag<SaytOpts> {
 
   searchRefinement(event: Event) {
     this.flux.resetRecall();
-    this.refine(<HTMLElement>event.target, '');
+    this.refine((<HTMLElement>event.currentTarget).parentElement, '');
   }
 
   searchCategory(event: Event) {
     this.flux.resetRecall();
-    this.refine(<HTMLElement>event.target, this.originalQuery);
+    this.refine((<HTMLElement>event.currentTarget).parentElement, this.originalQuery);
   }
 
   highlightCurrentQuery(value: string, regexReplacement: string) {
@@ -210,8 +210,6 @@ export class Sayt extends SaytTag<SaytOpts> {
   }
 
   refine(node: HTMLElement, query: string) {
-    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
-
     const doRefinement = !node.dataset['norefine'];
     const refinement: SelectedValueRefinement = doRefinement && {
       navigationName: node.dataset['field'] || this.categoryField,
@@ -223,9 +221,7 @@ export class Sayt extends SaytTag<SaytOpts> {
   }
 
   search(event: Event) {
-    let node = <HTMLElement>event.target;
-    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
-
+    const node = (<HTMLElement>event.currentTarget).parentElement;
     const query = node.dataset['value'];
 
     this.rewriteQuery(query);

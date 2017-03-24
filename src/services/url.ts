@@ -6,6 +6,8 @@ import { Services } from './init';
 import { FluxCapacitor, Query } from 'groupby-api';
 import * as parseUri from 'parseUri';
 
+export const LOCATION_EVENT = 'location:set';
+
 export interface UrlConfig {
   beautifier?: boolean | BeautifierConfig;
   queryParam?: string;

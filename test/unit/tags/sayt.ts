@@ -307,28 +307,28 @@ suite('gb-sayt', Sayt, ({
 
   describe('searchRefinement()', () => {
     it('should refine', () => {
-      const target = { a: 'b' };
+      const parentElement = { a: 'b' };
       const resetRecall = stub(flux(), 'resetRecall');
       const refine = stub(tag(), 'refine');
 
-      tag().searchRefinement(<any>{ target });
+      tag().searchRefinement(<any>{ currentTarget: { parentElement } });
 
       expect(resetRecall.called).to.be.true;
-      expect(refine).to.be.calledWith(target, '');
+      expect(refine).to.be.calledWith(parentElement, '');
     });
   });
 
   describe('searchCategory()', () => {
     it('should refine with query', () => {
-      const target = { a: 'b' };
+      const parentElement = { a: 'b' };
       const resetRecall = stub(flux(), 'resetRecall');
       const refine = stub(tag(), 'refine');
       tag().originalQuery = 'boots';
 
-      tag().searchCategory(<any>{ target });
+      tag().searchCategory(<any>{ currentTarget: { parentElement } });
 
       expect(resetRecall.called).to.be.true;
-      expect(refine).to.be.calledWith(target, 'boots');
+      expect(refine).to.be.calledWith(parentElement, 'boots');
     });
   });
 
@@ -383,30 +383,7 @@ suite('gb-sayt', Sayt, ({
       const emit = stub(flux(), 'emit');
 
       tag().search(<any>{
-        target: {
-          tagName: 'GB-SAYT-LINK',
-          dataset: { value: suggestion }
-        }
-      });
-
-      expect(rewriteQuery).to.be.calledWith(suggestion);
-      expect(emit).to.be.calledWith(RESET_EVENT, suggestion);
-    });
-
-    it('should search for the gb-sayt-link node', () => {
-      const suggestion = 'red heels';
-      const rewriteQuery = stub(tag(), 'rewriteQuery');
-      const emit = stub(flux(), 'emit');
-
-      tag().search(<any>{
-        target: {
-          parentElement: {
-            parentElement: {
-              tagName: 'GB-SAYT-LINK',
-              dataset: { value: suggestion }
-            }
-          }
-        }
+        currentTarget: { parentElement: { dataset: { value: suggestion } } }
       });
 
       expect(rewriteQuery).to.be.calledWith(suggestion);
