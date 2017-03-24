@@ -56,6 +56,7 @@ export interface Services {
   collections: Collections;
   filter: Filter;
   redirect: Redirect;
+  search: Search;
   tracker: Tracker;
   url: Url;
 }

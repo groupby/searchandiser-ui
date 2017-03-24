@@ -1,3 +1,4 @@
+import { SEARCH_RESET_EVENT } from '../../services/search';
 import { meta } from '../../utils/decorators';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
@@ -6,8 +7,6 @@ import { Events } from 'groupby-api';
 import * as riot from 'riot';
 
 const ENTER_KEY = 13;
-
-export const SEARCH_RESET_EVENT = 'search:reset';
 
 export interface QueryOpts {
   sayt?: boolean;

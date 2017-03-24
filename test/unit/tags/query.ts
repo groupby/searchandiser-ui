@@ -1,4 +1,5 @@
-import { META, Query, SEARCH_RESET_EVENT } from '../../../src/tags/query/gb-query';
+import { SEARCH_RESET_EVENT } from '../../../src/services/search';
+import { META, Query } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';

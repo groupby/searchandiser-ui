@@ -1,3 +1,4 @@
+import { SEARCH_RESET_EVENT } from '../../services/search';
 import { findSearchBox } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
@@ -5,15 +6,11 @@ import * as riot from 'riot';
 
 export interface SubmitOpts {
   label?: string;
-  staticSearch?: boolean;
 }
 
 export const META: TagMeta = {
   defaults: {
     label: 'Search'
-  },
-  types: {
-    staticSearch: 'boolean'
   }
 };
 
@@ -22,7 +19,6 @@ export class Submit extends FluxTag<SubmitOpts> {
   root: riot.TagElement & { value: any };
 
   label: string;
-  staticSearch: boolean;
 
   searchBox: HTMLInputElement;
 
@@ -42,15 +38,6 @@ export class Submit extends FluxTag<SubmitOpts> {
   }
 
   submitQuery() {
-    const inputValue = this.searchBox.value;
-
-    if (this.staticSearch && this.services.url.isActive()) {
-      const query = this.flux.query.withQuery(inputValue)
-        .withConfiguration(<any>{ refinements: [] });
-      return Promise.resolve(this.services.url.update(query));
-    } else {
-      return this.flux.reset(inputValue)
-        .then(() => this.services.tracker && this.services.tracker.search());
-    }
+    this.flux.emit(SEARCH_RESET_EVENT, this.searchBox.value);
   }
 }
