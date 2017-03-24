@@ -6,7 +6,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { FluxCapacitor } from 'groupby-api';
 
-suite.only('search', ({ spy, stub }) => {
+suite('search', ({ spy, stub }) => {
   let search: Search;
   let flux: FluxCapacitor;
   let config: SearchandiserConfig;

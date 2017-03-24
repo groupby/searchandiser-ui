@@ -18,9 +18,6 @@ import { MixinFlux } from './utils/tag';
 import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 import * as riot from 'riot';
 
-// tslint:disable-next-line:max-line-length
-export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection,visitorId,sessionId}';
-
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig = <any>{}) {
     const config = new Configuration(rawConfig).apply();

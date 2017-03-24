@@ -7,10 +7,38 @@ import { Query } from 'groupby-api';
 
 suite('url', ({ expect, spy, stub }) => {
 
+  describe('constructor()', () => {
+    it('should set urlConfig from config.url', () => {
+      const urlConfig = {};
+
+      const service = new Url(<any>{}, <any>{ url: urlConfig }, <any>{});
+
+      expect(service.urlConfig).to.eq(urlConfig);
+    });
+
+    it('should default to empty urlConfig', () => {
+      const service = new Url(<any>{}, <any>{}, <any>{});
+
+      expect(service.urlConfig).to.eql({});
+    });
+
+    it('should set beautify to false', () => {
+      const service = new Url(<any>{}, <any>{}, <any>{});
+
+      expect(service.beautify).to.be.false;
+    });
+
+    it('should set beautify to true', () => {
+      const service = new Url(<any>{}, <any>{ url: { beautifier: true } }, <any>{});
+
+      expect(service.beautify).to.be.true;
+    });
+  });
+
   describe('init()', () => {
     it('should initialise beautifiers', () => {
       const config: any = { url: {}, initialSearch: true };
-      const service = new Url(<any>{}, config, <any>{});
+      const service = new Url(<any>{}, config, <any>{ search: {} });
 
       service.init();
 
@@ -22,7 +50,7 @@ suite('url', ({ expect, spy, stub }) => {
       const config: any = { url: {}, initialSearch: true };
       stub(Url, 'parseUrl', () => expect.fail());
       stub(Url, 'parseBeautifiedUrl', () => expect.fail());
-      const service = new Url(<any>{}, config, <any>{});
+      const service = new Url(<any>{}, config, <any>{ search: {} });
 
       service.init();
     });
@@ -40,7 +68,7 @@ suite('url', ({ expect, spy, stub }) => {
             done();
           }
         };
-        const service = new Url(flux, origConfig, <any>{});
+        const service = new Url(flux, origConfig, <any>{ search: {} });
 
         service.init();
       });
@@ -49,7 +77,7 @@ suite('url', ({ expect, spy, stub }) => {
         const origConfig: any = { url: { queryParam: 'q' } };
         const query = new Query().withRefinements('brand', { type: 'Value', value: 'Nike' });
         const flux: any = { search: (queryString) => done() };
-        const service = new Url(flux, origConfig, <any>{});
+        const service = new Url(flux, origConfig, <any>{ search: {} });
         stub(Url, 'parseUrl').returns(query);
 
         service.init();
@@ -59,7 +87,7 @@ suite('url', ({ expect, spy, stub }) => {
         const origConfig: any = { url: { queryParam: 'q' } };
         const query = new Query();
         const flux: any = { search: (queryString) => expect.fail() };
-        const service = new Url(flux, origConfig, <any>{});
+        const service = new Url(flux, origConfig, <any>{ search: {} });
         stub(Url, 'parseUrl').returns(query);
 
         service.init();
@@ -69,7 +97,7 @@ suite('url', ({ expect, spy, stub }) => {
         const origConfig: any = { url: { queryParam: 'q' } };
         const query = new Query('test');
         const flux: any = { search: (queryString) => Promise.resolve() };
-        const service = new Url(flux, origConfig, <any>{ tracker: { search: () => done() } });
+        const service = new Url(flux, origConfig, <any>{ tracker: { search: () => done() }, search: {} });
         stub(Url, 'parseUrl', () => query);
 
         service.init();
@@ -89,7 +117,7 @@ suite('url', ({ expect, spy, stub }) => {
             done();
           }
         };
-        const service = new Url(flux, origConfig, <any>{});
+        const service = new Url(flux, origConfig, <any>{ search: {} });
 
         service.init();
       });
@@ -98,7 +126,7 @@ suite('url', ({ expect, spy, stub }) => {
         const origConfig: any = { url: { beautifier: true } };
         const query = new Query('test');
         const flux: any = { search: (queryString) => Promise.resolve() };
-        const service = new Url(flux, origConfig, <any>{ tracker: { search: () => done() } });
+        const service = new Url(flux, origConfig, <any>{ tracker: { search: () => done() }, search: {} });
         stub(Url, 'parseBeautifiedUrl', () => query);
 
         service.init();

@@ -8,7 +8,7 @@ describe('simple beautifier', () => {
   let beautifier: SimpleBeautifier;
 
   beforeEach(() => {
-    beautifier = new SimpleBeautifier(<any>{ url: urlConfig });
+    beautifier = new SimpleBeautifier(<any>{ url: urlConfig }, <any>{});
   });
 
   describe('parse()', () => {
@@ -30,12 +30,13 @@ describe('simple beautifier', () => {
       ]);
     });
 
-    it('should pass configuration with mask', () => {
+    it('should pass configuration', () => {
       beautifier = new SimpleBeautifier(<any>{
         url: {},
-        area: 'Prod',
-        collection: 'onsale',
         other: 'blank'
+      }, <any>{
+        area: 'Prod',
+        collection: 'onsale'
       });
 
       const query = beautifier.parse('example.com?q=this');

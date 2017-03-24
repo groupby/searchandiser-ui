@@ -1,7 +1,7 @@
-import { CONFIGURATION_MASK, SearchandiserConfig } from '../searchandiser';
+import { SearchandiserConfig } from '../searchandiser';
 import { FilterOpts } from '../tags/filter/gb-filter';
 import { getPath } from '../utils/common';
-import { lazyMixin, LazyInitializer, LazyService } from './init';
+import { lazyMixin, LazyInitializer, LazyService, Services } from './init';
 import { Events, FluxCapacitor } from 'groupby-api';
 
 export const FILTER_UPDATED_EVENT = 'filter_updated';
@@ -13,14 +13,13 @@ export class Filter implements LazyInitializer {
   filterConfig: FilterOpts;
   fluxClone: FluxCapacitor;
 
-  constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
+  constructor(private flux: FluxCapacitor, private config: SearchandiserConfig, private services: Services) {
     lazyMixin(this);
-    this.fluxClone = this.clone();
     this.filterConfig = getPath(config, 'tags.filter') || {};
   }
 
   init() {
-    // lazy service
+    this.fluxClone = this.clone();
   }
 
   lazyInit() {
@@ -47,6 +46,6 @@ export class Filter implements LazyInitializer {
   }
 
   clone() {
-    return new FluxCapacitor(this.config.customerId, this.config, CONFIGURATION_MASK);
+    return new FluxCapacitor(this.config.customerId, this.services.search._config);
   }
 }

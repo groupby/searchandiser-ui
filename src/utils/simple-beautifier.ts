@@ -1,6 +1,6 @@
-import { CONFIGURATION_MASK, SearchandiserConfig, } from '../searchandiser';
+import { SearchandiserConfig, } from '../searchandiser';
 import { UrlConfig } from '../services/url';
-import { Query } from 'groupby-api';
+import { Query, Request } from 'groupby-api';
 import * as parseUri from 'parseUri';
 import * as queryString from 'query-string';
 
@@ -8,14 +8,14 @@ export class SimpleBeautifier {
 
   urlConfig: UrlConfig;
 
-  constructor(private config: SearchandiserConfig) {
+  constructor(private config: SearchandiserConfig, private request: Request) {
     this.urlConfig = config.url || {};
   }
 
   parse(url: string) {
     const queryParams: any = queryString.parse(parseUri(url).query);
     const queryFromUrl = new Query(queryParams[this.urlConfig.queryParam] || '')
-      .withConfiguration(this.config, CONFIGURATION_MASK);
+      .withConfiguration(this.request);
 
     if (queryParams.refinements) {
       const refinements = JSON.parse(queryParams.refinements);

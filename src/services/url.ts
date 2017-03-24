@@ -28,8 +28,8 @@ export class Url {
   }
 
   init() {
-    this.beautifier = new UrlBeautifier(this.config);
-    this.simple = new SimpleBeautifier(this.config);
+    this.beautifier = new UrlBeautifier(this.config, this.services.search._config);
+    this.simple = new SimpleBeautifier(this.config, this.services.search._config);
 
     if (!this.config.initialSearch) {
 
