@@ -1,4 +1,4 @@
-import { RESET_EVENT, REFINE_EVENT } from '../../services/search';
+import { REFINE_EVENT, RESET_EVENT } from '../../services/search';
 import { debounce } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { ProductStructure } from '../../utils/product-transformer';
@@ -248,11 +248,5 @@ export class Sayt extends SaytTag<SaytOpts> {
         this.reset();
       }
     };
-  }
-
-  emitEvent() {
-    if (this.services.tracker) {
-      this.services.tracker.sayt();
-    }
   }
 }

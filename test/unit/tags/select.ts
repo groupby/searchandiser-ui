@@ -147,7 +147,7 @@ suite('gb-select', Select, ({
       const focus = spy();
       tag().selectButton = spy(() => ({ focus }));
 
-      tag().focusElement({});
+      tag().focusElement(<any>{});
 
       expect(tag().selectButton).to.be.called;
       expect(focus).to.be.called;

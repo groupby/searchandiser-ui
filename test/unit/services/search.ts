@@ -1,6 +1,6 @@
 import { SearchandiserConfig } from '../../../src/searchandiser';
 import { Services } from '../../../src/services/init';
-import { Search, RESET_EVENT } from '../../../src/services/search';
+import { REFINE_EVENT, RESET_EVENT, Search } from '../../../src/services/search';
 import { expectSubscriptions } from '../../utils/expectations';
 import suite from './_suite';
 import { expect } from 'chai';
@@ -22,6 +22,7 @@ suite('search', ({ spy, stub }) => {
     it('should subscribe to events', () => {
       const newQuery = 'banana';
       const reset = search.reset = spy();
+      const refine = search.refine = spy();
 
       expectSubscriptions(() => search.init(), {
         [RESET_EVENT]: {
@@ -29,6 +30,13 @@ suite('search', ({ spy, stub }) => {
             listener(newQuery);
 
             expect(reset).to.be.calledWith(newQuery);
+          }
+        },
+        [REFINE_EVENT]: {
+          test: (listener) => {
+            listener(newQuery);
+
+            expect(refine).to.be.calledWith(newQuery);
           }
         }
       }, flux);

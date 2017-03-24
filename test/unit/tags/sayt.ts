@@ -7,7 +7,7 @@ import suite from './_suite';
 import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
-suite.only('gb-sayt', Sayt, ({
+suite('gb-sayt', Sayt, ({
   flux, tag, spy, stub,
   expectSubscriptions,
   itShouldAlias,
@@ -635,24 +635,6 @@ suite.only('gb-sayt', Sayt, ({
       func();
 
       expect(fetchSuggestions).to.be.calledWith(value);
-    });
-  });
-
-  describe('emitEvent()', () => {
-    it('should call tracker.sayt()', (done) => {
-      tag().services = <any>{
-        tracker: {
-          sayt: () => done()
-        }
-      };
-
-      tag().emitEvent();
-    });
-
-    it('should check for the tracker service', () => {
-      tag().services = <any>{};
-
-      tag().emitEvent();
     });
   });
 });

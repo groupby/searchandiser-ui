@@ -12,6 +12,7 @@ export class Search {
 
   init() {
     this.flux.on(RESET_EVENT, (newQuery) => this.reset(newQuery));
+    this.flux.on(REFINE_EVENT, (newQuery) => this.refine(newQuery));
   }
 
   reset(newQuery: string) {
