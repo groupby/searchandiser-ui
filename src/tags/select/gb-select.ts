@@ -91,6 +91,11 @@ export class Select extends FluxTag<any> {
     }
   }
 
+  focusElement(e) {
+    e.preventUpdate = true;
+    this.selectButton().focus();
+  }
+
   unfocus() {
     this.focused = this.$selectable.hover || !this.focused;
     if (!this.focused) {

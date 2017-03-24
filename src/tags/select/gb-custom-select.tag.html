@@ -1,6 +1,6 @@
 <gb-custom-select>
   <div class="gb-select { $selectable.hover ? 'hoverable' : 'clickable' }">
-    <button data-is="gb-select-button" type="button"></button>
+    <button data-is="gb-select-button" type="button" onclick="{ $select.focusElement }"></button>
     <gb-list should-render="{ $select.shouldRender }">
       <yield>
         <gb-option></gb-option>
@@ -36,13 +36,11 @@
       display: block;
     }
     .gb-select.hoverable:hover gb-list,
-    .gb-select.clickable button:active + gb-list,
     .gb-select.clickable button:focus + gb-list,
     gb-list:hover {
       display: block;
     }
     :scope.gb-stylish > .gb-select:hover button,
-    :scope.gb-stylish > .gb-select button:active,
     :scope.gb-stylish > .gb-select button:focus {
       border-color: #aaa;
     }
@@ -63,7 +61,6 @@
       border-radius: 4px;
       white-space: nowrap;
     }
-    scope:.gb-stylish button:active,
     scope:.gb-stylish button:focus {
       outline: none;
     }
