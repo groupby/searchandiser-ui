@@ -1,9 +1,9 @@
-import { META, Query } from '../../../src/tags/query/gb-query';
+import { META, Query, SEARCH_RESET_EVENT } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Events, Query as FluxQuery } from 'groupby-api';
+import { Events } from 'groupby-api';
 
 suite('gb-query', Query, ({
   tag, flux, spy, stub,
@@ -123,7 +123,7 @@ suite('gb-query', Query, ({
 
       tag().updateQuery();
 
-      expect(emit).to.be.calledWith('search:reset');
+      expect(emit).to.be.calledWith(SEARCH_RESET_EVENT);
     });
   });
 
@@ -138,9 +138,8 @@ suite('gb-query', Query, ({
     it('should call sayt autocomplete.keyboardListener()', () => {
       const keyboardEvent: any = {};
       const keyboardListener = spy();
-      stub(utils, 'findTag', () => <any>{
-        _tag: { autocomplete: { keyboardListener } }
-      });
+      tag().tags = <any>{['gb-sayt']: { autocomplete: { keyboardListener } }};
+      tag().sayt = true;
 
       tag().keydownListener(keyboardEvent);
 
@@ -149,7 +148,7 @@ suite('gb-query', Query, ({
 
     it('should call sayt onSubmit()', () => {
       const onSubmit = stub(tag(), 'onSubmit');
-      stub(utils, 'findTag', () => false);
+      stub(utils, 'findTag');
 
       tag().keydownListener(<any>{ keyCode: 13 });
 

@@ -7,6 +7,8 @@ import * as riot from 'riot';
 
 const KEY_ENTER = 13;
 
+export const SEARCH_RESET_EVENT = 'search:reset';
+
 export interface QueryOpts {
   sayt?: boolean;
   autoSearch?: boolean;
@@ -76,7 +78,7 @@ export class Query extends FluxTag<QueryOpts> {
   }
 
   updateQuery() {
-    this.flux.emit('search:reset', this.inputValue());
+    this.flux.emit(SEARCH_RESET_EVENT, this.inputValue());
   }
 
   keydownListener(event: KeyboardEvent) {
