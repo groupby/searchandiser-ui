@@ -1,9 +1,7 @@
 import { Query } from '../../src/tags/query/gb-query';
-import { AUTOCOMPLETE_HIDE_EVENT } from '../../src/tags/sayt/autocomplete';
-import { LOCATION } from '../../src/utils/common';
 import suite, { BaseModel } from './_suite';
 
-suite<Query>('gb-query', ({ flux, stub, spy, mount: _mount, expect, itMountsTag }) => {
+suite<Query>('gb-query', ({ spy, mount: _mount, expect, itMountsTag }) => {
 
   itMountsTag();
 
@@ -34,23 +32,6 @@ suite<Query>('gb-query', ({ flux, stub, spy, mount: _mount, expect, itMountsTag 
       tag.listenForInput();
 
       expect(addEventListener.calledWith('input'));
-    });
-
-    it.skip('should hide autocomplete and modify URL on static search', () => {
-      // doesn't actually test the thing
-      stub(LOCATION, 'replace', (url) => expect(url).to.eq('search?q='));
-      flux().search = (): any => null;
-      flux().emit = (event): any => expect(event).to.eq(AUTOCOMPLETE_HIDE_EVENT);
-
-      const tag = mount(false);
-
-      const input = tag.searchBox = document.createElement('input');
-      input.addEventListener = (event, cb) => {
-        expect(event).to.eq('keydown');
-        cb({ keyCode: 13 });
-      };
-
-      tag.listenForStaticSearch();
     });
   });
 

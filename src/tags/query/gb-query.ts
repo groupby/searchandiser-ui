@@ -5,14 +5,13 @@ import { FluxTag, TagMeta } from '../tag';
 import { Events } from 'groupby-api';
 import * as riot from 'riot';
 
-const KEY_ENTER = 13;
+const ENTER_KEY = 13;
 
 export const SEARCH_RESET_EVENT = 'search:reset';
 
 export interface QueryOpts {
   sayt?: boolean;
   autoSearch?: boolean;
-  staticSearch?: boolean;
 }
 
 export const META: TagMeta = {
@@ -85,7 +84,7 @@ export class Query extends FluxTag<QueryOpts> {
     if (this.sayt) {
       const autocomplete = this.tags['gb-sayt'].autocomplete;
       autocomplete.keyboardListener(event, this.onSubmit);
-    } else if (event.keyCode === KEY_ENTER) {
+    } else if (event.keyCode === ENTER_KEY) {
       this.onSubmit();
     }
   }
