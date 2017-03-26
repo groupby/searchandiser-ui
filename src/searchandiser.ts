@@ -50,12 +50,10 @@ export class Searchandiser {
   attach(tagName: string, opts?: any);
   attach(tagName: string, cssSelector: string, opts?: any);
   attach(tagName: string, selectorOrOpts?: any, options?: any) {
-    let tag;
-    if (typeof selectorOrOpts === 'string') {
-      tag = this.cssAttach(tagName, selectorOrOpts, options);
-    } else {
-      tag = this.simpleAttach(tagName, selectorOrOpts);
-    }
+    const tag = typeof selectorOrOpts === 'string'
+      ? this.cssAttach(tagName, selectorOrOpts, options)
+      : this.simpleAttach(tagName, selectorOrOpts);
+
     if (tag) {
       return tag.length === 1 ? tag[0] : tag;
     } else {
@@ -63,8 +61,8 @@ export class Searchandiser {
     }
   }
 
-  compile() {
-    riot.compile(() => null);
+  compile(onCompile: () => void) {
+    riot.compile(onCompile);
   }
 
   search(query?: string) {

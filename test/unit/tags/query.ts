@@ -124,7 +124,7 @@ suite('gb-query', Query, ({
 
       tag().updateQuery();
 
-      expect(emit).to.be.calledWith(RESET_EVENT);
+      expect(emit).to.be.calledWith(RESET_EVENT, query);
     });
   });
 

@@ -212,17 +212,11 @@ suite('url', ({ expect, spy, stub }) => {
   });
 
   describe('setLocation()', () => {
-    const SEARCH_URL = '/my/path';
-    let pathname: Sinon.SinonStub;
-
-    beforeEach(() => pathname = stub(LOCATION, 'pathname').returns(SEARCH_URL));
-    afterEach(() => expect(pathname).to.be.called);
-
     it('should update search', () => {
       const newUrl = 'example.com/search?q=hats';
       const setSearch = stub(LOCATION, 'setSearch');
 
-      Url.setLocation(newUrl, { searchUrl: SEARCH_URL });
+      Url.setLocation(newUrl, {});
 
       expect(setSearch).to.be.calledWith('?q=hats');
     });
@@ -231,7 +225,7 @@ suite('url', ({ expect, spy, stub }) => {
       const newUrl = 'example.com/things?q=hats';
       const replace = stub(LOCATION, 'replace');
 
-      Url.setLocation(newUrl, { searchUrl: '/search' });
+      Url.setLocation(newUrl, { staticSearch: true });
 
       expect(replace).to.be.calledWith(newUrl);
     });

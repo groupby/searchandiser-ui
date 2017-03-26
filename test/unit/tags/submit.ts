@@ -64,13 +64,13 @@ suite('gb-submit', Submit, ({
 
   describe('submitQuery()', () => {
     it('should emit search:reset event', () => {
-      const newQuery = 'something';
+      const query = 'something';
       const emit = flux().emit = spy();
-      tag().searchBox = <any>{ value: newQuery };
+      tag().searchBox = <any>{ value: query };
 
       tag().submitQuery();
 
-      expect(emit).to.be.calledWith(RESET_EVENT, newQuery);
+      expect(emit).to.be.calledWith(RESET_EVENT, query);
     });
   });
 });

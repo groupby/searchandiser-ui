@@ -1,13 +1,16 @@
 import { SearchandiserConfig } from '../searchandiser';
 import { LabeledOption, SelectOption } from '../tags/select/gb-select';
 import { getPath, unless } from '../utils/common';
+import { lazyMixin, LazyInitializer, LazyService } from './init';
 import { Events, FluxCapacitor, Results } from 'groupby-api';
 
 export const COLLECTIONS_UPDATED_EVENT = 'collections_updated';
 
 export type CancelablePromise<T> = Promise<T> & { cancelled: boolean; };
 
-export class Collections {
+export interface Collections extends LazyService { }
+
+export class Collections implements LazyInitializer {
 
   _config: { items: SelectOption[] };
   fetchCounts: boolean;
@@ -16,6 +19,7 @@ export class Collections {
   collections: string[];
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
+    lazyMixin(this);
     const collectionsConfig = getPath(config, 'tags.collections') || {};
     const items = collectionsConfig.items || [];
     this.fetchCounts = unless(collectionsConfig.showCounts, true);
@@ -25,6 +29,10 @@ export class Collections {
   }
 
   init() {
+    // lazy service
+  }
+
+  lazyInit() {
     this.flux.on(Events.QUERY_CHANGED, (query) => this.updateCollectionCounts(query));
     this.flux.on(Events.RESULTS, (results) => this.updateSelectedCollectionCount(results));
     this.updateCollectionCounts();

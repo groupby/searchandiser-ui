@@ -34,18 +34,47 @@ export class Search {
   }
 
   init() {
-    this.flux.on(RESET_EVENT, (newQuery) => this.reset(newQuery));
-    this.flux.on(REFINE_EVENT, (newQuery) => this.refine(newQuery));
+    this.flux.on(RESET_EVENT, (data) => this.reset(data));
+    this.flux.on(REFINE_EVENT, (data) => this.refine(data));
   }
 
-  reset(newQuery: string) {
-    return this.flux.reset(newQuery)
-      .then(() => this.services.tracker && this.services.tracker.search());
+  reset(data: ResetAction) {
+    const { query, origin = 'search' } = typeof data === 'string' ? { query: data } : data;
+
+    return this.flux.reset(query)
+      .then(() => this.emit(origin))
+      .then(() => this.services.url.update(this.flux.query));
   }
 
-  refine([newQuery, refinement]: [string, any]) {
-    return this.flux.rewrite(newQuery, { skipSearch: !!refinement })
-      .then(() => refinement ? this.flux.refine(refinement) : Promise.resolve())
-      .then(() => this.services.tracker && this.services.tracker.sayt());
+  refine({ query, refinement, refinements, origin = 'search' }: RefineAction) {
+    const refs = refinement ? [refinement] : (refinements || []);
+    return this.flux.rewrite(query, { skipSearch: !!refs.length })
+      .then(() => refs.length && refs.forEach((ref, index) =>
+        this.flux.refine(ref, { skipSearch: index < refs.length - 1 })))
+      .then(() => this.emit(origin))
+      .then(() => this.services.url.update(this.flux.query));
   }
+
+  emit(event: string) {
+    if (this.services.tracker) {
+      switch (typeof event) {
+        case 'string': return this.services.tracker[event]
+          ? this.services.tracker[event]()
+          : this.services.tracker.sendSearchEvent(event);
+        default: return console.error('event must be a string');
+      }
+    }
+  }
+}
+
+export type ResetAction = string | {
+  query: string;
+  origin?: string;
+}
+
+export interface RefineAction {
+  query: string;
+  refinement?: any;
+  refinements?: any[];
+  origin?: string;
 }

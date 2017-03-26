@@ -3,6 +3,7 @@ import { LOCATION } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
 import { BeautifierConfig, UrlBeautifier } from '../utils/url-beautifier';
 import { Services } from './init';
+import { REFINE_EVENT } from './search';
 import { FluxCapacitor, Query } from 'groupby-api';
 import * as parseUri from 'parseUri';
 
@@ -13,6 +14,7 @@ export interface UrlConfig {
   queryParam?: string;
   searchUrl?: string;
   detailsUrl?: string;
+  staticSearch?: boolean;
 }
 
 export class Url {
@@ -32,18 +34,15 @@ export class Url {
     this.simple = new SimpleBeautifier(this.config, this.services.search._config);
 
     if (!this.config.initialSearch) {
-
-      let query;
-      if (this.beautify) {
-        query = Url.parseBeautifiedUrl(this.beautifier);
-      } else {
-        query = Url.parseUrl(this.simple);
-      }
+      const query = this.beautify
+        ? Url.parseBeautifiedUrl(this.beautifier)
+        : Url.parseUrl(this.simple);
 
       if (query && (query.raw.query || query.raw.refinements.length)) {
-        this.flux.query = query;
-        this.flux.search(query.raw.query)
-          .then(() => this.services.tracker && this.services.tracker.search());
+        this.flux.emit(REFINE_EVENT, {
+          query: query.raw.query || '',
+          refinements: [query.raw.refinements]
+        });
       }
     }
   }
@@ -66,12 +65,11 @@ export class Url {
     return beautifier.parse(LOCATION.href());
   }
 
-  // TODO: better way to do this is with browser history rewrites
   static setLocation(url: string, config: UrlConfig) {
-    if (LOCATION.pathname() === config.searchUrl) {
-      LOCATION.setSearch(`?${parseUri(url).query}`);
-    } else {
+    if (config.staticSearch) {
       LOCATION.replace(url);
+    } else {
+      LOCATION.setSearch(`?${parseUri(url).query}`);
     }
   }
 }

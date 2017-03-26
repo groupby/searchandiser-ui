@@ -147,7 +147,7 @@ export class Sayt extends SaytTag<SaytOpts> {
     const isRefinement = refinement && refinement !== this.allCategoriesLabel;
     const refinementString = `~${field || this.categoryField}=${refinement}`;
     if (this.autoSearch) {
-      this.searchProducts(field ? '' : query, isRefinement ? refinementString : undefined);
+      this.searchProducts(field ? '' : query, isRefinement && refinementString);
     }
     this.rewriteQuery(query);
   }
@@ -214,7 +214,7 @@ export class Sayt extends SaytTag<SaytOpts> {
       type: 'Value'
     };
 
-    this.flux.emit(REFINE_EVENT, [query, refinement]);
+    this.flux.emit(REFINE_EVENT, { query, refinement, origin: 'sayt' });
   }
 
   search(event: Event) {
@@ -222,7 +222,7 @@ export class Sayt extends SaytTag<SaytOpts> {
     const query = node.dataset['value'];
 
     this.rewriteQuery(query);
-    this.flux.emit(RESET_EVENT, query);
+    this.flux.emit(RESET_EVENT, { query, origin: 'sayt' });
   }
 
   listenForInput(tag: Query) {

@@ -360,21 +360,21 @@ suite('gb-sayt', Sayt, ({
 
   describe('search()', () => {
     it('should update results with suggestion as query', () => {
-      const suggestion = 'red heels';
+      const query = 'red heels';
       const rewriteQuery = stub(tag(), 'rewriteQuery');
       const emit = stub(flux(), 'emit');
 
       tag().search(<any>{
-        currentTarget: { parentElement: { dataset: { value: suggestion } } }
+        currentTarget: { parentElement: { dataset: { value: query } } }
       });
 
-      expect(rewriteQuery).to.be.calledWith(suggestion);
-      expect(emit).to.be.calledWith(RESET_EVENT, suggestion);
+      expect(rewriteQuery).to.be.calledWith(query);
+      expect(emit).to.be.calledWith(RESET_EVENT, { query, origin: 'sayt' });
     });
   });
 
   describe('refine()', () => {
-    const SUGGESTION = 'red heels';
+    const QUERY = 'red heels';
     const FIELD = 'size';
     const VALUE = 'medium';
 
@@ -384,9 +384,13 @@ suite('gb-sayt', Sayt, ({
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field: FIELD, refinement: VALUE }
-      }, SUGGESTION);
+      }, QUERY);
 
-      expect(emit).to.be.calledWith(REFINE_EVENT, [SUGGESTION, refinement(FIELD, VALUE)]);
+      expect(emit).to.be.calledWith(REFINE_EVENT, {
+        query: QUERY,
+        refinement: refinement(FIELD, VALUE),
+        origin: 'sayt'
+      });
     });
 
     it('should skip refinement and do query', () => {
@@ -395,9 +399,13 @@ suite('gb-sayt', Sayt, ({
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { field: FIELD, refinement: VALUE, norefine: true }
-      }, SUGGESTION);
+      }, QUERY);
 
-      expect(emit).to.be.calledWith(REFINE_EVENT, [SUGGESTION, false]);
+      expect(emit).to.be.calledWith(REFINE_EVENT, {
+        query: QUERY,
+        refinement: false,
+        origin: 'sayt'
+      });
     });
 
     it('should perform refinement using configured category field', () => {
@@ -407,9 +415,13 @@ suite('gb-sayt', Sayt, ({
       tag().refine(<any>{
         tagName: 'GB-SAYT-LINK',
         dataset: { refinement: VALUE }
-      }, SUGGESTION);
+      }, QUERY);
 
-      expect(emit).to.be.calledWith(REFINE_EVENT, [SUGGESTION, refinement(FIELD, VALUE)]);
+      expect(emit).to.be.calledWith(REFINE_EVENT, {
+        query: QUERY,
+        refinement: refinement(FIELD, VALUE),
+        origin: 'sayt'
+      });
     });
   });
 
