@@ -48,10 +48,7 @@ function loaders() {
   }, {
     test: /\.tag(\.html)?$/,
     exclude: /node_modules/,
-    loader: 'babel',
-    query: {
-      presets: ['es2015']
-    }
+    loader: 'babel'
   }];
 }
 

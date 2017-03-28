@@ -1,6 +1,6 @@
 export default {
   from: 'src/tags',
   to: 'dist/src/tags',
-  type: 'babel',
+  type: 'es6',
   ext: 'html'
 }
