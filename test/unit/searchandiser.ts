@@ -118,7 +118,7 @@ describe('searchandiser', () => {
     it('should call riot.compile()', (done) => {
       sandbox.stub(riot, 'compile', () => done());
 
-      searchandiser.compile();
+      searchandiser.compile(() => null);
     });
   });
 

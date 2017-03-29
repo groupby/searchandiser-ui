@@ -41,7 +41,7 @@ export class Url {
       if (query && (query.raw.query || query.raw.refinements.length)) {
         this.flux.emit(REFINE_EVENT, {
           query: query.raw.query || '',
-          refinements: [query.raw.refinements]
+          refinements: query.raw.refinements
         });
       }
     }

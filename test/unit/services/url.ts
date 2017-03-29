@@ -1,7 +1,9 @@
+import { REFINE_EVENT } from '../../../src/services/search';
 import { Url } from '../../../src/services/url';
 import { LOCATION } from '../../../src/utils/common';
 import { SimpleBeautifier } from '../../../src/utils/simple-beautifier';
 import { UrlBeautifier } from '../../../src/utils/url-beautifier';
+import { refinement } from '../../utils/fixtures';
 import suite from './_suite';
 import { Query } from 'groupby-api';
 
@@ -56,80 +58,53 @@ suite('url', ({ expect, spy, stub }) => {
     });
 
     describe('simple', () => {
-      it('should parse query from location', (done) => {
-        const origConfig: any = { url: { queryParam: 'q' } };
-        const query = new Query('test');
-        const parseUrl = stub(Url, 'parseUrl').returns(query);
-        const flux: any = {
-          search: (queryString) => {
-            expect(queryString).to.eq('test');
-            expect(flux.query).to.eq(query);
-            expect(parseUrl).to.be.calledWith(sinon.match.instanceOf(SimpleBeautifier));
-            done();
-          }
-        };
-        const service = new Url(flux, origConfig, <any>{ search: {} });
+      it('should parse query from location', () => {
+        const emit = spy();
+        const query = 'test';
+        const parseUrl = stub(Url, 'parseUrl').returns(new Query(query));
+        const service = new Url(<any>{ emit }, <any>{ }, <any>{ search: {} });
 
         service.init();
+
+        expect(parseUrl).to.be.calledWith(sinon.match.instanceOf(SimpleBeautifier));
+        expect(emit).to.be.calledWith(REFINE_EVENT, { query, refinements: [] });
       });
 
-      it('should search with refinements', (done) => {
-        const origConfig: any = { url: { queryParam: 'q' } };
-        const query = new Query().withRefinements('brand', { type: 'Value', value: 'Nike' });
-        const flux: any = { search: (queryString) => done() };
-        const service = new Url(flux, origConfig, <any>{ search: {} });
-        stub(Url, 'parseUrl').returns(query);
+      it('should search with refinements', () => {
+        const emit = spy();
+        const service = new Url(<any>{ emit }, <any>{}, <any>{ search: {} });
+        stub(Url, 'parseUrl')
+          .returns(new Query().withRefinements('brand', { type: 'Value', value: 'Nike' }));
 
         service.init();
+
+        expect(emit).to.be.calledWith(REFINE_EVENT, {
+          query: '',
+          refinements: [refinement('brand', 'Nike')]
+        });
       });
 
       it('should not search if no recall fields specified', () => {
-        const origConfig: any = { url: { queryParam: 'q' } };
-        const query = new Query();
-        const flux: any = { search: (queryString) => expect.fail() };
-        const service = new Url(flux, origConfig, <any>{ search: {} });
-        stub(Url, 'parseUrl').returns(query);
-
-        service.init();
-      });
-
-      it('should emit tracker event', (done) => {
-        const origConfig: any = { url: { queryParam: 'q' } };
-        const query = new Query('test');
-        const flux: any = { search: (queryString) => Promise.resolve() };
-        const service = new Url(flux, origConfig, <any>{ tracker: { search: () => done() }, search: {} });
-        stub(Url, 'parseUrl', () => query);
+        const service = new Url(<any>{ emit: () => expect.fail() }, <any>{}, <any>{ search: {} });
+        stub(Url, 'parseUrl').returns(new Query());
 
         service.init();
       });
     });
 
     describe('beautified', () => {
-      it('should parse query from beautified location', (done) => {
-        const origConfig: any = { url: { beautifier: true } };
-        const query = new Query('test');
-        const parseBeautifiedUrl = stub(Url, 'parseBeautifiedUrl').returns(query);
-        const flux: any = {
-          search: (queryString) => {
-            expect(queryString).to.eq('test');
-            expect(flux.query).to.eq(query);
-            expect(parseBeautifiedUrl).to.be.calledWith(sinon.match.instanceOf(UrlBeautifier));
-            done();
-          }
-        };
-        const service = new Url(flux, origConfig, <any>{ search: {} });
+      const config: any = { url: { beautifier: true } };
+
+      it('should parse query from beautified location', () => {
+        const emit = spy();
+        const query = 'test';
+        const parseBeautifiedUrl = stub(Url, 'parseBeautifiedUrl').returns(new Query(query));
+        const service = new Url(<any>{ emit }, config, <any>{ search: {} });
 
         service.init();
-      });
 
-      it('should emit tracker event', (done) => {
-        const origConfig: any = { url: { beautifier: true } };
-        const query = new Query('test');
-        const flux: any = { search: (queryString) => Promise.resolve() };
-        const service = new Url(flux, origConfig, <any>{ tracker: { search: () => done() }, search: {} });
-        stub(Url, 'parseBeautifiedUrl', () => query);
-
-        service.init();
+        expect(parseBeautifiedUrl).to.be.calledWith(sinon.match.instanceOf(UrlBeautifier));
+        expect(emit).to.be.calledWith(REFINE_EVENT, { query, refinements: [] });
       });
     });
   });

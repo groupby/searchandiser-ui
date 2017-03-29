@@ -1,7 +1,7 @@
 import { Collections } from '../../src/tags/collections/gb-collections';
 import suite, { BaseModel } from './_suite';
 
-const MIXIN = { services: { collections: { _config: {} } } };
+const MIXIN = { services: { collections: { _config: {}, register: () => null } } };
 
 suite<Collections>('gb-collections', MIXIN, ({
   flux, mount,
