@@ -22,7 +22,7 @@ export class Search {
       }
     });
 
-    this._config.pageSize =  pageSize || oget(pageSizes, '[0]');
+    this._config.pageSize = pageSize || oget(pageSizes, '[0]');
     this._config.sort = oget(sort, '[0]', oget(config, 'tags.sort.items[0].value'));
 
     Object.keys(this._config)
@@ -46,13 +46,13 @@ export class Search {
       .then(() => this.services.url.update(this.flux.query));
   }
 
-  refine({ query, refinement, refinements, origin = 'search' }: RefineAction) {
+  refine({ query, refinement, refinements, origin = 'search', _skip = false }: RefineAction) {
     const refs = refinement ? [refinement] : (refinements || []);
     return this.flux.rewrite(query, { skipSearch: !!refs.length })
       .then(() => refs.length && refs.forEach((ref, index) =>
         this.flux.refine(ref, { skipSearch: index < refs.length - 1 })))
       .then(() => this.emit(origin))
-      .then(() => this.services.url.update(this.flux.query));
+      .then(() => !_skip && this.services.url.update(this.flux.query));
   }
 
   emit(event: string) {
@@ -74,6 +74,7 @@ export type ResetAction = string | {
 
 export interface RefineAction {
   query: string;
+  _skip: boolean;
   refinement?: any;
   refinements?: any[];
   origin?: string;

@@ -23,24 +23,27 @@ export class Url {
   beautifier: UrlBeautifier;
   simple: SimpleBeautifier;
   beautify: boolean;
+  initialComplete: boolean;
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig, private services: Services) {
     this.urlConfig = this.config.url || {};
     this.beautify = !!this.urlConfig.beautifier;
+    this.initialComplete = !!this.config.initialSearch;
   }
 
   init() {
     this.beautifier = new UrlBeautifier(this.config, this.services.search._config);
     this.simple = new SimpleBeautifier(this.config, this.services.search._config);
 
-    window.addEventListener('popstate', () => this.readStateFromUrl());
+    window.addEventListener('popstate', () => this.readStateFromUrl(true));
 
     if (!this.config.initialSearch) {
+      this.initialComplete = true;
       this.readStateFromUrl();
     }
   }
 
-  readStateFromUrl() {
+  readStateFromUrl(skipUrlUpdate: boolean = false) {
     const query = this.beautify
       ? Url.parseBeautifiedUrl(this.beautifier)
       : Url.parseUrl(this.simple);
@@ -48,7 +51,8 @@ export class Url {
     if (query && (query.raw.query || query.raw.refinements.length)) {
       this.flux.emit(REFINE_EVENT, {
         query: query.raw.query || '',
-        refinements: query.raw.refinements
+        refinements: query.raw.refinements,
+        _skip: true
       });
     }
   }
