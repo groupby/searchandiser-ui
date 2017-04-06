@@ -24,6 +24,7 @@ export class Url {
   simple: SimpleBeautifier;
   beautify: boolean;
   initialComplete: boolean;
+  title: string;
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig, private services: Services) {
     this.urlConfig = this.config.url || {};
@@ -34,6 +35,7 @@ export class Url {
   init() {
     this.beautifier = new UrlBeautifier(this.config, this.services.search._config);
     this.simple = new SimpleBeautifier(this.config, this.services.search._config);
+    this.title = document.title;
 
     window.addEventListener('popstate', () => this.readStateFromUrl(true));
 
@@ -64,7 +66,16 @@ export class Url {
   update(query: Query) {
     const url = (this.beautify ? this.beautifier : this.simple).build(query);
 
-    Url.setLocation(url, this.urlConfig, this.flux.query.raw.query);
+    this.setLocation(url);
+  }
+
+  setLocation(url: string) {
+    if (this.urlConfig.staticSearch) {
+      LOCATION.replace(url);
+    } else {
+      document.getElementsByTagName('title')[0].innerHTML = `${this.title} - ${this.flux.query.raw.query}`;
+      history.pushState({}, 'Search', `?${parseUri(url).query}`);
+    }
   }
 
   static parseUrl(simple: SimpleBeautifier) {
@@ -73,14 +84,5 @@ export class Url {
 
   static parseBeautifiedUrl(beautifier: UrlBeautifier) {
     return beautifier.parse(LOCATION.href());
-  }
-
-  static setLocation(url: string, config: UrlConfig, query: string) {
-    if (config.staticSearch) {
-      LOCATION.replace(url);
-    } else {
-      document.getElementsByTagName('title')[0].innerHTML = `search ${query}`;
-      history.pushState({}, 'Search', `?${parseUri(url).query}`);
-    }
   }
 }
