@@ -1,6 +1,6 @@
 import { SearchandiserConfig } from '../searchandiser';
 import { Services } from './init';
-import { FluxCapacitor, Request } from 'groupby-api';
+import { Events, FluxCapacitor, Request } from 'groupby-api';
 import oget = require('oget');
 
 export const RESET_EVENT = 'search:reset';
@@ -36,14 +36,14 @@ export class Search {
   init() {
     this.flux.on(RESET_EVENT, (data) => this.reset(data));
     this.flux.on(REFINE_EVENT, (data) => this.refine(data));
+    this.flux.on(Events.SEARCH, () => this.services.url.update(this.flux.query));
   }
 
   reset(data: ResetAction) {
     const { query, origin = 'search' } = typeof data === 'string' ? { query: data } : data;
 
     return this.flux.reset(query)
-      .then(() => this.emit(origin))
-      .then(() => this.services.url.update(this.flux.query));
+      .then(() => this.emit(origin));
   }
 
   refine({ query, refinement, refinements, origin = 'search', _skip = false }: RefineAction) {
@@ -51,8 +51,7 @@ export class Search {
     return this.flux.rewrite(query, { skipSearch: !!refs.length })
       .then(() => refs.length && refs.forEach((ref, index) =>
         this.flux.refine(ref, { skipSearch: index < refs.length - 1 })))
-      .then(() => this.emit(origin))
-      .then(() => !_skip && this.services.url.update(this.flux.query));
+      .then(() => this.emit(origin));
   }
 
   emit(event: string) {
