@@ -33,17 +33,23 @@ export class Url {
     this.beautifier = new UrlBeautifier(this.config, this.services.search._config);
     this.simple = new SimpleBeautifier(this.config, this.services.search._config);
 
-    if (!this.config.initialSearch) {
-      const query = this.beautify
-        ? Url.parseBeautifiedUrl(this.beautifier)
-        : Url.parseUrl(this.simple);
+    window.addEventListener('popstate', () => this.readStateFromUrl());
 
-      if (query && (query.raw.query || query.raw.refinements.length)) {
-        this.flux.emit(REFINE_EVENT, {
-          query: query.raw.query || '',
-          refinements: query.raw.refinements
-        });
-      }
+    if (!this.config.initialSearch) {
+      this.readStateFromUrl();
+    }
+  }
+
+  readStateFromUrl() {
+    const query = this.beautify
+      ? Url.parseBeautifiedUrl(this.beautifier)
+      : Url.parseUrl(this.simple);
+
+    if (query && (query.raw.query || query.raw.refinements.length)) {
+      this.flux.emit(REFINE_EVENT, {
+        query: query.raw.query || '',
+        refinements: query.raw.refinements
+      });
     }
   }
 
@@ -69,7 +75,7 @@ export class Url {
     if (config.staticSearch) {
       LOCATION.replace(url);
     } else {
-      LOCATION.setSearch(`?${parseUri(url).query}`);
+      history.pushState({}, 'Search', `?${parseUri(url).query}`);
     }
   }
 }
