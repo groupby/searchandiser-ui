@@ -64,7 +64,7 @@ export class Url {
   update(query: Query) {
     const url = (this.beautify ? this.beautifier : this.simple).build(query);
 
-    Url.setLocation(url, this.urlConfig);
+    Url.setLocation(url, this.urlConfig, this.flux.query.raw.query);
   }
 
   static parseUrl(simple: SimpleBeautifier) {
@@ -75,10 +75,11 @@ export class Url {
     return beautifier.parse(LOCATION.href());
   }
 
-  static setLocation(url: string, config: UrlConfig) {
+  static setLocation(url: string, config: UrlConfig, query: string) {
     if (config.staticSearch) {
       LOCATION.replace(url);
     } else {
+      document.getElementsByTagName('title')[0].innerHTML = `search ${query}`;
       history.pushState({}, 'Search', `?${parseUri(url).query}`);
     }
   }
