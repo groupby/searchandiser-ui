@@ -1,8 +1,7 @@
 import { SearchandiserConfig, } from '../searchandiser';
 import { UrlConfig } from '../services/url';
+import { parseUri, queryString } from '../utils/common';
 import { Query, Request } from 'groupby-api';
-import * as parseUri from 'parseUri';
-import * as queryString from 'query-string';
 
 export class SimpleBeautifier {
 

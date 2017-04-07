@@ -1,5 +1,5 @@
+import { riot } from '../../utils/common';
 import { InfiniteScroll, ScrollAnchor } from './gb-infinite-scroll';
-import * as riot from 'riot';
 
 export const ANIMATION_DURATION_MS = 200;
 export const RUNWAY_ITEMS_ABOVE = 10;

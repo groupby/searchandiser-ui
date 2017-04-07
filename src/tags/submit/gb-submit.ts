@@ -1,8 +1,7 @@
 import { RESET_EVENT } from '../../services/search';
-import { findSearchBox } from '../../utils/common';
+import { findSearchBox, riot } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
-import * as riot from 'riot';
 
 export interface SubmitOpts {
   label?: string;

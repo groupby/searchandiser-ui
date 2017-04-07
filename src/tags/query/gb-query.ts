@@ -1,10 +1,10 @@
 import { RESET_EVENT } from '../../services/search';
+import { riot } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
 import { FluxTag, TagMeta } from '../tag';
 import { Events } from 'groupby-api';
-import * as riot from 'riot';
 
 const ENTER_KEY = 13;
 

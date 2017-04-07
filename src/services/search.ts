@@ -1,7 +1,7 @@
 import { SearchandiserConfig } from '../searchandiser';
+import { oget } from '../utils/common';
 import { Services } from './init';
 import { Events, FluxCapacitor, Request } from 'groupby-api';
-import oget = require('oget');
 
 export const RESET_EVENT = 'search:reset';
 export const REFINE_EVENT = 'search:refine';

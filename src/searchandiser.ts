@@ -12,11 +12,11 @@ import { QueryOpts } from './tags/query/gb-query';
 import { SaytOpts } from './tags/sayt/gb-sayt';
 import { SortOpts } from './tags/sort/gb-sort';
 import { SubmitOpts } from './tags/submit/gb-submit';
+import { riot } from './utils/common';
 import { Configuration } from './utils/configuration';
 import { ProductStructure } from './utils/product-transformer';
 import { MixinFlux } from './utils/tag';
 import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
-import * as riot from 'riot';
 
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig = <any>{}) {

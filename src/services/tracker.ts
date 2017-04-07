@@ -1,10 +1,7 @@
 import { SearchandiserConfig } from '../searchandiser';
+import { filterObject, uuid, Cookies, GbTracker } from '../utils/common';
 import { ProductTransformer } from '../utils/product-transformer';
-import * as GbTracker from 'gb-tracker-client';
-import filterObject = require('filter-object');
 import { Events, FluxCapacitor } from 'groupby-api';
-import * as Cookies from 'js-cookie';
-import * as uuid from 'uuid';
 
 export const MAX_COOKIE_AGE = 365; // days
 export const VISITOR_COOKIE_KEY = 'visitor';

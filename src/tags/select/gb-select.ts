@@ -1,6 +1,5 @@
 import { Linkable, LinkTag } from '../link-list/gb-link-list';
 import { FluxTag } from '../tag';
-import * as riot from 'riot'; // tslint:disable-line:no-unused-variable
 
 export interface Selectable extends Linkable {
   iconUrl?: string;
@@ -79,8 +78,8 @@ export class Select extends FluxTag<any> {
     return this.focused = false;
   }
 
-  selectButton() {
-    return this.tags['gb-custom-select'].tags['gb-select-button'].root;
+  selectButton(): HTMLButtonElement {
+    return <any>this.tags['gb-custom-select'].tags['gb-select-button'].root;
   }
 
   nativeSelect() {

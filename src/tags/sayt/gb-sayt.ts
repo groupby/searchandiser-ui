@@ -1,12 +1,11 @@
 import { REFINE_EVENT, RESET_EVENT } from '../../services/search';
-import { debounce } from '../../utils/common';
+import { debounce, escapeStringRegexp } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
 import { SaytTag, TagMeta } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
 import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
-import escapeStringRegexp = require('escape-string-regexp');
 
 export interface SaytOpts {
   structure?: ProductStructure;

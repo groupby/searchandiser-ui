@@ -1,11 +1,10 @@
 import { SearchandiserConfig } from '../searchandiser';
-import { LOCATION } from '../utils/common';
+import { parseUri, LOCATION } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
 import { BeautifierConfig, UrlBeautifier } from '../utils/url-beautifier';
 import { Services } from './init';
 import { REFINE_EVENT } from './search';
 import { FluxCapacitor, Query } from 'groupby-api';
-import * as parseUri from 'parseUri';
 
 export const LOCATION_EVENT = 'location:set';
 
@@ -23,15 +22,11 @@ export class Url {
   beautifier: UrlBeautifier;
   simple: SimpleBeautifier;
   beautify: boolean;
-  initialComplete: boolean;
   title: string;
-  shouldUpdate: boolean;
 
   constructor(private flux: FluxCapacitor, private config: SearchandiserConfig, private services: Services) {
     this.urlConfig = this.config.url || {};
     this.beautify = !!this.urlConfig.beautifier;
-    this.initialComplete = !!this.config.initialSearch;
-    this.shouldUpdate = true;
   }
 
   init() {
@@ -40,8 +35,6 @@ export class Url {
     this.title = document.title;
 
     window.addEventListener('popstate', (data) => {
-      console.log(data);
-      this.shouldUpdate = false;
       this.readStateFromUrl();
     });
 
@@ -63,14 +56,10 @@ export class Url {
     }
   }
 
-  isActive() {
-    return LOCATION.pathname() !== this.urlConfig.searchUrl;
-  }
-
   update(query: Query) {
-    if (query && (query.raw.query || query.raw.refinements.length)) {
+    const currentState = history.state.state ? history.state.state[history.state.state.length - 1] : null;
+    if (Url.hasStateChanged(currentState.query, query.build())) {
       const url = (this.beautify ? this.beautifier : this.simple).build(query);
-
       this.setLocation(url);
     }
   }
@@ -78,11 +67,14 @@ export class Url {
   setLocation(url: string) {
     if (this.urlConfig.staticSearch) {
       LOCATION.replace(url);
-    } else if (this.shouldUpdate) {
+    } else {
       history.pushState({}, 'Search', `?${parseUri(url).query}`);
       document.getElementsByTagName('title')[0].innerHTML = `${this.title} - ${this.flux.query.raw.query}`;
     }
-    this.shouldUpdate = true;
+  }
+
+  static hasStateChanged(oldState: any, newState: any) {
+
   }
 
   static parseUrl(simple: SimpleBeautifier) {

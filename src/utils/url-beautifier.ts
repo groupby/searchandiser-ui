@@ -1,7 +1,6 @@
 import { SearchandiserConfig } from '../searchandiser';
+import { parseUri, queryString } from '../utils/common';
 import { Query, Request, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import * as parseUri from 'parseUri';
-import * as queryString from 'query-string';
 
 export class UrlBeautifier {
 

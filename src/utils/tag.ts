@@ -1,8 +1,7 @@
 import { Dependency, DependencyOptions, FluxTag, META, STYLISH, TagMeta } from '../tags/tag';
-import { checkBooleanAttr } from './common';
+import { checkBooleanAttr, oget } from './common';
 import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
-import oget = require('oget');
 
 export const STYLISH_CLASS = 'gb-stylish';
 const TAG_PREFIX_REGEX = /^[a-z]*?-/;

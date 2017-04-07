@@ -1,9 +1,8 @@
-import { WINDOW } from '../../utils/common';
+import { riot, WINDOW } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { FluxTag, TagMeta } from '../tag';
 import { Renderer } from './renderer';
 import { Events, Record } from 'groupby-api';
-import * as riot from 'riot';
 
 export const MIN_REQUEST_SIZE = 25;
 export const MAX_REQUEST_SIZE = 120;

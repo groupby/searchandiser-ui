@@ -1,13 +1,30 @@
 import { FluxTag, TypeMap } from '../tags/tag';
 import * as clone from 'clone';
 import * as debounce from 'debounce';
+import * as GbTracker from 'gb-tracker-client';
 import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
+import * as Cookies from 'js-cookie';
+import * as parseUri from 'parseUri';
 import * as queryString from 'query-string';
+import * as riot from 'riot';
+import * as uuid from 'uuid';
+import escapeStringRegexp = require('escape-string-regexp');
 import filterObject = require('filter-object');
 import oget = require('oget');
-import * as riot from 'riot';
 
-export { clone, debounce };
+export {
+clone,
+debounce,
+escapeStringRegexp,
+filterObject,
+oget,
+parseUri,
+queryString,
+riot,
+uuid,
+Cookies,
+GbTracker
+};
 
 export type Refinement = ValueRefinement & RangeRefinement;
 
