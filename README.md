@@ -19,7 +19,7 @@ all the best practices for your website in seconds.
 Implementing a simple website:
 ---
 
-###Step 1
+### Step 1
 
 Add the searchandiser CDN to the head in your html file.
 
@@ -34,7 +34,7 @@ Add the searchandiser CDN to the head in your html file.
 </html>
 ```
 
-###Step 2
+### Step 2
 
 Ensure that there are `div` tags on your site with IDs or classes that correspond to the elements that will be
 displayed.
@@ -106,7 +106,7 @@ displayed.
 </html>
 ```
 
-###Step 3
+### Step 3
 
 Use the searchandiser method to set up your configurations in a script tag at the bottom of your body.
 
