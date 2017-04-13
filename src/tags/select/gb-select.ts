@@ -91,7 +91,7 @@ export class Select extends FluxTag<any> {
     }
   }
 
-  focusElement(e) {
+  focusElement(e: Event & { preventUpdate: boolean }) {
     e.preventUpdate = true;
     this.selectButton().focus();
   }

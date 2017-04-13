@@ -3,8 +3,6 @@ import { expectAliases } from '../../utils/expectations';
 import suite from './_suite';
 import { expect } from 'chai';
 
-const TAG = 'gb-refinement';
-
 suite('gb-refinement', Refinement, ({ tag, spy }) => {
   describe('init()', () => {
     it('should alias refinement', () => {
