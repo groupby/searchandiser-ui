@@ -1,10 +1,9 @@
 import { Raw } from '../../src/tags/raw/gb-raw';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
 const OPTS = { content: '<div>red sneakers</div>' };
 
-suite<Raw>('gb-raw', ({ mount, itMountsTag }) => {
+suite<Raw>('gb-raw', ({ mount, expect, itMountsTag }) => {
 
   itMountsTag();
 

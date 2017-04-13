@@ -3,10 +3,9 @@ import { LOCATION } from '../../../src/utils/common';
 import { SimpleBeautifier } from '../../../src/utils/simple-beautifier';
 import { UrlBeautifier } from '../../../src/utils/url-beautifier';
 import suite from './_suite';
-import { expect } from 'chai';
 import { Query } from 'groupby-api';
 
-suite('url', ({ spy, stub }) => {
+suite('url', ({ expect, spy, stub }) => {
 
   describe('init()', () => {
     it('should initialise beautifiers', () => {

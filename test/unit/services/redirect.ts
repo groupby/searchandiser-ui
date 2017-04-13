@@ -2,9 +2,8 @@ import { Redirect } from '../../../src/services/redirect';
 import { LOCATION } from '../../../src/utils/common';
 import { expectSubscriptions } from '../../utils/expectations';
 import suite from './_suite';
-import { expect } from 'chai';
 
-suite('redirect', ({ stub }) => {
+suite('redirect', ({ expect, stub }) => {
 
   describe('init()', () => {
     it('should listen for redirect events', () => {

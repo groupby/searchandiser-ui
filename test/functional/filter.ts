@@ -1,11 +1,11 @@
 import { Filter } from '../../src/tags/filter/gb-filter';
 import suite, { SelectModel } from './_suite';
-import { expect } from 'chai';
 
 const MIXIN = { services: { filter: { register: () => null } } };
 
 suite<Filter>('gb-filter', MIXIN, ({
-  flux, html, mount, stub,
+  flux, html, mount,
+  expect, stub,
   itMountsTag
 }) => {
 

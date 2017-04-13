@@ -1,10 +1,9 @@
 import { Collections, COLLECTIONS_UPDATED_EVENT } from '../../../src/services/collections';
 import { expectSubscriptions } from '../../utils/expectations';
 import suite from './_suite';
-import { expect } from 'chai';
 import { Events, Request } from 'groupby-api';
 
-suite('collections', ({ spy, stub }) => {
+suite('collections', ({ expect, spy, stub }) => {
 
   describe('on construction', () => {
     it('should set properties', () => {

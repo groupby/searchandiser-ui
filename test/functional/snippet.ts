@@ -1,8 +1,7 @@
 import { Snippet } from '../../src/tags/snippet/gb-snippet';
 import suite from './_suite';
-import { expect } from 'chai';
 
-suite<Snippet>('gb-snippet', ({ mount, tagName, itMountsTag }) => {
+suite<Snippet>('gb-snippet', ({ mount, tagName, expect, itMountsTag }) => {
 
   itMountsTag();
 

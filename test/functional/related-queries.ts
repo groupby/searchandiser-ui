@@ -1,8 +1,7 @@
 import { RelatedQueries } from '../../src/tags/related-queries/gb-related-queries';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<RelatedQueries>('gb-related-queries', ({ flux, mount, stub, itMountsTag }) => {
+suite<RelatedQueries>('gb-related-queries', ({ flux, mount, expect, stub, itMountsTag }) => {
 
   itMountsTag();
 

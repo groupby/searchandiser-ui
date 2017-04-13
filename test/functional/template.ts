@@ -1,8 +1,7 @@
 import { Template } from '../../src/tags/template/gb-template';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<Template>('gb-template', ({ mount, itMountsTag }) => {
+suite<Template>('gb-template', ({ mount, expect, itMountsTag }) => {
 
   itMountsTag();
 

@@ -1,8 +1,7 @@
 import { RecordCount } from '../../src/tags/record-count/gb-record-count';
 import suite from './_suite';
-import { expect } from 'chai';
 
-suite<RecordCount>('gb-record-count', ({ html, mount, itMountsTag }) => {
+suite<RecordCount>('gb-record-count', ({ html, expect, mount, itMountsTag }) => {
 
   beforeEach(() => {
     const template = document.createElement('div');

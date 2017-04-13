@@ -2,9 +2,8 @@ import { Query } from '../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../src/tags/sayt/autocomplete';
 import { LOCATION } from '../../src/utils/common';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<Query>('gb-query', ({ flux, stub, mount: _mount, itMountsTag }) => {
+suite<Query>('gb-query', ({ flux, stub, spy, mount: _mount, expect, itMountsTag }) => {
 
   itMountsTag();
 
@@ -29,7 +28,7 @@ suite<Query>('gb-query', ({ flux, stub, mount: _mount, itMountsTag }) => {
   describe('redirect when autoSearch off', () => {
     it('should register for input event', () => {
       const tag = mount(false);
-      const addEventListener = sinon.spy();
+      const addEventListener = spy();
       tag.searchBox = Object.assign(document.createElement('input'), { addEventListener });
 
       tag.listenForInput();

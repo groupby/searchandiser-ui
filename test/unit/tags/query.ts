@@ -64,7 +64,7 @@ suite('gb-query', Query, ({
     });
 
     it('should listen for input event', () => {
-      const listenForInput = sinon.stub(tag(), 'listenForInput');
+      const listenForInput = stub(tag(), 'listenForInput');
       tag().autoSearch = true;
 
       tag().attachListeners();

@@ -1,8 +1,7 @@
 import { Sort } from '../../src/tags/sort/gb-sort';
 import suite, { SelectModel } from './_suite';
-import { expect } from 'chai';
 
-suite<Sort>('gb-sort', ({ flux, mount, stub, itMountsTag }) => {
+suite<Sort>('gb-sort', ({ flux, mount, expect, stub, itMountsTag }) => {
 
   itMountsTag();
 

@@ -2,10 +2,9 @@ import { Filter, FILTER_UPDATED_EVENT } from '../../../src/services/filter';
 import * as serviceInit from '../../../src/services/init';
 import { expectSubscriptions } from '../../utils/expectations';
 import suite from './_suite';
-import { expect } from 'chai';
 import { Events, FluxCapacitor, Query } from 'groupby-api';
 
-suite('filter', ({ spy, stub }) => {
+suite('filter', ({ expect, spy, stub }) => {
 
   describe('on construction', () => {
     let service: Filter;

@@ -1,7 +1,6 @@
 import { SESSION_COOKIE_KEY, Tracker, VISITOR_COOKIE_KEY } from '../../../src/services/tracker';
 import { expectSubscriptions } from '../../utils/expectations';
 import suite from './_suite';
-import { expect } from 'chai';
 import * as GbTracker from 'gb-tracker-client';
 import { Events } from 'groupby-api';
 import * as Cookies from 'js-cookie';
@@ -11,7 +10,7 @@ const TEST_CONFIG: any = {
   area: 'other'
 };
 
-suite('tracker', ({ spy, stub }) => {
+suite('tracker', ({ expect, spy, stub }) => {
 
   describe('on construction', () => {
     it('should have default values', () => {
@@ -188,10 +187,10 @@ suite('tracker', ({ spy, stub }) => {
             title: 'Big Shoes',
             url: 'http://example.com'
           }, {
-            id: 29,
-            title: 'Small Shoes',
-            url: 'http://other.ca'
-          }]
+              id: 29,
+              title: 'Small Shoes',
+              url: 'http://other.ca'
+            }]
         }
       };
       const sendSearchEvent = spy();
@@ -207,10 +206,10 @@ suite('tracker', ({ spy, stub }) => {
             _t: 'Big Shoes',
             _u: 'http://example.com'
           }, {
-            _id: 29,
-            _t: 'Small Shoes',
-            _u: 'http://other.ca'
-          }]
+              _id: 29,
+              _t: 'Small Shoes',
+              _u: 'http://other.ca'
+            }]
         }
       });
     });

@@ -1,7 +1,6 @@
 import { Product } from '../../src/tags/product/gb-product';
 import suite from './_suite';
 import { BaseModel } from './_suite';
-import { expect } from 'chai';
 
 const STRUCTURE = { title: 'title', price: 'price', image: 'image' };
 const VARIANT_STRUCTURE = { image: 'image', price: 'price', id: 'id' };
@@ -13,7 +12,7 @@ const STRUCTURE_WITH_VARIANTS = {
 const MIXIN = { config: { structure: STRUCTURE } };
 const VARIANT_MIXIN = { config: { structure: STRUCTURE_WITH_VARIANTS } };
 
-suite<Product>('gb-product', MIXIN, ({ mount, itMountsTag }) => {
+suite<Product>('gb-product', MIXIN, ({ mount, expect, itMountsTag }) => {
 
   itMountsTag();
 
@@ -56,7 +55,7 @@ suite<Product>('gb-product', MIXIN, ({ mount, itMountsTag }) => {
   });
 });
 
-suite<Product>('gb-product with variants', VARIANT_MIXIN, ({ mount, itMountsTag }) => {
+suite<Product>('gb-product with variants', VARIANT_MIXIN, ({ mount, expect, itMountsTag }) => {
 
   itMountsTag();
 

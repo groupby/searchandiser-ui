@@ -1,6 +1,5 @@
 import { Results } from '../../src/tags/results/gb-results';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
 const MIXIN = {
   config: {
@@ -8,7 +7,7 @@ const MIXIN = {
   }
 };
 
-suite<Results>('gb-results', MIXIN, ({ html, mount, itMountsTag }) => {
+suite<Results>('gb-results', MIXIN, ({ html, mount, expect, itMountsTag }) => {
 
   itMountsTag();
 

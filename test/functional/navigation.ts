@@ -1,11 +1,11 @@
 import { Navigation } from '../../src/tags/navigation/gb-navigation';
 import * as utils from '../../src/utils/common';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 import { Events } from 'groupby-api';
 
 suite<Navigation>('gb-navigation', ({
-  flux, html, mount, stub,
+  flux, html, mount,
+  expect, stub,
   itMountsTag
 }) => {
 
@@ -29,13 +29,13 @@ suite<Navigation>('gb-navigation', ({
         { value: 'Deliver', type: 'Value', count: 123, selected: true }
       ]
     }, {
-      name: 'category',
-      displayName: 'Category',
-      refinements: [
-        { value: 'Health', type: 'Value', count: 200, selected: true },
-        { value: 'Items', type: 'Value', count: 59234 }
-      ]
-    }];
+        name: 'category',
+        displayName: 'Category',
+        refinements: [
+          { value: 'Health', type: 'Value', count: 200, selected: true },
+          { value: 'Items', type: 'Value', count: 59234 }
+        ]
+      }];
     let tag: Navigation;
     let model: Model;
 

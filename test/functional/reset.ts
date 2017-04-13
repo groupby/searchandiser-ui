@@ -1,8 +1,7 @@
 import { Reset } from '../../src/tags/reset/gb-reset';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<Reset>('gb-reset', ({ flux, mount, itMountsTag }) => {
+suite<Reset>('gb-reset', ({ flux, mount, expect, itMountsTag }) => {
 
   itMountsTag();
 

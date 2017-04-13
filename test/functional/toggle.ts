@@ -1,8 +1,7 @@
 import { Toggle } from '../../src/tags/toggle/gb-toggle';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<Toggle>('gb-toggle', ({ mount, itMountsTag }) => {
+suite<Toggle>('gb-toggle', ({ mount, expect, itMountsTag }) => {
 
   itMountsTag();
 

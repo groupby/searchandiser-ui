@@ -1,8 +1,7 @@
 import { Breadcrumbs } from '../../src/tags/breadcrumbs/gb-breadcrumbs';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, stub, itMountsTag }) => {
+suite<Breadcrumbs>('gb-breadcrumbs', ({ flux, mount, expect, stub, itMountsTag }) => {
 
   itMountsTag();
 

@@ -1,8 +1,7 @@
 import { Submit } from '../../src/tags/submit/gb-submit';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<Submit>('gb-submit', ({ flux, mount, itMountsTag }) => {
+suite<Submit>('gb-submit', ({ flux, mount, expect, itMountsTag }) => {
 
   itMountsTag();
 

@@ -1,8 +1,7 @@
 import { Paging } from '../../src/tags/paging/gb-paging';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<Paging>('gb-paging', ({ mount, itMountsTag }) => {
+suite<Paging>('gb-paging', ({ mount, expect, itMountsTag }) => {
 
   itMountsTag();
 

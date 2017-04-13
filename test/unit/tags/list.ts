@@ -11,7 +11,7 @@ suite('gb-list', List, ({
     itShouldAlias('list');
 
     it('should call inherits()', () => {
-      const inherits = tag().inherits = sinon.spy();
+      const inherits = tag().inherits = spy();
 
       tag().init();
 

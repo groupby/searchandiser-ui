@@ -57,8 +57,8 @@ export function tagSuite<T extends FluxTag<any>>({ init, teardown, expect, spy, 
 }
 
 // tslint:disable-next-line max-line-length
-export default <T>(tagName: string, clazz: { new (): T }, mixin: any, tests?: (utils: TagUtils<T>) => void) => {
-  [mixin, tests] = tests ? [mixin, tests] : [undefined, mixin];
+export default <T>(tagName: string, clazz: { new (): T }, mixin: ((utils: TagUtils<T>) => void) | { [key: string]: any }, tests?: (utils: TagUtils<T>) => void) => {
+  [mixin, tests] = tests ? [mixin, tests] : [undefined, <any>mixin];
   suite(base(tagSuite))(`${tagName} logic`, { tagName, mixin, class: clazz }, tests);
 };
 

@@ -3,13 +3,9 @@ import { Filter } from '../../../src/services/filter';
 import { initServices, lazyMixin, startServices } from '../../../src/services/init';
 import { Redirect } from '../../../src/services/redirect';
 import { Url } from '../../../src/services/url';
-import { expect } from 'chai';
+import suite from './_suite';
 
-describe('service initializer', () => {
-  let sandbox: Sinon.SinonSandbox;
-
-  beforeEach(() => sandbox = sinon.sandbox.create());
-  afterEach(() => sandbox.restore());
+suite('service initializer', ({ expect, spy }) => {
 
   describe('initServices()', () => {
     function Thing() {
@@ -80,7 +76,7 @@ describe('service initializer', () => {
 
   describe('startServices()', () => {
     it('should start services in map', () => {
-      const init = sinon.spy();
+      const init = spy();
       const services = { a: { init }, b: { init }, c: { init } };
 
       startServices(services);
@@ -89,7 +85,7 @@ describe('service initializer', () => {
     });
 
     it('should skip failed services', () => {
-      const init = sinon.spy();
+      const init = spy();
 
       startServices({ a: null, b: undefined, c: { init } });
 
@@ -110,7 +106,7 @@ describe('service initializer', () => {
 
     describe('register()', () => {
       it('should call lazyInit() on first item registered', () => {
-        const lazyInit = sinon.spy();
+        const lazyInit = spy();
         const obj: any = { lazyInit };
         lazyMixin(obj);
 

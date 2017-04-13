@@ -1,8 +1,7 @@
 import { DidYouMean } from '../../src/tags/did-you-mean/gb-did-you-mean';
 import suite, { BaseModel } from './_suite';
-import { expect } from 'chai';
 
-suite<DidYouMean>('gb-did-you-mean', ({ flux, mount, itMountsTag }) => {
+suite<DidYouMean>('gb-did-you-mean', ({ flux, mount, expect, itMountsTag }) => {
 
   itMountsTag();
 
