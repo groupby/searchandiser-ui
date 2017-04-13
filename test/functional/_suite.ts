@@ -1,40 +1,37 @@
 import '../../src/tags/index';
 import { FluxTag } from '../../src/tags/tag';
 import { MixinFlux } from '../../src/utils/tag';
-import { baseSuite, buildSuite, SuiteModifier } from '../utils/suite';
-import { expect } from 'chai';
+import { base, Utils } from '../utils/suite';
 import { FluxCapacitor } from 'groupby-api';
+import * as suite from 'mocha-suite';
 import * as riot from 'riot';
 
-function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, description: string, mixinOrCb: any, cb?: Function) {
-  const tagName = description.split(' ')[0];
-  const hasMixin = typeof mixinOrCb === 'object';
-  const mixin = hasMixin ? mixinOrCb : {};
-  const tests: (suiteUtils: FunctionalUtils<T>) => void = hasMixin ? cb : mixinOrCb;
+// tslint:disable-next-line max-line-length
+export function tagSuite<T extends FluxTag<any>>({ init, teardown, expect, spy, stub }: Utils, tests: (utils: TagUtils<T>) => void, { tagName, mixin }: TagOptions<T>) {
+  let _flux: FluxCapacitor;
+  let _html: HTMLElement;
 
-  baseSuite(modifier, `${description} behaviour`, ({ init, teardown, spy, stub }) => {
-    let _flux: FluxCapacitor;
-    let _html: HTMLElement;
+  beforeEach(() => {
+    _flux = mixinFlux(mixin);
+    _html = createTag(tagName);
+    init();
+  });
+  afterEach(() => {
+    teardown();
+    removeTag(_html);
+  });
 
-    beforeEach(() => {
-      _flux = mixinFlux(mixin);
-      _html = createTag(tagName);
-      init();
-    });
-    afterEach(() => {
-      teardown();
-      removeTag(_html);
-    });
+  tests({
+    tagName,
+    flux: () => _flux,
+    html: () => _html,
 
-    tests({
-      flux: () => _flux,
-      html: () => _html,
-      spy,
-      stub,
-      tagName,
-      mount,
-      itMountsTag
-    });
+    expect,
+    spy,
+    stub,
+
+    mount,
+    itMountsTag
   });
 
   function mount(opts: any = {}) {
@@ -51,19 +48,12 @@ function _suite<T extends FluxTag<any>>(modifier: SuiteModifier, description: st
   }
 }
 
-export interface BaseSuite extends Suite {
-  skip?: Suite;
-  only?: Suite;
-}
-
-export interface Suite {
-  <T extends FluxTag<any>>(tagName: string, mixin: any, cb: (suite: FunctionalUtils<T>) => void);
-  <T extends FluxTag<any>>(tagName: string, cb: (suite: FunctionalUtils<T>) => void);
-}
-
-const suite = buildSuite<BaseSuite>(_suite);
-
-export default suite;
+// tslint:disable-next-line max-line-length
+export default <T extends FluxTag<any>>(description: string, mixin: ((utils: TagUtils<T>) => void) | { [key: string]: any }, tests?: (utils: TagUtils<T>) => void) => {
+  const tagName = description.split(' ')[0];
+  [mixin, tests] = tests ? [mixin, tests] : [undefined, <any>mixin];
+  suite<TagUtils<T>>(base<TagUtils<T>>(tagSuite))(`${description} behaviour`, { tagName, mixin }, tests);
+};
 
 export function mixinFlux(obj: any = {}): FluxCapacitor {
   const flux = new FluxCapacitor('');
@@ -81,14 +71,18 @@ export function removeTag(html: HTMLElement) {
   document.body.removeChild(html);
 }
 
-export interface FunctionalUtils<T> {
+export interface TagUtils<T> extends Utils {
+  tagName: string;
   flux: () => FluxCapacitor;
   html: () => HTMLElement;
-  spy: Sinon.SinonSpyStatic;
-  stub: Sinon.SinonStubStatic;
   mount: (opts?: any) => T;
+
   itMountsTag: () => void;
+}
+
+export interface TagOptions<T> {
   tagName: string;
+  mixin?: any;
 }
 
 export abstract class BaseModel<T extends FluxTag<any>> {

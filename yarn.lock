@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/mocha@^2.2.40":
+  version "2.2.40"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.40.tgz#9811dd800ece544cd84b5b859917bf584a150c4c"
+
 abbrev@1, abbrev@1.0.x:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.0.9.tgz#91b4792588a7738c25f35dd6f63752a2f8776135"
@@ -3504,6 +3508,12 @@ mocha-nightwatch@2.2.9:
     lodash.create "^3.1.1"
     mkdirp "0.5.0"
     supports-color "1.2.0"
+
+mocha-suite@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/mocha-suite/-/mocha-suite-1.0.6.tgz#04a61244aece5ad85eedb119a96343d011119ec6"
+  dependencies:
+    "@types/mocha" "^2.2.40"
 
 mocha@^3.0.2, mocha@^3.1.2:
   version "3.2.0"
