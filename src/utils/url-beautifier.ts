@@ -1,5 +1,5 @@
 import { SearchandiserConfig } from '../searchandiser';
-import { parseUri, queryString } from '../utils/common';
+import { URL } from './common';
 import { Query, Request, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
 
 export class UrlBeautifier {
@@ -154,8 +154,8 @@ export class UrlParser {
   }
 
   parse(rawUrl: string): Query {
-    const url = parseUri(rawUrl);
-    const paths = url.path.split('/').filter((val) => val);
+    const url = new URL(rawUrl, true);
+    const paths = url.pathname.split('/').filter((val) => val);
 
     if (paths[paths.length - 1] === this.config.suffix) paths.pop();
 
@@ -182,7 +182,7 @@ export class UrlParser {
       }
     }
 
-    const unmappedRefinements = <string>queryString.parse(url.query)[this.config.extraRefinementsParam];
+    const unmappedRefinements = url.query[this.config.extraRefinementsParam];
     if (unmappedRefinements) {
       query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
     }

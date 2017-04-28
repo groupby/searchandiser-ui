@@ -4,9 +4,8 @@ import * as debounce from 'debounce';
 import * as GbTracker from 'gb-tracker-client';
 import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
 import * as Cookies from 'js-cookie';
-import * as parseUri from 'parseUri';
-import * as queryString from 'query-string';
 import * as riot from 'riot';
+import * as URL from 'url-parse';
 import * as uuid from 'uuid';
 import escapeStringRegexp = require('escape-string-regexp');
 import filterObject = require('filter-object');
@@ -18,12 +17,11 @@ debounce,
 escapeStringRegexp,
 filterObject,
 oget,
-parseUri,
-queryString,
 riot,
 uuid,
 Cookies,
-GbTracker
+GbTracker,
+URL
 };
 
 export type Refinement = ValueRefinement & RangeRefinement;
@@ -81,7 +79,7 @@ export function checkNested(obj: any, ...keys: string[]): boolean {
 }
 
 export function getParam(param: string): string | null {
-  return <string>queryString.parse(LOCATION.getSearch())[param] || null;
+  return <string>URL.qs.parse(LOCATION.getSearch())[param] || null;
 }
 
 export function unless(obj: any, ...defaultObjs: any[]) {

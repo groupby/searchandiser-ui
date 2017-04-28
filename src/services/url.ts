@@ -1,5 +1,5 @@
 import { SearchandiserConfig } from '../searchandiser';
-import { parseUri, LOCATION } from '../utils/common';
+import { LOCATION, URL } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
 import { BeautifierConfig, UrlBeautifier } from '../utils/url-beautifier';
 import { Services } from './init';
@@ -68,7 +68,7 @@ export class Url {
     if (this.urlConfig.staticSearch) {
       LOCATION.replace(url);
     } else {
-      history.pushState({}, 'Search', `?${parseUri(url).query}`);
+      history.pushState({}, 'Search', `?${new URL(url).query}`);
       document.getElementsByTagName('title')[0].innerHTML = `${this.title} - ${this.flux.query.raw.query}`;
     }
   }
