@@ -1,3 +1,4 @@
+import { FluxCapacitor } from 'groupby-api';
 import { SearchandiserConfig } from '../searchandiser';
 import { FluxTag } from '../tags/tag';
 import { Collections } from './collections';
@@ -6,7 +7,6 @@ import { Redirect } from './redirect';
 import { Search } from './search';
 import { Tracker } from './tracker';
 import { Url } from './url';
-import { FluxCapacitor } from 'groupby-api';
 
 const SERVICES = {
   redirect: Redirect,

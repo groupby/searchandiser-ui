@@ -1,7 +1,7 @@
-import { Dependency, DependencyOptions, FluxTag, META, STYLISH, TagMeta } from '../tags/tag';
-import { checkBooleanAttr, oget } from './common';
-import { coerceAttributes, collectServiceConfigs } from './common';
 import { FluxCapacitor } from 'groupby-api';
+import { Dependency, DependencyOptions, FluxTag, META, STYLISH, TagMeta } from '../tags/tag';
+import { checkBooleanAttr, dot } from './common';
+import { coerceAttributes, collectServiceConfigs } from './common';
 
 export const STYLISH_CLASS = 'gb-stylish';
 const TAG_PREFIX_REGEX = /^[a-z]*?-/;
@@ -56,7 +56,7 @@ export function buildConfiguration(tag: FluxTag<any>, meta: TagMeta) {
 
   const serviceConfigs = collectServiceConfigs(tag, services);
 
-  const globalTagConfig = tag._tagName ? oget(tag.config, `tags.${camelizeTagName(tag._tagName)}`, {}) : {};
+  const globalTagConfig = tag._tagName ? dot.get(tag.config, `tags.${camelizeTagName(tag._tagName)}`, {}) : {};
 
   const coercedOpts = coerceAttributes(tag.opts, types);
 

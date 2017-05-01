@@ -1,6 +1,6 @@
+import { Query, Request, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
 import { SearchandiserConfig } from '../searchandiser';
 import { URL } from './common';
-import { Query, Request, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
 
 export class UrlBeautifier {
 

@@ -1,3 +1,4 @@
+import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 import { initServices, Service } from './services/init';
 import { TrackerConfig } from './services/tracker';
 import { UrlConfig } from './services/url';
@@ -16,7 +17,6 @@ import { riot } from './utils/common';
 import { Configuration } from './utils/configuration';
 import { ProductStructure } from './utils/product-transformer';
 import { MixinFlux } from './utils/tag';
-import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig = <any>{}) {
@@ -25,7 +25,7 @@ export function initSearchandiser() {
     Object.assign(flux, Events);
     const services = initServices(flux, config);
 
-    flux.query.withConfiguration(services.search._config);
+    // flux.query.withConfiguration(services.search._config);
     riot.mixin(MixinFlux(flux, config, services));
     Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
     (<any>configure).init();

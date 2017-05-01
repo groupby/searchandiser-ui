@@ -1,7 +1,7 @@
+import { Query, Request } from 'groupby-api';
 import { SearchandiserConfig, } from '../searchandiser';
 import { UrlConfig } from '../services/url';
 import { URL } from '../utils/common';
-import { Query, Request } from 'groupby-api';
 
 export class SimpleBeautifier {
 

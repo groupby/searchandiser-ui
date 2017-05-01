@@ -1,5 +1,4 @@
-import { getPath, remap } from './common';
-import filterObject = require('filter-object');
+import { filterObject, getPath, remap } from './common';
 
 const DEFAULT_STRUCTURE = {
   id: 'id'

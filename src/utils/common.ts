@@ -1,25 +1,25 @@
-import { FluxTag, TypeMap } from '../tags/tag';
 import * as clone from 'clone';
 import * as debounce from 'debounce';
 import * as GbTracker from 'gb-tracker-client';
 import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
-// import * as Cookies from 'js-cookie';
+import * as Cookies from 'js-cookie';
 import * as riot from 'riot';
 import * as URL from 'url-parse';
 import * as uuid from 'uuid';
 import escapeStringRegexp = require('escape-string-regexp');
 import filterObject = require('filter-object');
-import oget = require('oget');
+import * as dot from 'dot-prop';
+import { FluxTag, TypeMap } from '../tags/tag';
 
 export {
 clone,
 debounce,
 escapeStringRegexp,
 filterObject,
-oget,
+dot,
 riot,
 uuid,
-// Cookies,
+Cookies,
 GbTracker,
 URL
 };
@@ -41,7 +41,7 @@ export const WINDOW = {
 };
 
 export function findSearchBox() {
-  return <HTMLInputElement>oget(findTag('gb-query'), '_tag.searchBox');
+  return <HTMLInputElement>dot.get(findTag('gb-query'), '_tag.searchBox');
 }
 
 export function findTag(tagName: string) {
@@ -87,7 +87,7 @@ export function unless(obj: any, ...defaultObjs: any[]) {
 }
 
 export function getPath(obj: any, path: string = '') {
-  return oget(obj, path);
+  return dot.get(obj, path);
 }
 
 /**
@@ -133,7 +133,7 @@ export function scopeCss(tag: string, selector: string) {
 
 export function collectServiceConfigs(tag: FluxTag<any>, services: string[]) {
   return services.reduce((configs, service) => {
-    const config = oget(tag.services, `${service}._config`);
+    const config = dot.get(tag.services, `${service}._config`);
     if (config) {
       configs.push(config);
     }

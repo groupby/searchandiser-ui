@@ -1,7 +1,3 @@
-import './polyfills';
-import { initSearchandiser, Searchandiser, SearchandiserConfig } from './searchandiser';
-import './tags/index';
-import * as utils from './utils/common';
 import {
   BrowserBridge,
   CloudBridge,
@@ -9,6 +5,10 @@ import {
   Query
 } from 'groupby-api';
 import { Sayt } from 'sayt';
+import './polyfills';
+import { initSearchandiser, Searchandiser, SearchandiserConfig } from './searchandiser';
+import './tags/index';
+import * as utils from './utils/common';
 
 declare var VERSION;
 
@@ -16,13 +16,13 @@ const searchandiser = initSearchandiser();
 searchandiser['version'] = VERSION;
 
 export {
-  searchandiser,
-  utils,
-  BrowserBridge,
-  CloudBridge,
-  FluxCapacitor,
-  Query,
-  Sayt,
-  Searchandiser,
-  SearchandiserConfig
-}
+searchandiser,
+utils,
+BrowserBridge,
+CloudBridge,
+FluxCapacitor,
+Query,
+Sayt,
+Searchandiser,
+SearchandiserConfig
+};

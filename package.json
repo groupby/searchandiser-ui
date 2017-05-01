@@ -115,6 +115,7 @@
     "clone": "^2.1.1",
     "debounce": "^1.0.0",
     "deep-equal": "^1.0.1",
+    "dot-prop": "^4.1.1",
     "es6-symbol": "^3.1.0",
     "escape-string-regexp": "^1.0.5",
     "filter-object": "^2.1.0",
