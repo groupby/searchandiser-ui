@@ -3,7 +3,7 @@ import * as clone from 'clone';
 import * as debounce from 'debounce';
 import * as GbTracker from 'gb-tracker-client';
 import { Navigation, RangeRefinement, ValueRefinement } from 'groupby-api';
-import * as Cookies from 'js-cookie';
+// import * as Cookies from 'js-cookie';
 import * as riot from 'riot';
 import * as URL from 'url-parse';
 import * as uuid from 'uuid';
@@ -19,7 +19,7 @@ filterObject,
 oget,
 riot,
 uuid,
-Cookies,
+// Cookies,
 GbTracker,
 URL
 };

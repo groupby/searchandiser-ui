@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const pjson = require('./package.json');
 const CleanPlugin = require('clean-webpack-plugin');
@@ -13,42 +14,49 @@ function resolve() {
     alias: {
       riot: 'riot/riot+compiler'
     },
-    extensions: ['', '.ts', '.js'],
-    modulesDirectories: ['node_modules', 'src']
+    extensions: ['.ts', '.js'],
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, 'src')
+    ]
   };
 }
 
 function preLoaders() {
   return [{
-    test: /\.tag(\.html)?$/,
-    exclude: /node_modules/,
-    loader: 'riot-tag',
-    query: { type: 'none' }
+    test: /\.tag\.html$/,
+    exclude: path.resolve(__dirname, 'node_modules'),
+    enforce: 'pre',
+    loader: 'riot-tag-loader',
+    options: { type: 'none' }
   }];
 }
 
 function loaders() {
   return [{
     test: /\.css$/,
-    loaders: ['style', 'css']
+    use: ['style-loader', 'css-loader']
   }, {
     test: /\.png$/,
-    loader: 'url'
+    loader: 'url-loader'
   }, {
     test: /\.json$/,
-    loader: 'json'
+    loader: 'json-loader'
   }, {
     test: /\.ts$/,
-    exclude: /node_modules/,
-    loader: 'awesome-typescript',
-    query: {
+    exclude: path.resolve(__dirname, 'node_modules'),
+    loader: 'awesome-typescript-loader',
+    options: {
       inlineSourceMap: isTest,
-      sourceMap: !isTest
+      sourceMap: !isTest,
+      declaration: !isTest
     }
   }, {
-    test: /\.tag(\.html)?$/,
-    exclude: /node_modules/,
-    loader: 'babel'
+    test: /\.tag\.html$/,
+    loader: 'babel-loader'
+  }, {
+    test: /\.js$/,
+    loader: 'babel-loader'
   }];
 }
 
@@ -70,22 +78,24 @@ switch (process.env.NODE_ENV) {
       plugins: [definePlugin],
 
       module: {
-        preLoaders: isCi ? preLoaders() : preLoaders().concat({
-          test: /\.ts$/,
-          loader: 'tslint'
-        }),
-
-        postLoaders: isCi ? [] : [{
-          test: /\.ts$/,
-          loader: 'sourcemap-istanbul-instrumenter',
-          exclude: [
-            /node_modules/,
-            /test/,
-            /karma\.entry\.ts$/
-          ]
-        }],
-
-        loaders: loaders()
+        rules: [
+          ...preLoaders(),
+          ...(isCi ? [] : [{
+            test: /\.ts$/,
+            loader: 'tslint-loader',
+            enforce: 'pre'
+          }]),
+          ...loaders(),
+          ...(isCi ? [] : [{
+            test: /\.ts$/,
+            loader: 'sourcemap-istanbul-instrumenter-loader',
+            exclude: [
+              path.resolve(__dirname, 'node_modules'),
+              path.resolve(__dirname, 'test'),
+              path.resolve(__dirname, 'karma.entry.ts')
+            ]
+          }])
+        ]
       }
     };
   case 'prod':
@@ -98,7 +108,7 @@ switch (process.env.NODE_ENV) {
       entry: './src/index.ts',
 
       output: {
-        path: './dist',
+        path: path.resolve(__dirname, 'dist'),
         filename: `${pjson.name}-${pjson.version}${isProd ? '.min' : ''}.js`
       },
 
@@ -106,24 +116,29 @@ switch (process.env.NODE_ENV) {
 
       plugins: [definePlugin, new CleanPlugin(['dist'])]
         .concat(isProd ? [
-          new webpack.optimize.DedupePlugin(),
           new webpack.optimize.UglifyJsPlugin({ comments: false }),
           new UnminifiedPlugin()
         ] : []),
 
       module: {
-        preLoaders: preLoaders().concat({
-          test: /\.ts$/,
-          loader: 'source-map'
-        }),
-
-        loaders: [{
-          test: /src\/index.ts$/,
-          loader: 'expose?searchandiser'
-        }, {
-          test: require.resolve('riot/riot+compiler'),
-          loader: 'expose?riot'
-        }].concat(...loaders())
+        rules: [
+          ...preLoaders(),
+          {
+            test: /\.ts$/,
+            loader: 'source-map-loader',
+            enforce: 'pre'
+          },
+          {
+            test: /src\/index.ts$/,
+            loader: 'expose-loader',
+            options: 'searchandiser'
+          }, {
+            test: require.resolve('riot/riot+compiler'),
+            loader: 'expose-loader',
+            options: 'riot'
+          },
+          ...loaders()
+        ]
       }
     };
 }

@@ -11,13 +11,10 @@
   },
   "globalDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",
-    "node": "registry:dt/node#6.0.0+20161110151007",
     "sinon": "registry:dt/sinon#1.16.0+20160924120326",
     "sinon-chai": "registry:dt/sinon-chai#2.7.0+20160317120654"
   },
   "globalDependencies": {
-    "axios": "registry:dt/axios#0.9.1+20161016142654",
-    "clone": "registry:dt/clone#0.1.11+20160317120654",
-    "js-cookie": "registry:dt/js-cookie#2.0.0+20160317120654"
+    "clone": "registry:dt/clone#0.1.11+20160317120654"
   }
 }

@@ -62,7 +62,7 @@ suite('url', ({ expect, spy, stub }) => {
         const emit = spy();
         const query = 'test';
         const parseUrl = stub(Url, 'parseUrl').returns(new Query(query));
-        const service = new Url(<any>{ emit }, <any>{ }, <any>{ search: {} });
+        const service = new Url(<any>{ emit }, <any>{}, <any>{ search: {} });
 
         service.init();
 

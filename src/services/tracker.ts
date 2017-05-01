@@ -1,5 +1,6 @@
 import { SearchandiserConfig } from '../searchandiser';
-import { filterObject, uuid, Cookies, GbTracker } from '../utils/common';
+import { filterObject, uuid, GbTracker } from '../utils/common';
+// import { filterObject, uuid, Cookies, GbTracker } from '../utils/common';
 import { ProductTransformer } from '../utils/product-transformer';
 import { Events, FluxCapacitor } from 'groupby-api';
 
@@ -42,12 +43,12 @@ export class Tracker {
   }
 
   setVisitorInfo() {
-    const visitorId = this.config.visitorId
-      || Cookies.get(VISITOR_COOKIE_KEY)
-      || uuid.v1();
-    const sessionId = this.config.sessionId
-      || Cookies.get(SESSION_COOKIE_KEY)
-      || uuid.v1();
+    // const visitorId = this.config.visitorId
+    //   || Cookies.get(VISITOR_COOKIE_KEY)
+    //   || uuid.v1();
+    // const sessionId = this.config.sessionId
+    //   || Cookies.get(SESSION_COOKIE_KEY)
+    //   || uuid.v1();
 
     this.setVisitor(visitorId, sessionId);
   }
@@ -70,8 +71,8 @@ export class Tracker {
   setVisitor(visitorId: string, sessionId: string) {
     this.tracker.setVisitor(visitorId, sessionId);
 
-    Cookies.set(VISITOR_COOKIE_KEY, visitorId, { expires: MAX_COOKIE_AGE });
-    Cookies.set(SESSION_COOKIE_KEY, sessionId);
+    // Cookies.set(VISITOR_COOKIE_KEY, visitorId, { expires: MAX_COOKIE_AGE });
+    // Cookies.set(SESSION_COOKIE_KEY, sessionId);
   }
 
   search() {

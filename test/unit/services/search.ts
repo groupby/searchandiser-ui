@@ -22,7 +22,7 @@ suite('search', ({ spy, stub }) => {
   describe('constructor()', () => {
     it('should pass through values', () => {
       const baseConfig: any = DIRECT_MAPPINGS.reduce((base, prop) =>
-        Object.assign(base, { [prop]:  Math.random() }), {});
+        Object.assign(base, { [prop]: Math.random() }), {});
 
       const service = new Search(<any>{}, baseConfig, <any>{});
 
@@ -30,7 +30,7 @@ suite('search', ({ spy, stub }) => {
     });
 
     it('should use config.pageSize', () => {
-      const service = new Search(<any>{}, <any>{ pageSize: 30}, <any>{});
+      const service = new Search(<any>{}, <any>{ pageSize: 30 }, <any>{});
 
       expect(service._config.pageSize).to.eq(30);
     });
