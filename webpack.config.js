@@ -49,7 +49,7 @@ function loaders() {
     options: {
       inlineSourceMap: isTest,
       sourceMap: !isTest,
-      declaration: !isTest
+      declaration: isProd
     }
   }, {
     test: /\.tag\.html$/,
@@ -91,8 +91,7 @@ switch (process.env.NODE_ENV) {
             loader: 'sourcemap-istanbul-instrumenter-loader',
             exclude: [
               path.resolve(__dirname, 'node_modules'),
-              path.resolve(__dirname, 'test'),
-              path.resolve(__dirname, 'karma.entry.ts')
+              path.resolve(__dirname, 'test')
             ]
           }])
         ]
