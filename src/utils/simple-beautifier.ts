@@ -1,5 +1,5 @@
 import { Query, Request } from 'groupby-api';
-import { SearchandiserConfig, } from '../searchandiser';
+import { StoreFrontConfig, } from '../searchandiser';
 import { UrlConfig } from '../services/url';
 import { URL } from '../utils/common';
 
@@ -7,7 +7,7 @@ export class SimpleBeautifier {
 
   urlConfig: UrlConfig;
 
-  constructor(private config: SearchandiserConfig, private request: Request) {
+  constructor(private config: StoreFrontConfig, private request: Request) {
     this.urlConfig = config.url || {};
   }
 

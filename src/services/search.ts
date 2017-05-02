@@ -1,5 +1,5 @@
 import { Events, FluxCapacitor, Request, Sort } from 'groupby-api';
-import { SearchandiserConfig } from '../searchandiser';
+import { StoreFrontConfig } from '../searchandiser';
 import { dot } from '../utils/common';
 import { Services } from './init';
 

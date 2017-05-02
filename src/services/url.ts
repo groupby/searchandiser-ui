@@ -1,5 +1,5 @@
 import { FluxCapacitor, Query } from 'groupby-api';
-import { SearchandiserConfig } from '../searchandiser';
+import { StoreFrontConfig } from '../searchandiser';
 import { LOCATION, URL } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
 import { BeautifierConfig, UrlBeautifier } from '../utils/url-beautifier';

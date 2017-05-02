@@ -3,7 +3,7 @@ import { ProductStructure } from '../../utils/product-transformer';
 import { FluxTag, TagMeta } from '../tag';
 import { Events, Record, Results as ResultsModel } from 'groupby-api';
 
-export interface ResultsOptions {
+export interface ResultsOpts {
   lazy?: boolean;
   css?: { [key: string]: string };
   structure?: ProductStructure;
@@ -16,7 +16,7 @@ export const META: TagMeta = {
 };
 
 @meta(META)
-export class Results extends FluxTag<ResultsOptions> {
+export class Results extends FluxTag<ResultsOpts> {
 
   lazy: boolean;
 
@@ -31,7 +31,7 @@ export class Results extends FluxTag<ResultsOptions> {
     this.flux.on(Events.RESULTS, this.updateRecords);
   }
 
-  setDefaults(config: ResultsOptions) {
+  setDefaults(config: ResultsOpts) {
     this.structure = config.structure || this.config.structure;
   }
 

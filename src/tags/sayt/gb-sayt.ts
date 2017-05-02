@@ -9,20 +9,11 @@ import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api
 
 export interface SaytOpts {
   structure?: ProductStructure;
-  categoryField?: string;
   allCategoriesLabel?: string;
-  collection?: string;
-  area?: string;
-  language?: string;
-  productCount?: number;
-  queryCount?: number;
   minimumCharacters?: number;
   delay?: number;
   autoSearch?: boolean;
-  https?: boolean;
   highlight?: boolean;
-  navigationNames?: { [name: string]: string };
-  allowedNavigations?: string[];
 }
 
 export const MIN_DELAY = 100;
@@ -49,19 +40,10 @@ export const META: TagMeta = {
 @meta(META)
 export class Sayt extends SaytTag<SaytOpts> {
   structure: ProductStructure;
-  navigationNames: { [key: string]: string };
-  allowedNavigations: string[];
   allCategoriesLabel: string;
-  categoryField: string;
-  area: string;
-  collection: string;
-  language: string;
   delay: number;
-  productCount: number;
-  queryCount: number;
   minimumCharacters: number;
   highlight: boolean;
-  https: boolean;
   autoSearch: boolean;
 
   autocomplete: Autocomplete;

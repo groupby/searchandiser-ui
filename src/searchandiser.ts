@@ -1,51 +1,42 @@
-import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
+import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
 import { initServices, Service } from './services/init';
 import { TrackerConfig } from './services/tracker';
 import { UrlConfig } from './services/url';
-import { BreadcrumbsOpts } from './tags/breadcrumbs/gb-breadcrumbs';
-import { CollectionsOpts } from './tags/collections/gb-collections';
-import { DetailsOpts } from './tags/details/gb-details';
-import { FilterOpts } from './tags/filter/gb-filter';
-import { NavigationOpts } from './tags/navigation/gb-navigation';
-import { PageSizeOpts } from './tags/page-size/gb-page-size';
-import { PagingOpts } from './tags/paging/gb-paging';
-import { QueryOpts } from './tags/query/gb-query';
-import { SaytOpts } from './tags/sayt/gb-sayt';
-import { SortOpts } from './tags/sort/gb-sort';
-import { SubmitOpts } from './tags/submit/gb-submit';
+import { Config as TagConfig } from './tags';
 import { riot } from './utils/common';
-import { Configuration } from './utils/configuration';
+import Configuration from './utils/configuration';
 import { ProductStructure } from './utils/product-transformer';
 import { MixinFlux } from './utils/tag';
 
-export function initSearchandiser() {
-  return function configure(rawConfig: SearchandiserConfig = <any>{}) {
-    const config = new Configuration(rawConfig).apply();
-    const flux = new FluxCapacitor(config.customerId);
+export function initStoreFront() {
+  return function configure(rawConfig: StoreFront.Config) {
+    const config = Configuration.apply(rawConfig);
+
+    const flux = new FluxCapacitor(config);
     Object.assign(flux, Events);
     const services = initServices(flux, config);
 
-    flux.query.withConfiguration(services.search._config);
+    // flux.query.withConfiguration(services.search._config);
     riot.mixin(MixinFlux(flux, config, services));
-    Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
-    (<any>configure).init();
+    Object.assign(configure, { flux, services, config }, new StoreFront()['__proto__']);
+    // (<any>configure).init();
 
     // tslint:disable-next-line:no-console
     console.log(`StoreFront v${configure['version']} Loaded 🏬`);
   };
 }
 
-export class Searchandiser {
+export class StoreFront {
 
+  config: StoreFront.Config;
   flux: FluxCapacitor;
   services: any;
-  config: SearchandiserConfig;
 
-  init() {
-    if (this.config.initialSearch) {
-      this.search();
-    }
-  }
+  // init() {
+  //   if (this.config.options.initialSearch) {
+  //     this.search();
+  //   }
+  // }
 
   attach(tagName: string, opts?: any);
   attach(tagName: string, cssSelector: string, opts?: any);
@@ -66,8 +57,7 @@ export class Searchandiser {
   }
 
   search(query?: string) {
-    return this.flux.search(query)
-      .then(() => this.flux.emit(Events.PAGE_CHANGED, { pageNumber: 1, finalPage: this.flux.page.finalPage }));
+    this.flux.search(query);
   }
 
   private simpleAttach(tagName: string, options: any = {}) {
@@ -79,52 +69,23 @@ export class Searchandiser {
   }
 
   private riotTagName(tagName: string) {
-    return tagName.startsWith('gb-') || !this.config.simpleAttach ? tagName : `gb-${tagName}`;
+    return (tagName.startsWith('gb-') || !this.config.options.simpleAttach) ? tagName : `gb-${tagName}`;
   }
 }
 
-export interface BridgeConfig extends FluxBridgeConfig {
-  skipCache?: boolean;
-  skipSemantish?: boolean;
-}
+export namespace StoreFront {
+  export interface Config extends FluxConfiguration {
+    structure?: ProductStructure;
 
-export interface SearchandiserConfig {
-  customerId: string;
-  structure: ProductStructure;
+    tags?: Partial<TagConfig>;
 
-  // services
-  bridge?: BridgeConfig;
-  url?: UrlConfig;
-  tracker?: TrackerConfig;
+    // expand this to include service configuration
+    services?: { [name: string]: Service | false | object };
 
-  area?: string;
-  collection?: string;
-  fields?: string | string[];
-  customUrlParams?: any[];
-  disableAutocorrection?: boolean;
-  pruneRefinements?: boolean;
-  language?: string;
-  pageSize?: number;
-  pageSizes?: number[];
-  sort?: Sort[];
-  visitorId?: string;
-  sessionId?: string;
-
-  tags?: {
-    breadcrumbs?: BreadcrumbsOpts;
-    collections?: CollectionsOpts;
-    details?: DetailsOpts;
-    filter?: FilterOpts;
-    navigation?: NavigationOpts;
-    pageSize?: PageSizeOpts;
-    paging?: PagingOpts;
-    query?: QueryOpts;
-    sayt?: SaytOpts;
-    sort?: SortOpts;
-    submit?: SubmitOpts;
-  };
-  services?: { [name: string]: Service | boolean };
-  stylish?: boolean;
-  initialSearch?: boolean;
-  simpleAttach?: boolean;
+    options?: {
+      stylish ?: boolean;
+      initialSearch ?: boolean;
+      simpleAttach ?: boolean;
+    };
+  }
 }

@@ -1,5 +1,5 @@
 import { Events, FluxCapacitor, Results } from 'groupby-api';
-import { SearchandiserConfig } from '../searchandiser';
+import { StoreFrontConfig } from '../searchandiser';
 import { LabeledOption, SelectOption } from '../tags/select/gb-select';
 import { getPath, unless } from '../utils/common';
 import { lazyMixin, LazyInitializer, LazyService } from './init';
@@ -18,26 +18,32 @@ export class Collections implements LazyInitializer {
   // inProgress: CancelablePromise<any>;
   // collections: string[];
   //
-  // constructor(private flux: FluxCapacitor, private config: SearchandiserConfig) {
-  //   lazyMixin(this);
+  constructor(private flux: FluxCapacitor, private config: StoreFrontConfig) {
+    lazyMixin(this);
   //   const collectionsConfig = getPath(config, 'tags.collections') || {};
   //   const items = collectionsConfig.items || [];
   //   this.fetchCounts = unless(collectionsConfig.showCounts, true);
   //   this.collections = this.isLabeled(items) ? items.map((item) => item.value) : items;
   //
   //   this._config = { items };
-  // }
-  //
+  }
+
   init() {
     // lazy service
   }
-  //
+
   lazyInit() {
+    this.flux.on(Events.PAGE_TOTAL_UPDATED, (total) => this.updateCounts(t));
+    this.flux.on(Events.PAGE_TOTAL_UPDATED, (total) => this.updateCounts(t));
     //   this.flux.on(Events.QUERY_CHANGED, (query) => this.updateCollectionCounts(query));
     //   this.flux.on(Events.RESULTS, (results) => this.updateSelectedCollectionCount(results));
     //   this.updateCollectionCounts();
   }
-  //
+
+  updateCounts() {
+
+  }
+
   // updateCollectionCounts(query: string = '') {
   //   if (this.fetchCounts) {
   //     if (this.inProgress) {

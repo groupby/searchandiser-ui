@@ -6,13 +6,13 @@ import {
 } from 'groupby-api';
 import { Sayt } from 'sayt';
 import './polyfills';
-import { initSearchandiser, Searchandiser, SearchandiserConfig } from './searchandiser';
+import { initStoreFront, StoreFront, StoreFrontConfig } from './searchandiser';
 import './tags/index';
 import * as utils from './utils/common';
 
 declare var VERSION;
 
-const searchandiser = initSearchandiser();
+const searchandiser = initStoreFront();
 searchandiser['version'] = VERSION;
 
 export {
@@ -23,6 +23,6 @@ CloudBridge,
 FluxCapacitor,
 Query,
 Sayt,
-Searchandiser,
-SearchandiserConfig
+StoreFront,
+StoreFrontConfig
 };

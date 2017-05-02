@@ -1,4 +1,4 @@
-import { initSearchandiser, Searchandiser } from '../../src/searchandiser';
+import { initStoreFront, StoreFront } from '../../src/searchandiser';
 import * as serviceInitialiser from '../../src/services/init';
 import * as configuration from '../../src/utils/configuration';
 import * as TagUtils from '../../src/utils/tag';
@@ -9,12 +9,12 @@ import * as riot from 'riot';
 
 describe('searchandiser', () => {
   let sandbox: Sinon.SinonSandbox;
-  let searchandiser: Searchandiser;
+  let searchandiser: StoreFront;
   let flux: FluxCapacitor;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    searchandiser = Object.assign(new Searchandiser(), {
+    searchandiser = Object.assign(new StoreFront(), {
       flux: flux = new FluxCapacitor(''),
       config: {}
     });
@@ -154,14 +154,14 @@ describe('searchandiser', () => {
       sandbox.stub(riot, 'mixin');
       sandbox.stub(serviceInitialiser, 'initServices').returns({ search: {} });
 
-      const configure = initSearchandiser();
+      const configure = initStoreFront();
 
       expect(configure).to.be.a('function');
       expect(Object.keys(configure)).to.eql([]);
 
       configure({ customerId, structure: { title: 't', price: 'p' } });
 
-      expect(Object.keys(configure)).to.include.members(Object.keys(Searchandiser.prototype));
+      expect(Object.keys(configure)).to.include.members(Object.keys(StoreFront.prototype));
     });
 
     it('should process the configuration on configure()', () => {
@@ -172,7 +172,7 @@ describe('searchandiser', () => {
       sandbox.stub(serviceInitialiser, 'initServices').returns({ search: { _config: {} } });
       sandbox.stub(TagUtils, 'MixinFlux');
 
-      const configure = initSearchandiser();
+      const configure = initStoreFront();
       configure(config);
 
       expect(configure['config']).to.eq(finalConfig);
@@ -190,7 +190,7 @@ describe('searchandiser', () => {
       sandbox.stub(riot, 'mixin');
       sandbox.stub(TagUtils, 'MixinFlux');
 
-      const configure = initSearchandiser();
+      const configure = initStoreFront();
       configure(<any>{});
 
       expect(configure['flux']).to.eq(mockFlux);
@@ -208,7 +208,7 @@ describe('searchandiser', () => {
       sandbox.stub(riot, 'mixin');
       sandbox.stub(TagUtils, 'MixinFlux');
 
-      const configure = initSearchandiser();
+      const configure = initStoreFront();
       configure(<any>{});
 
       expect(configure['services']).to.eq(services);
@@ -229,7 +229,7 @@ describe('searchandiser', () => {
       sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
       sandbox.stub(serviceInitialiser, 'initServices').returns(services);
 
-      const configure = initSearchandiser();
+      const configure = initStoreFront();
       configure(<any>{ i: 'j' });
 
       expect(riotMixin).to.be.calledWith(mixed);

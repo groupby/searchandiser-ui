@@ -1,6 +1,6 @@
-import { BridgeConfig, SearchandiserConfig } from '../searchandiser';
+import { BridgeConfig, StoreFrontConfig } from '../searchandiser';
 
-export const DEFAULT_CONFIG: SearchandiserConfig = <any>{
+export const DEFAULT_CONFIG: StoreFrontConfig = <any>{
   pageSize: 10,
   sort: [],
 
@@ -18,9 +18,9 @@ export interface ConfigurationHandler {
 
 export type HandlerMap = { [key: string]: ConfigurationHandler };
 
-export class Configuration {
+namespace Configuration {
 
-  handlers: HandlerMap = {
+  export const handlers: HandlerMap = {
     bridge: (config: BridgeConfig = {}) => {
       const headers = config.headers || {};
       if (config.skipCache) {
@@ -34,15 +34,13 @@ export class Configuration {
     }
   };
 
-  constructor(public rawConfig: SearchandiserConfig) { }
-
-  apply() {
-    Configuration.validate(this.rawConfig);
-    const config = Configuration.applyDefaults(this.rawConfig, DEFAULT_CONFIG);
-    return Configuration.transform(config, this.handlers);
+  export function apply(rawConfig: StoreFrontConfig) {
+    Configuration.validate(rawConfig);
+    const config = Configuration.applyDefaults(rawConfig, DEFAULT_CONFIG);
+    return Configuration.transform(config);
   }
 
-  static applyDefaults(config: SearchandiserConfig, defaults: SearchandiserConfig) {
+  export function applyDefaults(config: StoreFrontConfig, defaults: StoreFrontConfig) {
     const finalConfig = Object.assign({}, defaults);
     for (let key of Object.keys(config)) {
       if (Array.isArray(config[key]) || typeof config[key] !== 'object') {
@@ -54,14 +52,14 @@ export class Configuration {
     return finalConfig;
   }
 
-  static transform(config: SearchandiserConfig, handlers: HandlerMap) {
-    for (let key of Object.keys(handlers)) {
+  export function transform(config: StoreFrontConfig) {
+    for (let key of Object.keys(Configuration.handlers)) {
       config[key] = handlers[key](config[key]);
     }
     return config;
   }
 
-  static validate(config: SearchandiserConfig) {
+  export function validate(config: StoreFrontConfig) {
     if (!config.structure) {
       throw new Error('must provide a record structure');
     }
@@ -74,3 +72,5 @@ export class Configuration {
     }
   }
 }
+
+export default Configuration;

@@ -1,4 +1,4 @@
-import { SearchandiserConfig } from '../../../src/searchandiser';
+import { StoreFrontConfig } from '../../../src/searchandiser';
 import { Services } from '../../../src/services/init';
 import { DIRECT_MAPPINGS, REFINE_EVENT, RESET_EVENT, Search } from '../../../src/services/search';
 import { expectSubscriptions } from '../../utils/expectations';
@@ -9,7 +9,7 @@ import { FluxCapacitor } from 'groupby-api';
 suite('search', ({ spy, stub }) => {
   let search: Search;
   let flux: FluxCapacitor;
-  let config: SearchandiserConfig;
+  let config: StoreFrontConfig;
   let services: Services;
 
   beforeEach(() => {

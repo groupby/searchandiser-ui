@@ -1,6 +1,6 @@
 import { FluxCapacitor } from 'groupby-api';
 import { Sayt } from 'sayt';
-import { SearchandiserConfig } from '../searchandiser';
+import { StoreFrontConfig } from '../searchandiser';
 import { Services } from '../services/init';
 import { riot } from '../utils/common';
 import { addMeta, configure, inheritAliases, setStylish, setTagName, updateDependency } from '../utils/tag';
@@ -16,7 +16,7 @@ export interface FluxTag<T> extends riot.Tag.Instance {
 
   flux: FluxCapacitor;
   services: Services;
-  config: SearchandiserConfig;
+  config: StoreFrontConfig;
 
   setDefaults(config: T): void;
 }

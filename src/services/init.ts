@@ -1,5 +1,5 @@
 import { FluxCapacitor } from 'groupby-api';
-import { SearchandiserConfig } from '../searchandiser';
+import { StoreFrontConfig } from '../searchandiser';
 import { FluxTag } from '../tags/tag';
 import { Collections } from './collections';
 import { Filter } from './filter';
@@ -60,12 +60,12 @@ export interface Services {
 }
 
 export interface Service {
-  new (flux: FluxCapacitor, config: SearchandiserConfig, services: { [name: string]: any }): { init: () => null };
+  new (flux: FluxCapacitor, config: StoreFrontConfig, services: { [name: string]: any }): { init: () => null };
 }
 
 type ServiceMap = { [name: string]: Service };
 
-export function initServices(flux: FluxCapacitor, config: SearchandiserConfig) {
+export function initServices(flux: FluxCapacitor, config: StoreFrontConfig) {
   const servicesConstructors: ServiceMap = Object.assign({}, SERVICES, config.services || {}, CORE_SERVICES);
   const services: Services = <any>{};
 

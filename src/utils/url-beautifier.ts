@@ -1,5 +1,5 @@
 import { Query, Request, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import { SearchandiserConfig } from '../searchandiser';
+import { StoreFrontConfig } from '../searchandiser';
 import { URL } from './common';
 
 export class UrlBeautifier {
@@ -13,7 +13,7 @@ export class UrlBeautifier {
   private generator: UrlGenerator = new UrlGenerator(this);
   private parser: UrlParser = new UrlParser(this);
 
-  constructor(public searchandiserConfig: SearchandiserConfig = <any>{}, public request: Request) {
+  constructor(public searchandiserConfig: StoreFrontConfig = <any>{}, public request: Request) {
     const urlConfig = searchandiserConfig.url || {};
     const config = typeof urlConfig.beautifier === 'object' ? urlConfig.beautifier : {};
     Object.assign(this.config, config);
@@ -141,7 +141,7 @@ export class UrlGenerator {
 
 export class UrlParser {
 
-  searchandiserConfig: SearchandiserConfig;
+  searchandiserConfig: StoreFrontConfig;
   config: BeautifierConfig;
   request: Request;
   suffixRegex: RegExp;
