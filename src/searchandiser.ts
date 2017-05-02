@@ -10,7 +10,7 @@ import { MixinFlux } from './utils/tag';
 
 export function initStoreFront() {
   return function configure(rawConfig: StoreFront.Config) {
-    const config = Configuration.apply(rawConfig);
+    const config = Configuration.build(rawConfig);
 
     const flux = new FluxCapacitor(config);
     Object.assign(flux, Events);

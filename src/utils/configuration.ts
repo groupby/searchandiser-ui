@@ -34,7 +34,7 @@ namespace Configuration {
     }
   };
 
-  export function apply(rawConfig: StoreFrontConfig) {
+  export function build(rawConfig: StoreFrontConfig) {
     Configuration.validate(rawConfig);
     const config = Configuration.applyDefaults(rawConfig, DEFAULT_CONFIG);
     return Configuration.transform(config);

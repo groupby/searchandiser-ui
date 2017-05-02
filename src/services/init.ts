@@ -2,7 +2,7 @@ import { FluxCapacitor } from 'groupby-api';
 import { StoreFrontConfig } from '../searchandiser';
 import { FluxTag } from '../tags/tag';
 import { Collections } from './collections';
-import { Filter } from './filter';
+// import { Filter } from './filter';
 import { Redirect } from './redirect';
 import { Search } from './search';
 import { Tracker } from './tracker';
@@ -16,7 +16,7 @@ const SERVICES = {
 
 const CORE_SERVICES = {
   collections: Collections,
-  filter: Filter,
+  // filter: Filter,
   search: Search
 };
 
@@ -52,7 +52,7 @@ export function lazyMixin(service: any) {
 
 export interface Services {
   collections: Collections;
-  filter: Filter;
+  // filter: Filter;
   redirect: Redirect;
   search: Search;
   tracker: Tracker;

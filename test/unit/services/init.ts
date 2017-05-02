@@ -1,5 +1,5 @@
 import { Collections } from '../../../src/services/collections';
-import { Filter } from '../../../src/services/filter';
+// import { Filter } from '../../../src/services/filter';
 import { initServices, lazyMixin, startServices } from '../../../src/services/init';
 import { Redirect } from '../../../src/services/redirect';
 import { Search } from '../../../src/services/search';
@@ -19,7 +19,7 @@ suite('service initializer', ({ expect, spy }) => {
 
       const services = initServices(flux, <any>{ customerId: 'test', area: 'other' });
 
-      expect(services.filter).to.be.an.instanceof(Filter);
+      // expect(services.filter).to.be.an.instanceof(Filter);
       expect(services.redirect).to.be.an.instanceof(Redirect);
       expect(services.url).to.be.an.instanceof(Url);
       expect(services.collections).to.be.an.instanceof(Collections);

@@ -5,7 +5,7 @@ import * as breadcrumbs from './breadcrumbs';
 import * as collections from './collections';
 import * as details from './details';
 import './did-you-mean';
-import './filter';
+// import './filter';
 import './icon';
 import * as infiniteScroll from './infinite-scroll';
 import './lazy-image';
