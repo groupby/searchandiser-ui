@@ -164,7 +164,7 @@ export class Sayt extends SaytTag<SaytOpts> {
       && result.searchTerms[0].value.toLowerCase() === this.originalQuery.toLowerCase();
 
     if (this.matchesInput) {
-      const [categoryQuery] = result.searchTerms.splice(0, 1);
+      const [categoryQuery] = result.searchTerms;
       categoryResults = this.extractCategoryResults(categoryQuery);
     }
 
