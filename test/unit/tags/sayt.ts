@@ -630,7 +630,7 @@ suite('gb-sayt', Sayt, ({
       tag().processResults({ searchTerms });
 
       expect(tag().matchesInput).to.be.true;
-      expect(searchTerms.length).to.eq(1);
+      expect(searchTerms.length).to.eq(2);
       expect(update).to.be.calledWithMatch({ categoryResults });
       expect(extractCategoryResults).to.be.calledWithMatch({ additionalInfo, value });
     });
