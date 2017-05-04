@@ -32,7 +32,7 @@ export function initSearchandiser() {
     (<any>configure).init();
 
     // tslint:disable-next-line:no-console
-    console.log(`StoreFront v${configure['version']} Loaded 🏬`);
+    // console.log(`StoreFront v${configure['version']} Loaded 🏬`);
   };
 }
 
