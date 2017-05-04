@@ -2446,7 +2446,7 @@ gb-license-check@^1.0.1:
     lodash "^4.16.3"
     semver "^5.3.0"
 
-gb-tracker-client@^3.3.1:
+gb-tracker-client@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/gb-tracker-client/-/gb-tracker-client-3.4.1.tgz#315b0e14e336bf118580b29139ef21e0900ee8dd"
   dependencies:

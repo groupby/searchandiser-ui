@@ -47,6 +47,7 @@ function loaders() {
     exclude: path.resolve(__dirname, 'node_modules'),
     loader: 'awesome-typescript-loader',
     options: {
+      // useBabel: true,
       inlineSourceMap: isTest,
       sourceMap: !isTest,
       declaration: isProd
@@ -55,7 +56,11 @@ function loaders() {
     test: /\.tag\.html$/,
     loader: 'babel-loader'
   }, {
-    test: /\.js$/,
+    test: [
+      require.resolve('dot-prop'),
+      require.resolve('gb-tracker-client'),
+      require.resolve('remove-trailing-separator')
+    ],
     loader: 'babel-loader'
   }];
 }
