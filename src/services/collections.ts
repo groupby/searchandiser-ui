@@ -1,31 +1,24 @@
-import { Events, FluxCapacitor, Results } from 'groupby-api';
-import { StoreFrontConfig } from '../searchandiser';
-import { LabeledOption, SelectOption } from '../tags/select/gb-select';
-import { getPath, unless } from '../utils/common';
-import { lazyMixin, LazyInitializer, LazyService } from './init';
+import { Events, FluxCapacitor } from 'groupby-api';
+import { lazyMixin, LazyInitializer, LazyService } from '.';
+import { StoreFront } from '../searchandiser';
 
-export const COLLECTIONS_UPDATED_EVENT = 'collections_updated';
+export interface Opts {
+  fetchCounts?: boolean;
+}
 
-export type CancelablePromise<T> = Promise<T> & { cancelled: boolean; };
+export const DEFAULTS: Opts = {
+  fetchCounts: true
+};
 
 export interface Collections extends LazyService { }
 
 export class Collections implements LazyInitializer {
 
-  // _config: { items: SelectOption[] };
-  // fetchCounts: boolean;
-  // counts: any = {};
-  // inProgress: CancelablePromise<any>;
-  // collections: string[];
-  //
-  constructor(private flux: FluxCapacitor, private config: StoreFrontConfig) {
+  opts: Opts;
+
+  constructor(private flux: FluxCapacitor, private config: StoreFront.Config) {
     lazyMixin(this);
-  //   const collectionsConfig = getPath(config, 'tags.collections') || {};
-  //   const items = collectionsConfig.items || [];
-  //   this.fetchCounts = unless(collectionsConfig.showCounts, true);
-  //   this.collections = this.isLabeled(items) ? items.map((item) => item.value) : items;
-  //
-  //   this._config = { items };
+    this.opts = { ...DEFAULTS, ...(this.config.services.collections || {}) };
   }
 
   init() {
@@ -33,60 +26,16 @@ export class Collections implements LazyInitializer {
   }
 
   lazyInit() {
-    this.flux.on(Events.PAGE_TOTAL_UPDATED, (total) => this.updateCounts(t));
-    this.flux.on(Events.PAGE_TOTAL_UPDATED, (total) => this.updateCounts(t));
-    //   this.flux.on(Events.QUERY_CHANGED, (query) => this.updateCollectionCounts(query));
-    //   this.flux.on(Events.RESULTS, (results) => this.updateSelectedCollectionCount(results));
-    //   this.updateCollectionCounts();
+    if (this.opts.fetchCounts) {
+      this.flux.on(Events.RECALL_CHANGED, () =>
+        this.flux.once(Events.FETCH_SEARCH_DONE, () =>
+          this.fetchCollectionCounts()));
+    }
   }
 
-  updateCounts() {
-
+  fetchCollectionCounts() {
+    this.flux.store.getState()
+      .data.collections.allIds.forEach((collection) =>
+        this.flux.store.dispatch<any>(this.flux.actions.fetchCollectionCount(collection)));
   }
-
-  // updateCollectionCounts(query: string = '') {
-  //   if (this.fetchCounts) {
-  //     if (this.inProgress) {
-  //       this.inProgress.cancelled = true;
-  //     }
-  //
-  //     const searches = this.collections
-  //       .filter((collection) => !this.isSelected(collection))
-  //       .map((collection) => this.flux.bridge
-  //         .search(Object.assign(this.flux.query.raw, { query, collection, refinements: [], pageSize: 0, fields: '' }))
-  //         .then((results) => ({ results, collection })));
-  //
-  //     const promises = this.inProgress = <CancelablePromise<any>>Promise.all(searches);
-  //
-  //     return promises.then(this.extractCounts)
-  //       .then((counts) => {
-  //         if (!promises.cancelled) {
-  //           Object.assign(this.counts, counts);
-  //           this.flux.emit(COLLECTIONS_UPDATED_EVENT, this.counts);
-  //         }
-  //       });
-  //   }
-  // }
-  //
-  // extractCounts(res: any[]) {
-  //   return res.reduce((counts, { results, collection }) =>
-  //     Object.assign(counts, { [collection]: results.totalRecordCount }), {});
-  // }
-  //
-  // updateSelectedCollectionCount(res: Results) {
-  //   Object.assign(this.counts, { [this.selectedCollection]: res.totalRecordCount });
-  //   this.flux.emit(COLLECTIONS_UPDATED_EVENT, this.counts);
-  // }
-  //
-  // isSelected(collection: string) {
-  //   return collection === this.selectedCollection;
-  // }
-  //
-  // isLabeled(items: SelectOption[]): items is LabeledOption[] {
-  //   return items.length !== 0 && typeof items[0] === 'object';
-  // }
-  //
-  // get selectedCollection() {
-  //   return getPath(this.flux, 'query.raw.collection') || this.config.collection;
-  // }
 }

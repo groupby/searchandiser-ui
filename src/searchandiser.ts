@@ -1,5 +1,5 @@
 import { Events, FluxCapacitor, FluxConfiguration, Sort } from 'groupby-api';
-import { initServices, Service } from './services/init';
+import { initialize as initServices, Service } from './services';
 import { TrackerConfig } from './services/tracker';
 import { UrlConfig } from './services/url';
 import { Config as TagConfig } from './tags';
@@ -83,9 +83,9 @@ export namespace StoreFront {
     services?: { [name: string]: Service | false | object };
 
     options?: {
-      stylish ?: boolean;
-      initialSearch ?: boolean;
-      simpleAttach ?: boolean;
+      stylish?: boolean;
+      initialSearch?: boolean;
+      simpleAttach?: boolean;
     };
   }
 }

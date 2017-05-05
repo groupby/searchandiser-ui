@@ -1,5 +1,5 @@
 import { Events, FluxCapacitor } from 'groupby-api';
-import { StoreFrontConfig } from '../searchandiser';
+import { StoreFront } from '../searchandiser';
 import { filterObject, uuid, GbTracker } from '../utils/common';
 import { ProductTransformer } from '../utils/product-transformer';
 

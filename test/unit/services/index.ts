@@ -1,6 +1,6 @@
+import { initialize, lazyMixin, startServices } from '../../../src/services';
 import { Collections } from '../../../src/services/collections';
 // import { Filter } from '../../../src/services/filter';
-import { initServices, lazyMixin, startServices } from '../../../src/services/init';
 import { Redirect } from '../../../src/services/redirect';
 import { Search } from '../../../src/services/search';
 import { Url } from '../../../src/services/url';
@@ -8,7 +8,7 @@ import suite from './_suite';
 
 suite('service initializer', ({ expect, spy }) => {
 
-  describe('initServices()', () => {
+  describe('initialize()', () => {
     function Thing() {
       this.init = () => null;
       return this;
@@ -17,7 +17,7 @@ suite('service initializer', ({ expect, spy }) => {
     it('should initialize all services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
 
-      const services = initServices(flux, <any>{ customerId: 'test', area: 'other' });
+      const services = initialize(flux, <any>{ customerId: 'test', area: 'other' });
 
       // expect(services.filter).to.be.an.instanceof(Filter);
       expect(services.redirect).to.be.an.instanceof(Redirect);
@@ -29,7 +29,7 @@ suite('service initializer', ({ expect, spy }) => {
     it('should include client services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
 
-      const services: any = initServices(flux, <any>{
+      const services: any = initialize(flux, <any>{
         customerId: 'test',
         area: 'other',
         services: { thing: Thing }
@@ -41,7 +41,7 @@ suite('service initializer', ({ expect, spy }) => {
     it('should override default services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
 
-      const services = initServices(flux, <any>{
+      const services = initialize(flux, <any>{
         customerId: 'test',
         area: 'other',
         services: { url: Thing }
@@ -53,7 +53,7 @@ suite('service initializer', ({ expect, spy }) => {
     it('should not override core services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
 
-      const services = initServices(flux, <any>{
+      const services = initialize(flux, <any>{
         customerId: 'test',
         area: 'other',
         services: { collections: Thing }
@@ -65,7 +65,7 @@ suite('service initializer', ({ expect, spy }) => {
     it('should allow disabling non-core services', () => {
       const flux: any = { on: () => null, search: () => Promise.resolve() };
 
-      const services = initServices(flux, <any>{
+      const services = initialize(flux, <any>{
         customerId: 'test',
         area: 'other',
         services: { collections: false, tracker: false }
