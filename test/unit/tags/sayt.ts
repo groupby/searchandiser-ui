@@ -637,15 +637,13 @@ suite('gb-sayt', Sayt, ({
 
     it('should match input when category result empty', () => {
       const value = tag().originalQuery = 'red boots';
-      const categoryResults = [];
       const searchTerms = [{ value }, { value: 'other' }];
-      const update = tag().update = spy();
+      tag().update = () => null;
 
       tag().processResults({ searchTerms });
 
       expect(tag().matchesInput).to.be.true;
       expect(searchTerms.length).to.eq(2);
-      expect(update).to.be.calledWithMatch({ categoryResults });
     });
 
     it('should not match input', () => {
