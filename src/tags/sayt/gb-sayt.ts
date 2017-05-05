@@ -166,7 +166,7 @@ export class Sayt extends SaytTag<SaytOpts> {
     if (this.matchesInput) {
       let [categoryQuery] = result.searchTerms;
       categoryResults = this.extractCategoryResults(categoryQuery);
-      if (categoryResults.length !== 0) {
+      if (categoryResults.length > 0) {
         categoryQuery = result.searchTerms.splice(0, 1);
       }
     }
