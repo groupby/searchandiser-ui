@@ -134,14 +134,6 @@ suite('gb-select', Select, ({
   });
 
   describe('focusElement()', () => {
-    it('should set preventUpdate to true', () => {
-      const mouseEvent: any = {};
-      tag().selectButton = (): any => ({ focus: () => null });
-
-      tag().focusElement(mouseEvent);
-
-      expect(mouseEvent.preventUpdate).to.be.true;
-    });
 
     it('should call focus on selectButton', () => {
       const focus = spy();
@@ -151,6 +143,14 @@ suite('gb-select', Select, ({
 
       expect(tag().selectButton).to.be.called;
       expect(focus).to.be.called;
+    });
+
+    it('should set activated flag to true', () => {
+      tag().selectButton = (): any => ({ focus: () => null });
+
+      tag().focusElement({});
+
+      expect(tag().activated).to.be.true;
     });
   });
 
@@ -181,6 +181,35 @@ suite('gb-select', Select, ({
 
       expect(tag().focused).to.be.false;
       expect(blur).to.be.called;
+    });
+  });
+
+  describe('hoverActivate()', () => {
+    it('should set activated flag to true if hoverable', () => {
+      tag().$selectable = <any>{ hover: true };
+
+      tag().hoverActivate();
+
+      expect(tag().activated).to.be.true;
+    });
+
+    it('should not set activated flag to true if clickable', () => {
+      tag().$selectable = <any>{ hover: false };
+      tag().activated = false;
+
+      tag().hoverActivate();
+
+      expect(tag().activated).to.be.false;
+
+    });
+
+    it('should not change the value of activated if clickable', () => {
+      tag().$selectable = <any>{ hover: false };
+      tag().activated = true;
+
+      tag().hoverActivate();
+
+      expect(tag().activated).to.be.true;
     });
   });
 
@@ -271,6 +300,17 @@ suite('gb-select', Select, ({
       expect(blur).to.be.called;
       expect(selectItem).to.be.calledWith(item.label, item.value);
     });
+
+    it('should set activated flag to false', () => {
+      const item = { value: 'hat', label: 'Hat' };
+      const selectItem = stub(tag(), 'selectItem');
+      tag().selectButton = (): any => ({ blur: () => null });
+
+      tag().selectCustom(item);
+
+      expect(tag().activated).to.be.false;
+    });
+
   });
 
   describe('clearSelection()', () => {
