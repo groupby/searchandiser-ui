@@ -7,12 +7,12 @@ export const MAX_COOKIE_AGE = 365; // days
 export const VISITOR_COOKIE_KEY = 'visitor';
 export const SESSION_COOKIE_KEY = 'session';
 
-export const DEFAULT_CONFIG: TrackerConfig = {
+export const DEFAULTS: Opts = {
   warnings: true,
   metadata: {}
 };
 
-export interface TrackerConfig {
+export interface Opts {
   warnings?: boolean;
   metadata?: {
     _search?: any;
@@ -22,23 +22,25 @@ export interface TrackerConfig {
 
 export class Tracker {
 
-  // _config: TrackerConfig;
-  // tracker: TrackerClient;
-  // transformer: ProductTransformer;
-  //
-  // constructor(private flux: FluxCapacitor, public config: SearchandiserConfig) {
-  //   this._config = Object.assign({}, DEFAULT_CONFIG, this.config.tracker || {});
-  //   this.tracker = new GbTracker(this.config.customerId, this.config.area);
-  //   this.transformer = new ProductTransformer(this.config.structure || {});
-  // }
-  //
+  opts: Opts;
+
+  tracker: TrackerClient;
+  transformer: ProductTransformer;
+
+  constructor(private flux: FluxCapacitor, public config: SearchandiserConfig) {
+    this.tracker = new GbTracker(this.config.customerId, this.config.area);
+    this.transformer = new ProductTransformer(this.config.structure || {});
+    lazyMixin(this);
+    this.opts = { ...DEFAULTS, ...(this.config.services.tracker || {}) };
+  }
+
   init() {
-    //   if (!this._config.warnings) {
-    //     this.tracker.disableWarnings();
-    //   }
-    //
-    //   this.setVisitorInfo();
-    //   this.listenForViewProduct();
+    if (!this.opts.warnings) {
+      this.tracker.disableWarnings();
+    }
+
+    this.setVisitorInfo();
+    this.listenForViewProduct();
   }
   //
   // setVisitorInfo() {
