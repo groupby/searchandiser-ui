@@ -47,6 +47,7 @@ export class Select extends FluxTag<any> {
   default: boolean;
   selected: any;
   focused: boolean;
+  activated: boolean;
 
   init() {
     this.expose('select');
@@ -58,6 +59,7 @@ export class Select extends FluxTag<any> {
   setDefaults() {
     this.clearItem = { label: this.$selectable.clear || 'Unselect', clear: true };
     this.default = !this.$selectable.clear;
+    this.activated = false;
 
     if (this.default) {
       const items = this.$selectable.items;
@@ -91,8 +93,8 @@ export class Select extends FluxTag<any> {
     }
   }
 
-  focusElement(e: Event & { preventUpdate: boolean }) {
-    e.preventUpdate = true;
+  focusElement() {
+    this.activated = true;
     this.selectButton().focus();
   }
 
@@ -100,6 +102,12 @@ export class Select extends FluxTag<any> {
     this.focused = this.$selectable.hover || !this.focused;
     if (!this.focused) {
       this.selectButton().blur();
+    }
+  }
+
+  hoverActivate() {
+    if (this.$selectable.hover) {
+      this.activated = true;
     }
   }
 
@@ -123,6 +131,7 @@ export class Select extends FluxTag<any> {
   }
 
   selectCustom({ value, label }: { value: string, label: string }) {
+    this.activated = false;
     this.selectButton().blur();
     this.selectItem(label, value);
   }
