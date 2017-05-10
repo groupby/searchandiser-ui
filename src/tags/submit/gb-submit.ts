@@ -19,7 +19,7 @@ export const META: TagMeta = {
 
 @meta(META)
 export class Submit extends FluxTag<SubmitOpts> {
-  root: riot.TagElement & { value: any };
+  root: riot.TagElement & HTMLInputElement;
 
   label: string;
   staticSearch: boolean;
