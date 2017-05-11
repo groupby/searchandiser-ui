@@ -23,11 +23,14 @@ export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,field
 
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig = <any>{}) {
+    // Setup riot mixin
     const config = new Configuration(rawConfig).apply();
     const flux = new FluxCapacitor(config.customerId, config, CONFIGURATION_MASK);
     Object.assign(flux, Events);
     const services = initServices(flux, config);
     riot.mixin(MixinFlux(flux, config, services));
+
+    // Setup searchandiser instance
     Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
     (<any>configure).init();
 
