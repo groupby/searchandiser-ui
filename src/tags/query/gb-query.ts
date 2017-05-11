@@ -28,7 +28,6 @@ export const META: TagMeta = {
 
 @meta(META)
 export class Query extends FluxTag<QueryOpts> {
-  root: riot.TagElement & HTMLInputElement;
   tags: {
     'gb-sayt': Sayt;
     'gb-search-box': FluxTag<any> & {
