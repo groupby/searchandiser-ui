@@ -28,18 +28,26 @@ suite('collections', ({ expect, spy, stub }) => {
   });
 
   describe('init()', () => {
+    it('should not throw errors', () => {
+      const service = new Collections(<any>{}, <any>{});
+
+      expect(() => service.init()).to.not.throw();
+    });
+  });
+
+  describe('lazyInit()', () => {
     it('should update itself', (done) => {
       const service = new Collections(<any>{ on: () => null }, <any>{});
       service.updateCollectionCounts = () => done();
 
-      service.init();
+      service.lazyInit();
     });
 
     it('should listen events', () => {
       const flux: any = {};
       const service = new Collections(flux, <any>{});
 
-      expectSubscriptions(() => service.init(), {
+      expectSubscriptions(() => service.lazyInit(), {
         [Events.QUERY_CHANGED]: null,
         [Events.RESULTS]: null
       }, flux);

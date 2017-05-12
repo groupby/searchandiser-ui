@@ -1,4 +1,4 @@
-import { initSearchandiser, CONFIGURATION_MASK, Searchandiser } from '../../src/searchandiser';
+import { initSearchandiser, Searchandiser } from '../../src/searchandiser';
 import * as serviceInitialiser from '../../src/services/init';
 import * as configuration from '../../src/utils/configuration';
 import * as TagUtils from '../../src/utils/tag';
@@ -118,7 +118,7 @@ describe('searchandiser', () => {
     it('should call riot.compile()', (done) => {
       sandbox.stub(riot, 'compile', () => done());
 
-      searchandiser.compile();
+      searchandiser.compile(() => null);
     });
   });
 
@@ -147,24 +147,19 @@ describe('searchandiser', () => {
 
   describe('initSearchandiser()', () => {
     it('should generate a configuration function', () => {
-      const fluxMixin = { a: 'b', c: 'd' };
       const customerId = 'test';
-      const structure = { title: 't', price: 'p' };
-      const config: any = { customerId, structure };
-      const finalConfig = { customerId, e: 'f' };
-      const mockFlux = { g: 'h' };
-      sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
-      sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
-      sandbox.stub(TagUtils, 'MixinFlux').returns(fluxMixin);
+      sandbox.stub(configuration, 'Configuration').returns({ apply: () => ({ customerId }) });
+      sandbox.stub(groupby, 'FluxCapacitor').returns({ query: { withConfiguration: () => null } });
+      sandbox.stub(TagUtils, 'MixinFlux').returns({});
       sandbox.stub(riot, 'mixin');
-      sandbox.stub(serviceInitialiser, 'initServices');
+      sandbox.stub(serviceInitialiser, 'initServices').returns({ search: {} });
 
       const configure = initSearchandiser();
 
       expect(configure).to.be.a('function');
       expect(Object.keys(configure)).to.eql([]);
 
-      configure(config);
+      configure({ customerId, structure: { title: 't', price: 'p' } });
 
       expect(Object.keys(configure)).to.include.members(Object.keys(Searchandiser.prototype));
     });
@@ -174,7 +169,7 @@ describe('searchandiser', () => {
       const finalConfig = { c: 'd' };
       const configurationStub = sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
       sandbox.stub(riot, 'mixin');
-      sandbox.stub(serviceInitialiser, 'initServices');
+      sandbox.stub(serviceInitialiser, 'initServices').returns({ search: { _config: {} } });
       sandbox.stub(TagUtils, 'MixinFlux');
 
       const configure = initSearchandiser();
@@ -186,46 +181,48 @@ describe('searchandiser', () => {
 
     it('should create a new FluxCapacitor on configure()', () => {
       const customerId = 'test';
-      const finalConfig = { customerId, e: 'f' };
-      const mockFlux = { g: 'h' };
+      const withConfiguration = sinon.spy();
+      const mockFlux = { query: { withConfiguration } };
+      const searchandiserConfig = { c: 'd' };
       const fluxCapacitor = sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
-      sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
-      sandbox.stub(serviceInitialiser, 'initServices');
+      sandbox.stub(configuration, 'Configuration').returns({ apply: () => ({ customerId }) });
+      sandbox.stub(serviceInitialiser, 'initServices').returns({ search: { _config: searchandiserConfig } });
       sandbox.stub(riot, 'mixin');
       sandbox.stub(TagUtils, 'MixinFlux');
 
       const configure = initSearchandiser();
-      configure(<any>{ a: 'b' });
+      configure(<any>{});
 
       expect(configure['flux']).to.eq(mockFlux);
-      expect(fluxCapacitor).to.be.calledWith(customerId, finalConfig, CONFIGURATION_MASK);
+      expect(fluxCapacitor).to.be.calledWith(customerId);
+      expect(withConfiguration).to.be.calledWith(searchandiserConfig);
     });
 
     it('should start the services on configure()', () => {
-      const services = { a: 'b' };
-      const finalConfig = { c: 'd' };
-      sandbox.stub(serviceInitialiser, 'initServices', (fluxInstance, cfg) => {
-        expect(fluxInstance).to.be.an.instanceof(FluxCapacitor);
-        expect(fluxInstance).to.have.all.keys(Object.keys(Events));
-        expect(cfg).to.eql(finalConfig);
-        return services;
-      });
+      const services = { search: {}} ;
+      const finalConfig = { a: 'b' };
+      const mockFlux = { query: { withConfiguration: () => null } };
+      const initServices = sandbox.stub(serviceInitialiser, 'initServices').returns(services);
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });
-      sandbox.stub(groupby, 'FluxCapacitor');
+      sandbox.stub(groupby, 'FluxCapacitor').returns(mockFlux);
       sandbox.stub(riot, 'mixin');
       sandbox.stub(TagUtils, 'MixinFlux');
 
       const configure = initSearchandiser();
-      configure(<any>{ e: 'f' });
+      configure(<any>{});
 
       expect(configure['services']).to.eq(services);
+      expect(initServices).to.be.calledWith(sinon.match((param) => {
+        expect(param).to.eq(mockFlux);
+        return expect(param).contain.all.keys(Object.keys(Events));
+      }), finalConfig);
     });
 
     it('should register riot mixin on configure()', () => {
       const mixed = { a: 'b' };
       const finalConfig = { c: 'd' };
-      const mockFlux = { e: 'f' };
-      const services = { g: 'h' };
+      const mockFlux = { query: { withConfiguration: () => null } };
+      const services = { search: {} };
       const riotMixin = sandbox.stub(riot, 'mixin');
       const fluxMixin = sandbox.stub(TagUtils, 'MixinFlux').returns(mixed);
       sandbox.stub(configuration, 'Configuration').returns({ apply: () => finalConfig });

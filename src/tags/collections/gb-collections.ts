@@ -33,6 +33,7 @@ export class Collections extends SelectTag<CollectionsOpts> {
     this.expose(['collections', 'listable', 'selectable']);
 
     this.flux.on(COLLECTIONS_UPDATED_EVENT, this.updateCounts);
+    this.register('collections');
   }
 
   setDefaults() {

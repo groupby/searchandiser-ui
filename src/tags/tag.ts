@@ -1,8 +1,8 @@
 import { SearchandiserConfig } from '../searchandiser';
 import { Services } from '../services/init';
+import { riot } from '../utils/common';
 import { addMeta, configure, inheritAliases, setStylish, setTagName, updateDependency } from '../utils/tag';
 import { FluxCapacitor } from 'groupby-api';
-import * as riot from 'riot';
 import { Sayt } from 'sayt';
 
 export const META = Symbol('meta');

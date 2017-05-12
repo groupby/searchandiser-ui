@@ -3,6 +3,7 @@ import { FluxTag } from '../tags/tag';
 import { Collections } from './collections';
 import { Filter } from './filter';
 import { Redirect } from './redirect';
+import { Search } from './search';
 import { Tracker } from './tracker';
 import { Url } from './url';
 import { FluxCapacitor } from 'groupby-api';
@@ -15,15 +16,14 @@ const SERVICES = {
 
 const CORE_SERVICES = {
   collections: Collections,
-  filter: Filter
+  filter: Filter,
+  search: Search
 };
 
 export interface LazyService {
 
   registered: FluxTag<any>[];
-
   register(tag: FluxTag<any>): void;
-
   unregister(tag: FluxTag<any>): void;
 }
 
@@ -54,6 +54,7 @@ export interface Services {
   collections: Collections;
   filter: Filter;
   redirect: Redirect;
+  search: Search;
   tracker: Tracker;
   url: Url;
 }

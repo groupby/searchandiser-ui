@@ -102,11 +102,13 @@
     "webpack": "^1.13.1"
   },
   "dependencies": {
+    "@types/deep-equal": "^1.0.0",
     "array-includes": "^3.0.2",
     "array.from": "^1.0.3",
     "array.of": "^0.1.1",
     "clone": "^1.0.2",
     "debounce": "^1.0.0",
+    "deep-equal": "^1.0.1",
     "es6-symbol": "^3.1.0",
     "escape-string-regexp": "^1.0.5",
     "filter-object": "^2.1.0",

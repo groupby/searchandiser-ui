@@ -1,6 +1,4 @@
 import { BridgeConfig, SearchandiserConfig } from '../searchandiser';
-import { Sort } from 'groupby-api';
-import oget = require('oget');
 
 export const DEFAULT_CONFIG: SearchandiserConfig = <any>{
   pageSize: 10,
@@ -33,24 +31,6 @@ export class Configuration {
       }
 
       return Object.assign(config, { headers });
-    },
-    sort: (sort: Sort) => {
-      if (!sort) {
-        const sortItems = oget(this.rawConfig, 'tags.sort.items');
-        if (sortItems && sortItems.length > 0) {
-          [sort] = sortItems.map((val) => val.value);
-        }
-      }
-      return Array.isArray(sort) ? sort : [sort];
-    },
-    pageSize: (pageSize: number) => {
-      if (!pageSize) {
-        const pageSizes = this.rawConfig.pageSizes;
-        if (pageSizes && pageSizes.length > 0) {
-          pageSize = pageSizes[0];
-        }
-      }
-      return pageSize;
     }
   };
 
