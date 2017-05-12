@@ -1,11 +1,11 @@
-import { debounce } from '../../utils/common';
+import { REFINE_EVENT, RESET_EVENT } from '../../services/search';
+import { debounce, escapeStringRegexp } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { ProductStructure } from '../../utils/product-transformer';
 import { Query } from '../query/gb-query';
 import { SaytTag, TagMeta } from '../tag';
 import { Autocomplete, AUTOCOMPLETE_HIDE_EVENT } from './autocomplete';
 import { Events, Navigation, Record, SelectedValueRefinement } from 'groupby-api';
-import escapeStringRegexp = require('escape-string-regexp');
 
 export interface SaytOpts {
   structure?: ProductStructure;
@@ -19,7 +19,6 @@ export interface SaytOpts {
   minimumCharacters?: number;
   delay?: number;
   autoSearch?: boolean;
-  staticSearch?: boolean;
   https?: boolean;
   highlight?: boolean;
   navigationNames?: { [name: string]: string };
@@ -42,9 +41,9 @@ export const META: TagMeta = {
   types: {
     highlight: 'boolean',
     autoSearch: 'boolean',
-    staticSearch: 'boolean',
     https: 'boolean'
-  }
+  },
+  services: ['searchandiser']
 };
 
 @meta(META)
@@ -64,7 +63,6 @@ export class Sayt extends SaytTag<SaytOpts> {
   highlight: boolean;
   https: boolean;
   autoSearch: boolean;
-  staticSearch: boolean;
 
   autocomplete: Autocomplete;
   products: Record[];
@@ -86,10 +84,6 @@ export class Sayt extends SaytTag<SaytOpts> {
 
   setDefaults(config: SaytOpts) {
     this.showProducts = config.productCount > 0;
-    // TODO: should use service configuraiton dependency
-    this.area = config.area || this.config.area;
-    this.collection = config.collection || this.config.collection;
-    this.language = config.language || this.config.language;
     this.structure = config.structure || this.config.structure;
 
     this.sayt.configure(this.generateSaytConfig());
@@ -152,7 +146,7 @@ export class Sayt extends SaytTag<SaytOpts> {
     const isRefinement = refinement && refinement !== this.allCategoriesLabel;
     const refinementString = `~${field || this.categoryField}=${refinement}`;
     if (this.autoSearch) {
-      this.searchProducts(field ? '' : query, isRefinement ? refinementString : undefined);
+      this.searchProducts(field ? '' : query, isRefinement && refinementString);
     }
     this.rewriteQuery(query);
   }
@@ -173,7 +167,7 @@ export class Sayt extends SaytTag<SaytOpts> {
 
     const navigations = result.navigations ? result.navigations
       .map((nav) => Object.assign(nav, { displayName: this.navigationNames[nav.name] || nav.name }))
-      .filter(({name}) => this.allowedNavigations.includes(name)) : [];
+      .filter(({ name }) => this.allowedNavigations.includes(name)) : [];
     this.update({
       results: result,
       navigations,
@@ -196,12 +190,12 @@ export class Sayt extends SaytTag<SaytOpts> {
 
   searchRefinement(event: Event) {
     this.flux.resetRecall();
-    this.refine(<HTMLElement>event.target, '');
+    this.refine((<HTMLElement>event.currentTarget).parentElement, '');
   }
 
   searchCategory(event: Event) {
     this.flux.resetRecall();
-    this.refine(<HTMLElement>event.target, this.originalQuery);
+    this.refine((<HTMLElement>event.currentTarget).parentElement, this.originalQuery);
   }
 
   highlightCurrentQuery(value: string, regexReplacement: string) {
@@ -214,43 +208,23 @@ export class Sayt extends SaytTag<SaytOpts> {
     return `<b>${query.value}</b> in <span class="gb-category-query">${query.category}</span>`;
   }
 
-  refine(node: HTMLElement, queryString: string) {
-    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
-
+  refine(node: HTMLElement, query: string) {
     const doRefinement = !node.dataset['norefine'];
-    const refinement: SelectedValueRefinement = {
+    const refinement: SelectedValueRefinement = doRefinement && {
       navigationName: node.dataset['field'] || this.categoryField,
       value: node.dataset['refinement'],
       type: 'Value'
     };
 
-    if (this.staticSearch && this.services.url.isActive()) {
-      return Promise.resolve(this.services.url.update(this.flux.query.withQuery(queryString)
-        .withConfiguration(<any>{ refinements: doRefinement ? [refinement] : [] })));
-    } else if (doRefinement) {
-      this.flux.rewrite(queryString, { skipSearch: true });
-      return this.flux.refine(refinement)
-        .then(this.emitEvent);
-    } else {
-      return this.flux.reset(queryString)
-        .then(this.emitEvent);
-    }
+    this.flux.emit(REFINE_EVENT, { query, refinement, origin: 'sayt' });
   }
 
   search(event: Event) {
-    let node = <HTMLElement>event.target;
-    while (node.tagName !== 'GB-SAYT-LINK') node = node.parentElement;
-
+    const node = (<HTMLElement>event.currentTarget).parentElement;
     const query = node.dataset['value'];
 
-    if (this.staticSearch && this.services.url.isActive()) {
-      return Promise.resolve(this.services.url.update(this.flux.query
-        .withConfiguration(<any>{ query, refinements: [] })));
-    } else {
-      this.rewriteQuery(query);
-      return this.flux.reset(query)
-        .then(this.emitEvent);
-    }
+    this.rewriteQuery(query);
+    this.flux.emit(RESET_EVENT, { query, origin: 'sayt' });
   }
 
   listenForInput(tag: Query) {
@@ -269,11 +243,5 @@ export class Sayt extends SaytTag<SaytOpts> {
         this.reset();
       }
     };
-  }
-
-  emitEvent() {
-    if (this.services.tracker) {
-      this.services.tracker.sayt();
-    }
   }
 }

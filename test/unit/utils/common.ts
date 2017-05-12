@@ -18,7 +18,7 @@ import {
 } from '../../../src/utils/common';
 import { expect } from 'chai';
 import * as origDebounce from 'debounce';
-import * as queryString from 'query-string';
+import * as URL from 'url-parse';
 
 describe('utils', () => {
   let sandbox: Sinon.SinonSandbox;
@@ -188,7 +188,7 @@ describe('utils', () => {
       const param = 'size';
       const value = 'Medium';
       sandbox.stub(LOCATION, 'getSearch').returns(query);
-      sandbox.stub(queryString, 'parse').returns({ [param]: value });
+      sandbox.stub(URL.qs, 'parse').returns({ [param]: value });
 
       expect(getParam(param)).to.eq(value);
     });

@@ -166,12 +166,9 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
       model.keyDown(KEY_ENTER);
     });
 
-    it('does a search of a suggested query with a category refinement when you click', (done) => {
+    it('does a search of a suggested query with a category refinement when you click', () => {
+      const refine = stub(tag, 'refine');
       model.searchBox.value = 'original';
-      tag.refine = (target, query): any => {
-        expect(target.parentElement.dataset['refinement']).to.eq('the category');
-        done();
-      };
       tag.update({
         categoryResults: [
           { value: 'four', category: 'the category' }
@@ -180,16 +177,13 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
       });
 
       (<HTMLElement>tag.root.querySelectorAll('gb-sayt-link a')[0]).click();
+
+      expect(refine).to.be.calledWith(sinon.match({ dataset: { refinement: 'the category' } }));
     });
 
-    it('does a refinement search when you click', (done) => {
+    it('does a refinement search when you click', () => {
+      const refine = stub(tag, 'refine');
       model.searchBox.value = 'original';
-      tag.refine = (target, query): any => {
-        expect(query).to.eq('');
-        expect(target.parentElement.dataset['value']).to.eq('Brand: 3');
-        expect(target.parentElement.dataset['refinement']).to.eq('3');
-        done();
-      };
       tag.update({
         navigations: [
           {
@@ -201,6 +195,13 @@ suite<Sayt>('gb-sayt', ({ mount, stub, itMountsTag }) => {
       });
 
       (<HTMLElement>tag.root.querySelectorAll('gb-sayt-link a')[3]).click();
+
+      expect(refine).to.be.calledWith(sinon.match({
+        dataset: {
+          value: 'Brand: 3',
+          refinement: '3'
+        }
+      }), '');
     });
 
     it('shows navigations when there are no queries', () => {

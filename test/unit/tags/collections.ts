@@ -21,6 +21,14 @@ suite('gb-collections', Collections, ({
         [COLLECTIONS_UPDATED_EVENT]: tag().updateCounts
       });
     });
+
+    it('should register itself with collections service', () => {
+      const register = tag().register = spy();
+
+      tag().init();
+
+      expect(register).to.be.calledWith('collections');
+    });
   });
 
   describe('setDefaults()', () => {

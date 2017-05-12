@@ -1,17 +1,16 @@
-import { findTag } from '../../utils/common';
+import { RESET_EVENT } from '../../services/search';
+import { riot } from '../../utils/common';
 import { meta } from '../../utils/decorators';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../sayt/autocomplete';
 import { Sayt } from '../sayt/gb-sayt';
 import { FluxTag, TagMeta } from '../tag';
 import { Events } from 'groupby-api';
-import * as riot from 'riot';
 
-const KEY_ENTER = 13;
+const ENTER_KEY = 13;
 
 export interface QueryOpts {
   sayt?: boolean;
   autoSearch?: boolean;
-  staticSearch?: boolean;
 }
 
 export const META: TagMeta = {
@@ -21,8 +20,7 @@ export const META: TagMeta = {
   },
   types: {
     sayt: 'boolean',
-    autoSearch: 'boolean',
-    staticSearch: 'boolean'
+    autoSearch: 'boolean'
   }
 };
 
@@ -37,7 +35,6 @@ export class Query extends FluxTag<QueryOpts> {
 
   sayt: boolean;
   autoSearch: boolean;
-  staticSearch: boolean;
 
   searchBox: HTMLInputElement;
   enterKeyHandlers: Function[];
@@ -60,8 +57,6 @@ export class Query extends FluxTag<QueryOpts> {
 
     if (this.autoSearch) {
       this.listenForInput();
-    } else if (this.staticSearch) {
-      this.listenForStaticSearch();
     } else {
       this.listenForSubmit();
     }
@@ -72,28 +67,22 @@ export class Query extends FluxTag<QueryOpts> {
   }
 
   listenForInput() {
-    this.searchBox.addEventListener('input', this.resetToInputValue);
+    this.searchBox.addEventListener('input', this.updateQuery);
   }
 
   listenForSubmit() {
-    this.enterKeyHandlers.push(this.resetToInputValue);
+    this.enterKeyHandlers.push(this.updateQuery);
   }
 
-  resetToInputValue() {
-    return this.flux.reset(this.inputValue())
-      .then(() => this.services.tracker && this.services.tracker.search());
-  }
-
-  listenForStaticSearch() {
-    this.enterKeyHandlers.push(this.setLocation);
+  updateQuery() {
+    this.flux.emit(RESET_EVENT, this.inputValue());
   }
 
   keydownListener(event: KeyboardEvent) {
-    const sayt = findTag('gb-sayt');
-    if (sayt) {
-      const autocomplete = (<Sayt>sayt._tag).autocomplete;
+    if (this.sayt) {
+      const autocomplete = this.tags['gb-sayt'].autocomplete;
       autocomplete.keyboardListener(event, this.onSubmit);
-    } else if (event.keyCode === KEY_ENTER) {
+    } else if (event.keyCode === ENTER_KEY) {
       this.onSubmit();
     }
   }
@@ -108,15 +97,6 @@ export class Query extends FluxTag<QueryOpts> {
       return this.tags['gb-search-box'].refs.searchBox;
     } else {
       return this.root.querySelector('input');
-    }
-  }
-
-  setLocation() {
-    if (this.services.url.isActive()) {
-      this.services.url.update(this.flux.query.withQuery(this.inputValue())
-        .withConfiguration(<any>{ refinements: [] }));
-    } else {
-      this.flux.reset(this.inputValue());
     }
   }
 

@@ -151,31 +151,6 @@ describe('Configuration', () => {
         expect(config).to.eql({});
       });
 
-      it('should set the pageSize', () => {
-        const rawConfig: any = { pageSizes: [5, 10, 25, 50, 100] };
-
-        const config = Configuration.transform(rawConfig, new Configuration(rawConfig).handlers);
-
-        expect(config.pageSize).to.eq(5);
-      });
-
-      it('should set the default sort', () => {
-        const rawConfig: any = {
-          tags: {
-            sort: {
-              items: [
-                { value: { field: 'A', order: 'B' } },
-                { value: { field: 'C', order: 'D' } }
-              ]
-            }
-          }
-        };
-
-        const config = Configuration.transform(rawConfig, new Configuration(rawConfig).handlers);
-
-        expect(config.sort).to.eql([{ field: 'A', order: 'B' }]);
-      });
-
       describe('bridge configuration', () => {
         it('should not remove the bridge configuration', () => {
           const rawConfig: any = { bridge: {} };

@@ -1,7 +1,6 @@
-import { clone } from '../../utils/common';
+import { clone, dot } from '../../utils/common';
 import { ProductStructure, ProductTransformer } from '../../utils/product-transformer';
 import { FluxTag } from '../tag';
-import oget = require('oget');
 
 export interface Productable {
   lazy?: boolean;
@@ -43,7 +42,7 @@ export class Product extends FluxTag<any> {
   setDefaults() {
     this.variantIndex = 0;
     // TODO: this should come from service config dependency
-    this.detailsUrl = oget(this.services, 'url.urlConfig.detailsUrl', 'details.html');
+    this.detailsUrl = dot.get(this.services, 'url.urlConfig.detailsUrl', 'details.html');
   }
 
   transformProductable(productable: Productable) {

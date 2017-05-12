@@ -1,3 +1,4 @@
+import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
 import { initServices, Service } from './services/init';
 import { TrackerConfig } from './services/tracker';
 import { UrlConfig } from './services/url';
@@ -12,21 +13,19 @@ import { QueryOpts } from './tags/query/gb-query';
 import { SaytOpts } from './tags/sayt/gb-sayt';
 import { SortOpts } from './tags/sort/gb-sort';
 import { SubmitOpts } from './tags/submit/gb-submit';
+import { riot } from './utils/common';
 import { Configuration } from './utils/configuration';
 import { ProductStructure } from './utils/product-transformer';
 import { MixinFlux } from './utils/tag';
-import { Events, FluxBridgeConfig, FluxCapacitor, Sort } from 'groupby-api';
-import * as riot from 'riot';
-
-// tslint:disable-next-line:max-line-length
-export const CONFIGURATION_MASK = '{collection,area,language,pageSize,sort,fields,customUrlParams,pruneRefinements,disableAutocorrection,visitorId,sessionId}';
 
 export function initSearchandiser() {
   return function configure(rawConfig: SearchandiserConfig = <any>{}) {
     const config = new Configuration(rawConfig).apply();
-    const flux = new FluxCapacitor(config.customerId, config, CONFIGURATION_MASK);
+    const flux = new FluxCapacitor(config.customerId);
     Object.assign(flux, Events);
     const services = initServices(flux, config);
+
+    flux.query.withConfiguration(services.search._config);
     riot.mixin(MixinFlux(flux, config, services));
     Object.assign(configure, { flux, services, config }, new Searchandiser()['__proto__']);
     (<any>configure).init();
@@ -51,12 +50,10 @@ export class Searchandiser {
   attach(tagName: string, opts?: any);
   attach(tagName: string, cssSelector: string, opts?: any);
   attach(tagName: string, selectorOrOpts?: any, options?: any) {
-    let tag;
-    if (typeof selectorOrOpts === 'string') {
-      tag = this.cssAttach(tagName, selectorOrOpts, options);
-    } else {
-      tag = this.simpleAttach(tagName, selectorOrOpts);
-    }
+    const tag = typeof selectorOrOpts === 'string'
+      ? this.cssAttach(tagName, selectorOrOpts, options)
+      : this.simpleAttach(tagName, selectorOrOpts);
+
     if (tag) {
       return tag.length === 1 ? tag[0] : tag;
     } else {
@@ -64,8 +61,8 @@ export class Searchandiser {
     }
   }
 
-  compile() {
-    riot.compile(() => null);
+  compile(onCompile: () => void) {
+    riot.compile(onCompile);
   }
 
   search(query?: string) {
@@ -102,8 +99,10 @@ export interface SearchandiserConfig {
 
   area?: string;
   collection?: string;
+  fields?: string | string[];
   customUrlParams?: any[];
   disableAutocorrection?: boolean;
+  pruneRefinements?: boolean;
   language?: string;
   pageSize?: number;
   pageSizes?: number[];

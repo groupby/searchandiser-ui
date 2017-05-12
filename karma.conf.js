@@ -19,9 +19,9 @@ module.exports = function(config) {
   config.set({
     basePath: '',
     frameworks: ['mocha', 'sinon-chai', 'source-map-support'],
-    files: ['./karma.entry.ts'],
+    files: ['./test/karma.entry.ts'],
     preprocessors: {
-      './karma.entry.ts': ['webpack']
+      './test/karma.entry.ts': ['webpack']
     },
     webpack: webpackConfig,
     webpackServer: {

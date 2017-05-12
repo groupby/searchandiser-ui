@@ -1,7 +1,6 @@
-import { CONFIGURATION_MASK, SearchandiserConfig } from '../searchandiser';
-import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import * as parseUri from 'parseUri';
-import * as queryString from 'query-string';
+import { Query, Request, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
+import { SearchandiserConfig } from '../searchandiser';
+import { URL } from './common';
 
 export class UrlBeautifier {
 
@@ -14,7 +13,7 @@ export class UrlBeautifier {
   private generator: UrlGenerator = new UrlGenerator(this);
   private parser: UrlParser = new UrlParser(this);
 
-  constructor(public searchandiserConfig: SearchandiserConfig = <any>{}) {
+  constructor(public searchandiserConfig: SearchandiserConfig = <any>{}, public request: Request) {
     const urlConfig = searchandiserConfig.url || {};
     const config = typeof urlConfig.beautifier === 'object' ? urlConfig.beautifier : {};
     Object.assign(this.config, config);
@@ -144,23 +143,25 @@ export class UrlParser {
 
   searchandiserConfig: SearchandiserConfig;
   config: BeautifierConfig;
+  request: Request;
   suffixRegex: RegExp;
 
-  constructor({ config, searchandiserConfig }: UrlBeautifier) {
+  constructor({ config, searchandiserConfig, request }: UrlBeautifier) {
     this.config = config;
+    this.request = request;
     this.searchandiserConfig = searchandiserConfig;
     this.suffixRegex = new RegExp(`^${this.config.suffix}`);
   }
 
   parse(rawUrl: string): Query {
-    const url = parseUri(rawUrl);
-    const paths = url.path.split('/').filter((val) => val);
+    const url = new URL(rawUrl, true);
+    const paths = url.pathname.split('/').filter((val) => val);
 
     if (paths[paths.length - 1] === this.config.suffix) paths.pop();
 
     const keys = (paths.pop() || '').split('');
     const map = this.generateRefinementMapping();
-    const query = new Query().withConfiguration(this.searchandiserConfig, CONFIGURATION_MASK);
+    const query = new Query().withConfiguration(this.request);
 
     for (let key of keys) {
       if (!(key in map || key === this.config.queryToken)) {
@@ -181,7 +182,7 @@ export class UrlParser {
       }
     }
 
-    const unmappedRefinements = <string>queryString.parse(url.query)[this.config.extraRefinementsParam];
+    const unmappedRefinements = url.query[this.config.extraRefinementsParam];
     if (unmappedRefinements) {
       query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
     }

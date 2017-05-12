@@ -1,75 +1,87 @@
+import { FluxCapacitor, Query } from 'groupby-api';
 import { SearchandiserConfig } from '../searchandiser';
-import { LOCATION } from '../utils/common';
+import { LOCATION, URL } from '../utils/common';
 import { SimpleBeautifier } from '../utils/simple-beautifier';
 import { BeautifierConfig, UrlBeautifier } from '../utils/url-beautifier';
 import { Services } from './init';
-import { FluxCapacitor, Query } from 'groupby-api';
-import * as parseUri from 'parseUri';
+import { REFINE_EVENT } from './search';
+
+export const LOCATION_EVENT = 'location:set';
 
 export interface UrlConfig {
   beautifier?: boolean | BeautifierConfig;
   queryParam?: string;
   searchUrl?: string;
   detailsUrl?: string;
+  staticSearch?: boolean;
 }
 
 export class Url {
 
-  urlConfig: UrlConfig;
-  beautifier: UrlBeautifier;
-  simple: SimpleBeautifier;
-  beautify: boolean;
-
-  constructor(private flux: FluxCapacitor, private config: SearchandiserConfig, private services: Services) {
-    this.urlConfig = this.config.url || {};
-    this.beautify = !!this.urlConfig.beautifier;
-  }
-
+  // urlConfig: UrlConfig;
+  // beautifier: UrlBeautifier;
+  // simple: SimpleBeautifier;
+  // beautify: boolean;
+  // title: string;
+  //
+  // constructor(private flux: FluxCapacitor, private config: SearchandiserConfig, private services: Services) {
+  //   this.urlConfig = this.config.url || {};
+  //   this.beautify = !!this.urlConfig.beautifier;
+  // }
+  //
   init() {
-    this.beautifier = new UrlBeautifier(this.config);
-    this.simple = new SimpleBeautifier(this.config);
-
-    if (!this.config.initialSearch) {
-
-      let query;
-      if (this.beautify) {
-        query = Url.parseBeautifiedUrl(this.beautifier);
-      } else {
-        query = Url.parseUrl(this.simple);
-      }
-
-      if (query && (query.raw.query || query.raw.refinements.length)) {
-        this.flux.query = query;
-        this.flux.search(query.raw.query)
-          .then(() => this.services.tracker && this.services.tracker.search());
-      }
-    }
+    //   this.beautifier = new UrlBeautifier(this.config, this.services.search._config);
+    //   this.simple = new SimpleBeautifier(this.config, this.services.search._config);
+    //   this.title = document.title;
+    //
+    //   window.addEventListener('popstate', (data) => {
+    //     this.readStateFromUrl();
+    //   });
+    //
+    //   if (!this.config.initialSearch) {
+    //     this.readStateFromUrl();
+    //   }
   }
-
-  isActive() {
-    return LOCATION.pathname() !== this.urlConfig.searchUrl;
-  }
-
-  update(query: Query) {
-    const url = (this.beautify ? this.beautifier : this.simple).build(query);
-
-    Url.setLocation(url, this.urlConfig);
-  }
-
-  static parseUrl(simple: SimpleBeautifier) {
-    return simple.parse(LOCATION.href());
-  }
-
-  static parseBeautifiedUrl(beautifier: UrlBeautifier) {
-    return beautifier.parse(LOCATION.href());
-  }
-
-  // TODO: better way to do this is with browser history rewrites
-  static setLocation(url: string, config: UrlConfig) {
-    if (LOCATION.pathname() === config.searchUrl) {
-      LOCATION.setSearch(`?${parseUri(url).query}`);
-    } else {
-      LOCATION.replace(url);
-    }
-  }
+  //
+  // readStateFromUrl() {
+  //   const query = this.beautify
+  //     ? Url.parseBeautifiedUrl(this.beautifier)
+  //     : Url.parseUrl(this.simple);
+  //
+  //   if (query && (query.raw.query || query.raw.refinements.length)) {
+  //     this.flux.emit(REFINE_EVENT, {
+  //       query: query.raw.query || '',
+  //       refinements: query.raw.refinements
+  //     });
+  //   }
+  // }
+  //
+  // update(query: Query) {
+  //   const currentState = history.state.state ? history.state.state[history.state.state.length - 1] : null;
+  //   if (Url.hasStateChanged(currentState.query, query.build())) {
+  //     const url = (this.beautify ? this.beautifier : this.simple).build(query);
+  //     this.setLocation(url);
+  //   }
+  // }
+  //
+  // setLocation(url: string) {
+  //   if (this.urlConfig.staticSearch) {
+  //     LOCATION.replace(url);
+  //   } else {
+  //     history.pushState({}, 'Search', `?${new URL(url).query}`);
+  //     document.getElementsByTagName('title')[0].innerHTML = `${this.title} - ${this.flux.query.raw.query}`;
+  //   }
+  // }
+  //
+  // static hasStateChanged(oldState: any, newState: any) {
+  //
+  // }
+  //
+  // static parseUrl(simple: SimpleBeautifier) {
+  //   return simple.parse(LOCATION.href());
+  // }
+  //
+  // static parseBeautifiedUrl(beautifier: UrlBeautifier) {
+  //   return beautifier.parse(LOCATION.href());
+  // }
 }

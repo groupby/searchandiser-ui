@@ -1,9 +1,10 @@
+import { RESET_EVENT } from '../../../src/services/search';
 import { META, Query } from '../../../src/tags/query/gb-query';
 import { AUTOCOMPLETE_HIDE_EVENT } from '../../../src/tags/sayt/autocomplete';
 import * as utils from '../../../src/utils/common';
 import suite from './_suite';
 import { expect } from 'chai';
-import { Events, Query as FluxQuery } from 'groupby-api';
+import { Events } from 'groupby-api';
 
 suite('gb-query', Query, ({
   tag, flux, spy, stub,
@@ -72,24 +73,13 @@ suite('gb-query', Query, ({
       expect(listenForInput).to.be.called;
     });
 
-    it('should listen for enter keypress event', () => {
-      const listenForStaticSearch = stub(tag(), 'listenForStaticSearch');
-      tag().autoSearch = false;
-      tag().staticSearch = true;
-
-      tag().attachListeners();
-
-      expect(listenForStaticSearch).to.be.called;
-    });
-
     it('should listen for submit event', () => {
-      const listenForInput = stub(tag(), 'listenForSubmit');
+      const listenForSubmit = stub(tag(), 'listenForSubmit');
       tag().autoSearch = false;
-      tag().staticSearch = false;
 
       tag().attachListeners();
 
-      expect(listenForInput).to.be.called;
+      expect(listenForSubmit).to.be.called;
     });
   });
 
@@ -111,7 +101,7 @@ suite('gb-query', Query, ({
 
       tag().listenForInput();
 
-      expect(addEventListener).to.be.calledWith('input', tag().resetToInputValue);
+      expect(addEventListener).to.be.calledWith('input', tag().updateQuery);
     });
   });
 
@@ -122,73 +112,35 @@ suite('gb-query', Query, ({
       tag().listenForSubmit();
 
       expect(tag().enterKeyHandlers).to.have.length(1);
-      expect(tag().enterKeyHandlers[0]).to.eq(tag().resetToInputValue);
+      expect(tag().enterKeyHandlers[0]).to.eq(tag().updateQuery);
     });
   });
 
-  describe('listenForStaticSearch()', () => {
-    it('should add submit listener', () => {
-      tag().enterKeyHandlers = [];
+  describe('updateQuery()', () => {
+    it('should emit search:reset', () => {
+      const query = 'red apple';
+      const emit = stub(flux(), 'emit');
+      tag().inputValue = () => query;
 
-      tag().listenForStaticSearch();
+      tag().updateQuery();
 
-      expect(tag().enterKeyHandlers).to.have.length(1);
-      expect(tag().enterKeyHandlers[0]).to.eq(tag().setLocation);
-    });
-  });
-
-  describe('resetToInputValue()', () => {
-    it('should call flux.reset()', (done) => {
-      const inputValue = { a: 'b' };
-      stub(tag(), 'inputValue').returns(inputValue);
-      flux().reset = (input): any => {
-        expect(input).to.eq(inputValue);
-        done();
-      };
-
-      tag().resetToInputValue();
-    });
-
-    it('should call emit tracker event', (done) => {
-      const search = spy();
-      const reset = stub(flux(), 'reset').resolves();
-      stub(tag(), 'inputValue');
-      tag().services = <any>{ tracker: { search } };
-
-      tag().resetToInputValue()
-        .then(() => {
-          expect(reset).to.be.called;
-          expect(search).to.be.called;
-          done();
-        });
-    });
-
-    it('should check for tracker service', (done) => {
-      stub(tag(), 'inputValue');
-      stub(flux(), 'reset').resolves();
-      tag().services = <any>{};
-
-      tag().resetToInputValue()
-        .then(() => done());
+      expect(emit).to.be.calledWith(RESET_EVENT, query);
     });
   });
 
   describe('keydownListener()', () => {
     it('should not call onSubmit()', () => {
-      const findTag = stub(utils, 'findTag').returns(false);
+      tag().sayt = false;
       tag().onSubmit = () => expect.fail();
 
       tag().keydownListener(<any>{});
-
-      expect(findTag).to.be.called;
     });
 
     it('should call sayt autocomplete.keyboardListener()', () => {
       const keyboardEvent: any = {};
       const keyboardListener = spy();
-      stub(utils, 'findTag', () => <any>{
-        _tag: { autocomplete: { keyboardListener } }
-      });
+      tag().tags = <any>{['gb-sayt']: { autocomplete: { keyboardListener } }};
+      tag().sayt = true;
 
       tag().keydownListener(keyboardEvent);
 
@@ -197,7 +149,7 @@ suite('gb-query', Query, ({
 
     it('should call sayt onSubmit()', () => {
       const onSubmit = stub(tag(), 'onSubmit');
-      stub(utils, 'findTag', () => false);
+      stub(utils, 'findTag');
 
       tag().keydownListener(<any>{ keyCode: 13 });
 
@@ -248,40 +200,6 @@ suite('gb-query', Query, ({
       const input = tag().findSearchBox();
 
       expect(input).to.eq(searchBox);
-    });
-  });
-
-  describe('setLocation()', () => {
-    it('should call url.update()', () => {
-      const query = 'belts';
-      const update = spy();
-      flux().query = new FluxQuery('shoes')
-        .withSelectedRefinements({ navigationName: 'brand', type: 'Value', value: 'Nike' })
-        .skip(19);
-      tag().searchBox = <any>{ value: query };
-      tag().services = <any>{ url: { update, isActive: () => true } };
-
-      tag().setLocation();
-
-      expect(update).to.be.calledWith(sinon.match.instanceOf(FluxQuery));
-      expect(update).to.be.calledWithMatch({
-        raw: {
-          query,
-          refinements: [],
-          skip: 19
-        }
-      });
-    });
-
-    it('should call flux.reset()', () => {
-      const query = 'scarf';
-      const reset = stub(flux(), 'reset');
-      tag().searchBox = <any>{ value: query };
-      tag().services = <any>{ url: { isActive: () => false } };
-
-      tag().setLocation();
-
-      expect(reset).to.be.calledWith(query);
     });
   });
 
