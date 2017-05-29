@@ -12,7 +12,8 @@ export class UrlBeautifier {
     pageParam: 'page',
     defaultPageSize: 10,
     queryToken: 'q',
-    suffix: ''
+    suffix: '',
+    useReferenceKeys: true
   };
   private generator: UrlGenerator = new UrlGenerator(this);
   private parser: UrlParser = new UrlParser(this);
@@ -72,27 +73,48 @@ export class UrlGenerator {
     };
     // let url = '';
     const origRefinements = Array.of(...request.refinements);
-    const countMap = {};
-    const { map, keys } = this.generateRefinementMap(origRefinements);
 
     // add query
     if (request.query) {
       uri.path.push(request.query);
     }
 
-    // add refinements
-    for (let key of keys) {
-      const refinements = <SelectedRefinement[]>map[key];
-      countMap[key] = refinements.length;
-      uri.path.push(...refinements.map(this.convertRefinement).sort());
-    }
+    if (this.config.useReferenceKeys) {
+      const countMap = {};
+      const { map, keys } = this.generateRefinementMap(origRefinements);
 
-    // add reference key
-    if (keys.length || request.query) {
-      let referenceKey = '';
-      if (request.query) referenceKey += this.config.queryToken;
-      keys.forEach((key) => referenceKey += key.repeat(countMap[key]));
-      uri.path.push(referenceKey);
+      // add refinements
+      for (let key of keys) {
+        const refinements = <SelectedRefinement[]>map[key];
+        countMap[key] = refinements.length;
+        refinements.map(this.convertToSelectedValueRefinement)
+          .sort(this.refinementsComparator)
+          .forEach((selectedValueRefinement) => {
+            uri.path.push(selectedValueRefinement.value);
+          });
+      }
+
+      // add reference key
+      if (keys.length || request.query) {
+        let referenceKey = '';
+        if (request.query) referenceKey += this.config.queryToken;
+        keys.forEach((key) => referenceKey += key.repeat(countMap[key]));
+        uri.path.push(referenceKey);
+      }
+    } else {
+      // add refinements
+      let valueRefinements = [], rangeRefinement = [];
+      for (let i = origRefinements.length - 1; i >= 0; --i) {
+        if (origRefinements[i].type === 'Value') {
+          valueRefinements.push(...origRefinements.splice(i, 1));
+        }
+      }
+
+      valueRefinements.map(this.convertToSelectedValueRefinement)
+        .sort(this.refinementsComparator)
+        .forEach((selectedValueRefinement) => {
+          uri.path.push(selectedValueRefinement.value, selectedValueRefinement.navigationName);
+        });
     }
 
     // add remaining refinements
@@ -140,9 +162,9 @@ export class UrlGenerator {
     return { map: refinementMap, keys: refinementKeys };
   }
 
-  private convertRefinement(refinement: SelectedRefinement): string {
+  private convertToSelectedValueRefinement(refinement: SelectedRefinement): SelectedValueRefinement {
     if (refinement.type === 'Value') {
-      return (<SelectedValueRefinement>refinement).value;
+      return <SelectedValueRefinement>refinement;
     } else {
       throw new Error('cannot map range refinements');
     }
@@ -155,6 +177,14 @@ export class UrlGenerator {
     } else {
       return `${name}:${(<SelectedRangeRefinement>refinement).low}..${(<SelectedRangeRefinement>refinement).high}`;
     }
+  }
+
+  private refinementsComparator(refinement1: SelectedValueRefinement, refinement2: SelectedValueRefinement): number {
+    let comparison = refinement1.navigationName.localeCompare(refinement2.navigationName);
+    if (comparison === 0) {
+      comparison = refinement1.value.localeCompare(refinement2.value);
+    }
+    return comparison;
   }
 }
 
@@ -245,4 +275,5 @@ export interface BeautifierConfig {
   defaultPageSize?: number;
   queryToken?: string;
   suffix?: string;
+  useReferenceKeys?: boolean;
 }

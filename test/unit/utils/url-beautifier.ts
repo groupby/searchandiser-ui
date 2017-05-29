@@ -23,6 +23,13 @@ describe('URL beautifier', () => {
       expect(generator.build(query)).to.eq('/red-apples/q');
     });
 
+    it('should convert a simple query to a URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('red apples');
+
+      expect(generator.build(query)).to.eq('/red-apples');
+    });
+
     it('should convert query with a slash to a URL', () => {
       query.withQuery('red/apples');
 
@@ -54,6 +61,22 @@ describe('URL beautifier', () => {
       query.withSelectedRefinements(refinement('brand', 'DeWalt'), refinement('brand', 'Henson'));
 
       expect(generator.build(query)).to.eq('/DeWalt/Henson/bb');
+    });
+
+    it('should convert a multiple refinements on same field a URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('tool')
+        .withSelectedRefinements(refinement('brand', 'DeWalt'), refinement('brand', 'Henson'));
+
+      expect(generator.build(query)).to.eq('/tool/DeWalt/brand/Henson/brand');
+    });
+
+    it('should convert a sorted refinements list on same field a URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('shoe')
+        .withSelectedRefinements(refinement('colour', 'blue'), refinement('Brand', 'nike'), refinement('Brand', 'adidas'), refinement('colour', 'red'));
+
+      expect(generator.build(query)).to.eq('/shoe/adidas/Brand/nike/Brand/blue/colour/red/colour');
     });
 
     it('should convert a refinement with a slash to a URL', () => {
@@ -122,6 +145,20 @@ describe('URL beautifier', () => {
       query.skip(skip);
 
       expect(generator.build(query)).to.eq(`/?page=${page}&page_size=${pageSize}`);
+    });
+
+    it('should convert query with skip, page size and unmapped refinements to a URL with a query parameter list without reference keys', () => {
+      const pageSize = 6;
+      const skip = 6;
+      const page = 2;
+
+      beautifier.config.useReferenceKeys = false;
+      query.withPageSize(pageSize);
+      query.skip(skip);
+      query.withQuery('red apples')
+        .withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
+
+      expect(generator.build(query)).to.eq(`/red-apples/dark-purple/colour?page=${page}&page_size=${pageSize}&refinements=price%3A100..220`);
     });
 
     describe('canonical URLs', () => {
