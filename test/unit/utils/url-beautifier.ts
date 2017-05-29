@@ -98,6 +98,30 @@ describe('URL beautifier', () => {
       expect(generator.build(query)).to.eq('/?refinements=colour%3Ddark+purple~price%3A100..220');
     });
 
+    it('should convert pageSize to a query parameter', () => {
+      query.withPageSize(24);
+
+      expect(generator.build(query)).to.eq('/?page_size=24');
+    });
+
+    it('should convert pageSize and unmapped refinements to a query parameter list', () => {
+      query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
+      query.withPageSize(24);
+
+      expect(generator.build(query)).to.eq('/?page_size=24&refinements=colour%3Ddark+purple~price%3A100..220');
+    });
+
+    it('should convert skip and pageSize to a query parameter', () => {
+      const pageSize = 10;
+      const skip = 32;
+      const page = 4;
+
+      query.withPageSize(pageSize);
+      query.skip(skip);
+
+      expect(generator.build(query)).to.eq(`/?page=${page}&page_size=${pageSize}`);
+    });
+
     describe('canonical URLs', () => {
       const ref1 = refinement('colour', 'orange');
       const ref2 = refinement('brand', 'DeWalt');

@@ -8,6 +8,8 @@ export class UrlBeautifier {
   config: BeautifierConfig = {
     refinementMapping: [],
     extraRefinementsParam: 'refinements',
+    pageSizeParam: 'page_size',
+    pageParam: 'page',
     queryToken: 'q',
     suffix: ''
   };
@@ -65,7 +67,7 @@ export class UrlGenerator {
     const request = query.build();
     const uri = {
       path: [],
-      query: ''
+      query: {}
     };
     // let url = '';
     const origRefinements = Array.of(...request.refinements);
@@ -94,15 +96,28 @@ export class UrlGenerator {
 
     // add remaining refinements
     if (origRefinements.length) {
-      uri.query = origRefinements
+      uri.query[this.config.extraRefinementsParam] = origRefinements
         .sort((lhs, rhs) => lhs.navigationName.localeCompare(rhs.navigationName))
         .map(this.stringifyRefinement)
         .join('~');
     }
 
+    // add page size
+    if (query.raw.pageSize) {
+       uri.query[this.config.pageSizeParam] = query.raw.pageSize;
+       if (query.raw.skip) {
+         uri.query[this.config.pageParam] = Math.floor(query.raw.skip/query.raw.pageSize)+1;
+       }
+    }
+
     let url = `/${uri.path.map((path) => encodeURIComponent(path)).join('/')}`;
     if (this.config.suffix) url += `/${this.config.suffix.replace(/^\/+/, '')}`;
-    if (uri.query) url += `?${this.config.extraRefinementsParam}=${encodeURIComponent(uri.query)}`;
+
+    const queryString = Object.keys(uri.query).sort().map((key) => {
+      return `${key}=${encodeURIComponent(uri.query[key])}`;
+    }).join('&');
+
+    if (queryString) url += '?' + queryString;
 
     return url.replace(/\s|%20/g, '+');
   }
@@ -222,6 +237,8 @@ export class UrlParser {
 export interface BeautifierConfig {
   refinementMapping?: any[];
   extraRefinementsParam?: string;
+  pageSizeParam?: string;
+  pageParam?: string;
   queryToken?: string;
   suffix?: string;
 }
