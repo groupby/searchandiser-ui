@@ -88,7 +88,7 @@ export class UrlGenerator {
     }
 
     // add reference key
-    if (keys.length) {
+    if (keys.length || request.query) {
       let referenceKey = '';
       if (request.query) referenceKey += this.config.queryToken;
       keys.forEach((key) => referenceKey += key.repeat(countMap[key]));

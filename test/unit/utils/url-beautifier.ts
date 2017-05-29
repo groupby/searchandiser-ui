@@ -20,19 +20,26 @@ describe('URL beautifier', () => {
     it('should convert a simple query to a URL', () => {
       query.withQuery('red apples');
 
-      expect(generator.build(query)).to.eq('/red-apples');
+      expect(generator.build(query)).to.eq('/red-apples/q');
     });
 
     it('should convert query with a slash to a URL', () => {
       query.withQuery('red/apples');
 
-      expect(generator.build(query)).to.eq('/red%2Fapples');
+      expect(generator.build(query)).to.eq('/red%2Fapples/q');
     });
 
     it('should convert query with a plus to a URL', () => {
       query.withQuery('red+apples');
 
-      expect(generator.build(query)).to.eq('/red%2Bapples');
+      expect(generator.build(query)).to.eq('/red%2Bapples/q');
+    });
+
+    it('should convert a simple query to a URL with a custom token', () => {
+      beautifier.config.queryToken = 'a';
+      query.withQuery('sneakers');
+
+      expect(generator.build(query)).to.eq('/sneakers/a');
     });
 
     it('should convert a value refinement query to a URL', () => {
@@ -78,15 +85,6 @@ describe('URL beautifier', () => {
       expect(generator.build(query)).to.eq('/cool-sneakers/green/qc');
     });
 
-    it('should convert query and refinements to a URL with a custom token', () => {
-      beautifier.config.queryToken = 'a';
-      beautifier.config.refinementMapping.push({ c: 'colour' });
-      query.withQuery('cool sneakers')
-        .withSelectedRefinements(refinement('colour', 'green'));
-
-      expect(generator.build(query)).to.eq('/cool-sneakers/green/ac');
-    });
-
     it('should not convert range refinements to a URL', () => {
       beautifier.config.refinementMapping.push({ p: 'price' });
       query.withSelectedRefinements(refinement('price', 20, 40));
@@ -124,19 +122,6 @@ describe('URL beautifier', () => {
       query.skip(skip);
 
       expect(generator.build(query)).to.eq(`/?page=${page}&page_size=${pageSize}`);
-    });
-
-    it('should convert query with skip, page size and unmapped refinements to a URL with a query parameter list', () => {
-      const pageSize = 6;
-      const skip = 6;
-      const page = 2;
-
-      query.withPageSize(pageSize);
-      query.skip(skip);
-      query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
-      query.withQuery('red apples');
-
-      expect(generator.build(query)).to.eq(`/red-apples?page=${page}&page_size=${pageSize}&refinements=colour%3Ddark-purple~price%3A100..220`);
     });
 
     describe('canonical URLs', () => {
