@@ -20,7 +20,7 @@ describe('URL beautifier', () => {
     it('should convert a simple query to a URL', () => {
       query.withQuery('red apples');
 
-      expect(generator.build(query)).to.eq('/red+apples/q');
+      expect(generator.build(query)).to.eq('/red-apples/q');
     });
 
     it('should convert query with a slash to a URL', () => {
@@ -74,7 +74,7 @@ describe('URL beautifier', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' }, { h: 'height' });
       query.withSelectedRefinements(refinement('brand', 'Farmer John'), refinement('height', '20in'));
 
-      expect(generator.build(query)).to.eq('/Farmer+John/20in/bh');
+      expect(generator.build(query)).to.eq('/Farmer-John/20in/bh');
     });
 
     it('should convert query and refinements to a URL', () => {
@@ -82,7 +82,7 @@ describe('URL beautifier', () => {
       query.withQuery('cool sneakers')
         .withSelectedRefinements(refinement('colour', 'green'));
 
-      expect(generator.build(query)).to.eq('/cool+sneakers/green/qc');
+      expect(generator.build(query)).to.eq('/cool-sneakers/green/qc');
     });
 
     it('should not convert range refinements to a URL', () => {
@@ -95,7 +95,7 @@ describe('URL beautifier', () => {
     it('should convert unmapped refinements to a query parameter', () => {
       query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
 
-      expect(generator.build(query)).to.eq('/?refinements=colour%3Ddark+purple~price%3A100..220');
+      expect(generator.build(query)).to.eq('/?refinements=colour%3Ddark-purple~price%3A100..220');
     });
 
     it('should convert pageSize to a query parameter', () => {
@@ -108,7 +108,7 @@ describe('URL beautifier', () => {
       query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
       query.withPageSize(24);
 
-      expect(generator.build(query)).to.eq('/?page_size=24&refinements=colour%3Ddark+purple~price%3A100..220');
+      expect(generator.build(query)).to.eq('/?page_size=24&refinements=colour%3Ddark-purple~price%3A100..220');
     });
 
     it('should convert skip and pageSize to a query parameter', () => {
@@ -163,7 +163,7 @@ describe('URL beautifier', () => {
 
         const url = generator.build(query);
 
-        expect(url).to.eq('/power+drill/DeWalt/Drills/sbc/index.php?refs=colour%3Dorange');
+        expect(url).to.eq('/power-drill/DeWalt/Drills/sbc/index.php?refs=colour%3Dorange');
         expect(url).to.eq(generator.build(otherQuery));
       });
     });
@@ -230,7 +230,7 @@ describe('URL beautifier', () => {
       beautifier.config.refinementMapping.push({ c: 'colour', b: 'brand' });
       query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('brand', 'Wellingtons'));
 
-      expect(parser.parse('/dark+purple/Wellingtons/cb').build()).to.eql(query.build());
+      expect(parser.parse('/dark-purple/Wellingtons/cb').build()).to.eql(query.build());
     });
 
     it('should extract a query and refinement from URL', () => {
@@ -262,14 +262,14 @@ describe('URL beautifier', () => {
       beautifier.config.queryToken = 'n';
       beautifier.config.suffix = 'index.html';
 
-      const request = parser.parse('/power+drill/orange/Drills/nsc/index.html?nav=brand%3DDeWalt').build();
+      const request = parser.parse('/power-drill/orange/Drills/nsc/index.html?nav=brand%3DDeWalt').build();
 
       expect(request.query).to.eql('power drill');
       expect(request.refinements).to.have.deep.members(refs);
     });
 
     it('should extract deeply nested URL', () => {
-      const request = parser.parse('http://example.com/my/nested/path/power+drill/q').build();
+      const request = parser.parse('http://example.com/my/nested/path/power-drill/q').build();
 
       expect(request.query).to.eql('power drill');
     });
@@ -287,7 +287,7 @@ describe('URL beautifier', () => {
       it('should error on invalid reference keys', () => {
         beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
 
-        expect(() => parser.parse('/power+drill/orange/Drills/qccb').build()).to.throw('token reference is invalid');
+        expect(() => parser.parse('/power-drill/orange/Drills/qccb').build()).to.throw('token reference is invalid');
       });
 
       it('should error on unrecognized key', () => {
@@ -326,7 +326,7 @@ describe('URL beautifier', () => {
     });
 
     it('should convert from URL to a query and back', () => {
-      const url = '/duvet+cover/Duvet+King/linen/kbf/index.html?refs=price%3A10..40';
+      const url = '/duvet-cover/Duvet-King/linen/kbf/index.html?refs=price%3A10..40';
 
       const convertedUrl = beautifier.build(beautifier.parse(url));
 

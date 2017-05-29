@@ -119,7 +119,7 @@ export class UrlGenerator {
 
     if (queryString) url += '?' + queryString;
 
-    return url.replace(/\s|%20/g, '+');
+    return url.replace(/\s|%20/g, '-');
   }
 
   private generateRefinementMap(refinements: SelectedRefinement[]): { map: any, keys: string[] } {
@@ -230,7 +230,7 @@ export class UrlParser {
   }
 
   private decode(value: string): string {
-    return decodeURIComponent(value.replace('+', ' '));
+    return decodeURIComponent(value.replace('-', ' '));
   }
 }
 
