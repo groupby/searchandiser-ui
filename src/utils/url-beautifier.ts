@@ -10,6 +10,7 @@ export class UrlBeautifier {
     extraRefinementsParam: 'refinements',
     pageSizeParam: 'page_size',
     pageParam: 'page',
+    defaultPageSize: 10,
     queryToken: 'q',
     suffix: ''
   };
@@ -105,9 +106,11 @@ export class UrlGenerator {
     // add page size
     if (query.raw.pageSize) {
        uri.query[this.config.pageSizeParam] = query.raw.pageSize;
-       if (query.raw.skip) {
-         uri.query[this.config.pageParam] = Math.floor(query.raw.skip/query.raw.pageSize)+1;
-       }
+    }
+
+    // add page
+    if (query.raw.skip) {
+      uri.query[this.config.pageParam] = Math.floor(query.raw.skip/(query.raw.pageSize || this.config.defaultPageSize))+1;
     }
 
     let url = `/${uri.path.map((path) => encodeURIComponent(path)).join('/')}`;
@@ -239,6 +242,7 @@ export interface BeautifierConfig {
   extraRefinementsParam?: string;
   pageSizeParam?: string;
   pageParam?: string;
+  defaultPageSize?: number;
   queryToken?: string;
   suffix?: string;
 }
