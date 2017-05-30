@@ -1,9 +1,10 @@
-import { CONFIGURATION_MASK, SearchandiserConfig } from '../searchandiser';
+import { CONFIGURATION_MASK, SearchandiserConfig } from '../../searchandiser';
+import { Beautifier, BeautifierConfig, Generator, Parser } from './interfaces';
 import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
 import * as parseUri from 'parseUri';
 import * as queryString from 'query-string';
 
-export class UrlBeautifier {
+export class UrlBeautifier implements Beautifier {
 
   config: BeautifierConfig = {
     refinementMapping: [],
@@ -57,7 +58,7 @@ export class UrlBeautifier {
   }
 }
 
-export class UrlGenerator {
+export class UrlGenerator implements Generator {
 
   config: BeautifierConfig;
 
@@ -190,7 +191,7 @@ export class UrlGenerator {
   }
 }
 
-export class UrlParser {
+export class UrlParser implements Parser {
 
   searchandiserConfig: SearchandiserConfig;
   config: BeautifierConfig;
@@ -295,15 +296,4 @@ export class UrlParser {
   private decode(value: string): string {
     return decodeURIComponent(value.replace(/-/g, ' '));
   }
-}
-
-export interface BeautifierConfig {
-  refinementMapping?: any[];
-  extraRefinementsParam?: string;
-  pageSizeParam?: string;
-  pageParam?: string;
-  defaultPageSize?: number;
-  queryToken?: string;
-  suffix?: string;
-  useReferenceKeys?: boolean;
 }
