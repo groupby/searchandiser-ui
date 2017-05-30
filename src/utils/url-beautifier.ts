@@ -206,32 +206,51 @@ export class UrlParser {
 
     if (paths[paths.length - 1] === this.config.suffix) paths.pop();
 
-    const keys = (paths.pop() || '').split('');
-    const map = this.generateRefinementMapping();
-    const query = new Query().withConfiguration(this.searchandiserConfig, CONFIGURATION_MASK);
+    const query = this.config.useReferenceKeys ? this.parsePathWithReferenceKeys(paths) : this.parsePathWithoutReferenceKeys(paths);
 
+    const unmappedRefinements = <string>queryString.parse(url.query)[this.config.extraRefinementsParam];
+    if (unmappedRefinements) {
+      query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
+    }
+
+    return query;
+  }
+
+  private parsePathWithReferenceKeys(path: string[]): Query {
+    const query = new Query().withConfiguration(this.searchandiserConfig, CONFIGURATION_MASK);
+    const keys = (path.pop() || '').split('');
+    const map = this.generateRefinementMapping();
     for (let key of keys) {
       if (!(key in map || key === this.config.queryToken)) {
         throw new Error(`unexpected token '${key}' found in reference`);
       }
     }
 
-    if (paths.length < keys.length) throw new Error('token reference is invalid');
+    if (path.length < keys.length) throw new Error('token reference is invalid');
 
     // remove prefixed paths
-    paths.splice(0, paths.length - keys.length);
+    path.splice(0, path.length - keys.length);
 
     for (let i = 0; i < keys.length; i++) {
       if (keys[i] === this.config.queryToken) {
-        query.withQuery(this.decode(paths[i]));
+        query.withQuery(this.decode(path[i]));
       } else {
-        query.withSelectedRefinements(...this.extractRefinements(paths[i], map[keys[i]]));
+        query.withSelectedRefinements(...this.extractRefinements(path[i], map[keys[i]]));
       }
     }
+    return query;
+  }
 
-    const unmappedRefinements = <string>queryString.parse(url.query)[this.config.extraRefinementsParam];
-    if (unmappedRefinements) {
-      query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
+  private parsePathWithoutReferenceKeys(path: string[]): Query {
+    const query = new Query().withConfiguration(this.searchandiserConfig, CONFIGURATION_MASK);
+    if (path.length % 2 === 1) {
+      query.withQuery(this.decode(path.shift()));
+    }
+
+    while (path.length > 0) {
+      const value = this.decode(path.shift());
+      const navigationName = path.shift();
+      query.withSelectedRefinements({ navigationName, type: 'Value', value });
     }
 
     return query;

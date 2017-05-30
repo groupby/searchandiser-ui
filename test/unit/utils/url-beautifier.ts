@@ -239,6 +239,13 @@ describe('URL beautifier', () => {
       expect(parser.parse('/red%2Bapples/q').build()).to.eql(query.build());
     });
 
+    it('should parse simple query URL with dash and without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('red apples');
+
+      expect(parser.parse('/red-apples').build()).to.eql(query.build());
+    });
+
     it('should parse simple query URL with custom token', () => {
       beautifier.config.queryToken = 'c';
 
@@ -286,6 +293,21 @@ describe('URL beautifier', () => {
         .withSelectedRefinements(refinement('colour', 'green'));
 
       expect(parser.parse('/sneakers/green/qc').build()).to.eql(query.build());
+    });
+
+    it('should extract query and value refinements from URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('shoe')
+        .withSelectedRefinements(refinement('colour', 'blue'), refinement('colour', 'red'), refinement('Brand', 'adidas'), refinement('Brand', 'nike'));
+
+      expect(parser.parse('/shoe/blue/colour/red/colour/adidas/Brand/nike/Brand').build()).to.eql(query.build());
+    });
+
+    it('should extract value refinements from URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withSelectedRefinements(refinement('colour', 'blue'), refinement('colour', 'red'), refinement('Brand', 'adidas'), refinement('Brand', 'nike'));
+
+      expect(parser.parse('/blue/colour/red/colour/adidas/Brand/nike/Brand').build()).to.eql(query.build());
     });
 
     it('should extract unmapped query from URL parameters', () => {
