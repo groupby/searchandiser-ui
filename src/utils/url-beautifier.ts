@@ -173,7 +173,7 @@ export class UrlGenerator {
   private stringifyRefinement(refinement: SelectedRefinement): string {
     const name = refinement.navigationName;
     if (refinement.type === 'Value') {
-      return `${name}=${(<SelectedValueRefinement>refinement).value}`;
+      return `${name}:${(<SelectedValueRefinement>refinement).value}`;
     } else {
       return `${name}:${(<SelectedRangeRefinement>refinement).low}..${(<SelectedRangeRefinement>refinement).high}`;
     }

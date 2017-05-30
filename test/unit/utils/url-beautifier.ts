@@ -118,7 +118,7 @@ describe('URL beautifier', () => {
     it('should convert unmapped refinements to a query parameter', () => {
       query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
 
-      expect(generator.build(query)).to.eq('/?refinements=colour%3Ddark-purple~price%3A100..220');
+      expect(generator.build(query)).to.eq('/?refinements=colour%3Adark-purple~price%3A100..220');
     });
 
     it('should convert pageSize to a query parameter', () => {
@@ -159,6 +159,14 @@ describe('URL beautifier', () => {
         .withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
 
       expect(generator.build(query)).to.eq(`/red-apples/dark-purple/colour?page=${page}&page_size=${pageSize}&refinements=price%3A100..220`);
+    });
+
+    it('should convert query with unmapped refinements to a URL with a query parameter list with reference keys', () => {
+      beautifier.config.refinementMapping.push({ c: 'category' });
+      query.withQuery('long red dress')
+        .withSelectedRefinements(refinement('category', 'evening wear'), refinement('category', 'formal'), refinement('size', 'large'), refinement('shipping', 'true'));
+
+      expect(generator.build(query)).to.eq(`/long-red-dress/evening-wear/formal/qcc?refinements=shipping%3Atrue~size%3Alarge`);
     });
 
     describe('canonical URLs', () => {
@@ -202,7 +210,7 @@ describe('URL beautifier', () => {
 
         const url = generator.build(query);
 
-        expect(url).to.eq('/power-drill/DeWalt/Drills/sbc/index.php?refs=colour%3Dorange');
+        expect(url).to.eq('/power-drill/DeWalt/Drills/sbc/index.php?refs=colour%3Aorange');
         expect(url).to.eq(generator.build(otherQuery));
       });
     });
