@@ -370,6 +370,15 @@ describe('URL beautifier', () => {
       expect(request.refinements).to.have.deep.members(refs);
     });
 
+    it('should extract mapped and unmapped refinements with query and suffix from URL without reference keys', () => {
+      beautifier.config.suffix = 'index.html';
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('power drill')
+        .withSelectedRefinements(refinement('brand', 'DeWalt'), refinement('category', 'Drills'), refinement('colour', 'orange'));
+
+      expect(parser.parse('/power-drill/DeWalt/brand/Drills/category/orange/colour/index.html').build()).to.eql(query.build());
+    });
+
     it('should extract deeply nested URL', () => {
       const request = parser.parse('http://example.com/my/nested/path/power-drill/q').build();
 
