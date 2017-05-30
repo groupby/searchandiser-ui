@@ -313,7 +313,40 @@ describe('URL beautifier', () => {
     it('should extract unmapped query from URL parameters', () => {
       query.withSelectedRefinements(refinement('height', '20in'), refinement('price', 20, 30));
 
-      expect(parser.parse('/?refinements=height%3D20in~price%3A20..30').build()).to.eql(query.build());
+      expect(parser.parse('/?refinements=height%3A20in~price%3A20..30').build()).to.eql(query.build());
+    });
+
+    it('should extract query and range refinements from URL without reference key', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('long red dress')
+        .withSelectedRefinements(refinement('category', 'evening wear'), refinement('category', 'formal'), refinement('price', 50, 200));
+
+      expect(parser.parse('/long-red-dress/evening-wear/category/formal/category?refinements=price:50..200').build()).to.eql(query.build());
+    });
+
+    it('should extract page size from URL', () => {
+      const pageSize = 5;
+      query.withPageSize(pageSize);
+
+      expect(parser.parse(`/?page_size=${pageSize}`).build()).to.eql(query.build());
+    });
+
+    it('should extract page from URL', () => {
+      const skip = 10;
+      const page = 2;
+      query.skip(skip);
+
+      expect(parser.parse(`/?page=${page}`).build()).to.eql(query.build());
+    });
+
+    it('should extract page and page size from URL', () => {
+      const page = 3;
+      const pageSize = 6;
+      const skip = (page - 1) * pageSize;
+      query.skip(skip)
+        .withPageSize(pageSize);
+
+      expect(parser.parse(`/?page=${page}&page_size=${pageSize}`).build()).to.eql(query.build());
     });
 
     it('should ignore suffix', () => {
@@ -331,7 +364,7 @@ describe('URL beautifier', () => {
       beautifier.config.queryToken = 'n';
       beautifier.config.suffix = 'index.html';
 
-      const request = parser.parse('/power-drill/orange/Drills/nsc/index.html?nav=brand%3DDeWalt').build();
+      const request = parser.parse('/power-drill/orange/Drills/nsc/index.html?nav=brand%3ADeWalt').build();
 
       expect(request.query).to.eql('power drill');
       expect(request.refinements).to.have.deep.members(refs);

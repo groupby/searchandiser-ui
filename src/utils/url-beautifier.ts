@@ -138,11 +138,13 @@ export class UrlGenerator {
     let url = `/${uri.path.map((path) => encodeURIComponent(path)).join('/')}`;
     if (this.config.suffix) url += `/${this.config.suffix.replace(/^\/+/, '')}`;
 
-    const queryString = Object.keys(uri.query).sort().map((key) => {
+    const queryPart = Object.keys(uri.query).sort().map((key) => {
       return `${key}=${encodeURIComponent(uri.query[key])}`;
     }).join('&');
 
-    if (queryString) url += '?' + queryString;
+    if (queryPart) {
+      url += '?' + queryPart;
+    }
 
     return url.replace(/\s|%20/g, '-');
   }
@@ -208,9 +210,18 @@ export class UrlParser {
 
     const query = this.config.useReferenceKeys ? this.parsePathWithReferenceKeys(paths) : this.parsePathWithoutReferenceKeys(paths);
 
-    const unmappedRefinements = <string>queryString.parse(url.query)[this.config.extraRefinementsParam];
+    const queryVariables = queryString.parse(url.query);
+    const unmappedRefinements = <string>queryVariables[this.config.extraRefinementsParam];
+    const pageSize = parseInt(<string>queryVariables[this.config.pageSizeParam], 10);
+    const page = parseInt(<string>queryVariables[this.config.pageParam], 10);
     if (unmappedRefinements) {
       query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
+    }
+    if (pageSize) {
+      query.withPageSize(pageSize);
+    }
+    if (page) {
+      query.skip((query.raw.pageSize || this.config.defaultPageSize) * (page - 1));
     }
 
     return query;
@@ -271,7 +282,7 @@ export class UrlParser {
     return refinementStrings
       .map(this.decode)
       .map((refinement) => {
-        const [navigationName, value] = refinement.split(/=|:/);
+        const [navigationName, value] = refinement.split(':');
         if (value.indexOf('..') >= 0) {
           const [low, high] = value.split('..');
           return <any>{ navigationName, low: Number(low), high: Number(high), type: 'Range' };
@@ -282,7 +293,7 @@ export class UrlParser {
   }
 
   private decode(value: string): string {
-    return decodeURIComponent(value.replace('-', ' '));
+    return decodeURIComponent(value.replace(/-/g, ' '));
   }
 }
 
