@@ -1,7 +1,9 @@
 import { Query } from 'groupby-api';
+import { SearchandiserConfig } from '../../searchandiser';
 
 export interface Beautifier {
   config: BeautifierConfig;
+  searchandiserConfig: SearchandiserConfig;
   parse(url: string): Query;
   build(query: Query): string;
 }

@@ -1,9 +1,9 @@
-import { UrlBeautifier, UrlGenerator, UrlParser } from '../../../src/utils/url-beautifier';
-import { refinement } from '../../utils/fixtures';
 import { expect } from 'chai';
 import { Query } from 'groupby-api';
+import { UrlBeautifier, QueryUrlGenerator, QueryUrlParser } from '../../../../src/utils/url-beautifier';
+import { refinement } from '../../../utils/fixtures';
 
-describe('URL beautifier', () => {
+describe('query URL beautifier', () => {
   let beautifier: UrlBeautifier;
   let query: Query;
 
@@ -12,10 +12,10 @@ describe('URL beautifier', () => {
     query = new Query();
   });
 
-  describe('URL generator', () => {
-    let generator: UrlGenerator;
+  describe('query URL generator', () => {
+    let generator: QueryUrlGenerator;
 
-    beforeEach(() => generator = new UrlGenerator(beautifier));
+    beforeEach(() => generator = new QueryUrlGenerator(beautifier));
 
     it('should convert a simple query to a URL', () => {
       query.withQuery('red apples');
@@ -216,10 +216,10 @@ describe('URL beautifier', () => {
     });
   });
 
-  describe('URL parser', () => {
-    let parser: UrlParser;
+  describe('query URL parser', () => {
+    let parser: QueryUrlParser;
 
-    beforeEach(() => parser = new UrlParser(beautifier));
+    beforeEach(() => parser = new QueryUrlParser(beautifier));
 
     it('should parse simple query URL', () => {
       query.withQuery('apples');
