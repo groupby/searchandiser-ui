@@ -10,6 +10,10 @@ export class NavigationUrlGenerator {
   constructor({ config }: Beautifier) {
     this.config = config;
   }
+
+  build(name: string): string {
+    return '/' + encodeURIComponent(name.replace(/\s/g, '-'));
+  }
 };
 
 export class NavigationUrlParser {

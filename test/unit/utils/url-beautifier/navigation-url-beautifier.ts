@@ -3,7 +3,7 @@ import { Query } from 'groupby-api';
 import { UrlBeautifier, NavigationUrlGenerator, NavigationUrlParser } from '../../../../src/utils/url-beautifier';
 import { refinement } from '../../../utils/fixtures';
 
-describe('navigation URL beautifier', () => {
+describe.only('navigation URL beautifier', () => {
   let beautifier: UrlBeautifier;
   let query: Query;
 
@@ -17,7 +17,17 @@ describe('navigation URL beautifier', () => {
 
     beforeEach(() => generator = new NavigationUrlGenerator(beautifier));
 
-    it('should convert a simple navigation name to a URL');
+    it('should convert a simple navigation name to a URL', () => {
+      expect(generator.build('Apples')).to.be.eq('/Apples');
+    });
+
+    it('should replace spaces in a navigation name with hyphen', () => {
+      expect(generator.build('red apples')).to.be.eq('/red-apples');
+    })
+
+    it('should encode special characters in navigation name', () => {
+      expect(generator.build('red&green apples/grapes')).to.be.eq('/red%26green-apples%2Fgrapes');
+    });
   });
 
   describe('query URL parser', () => {
