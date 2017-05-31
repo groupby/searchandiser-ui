@@ -24,11 +24,11 @@ export class NavigationUrlParser {
     if (paths.length > 1) {
       throw new Error('path contains more than one part');
     }
-    const name = paths[0];
+    const name = decodeURIComponent(paths[0]);
     if (!(name in this.config.navigations)) {
       throw new Error(`no navigation mapping found for ${name}`);
     }
-    return this.config.navigations[paths[0]];
+    return this.config.navigations[name];
   }
 
 }

@@ -34,6 +34,12 @@ describe('navigation URL beautifier', () => {
       expect(parser.parse('/Apples')).to.be.eql(query);
     });
 
+    it('should parse URL with encoded characters', () => {
+      const navigationName = 'Red apples/cherries';
+      beautifier.config.navigations[navigationName] = query;
+      expect(parser.parse('/' + encodeURIComponent(navigationName))).to.be.eql(query);
+    });
+
     describe('error states', () => {
       it('should parse URL and throw an error if associated query is not found', () => {
         expect(() => parser.parse('/Orange')).to.throw('no navigation mapping found for Orange');
