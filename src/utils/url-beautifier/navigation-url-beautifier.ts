@@ -21,6 +21,9 @@ export class NavigationUrlParser {
 
   parse(rawUrl: string): Query {
     const paths = parseUri(rawUrl).path.split('/').filter((val) => val);
+    if (paths.length > 1) {
+      throw new Error('path contains more than one part');
+    }
     const name = paths[0];
     if (!(name in this.config.navigations)) {
       throw new Error(`no navigation mapping found for ${name}`);

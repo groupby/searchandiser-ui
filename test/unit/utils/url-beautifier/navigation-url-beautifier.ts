@@ -38,6 +38,10 @@ describe('navigation URL beautifier', () => {
       it('should parse URL and throw an error if associated query is not found', () => {
         expect(() => parser.parse('/Orange')).to.throw('no navigation mapping found for Orange');
       });
+
+      it('should parse URL and throw an error if the path has more than one part', () => {
+        expect(() => parser.parse('/Apples/Orange')).to.throw('path contains more than one part');
+      })
     });
   });
 
