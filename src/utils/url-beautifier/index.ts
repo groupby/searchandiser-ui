@@ -1,5 +1,6 @@
-import { UrlBeautifier, UrlGenerator, UrlParser } from './url-beautifier';
-import { QueryUrlGenerator, QueryUrlParser } from './queries-url-beautifier';
+import { UrlBeautifier } from './url-beautifier';
+import { QueryUrlGenerator, QueryUrlParser } from './query-url-beautifier';
+import { NavigationUrlGenerator, NavigationUrlParser } from './navigation-url-beautifier';
+import { BeautifierConfig } from './interfaces';
 
-export { UrlBeautifier, UrlGenerator, UrlParser };
-export { QueryUrlGenerator, QueryUrlParser };
+export { UrlBeautifier, QueryUrlGenerator, QueryUrlParser, NavigationUrlGenerator, NavigationUrlParser, BeautifierConfig };

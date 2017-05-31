@@ -1,10 +1,10 @@
 import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import { Beautifier, Generator, Parser, BeautifierConfig } from './interfaces';
+import { Beautifier, BeautifierConfig } from './interfaces';
 import { CONFIGURATION_MASK, SearchandiserConfig } from '../../searchandiser';
 import * as parseUri from 'parseUri';
 import * as queryString from 'query-string';
 
-export class QueryUrlGenerator implements Generator {
+export class QueryUrlGenerator {
 
   config: BeautifierConfig;
 
@@ -137,7 +137,7 @@ export class QueryUrlGenerator implements Generator {
   }
 }
 
-export class QueryUrlParser implements Parser {
+export class QueryUrlParser {
 
   searchandiserConfig: SearchandiserConfig;
   config: BeautifierConfig;

@@ -1,6 +1,6 @@
 import { Query } from 'groupby-api';
-import { Beautifier, BeautifierConfig, Generator, Parser } from './interfaces';
-import { QueryUrlGenerator, QueryUrlParser } from './queries-url-beautifier';
+import { Beautifier, BeautifierConfig } from './interfaces';
+import { QueryUrlGenerator, QueryUrlParser } from './query-url-beautifier';
 import { SearchandiserConfig } from '../../searchandiser';
 
 export class UrlBeautifier implements Beautifier {

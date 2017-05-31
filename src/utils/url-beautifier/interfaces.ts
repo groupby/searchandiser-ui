@@ -8,14 +8,6 @@ export interface Beautifier {
   build(query: Query): string;
 }
 
-export interface Generator {
-  build(query: Query): string;
-}
-
-export interface Parser {
-  parse(url: string): Query;
-}
-
 export interface BeautifierConfig {
   refinementMapping?: any[];
   extraRefinementsParam?: string;
@@ -25,4 +17,5 @@ export interface BeautifierConfig {
   queryToken?: string;
   suffix?: string;
   useReferenceKeys?: boolean;
+  navigations?: Object;
 }
