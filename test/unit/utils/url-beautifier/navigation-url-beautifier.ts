@@ -23,18 +23,21 @@ describe('navigation URL beautifier', () => {
   describe('query URL parser', () => {
     let parser: NavigationUrlParser;
 
-    beforeEach(() => parser = new NavigationUrlParser(beautifier));
-
-    it('should parse URL and return the associated query', () => {
+    beforeEach(() => {
+      parser = new NavigationUrlParser(beautifier)
       beautifier.config.navigations = {
         Apples: query
       };
+    });
 
+    it('should parse URL and return the associated query', () => {
       expect(parser.parse('/Apples')).to.be.eql(query);
     });
 
     describe('error states', () => {
-
+      it('should parse URL and throw an error if associated query is not found', () => {
+        expect(() => parser.parse('/Orange')).to.throw('no navigation mapping found for Orange');
+      });
     });
   });
 

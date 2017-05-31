@@ -21,7 +21,10 @@ export class NavigationUrlParser {
 
   parse(rawUrl: string): Query {
     const paths = parseUri(rawUrl).path.split('/').filter((val) => val);
-
+    const name = paths[0];
+    if (!(name in this.config.navigations)) {
+      throw new Error(`no navigation mapping found for ${name}`);
+    }
     return this.config.navigations[paths[0]];
   }
 
