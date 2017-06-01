@@ -13,7 +13,8 @@ export class UrlBeautifier implements Beautifier {
     defaultPageSize: 10,
     queryToken: 'q',
     suffix: '',
-    useReferenceKeys: true
+    useReferenceKeys: true,
+    navigations: {}
   };
   private generator: QueryUrlGenerator = new QueryUrlGenerator(this);
   private parser: QueryUrlParser = new QueryUrlParser(this);
