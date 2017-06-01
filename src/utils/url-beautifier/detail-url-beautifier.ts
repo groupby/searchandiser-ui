@@ -57,4 +57,38 @@ export class DetailUrlParser {
   constructor({ config }: Beautifier) {
     this.config = config;
   }
+
+  parse(rawUrl: string): Detail {
+    let paths = parseUri(rawUrl).path.split('/').filter((val) => val);
+
+    if (paths.length < 2) {
+      throw new Error('path has less than two parts');
+    }
+
+    const name = decodeURIComponent(paths.shift()).replace(/-/g, ' ');
+    const id = paths.pop();
+    const result = {
+      productTitle: name,
+      productID: id
+    };
+
+    let refinements = [];
+
+    if (paths.length) {
+      if (!this.config.useReferenceKeys) {
+        if (paths.length % 2 !== 0) {
+          throw new Error('path has an odd number of parts');
+        }
+
+        while (paths.length) {
+          const value = decodeURIComponent(paths.shift()).replace(/-/g, ' ');
+          const navigationName = decodeURIComponent(paths.shift()).replace(/-/g, ' ');
+          refinements.push({ navigationName, value, type: 'Value' });
+        }
+        result['refinements'] = refinements;
+      }
+    }
+
+    return result;
+  }
 }
