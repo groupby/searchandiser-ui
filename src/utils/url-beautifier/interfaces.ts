@@ -1,4 +1,4 @@
-import { Query } from 'groupby-api';
+import { SelectedValueRefinement, Query } from 'groupby-api';
 import { SearchandiserConfig } from '../../searchandiser';
 
 export interface Beautifier {
@@ -23,5 +23,5 @@ export interface BeautifierConfig {
 export interface Detail {
   productTitle: string;
   productID: string;
-  refinements?: any[];
+  refinements?: SelectedValueRefinement[];
 }
