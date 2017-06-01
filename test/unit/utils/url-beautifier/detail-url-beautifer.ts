@@ -6,6 +6,8 @@ import { refinement } from '../../../utils/fixtures';
 describe('detail URL beautifier', () => {
   let beautifier: UrlBeautifier;
   let query: Query;
+  let generator: DetailUrlGenerator;
+  let parser: DetailUrlParser;
 
   beforeEach(() => {
     beautifier = new UrlBeautifier();
@@ -13,7 +15,6 @@ describe('detail URL beautifier', () => {
   });
 
   describe('detail URL generator', () => {
-    let generator: DetailUrlGenerator;
 
     beforeEach(() => generator = new DetailUrlGenerator(beautifier));
 
@@ -62,8 +63,6 @@ describe('detail URL beautifier', () => {
   });
 
   describe('detail URL parser', () => {
-    let parser: DetailUrlParser;
-
     beforeEach(() => {
       parser = new DetailUrlParser(beautifier);
     });
@@ -118,6 +117,49 @@ describe('detail URL beautifier', () => {
       it('should throw an error if token reference is invalid', () => {
         expect(() => parser.parse('/apples/green/cs/2931')).to.throw('token reference is invalid');
       })
+    });
+  });
+
+  describe('compatibility', () => {
+    const obj = {
+      productTitle: 'dress',
+      productID: '293014',
+      refinements: [
+        refinement('brand', 'h&m'),
+        refinement('colour', 'blue'),
+        refinement('colour', 'red')
+      ]
+    };
+
+    beforeEach(() => {
+      generator = new DetailUrlGenerator(beautifier);
+      parser = new DetailUrlParser(beautifier);
+    });
+
+    it('should convert from detail object to a URL and back with reference keys', () => {
+      const url = '/dress/h%26m/blue/red/bcc/293014';
+      beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
+      expect(parser.parse(generator.build(obj))).to.eql(obj);
+    });
+
+    it('should convert from URL to a query and back with reference keys', () => {
+      const url = '/dress/h%26m/blue/red/bcc/293014';
+      beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
+      expect(generator.build(parser.parse(url))).to.eq(url);
+    });
+
+    it('should convert from detail object to a URL and back without reference keys', () => {
+      const url = '/dress/h%26m/brand/blue/colour/red/colour/293014';
+      beautifier.config.useReferenceKeys = false;
+      beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
+      expect(parser.parse(generator.build(obj))).to.eql(obj);
+    });
+
+    it('should convert from URL to a query and back without reference keys', () => {
+      const url = '/dress/h%26m/brand/blue/colour/red/colour/293014';
+      beautifier.config.useReferenceKeys = false;
+      beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
+      expect(generator.build(parser.parse(url))).to.eq(url);
     });
   });
 });
