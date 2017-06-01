@@ -83,7 +83,7 @@ describe('detail URL beautifier', () => {
       expect(parser.parse('/red%2Band%2Bdelicious%2Bapples/1923')).to.eql(expectedDetail);
     });
 
-    it('should parse a URL with a pair of navigation name and value and return a detail object without reference keys', () => {
+    it('should parse a URL with navigation names and values and return a detail object without reference keys', () => {
       beautifier.config.useReferenceKeys = false;
       const expectedDetail = { productTitle: 'satin shiny party dress', productID: '293014', refinements: [ refinement('colour', 'blue') ] };
       expect(parser.parse('/satin-shiny-party-dress/blue/colour/293014')).to.eql(expectedDetail);
@@ -95,6 +95,12 @@ describe('detail URL beautifier', () => {
       expect(parser.parse('/satin-shiny-party-dress/h%26m/brand/blue/colour/red/colour/293014')).to.eql(expectedDetail);
     });
 
+    it('should parse a URL with reference keys', () => {
+      beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' })
+      const expectedDetail = { productTitle: 'dress', productID: '293014', refinements: [ refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red') ] };
+      expect(parser.parse('/dress/h%26m/blue/red/bcc/293014')).to.eql(expectedDetail);
+    });
+
     describe('error states', () => {
       it('should throw an error if the path has less than two parts', () => {
         expect(() => parser.parse('/dress')).to.throw('path has less than two parts');
@@ -104,6 +110,14 @@ describe('detail URL beautifier', () => {
         beautifier.config.useReferenceKeys = false;
         expect(() => parser.parse('/dress/blue/colour/red/293014')).to.throw('path has an odd number of parts');
       });
+
+      it('should throw an error if the path has wrong number of parts', () => {
+        expect(() => parser.parse('/shoe/blue/colour')).to.throw('path has wrong number of parts');
+      });
+
+      it('should throw an error if token reference is invalid', () => {
+        expect(() => parser.parse('/apples/green/cs/2931')).to.throw('token reference is invalid');
+      })
     });
   });
 });

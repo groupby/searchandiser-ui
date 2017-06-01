@@ -16,7 +16,7 @@ export class DetailUrlGenerator {
     if (detail.refinements) {
       if (this.config.useReferenceKeys) {
         let referenceKeys = '';
-        let refinementsToKeys = this.config.refinementMapping.reduce((map, mapping) => {
+        const refinementsToKeys = this.config.refinementMapping.reduce((map, mapping) => {
           const key = Object.keys(mapping)[0];
           map[mapping[key]] = key;
           return map;
@@ -59,13 +59,13 @@ export class DetailUrlParser {
   }
 
   parse(rawUrl: string): Detail {
-    let paths = parseUri(rawUrl).path.split('/').filter((val) => val);
+    let paths = parseUri(rawUrl).path.split('/').filter((val) => val).map((val) => decodeURIComponent(val).replace(/-/g, ' '));
 
     if (paths.length < 2) {
       throw new Error('path has less than two parts');
     }
 
-    const name = decodeURIComponent(paths.shift()).replace(/-/g, ' ');
+    const name = paths.shift();
     const id = paths.pop();
     const result = {
       productTitle: name,
@@ -81,12 +81,31 @@ export class DetailUrlParser {
         }
 
         while (paths.length) {
-          const value = decodeURIComponent(paths.shift()).replace(/-/g, ' ');
-          const navigationName = decodeURIComponent(paths.shift()).replace(/-/g, ' ');
+          const value = paths.shift();
+          const navigationName = paths.shift();
           refinements.push({ navigationName, value, type: 'Value' });
         }
-        result['refinements'] = refinements;
+      } else {
+        if (paths.length < 2) {
+          throw new Error('path has wrong number of parts');
+        }
+
+        const referenceKeys = paths.pop().split('');
+        const keysToRefinements = this.config.refinementMapping.reduce((map, mapping) => {
+          const key = Object.keys(mapping)[0];
+          map[key] = mapping[key];
+          return map;
+        }, {});
+
+        if (paths.length !== referenceKeys.length) {
+          throw new Error('token reference is invalid');
+        }
+
+        while (paths.length) {
+          refinements.push({ navigationName: keysToRefinements[referenceKeys.shift()], value: paths.shift(), type: 'Value' });
+        }
       }
+      result['refinements'] = refinements;
     }
 
     return result;
