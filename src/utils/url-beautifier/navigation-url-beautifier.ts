@@ -1,6 +1,5 @@
-import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement, Navigation } from 'groupby-api';
+import { Query } from 'groupby-api';
 import { Beautifier, BeautifierConfig } from './interfaces';
-import { CONFIGURATION_MASK, SearchandiserConfig } from '../../searchandiser';
 import * as parseUri from 'parseUri';
 import * as queryString from 'query-string';
 
@@ -33,7 +32,7 @@ export class NavigationUrlParser {
       throw new Error('path contains more than one part');
     }
 
-    const name = decodeURIComponent(paths[0]);
+    const name = decodeURIComponent(paths[0]).replace(/-/g, ' ');
     if (!(name in this.config.navigations)) {
       throw new Error(`no navigation mapping found for ${name}`);
     }

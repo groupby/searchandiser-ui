@@ -41,7 +41,7 @@ describe('navigation URL beautifier', () => {
     });
   });
 
-  describe('query URL parser', () => {
+  describe('navigation URL parser', () => {
     let parser: NavigationUrlParser;
 
     beforeEach(() => {
@@ -58,8 +58,14 @@ describe('navigation URL beautifier', () => {
     it('should parse URL with encoded characters', () => {
       const navigationName = 'Red apples/cherries';
       beautifier.config.navigations[navigationName] = query;
-      expect(parser.parse('/' + encodeURIComponent(navigationName))).to.be.eql(query);
+      expect(parser.parse('/Red-apples%2Fcherries')).to.be.eql(query);
     });
+
+    it('should parse URL with hyphen', () => {
+      const navigationName = 'Red apples';
+      beautifier.config.navigations[navigationName] = query;
+      expect(parser.parse('/' + encodeURIComponent(navigationName))).to.be.eql(query);
+    })
 
     describe('error states', () => {
       it('should parse URL and throw an error if associated query is not found', () => {
