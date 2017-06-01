@@ -19,3 +19,9 @@ export interface BeautifierConfig {
   useReferenceKeys?: boolean;
   navigations?: Object;
 }
+
+export interface Detail {
+  productTitle: string;
+  productID: string;
+  refinements?: any[];
+}
