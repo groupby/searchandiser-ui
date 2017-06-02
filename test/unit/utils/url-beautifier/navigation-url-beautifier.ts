@@ -21,16 +21,19 @@ describe('navigation URL beautifier', () => {
 
     it('should convert a simple navigation name to a URL', () => {
       beautifier.config.navigations['Apples'] = query;
+
       expect(generator.build('Apples')).to.be.eq('/Apples');
     });
 
     it('should replace spaces in a navigation name with hyphen', () => {
       beautifier.config.navigations['red apples'] = query;
+
       expect(generator.build('red apples')).to.be.eq('/red-apples');
     })
 
     it('should encode special characters in navigation name', () => {
       beautifier.config.navigations['red&green apples/grapes'] = query;
+
       expect(generator.build('red&green apples/grapes')).to.be.eq('/red%26green-apples%2Fgrapes');
     });
 
@@ -58,12 +61,14 @@ describe('navigation URL beautifier', () => {
     it('should parse URL with encoded characters', () => {
       const navigationName = 'Red apples/cherries';
       beautifier.config.navigations[navigationName] = query;
+
       expect(parser.parse('/Red-apples%2Fcherries')).to.be.eql(query);
     });
 
     it('should parse URL with hyphen', () => {
       const navigationName = 'Red apples';
       beautifier.config.navigations[navigationName] = query;
+
       expect(parser.parse('/' + encodeURIComponent(navigationName))).to.be.eql(query);
     })
 
