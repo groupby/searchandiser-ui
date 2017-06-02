@@ -1,6 +1,6 @@
 import { CONFIGURATION_MASK, SearchandiserConfig } from '../searchandiser';
 import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import * as parseUri from 'parseUri';
+// import * as parseUri from 'parseUri';
 import * as queryString from 'query-string';
 
 export class UrlBeautifier {
@@ -153,8 +153,10 @@ export class UrlParser {
   }
 
   parse(rawUrl: string): Query {
-    const url = parseUri(rawUrl);
-    const paths = url.path.split('/').filter((val) => val);
+    // const url = parseUri(rawUrl);
+    const url = rawUrl;
+    // const paths = url.path.split('/').filter((val) => val);
+    const paths = [];
 
     if (paths[paths.length - 1] === this.config.suffix) paths.pop();
 
@@ -181,7 +183,7 @@ export class UrlParser {
       }
     }
 
-    const unmappedRefinements = <string>queryString.parse(url.query)[this.config.extraRefinementsParam];
+    const unmappedRefinements = <string>queryString.parse(url)[this.config.extraRefinementsParam];
     if (unmappedRefinements) {
       query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
     }

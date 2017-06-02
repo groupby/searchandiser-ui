@@ -1,7 +1,7 @@
 import { CONFIGURATION_MASK, SearchandiserConfig, } from '../searchandiser';
 import { UrlConfig } from '../services/url';
 import { Query } from 'groupby-api';
-import * as parseUri from 'parseUri';
+// import * as parseUri from 'parseUri';
 import * as queryString from 'query-string';
 
 export class SimpleBeautifier {
@@ -13,7 +13,7 @@ export class SimpleBeautifier {
   }
 
   parse(url: string) {
-    const queryParams: any = queryString.parse(parseUri(url).query);
+    const queryParams: any = queryString.parse(url);
     const queryFromUrl = new Query(queryParams[this.urlConfig.queryParam] || '')
       .withConfiguration(this.config, CONFIGURATION_MASK);
 

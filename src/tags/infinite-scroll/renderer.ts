@@ -39,10 +39,14 @@ export class Renderer {
       this.tag.anchor = this.getAnchoredItem(this.tag.anchor, delta);
     }
     this.tag.anchorScrollTop = this.tag.refs.scroller.scrollTop;
+    console.log('this.tag.state.anchorScrollTop', this.tag.anchorScrollTop);
   }
 
   calculateVisibleItems(delta: number) {
+    console.log('delta', delta);
     const lastScreenItem = this.getAnchoredItem(this.tag.anchor, this.tag.refs.scroller.offsetHeight);
+    console.log('this.tag.state.anchor', lastScreenItem);
+    console.log('this.tag.refs.scroller.offsetHeight', this.tag.refs.scroller.offsetHeight);
 
     let firstItem: number;
     if (delta < 0) {
@@ -50,13 +54,16 @@ export class Renderer {
       this.lastItem = this.tag.capRecords(lastScreenItem.index + RUNWAY_ITEMS_ABOVE);
     } else {
       firstItem = this.tag.anchor.index - RUNWAY_ITEMS_ABOVE;
+      console.log('lastItem else', lastScreenItem.index);
       this.lastItem = this.tag.capRecords(lastScreenItem.index + RUNWAY_ITEMS_BELOW);
     }
-
+    console.log('this.lastItem', this.lastItem);
     this.firstItem = Math.max(0, firstItem);
+    console.log('this.firstItem', this.firstItem);
   }
 
   getAnchoredItem(anchor: ScrollAnchor, delta: number): ScrollAnchor {
+    console.log('delta', delta);
     if (delta === 0) {
       return anchor;
     }
@@ -82,9 +89,12 @@ export class Renderer {
       }
     }
 
+    console.log('tombstones', tombstones);
+
     index += tombstones;
     delta -= tombstones * this.tombstoneHeight;
 
+    console.log('index: ', index, 'offset: ', delta);
     return { index, offset: delta };
   }
 

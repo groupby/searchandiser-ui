@@ -60,6 +60,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
   }
 
   reset() {
+    console.log('reset');
     this.items = [];
     this.loadedItems = 0;
     this.runwayEnd = 0;
@@ -83,6 +84,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
   }
 
   onResize() {
+    console.log('onResize');
     const tombstone = Renderer.createTombstone(this.config.structure);
     this.refs.scroller.appendChild(tombstone);
     this.tombstoneLayout = {
@@ -90,6 +92,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
       width: tombstone.offsetWidth
     };
     tombstone._tag.unmount();
+    console.log(this.items);
     this.items.forEach((item) => item.height = item.width = 0);
     this.attachRenderer();
   }
@@ -103,6 +106,7 @@ export class InfiniteScroll extends FluxTag<InfiniteScrollOpts>  {
   }
 
   maybeRequestContent(renderer: Renderer) {
+    console.log(renderer.lastItem);
     const itemsNeeded = this.capRecords(renderer.lastItem) - this.loadedItems;
     if (itemsNeeded <= 0) { return; }
 

@@ -4,7 +4,7 @@ import { SimpleBeautifier } from '../utils/simple-beautifier';
 import { BeautifierConfig, UrlBeautifier } from '../utils/url-beautifier';
 import { Services } from './init';
 import { FluxCapacitor, Query } from 'groupby-api';
-import * as parseUri from 'parseUri';
+// import * as parseUri from 'parseUri';
 
 export interface UrlConfig {
   beautifier?: boolean | BeautifierConfig;
@@ -67,7 +67,8 @@ export class Url {
   // TODO: better way to do this is with browser history rewrites
   static setLocation(url: string, config: UrlConfig) {
     if (LOCATION.pathname() === config.searchUrl) {
-      LOCATION.setSearch(`?${parseUri(url).query}`);
+      // LOCATION.setSearch(`?${parseUri(url).query}`);
+      LOCATION.setSearch(`?${url}`);
     } else {
       LOCATION.replace(url);
     }

@@ -47,7 +47,6 @@ export function configure(tag: FluxTag<any>) {
   if (typeof tag.setDefaults === 'function') {
     tag.setDefaults(config);
   }
-  return config;
 }
 
 export function buildConfiguration(tag: FluxTag<any>, meta: TagMeta) {
