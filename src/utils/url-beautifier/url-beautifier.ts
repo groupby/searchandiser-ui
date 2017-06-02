@@ -16,8 +16,8 @@ export class UrlBeautifier implements Beautifier {
     useReferenceKeys: true,
     navigations: {}
   };
-  private generator: QueryUrlGenerator = new QueryUrlGenerator(this);
-  private parser: QueryUrlParser = new QueryUrlParser(this);
+  private queryGenerator: QueryUrlGenerator = new QueryUrlGenerator(this);
+  private queryParser: QueryUrlParser = new QueryUrlParser(this);
 
   constructor(public searchandiserConfig: SearchandiserConfig = <any>{}) {
     const urlConfig = searchandiserConfig.url || {};
@@ -50,10 +50,14 @@ export class UrlBeautifier implements Beautifier {
   }
 
   parse(url: string) {
-    return this.parser.parse(url);
+    return this.queryParser.parse(url);
+  }
+
+  buildQueryUrl(query: Query) {
+    return this.queryGenerator.build(query);
   }
 
   build(query: Query) {
-    return this.generator.build(query);
+    return this.queryGenerator.build(query);
   }
 }
