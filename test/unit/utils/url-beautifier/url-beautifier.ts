@@ -1,5 +1,4 @@
 import * as sinonChai from 'sinon-chai';
-import { sandbox as sinonSandbox } from 'sinon';
 import { expect, use } from 'chai';
 import { Query } from 'groupby-api';
 import { UrlBeautifier, QueryUrlGenerator, QueryUrlParser } from '../../../../src/utils/url-beautifier';
@@ -14,8 +13,8 @@ describe.only('URL beautifier', () => {
 
   beforeEach(() => {
     beautifier = new UrlBeautifier();
-    sandbox = sinonSandbox.create();
-    stub = (...args) => sandbox.stub(..args);
+    sandbox = sinon.sandbox.create();
+    stub = (...args) => sandbox.stub(...args);
   });
 
   afterEach(() => {
