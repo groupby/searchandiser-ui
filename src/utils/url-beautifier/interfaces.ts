@@ -4,7 +4,7 @@ import { SearchandiserConfig } from '../../searchandiser';
 export interface Beautifier {
   config: BeautifierConfig;
   searchandiserConfig: SearchandiserConfig;
-  parse(url: string): any;
+  parse(rawUrl: string): any;
   build(query: any): string;
 }
 
@@ -18,7 +18,11 @@ export interface BeautifierConfig {
   suffix?: string;
   useReferenceKeys?: boolean;
   navigations?: Object;
-  prefix: Object;
+  prefix: {
+    query: string,
+    detail: string,
+    navigation: string
+  };
 }
 
 export interface Detail {

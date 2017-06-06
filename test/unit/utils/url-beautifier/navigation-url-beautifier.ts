@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { Query } from 'groupby-api';
 import { UrlBeautifier, NavigationUrlGenerator, NavigationUrlParser } from '../../../../src/utils/url-beautifier';
 import { refinement } from '../../../utils/fixtures';
+import * as parseUri from 'parseUri';
 
 describe('navigation URL beautifier', () => {
   let beautifier: UrlBeautifier;
@@ -55,30 +56,30 @@ describe('navigation URL beautifier', () => {
     });
 
     it('should parse URL and return the associated query', () => {
-      expect(parser.parse('/Apples')).to.be.eql(query);
+      expect(parser.parse(parseUri('/Apples'))).to.be.eql(query);
     });
 
     it('should parse URL with encoded characters', () => {
       const navigationName = 'Red apples/cherries';
       beautifier.config.navigations[navigationName] = query;
 
-      expect(parser.parse('/Red-apples%2Fcherries')).to.be.eql(query);
+      expect(parser.parse(parseUri('/Red-apples%2Fcherries'))).to.be.eql(query);
     });
 
     it('should parse URL with hyphen', () => {
       const navigationName = 'Red apples';
       beautifier.config.navigations[navigationName] = query;
 
-      expect(parser.parse('/' + encodeURIComponent(navigationName))).to.be.eql(query);
+      expect(parser.parse(parseUri('/' + encodeURIComponent(navigationName)))).to.be.eql(query);
     })
 
     describe('error states', () => {
       it('should parse URL and throw an error if associated query is not found', () => {
-        expect(() => parser.parse('/Orange')).to.throw('no navigation mapping found for Orange');
+        expect(() => parser.parse(parseUri('/Orange'))).to.throw('no navigation mapping found for Orange');
       });
 
       it('should parse URL and throw an error if the path has more than one part', () => {
-        expect(() => parser.parse('/Apples/Orange')).to.throw('path contains more than one part');
+        expect(() => parser.parse(parseUri('/Apples/Orange'))).to.throw('path contains more than one part');
       })
     });
   });

@@ -149,8 +149,7 @@ export class QueryUrlParser {
     this.suffixRegex = new RegExp(`^${this.config.suffix}`);
   }
 
-  parse(rawUrl: string): Query {
-    const url = parseUri(rawUrl);
+  parse(url: { path: string, query: string}): Query {
     const paths = url.path.split('/').filter((val) => val);
 
     if (paths[paths.length - 1] === this.config.suffix) paths.pop();

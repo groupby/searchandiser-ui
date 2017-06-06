@@ -63,15 +63,22 @@ export class UrlBeautifier implements Beautifier {
     }
   }
 
-  parse(url: string): any {
-    const path = parseUri(url).path;
+  parse(rawUrl: string): any {
+    const uri = parseUri(rawUrl);
+    const path = uri.path;
     if (path.indexOf(this.config.prefix.query) === 0) {
-      return this.queryParser.parse(path.substr(this.config.prefix.query.length));
+      return this.queryParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.prefix.query));
     } else if (path.indexOf(this.config.prefix.detail) === 0) {
-      return this.detailParser.parse(path.substr(this.config.prefix.detail.length));
+      return this.detailParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.prefix.detail));
     } else if (path.indexOf(this.config.prefix.navigation) === 0) {
-      return this.navigationParser.parse(path.substr(this.config.prefix.navigation.length));
+      return this.navigationParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.prefix.navigation));
+    } else {
+      throw new Error('invalid prefix');
     }
+  }
+
+  private extractUnprefixedPathAndQuery(uri: Object, prefix: string): { path: string, query: string } {
+    return { path: uri.path.substr(prefix.length), query: uri.query };
   }
 
   buildQueryUrl(query: Query) {

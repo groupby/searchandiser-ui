@@ -1,7 +1,6 @@
 import { SelectedValueRefinement } from 'groupby-api';
 import { Beautifier, BeautifierConfig, Detail } from './interfaces';
 import * as parseUri from 'parseUri';
-import * as queryString from 'query-string';
 
 export class DetailUrlGenerator {
   config: BeautifierConfig;
@@ -58,8 +57,8 @@ export class DetailUrlParser {
     this.config = config;
   }
 
-  parse(rawUrl: string): Detail {
-    let paths = parseUri(rawUrl).path.split('/').filter((val) => val).map((val) => decodeURIComponent(val).replace(/-/g, ' '));
+  parse(url: { path: string, query: string}): Detail {
+    let paths = url.path.split('/').filter((val) => val).map((val) => decodeURIComponent(val).replace(/-/g, ' '));
 
     if (paths.length < 2) {
       throw new Error('path has less than two parts');

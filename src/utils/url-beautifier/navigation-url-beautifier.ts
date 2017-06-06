@@ -1,7 +1,6 @@
 import { Query } from 'groupby-api';
 import { Beautifier, BeautifierConfig } from './interfaces';
 import * as parseUri from 'parseUri';
-import * as queryString from 'query-string';
 
 export class NavigationUrlGenerator {
   config: BeautifierConfig;
@@ -26,8 +25,8 @@ export class NavigationUrlParser {
     this.config = config;
   }
 
-  parse(rawUrl: string): Query {
-    const paths = parseUri(rawUrl).path.split('/').filter((val) => val);
+  parse(url: { path: string, query: string} ): Query {
+    const paths = url.path.split('/').filter((val) => val);
     if (paths.length > 1) {
       throw new Error('path contains more than one part');
     }

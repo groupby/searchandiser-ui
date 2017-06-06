@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { Query } from 'groupby-api';
 import { UrlBeautifier, QueryUrlGenerator, QueryUrlParser } from '../../../../src/utils/url-beautifier';
 import { refinement } from '../../../utils/fixtures';
+import * as parseUri from 'parseUri';
 
 describe('query URL beautifier', () => {
   let beautifier: UrlBeautifier;
@@ -222,67 +223,67 @@ describe('query URL beautifier', () => {
     it('should parse simple query URL', () => {
       query.withQuery('apples');
 
-      expect(parser.parse('/apples/q').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/apples/q')).build()).to.eql(query.build());
     });
 
     it('should parse URL with a slash in the query', () => {
       query.withQuery('red/apples');
 
-      expect(parser.parse('/red%2Fapples/q').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/red%2Fapples/q')).build()).to.eql(query.build());
     });
 
     it('should parse URL with a plus in the query', () => {
       query.withQuery('red+apples');
 
-      expect(parser.parse('/red%2Bapples/q').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/red%2Bapples/q')).build()).to.eql(query.build());
     });
 
     it('should parse simple query URL with dash and without reference keys', () => {
       beautifier.config.useReferenceKeys = false;
       query.withQuery('red apples');
 
-      expect(parser.parse('/red-apples').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/red-apples')).build()).to.eql(query.build());
     });
 
     it('should parse simple query URL with custom token', () => {
       beautifier.config.queryToken = 'c';
 
-      expect(parser.parse('/sneakers/c').build()).to.eql(new Query('sneakers').build());
+      expect(parser.parse(parseUri('/sneakers/c')).build()).to.eql(new Query('sneakers').build());
     });
 
     it('should extract a value refinement from URL', () => {
       beautifier.config.refinementMapping.push({ c: 'colour' });
       query.withSelectedRefinements(refinement('colour', 'green'));
 
-      expect(parser.parse('/green/c').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/green/c')).build()).to.eql(query.build());
     });
 
     it('should extract a multiple value refinements for field from URL', () => {
       beautifier.config.refinementMapping.push({ c: 'colour' });
       query.withSelectedRefinements(refinement('colour', 'green'), refinement('colour', 'blue'));
 
-      expect(parser.parse('/green/blue/cc').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/green/blue/cc')).build()).to.eql(query.build());
     });
 
     it('should extract a value refinement with a slash from URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'De/Walt'));
 
-      expect(parser.parse('/De%2FWalt/b').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/De%2FWalt/b')).build()).to.eql(query.build());
     });
 
     it('should extract a value refinement with a plus from URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'De+Walt'));
 
-      expect(parser.parse('/De%2BWalt/b').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/De%2BWalt/b')).build()).to.eql(query.build());
     });
 
     it('should extract multiple refinements from URL', () => {
       beautifier.config.refinementMapping.push({ c: 'colour', b: 'brand' });
       query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('brand', 'Wellingtons'));
 
-      expect(parser.parse('/dark-purple/Wellingtons/cb').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/dark-purple/Wellingtons/cb')).build()).to.eql(query.build());
     });
 
     it('should extract a query and refinement from URL', () => {
@@ -290,7 +291,7 @@ describe('query URL beautifier', () => {
       query.withQuery('sneakers')
         .withSelectedRefinements(refinement('colour', 'green'));
 
-      expect(parser.parse('/sneakers/green/qc').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/sneakers/green/qc')).build()).to.eql(query.build());
     });
 
     it('should extract query and value refinements from URL without reference keys', () => {
@@ -298,20 +299,20 @@ describe('query URL beautifier', () => {
       query.withQuery('shoe')
         .withSelectedRefinements(refinement('colour', 'blue'), refinement('colour', 'red'), refinement('Brand', 'adidas'), refinement('Brand', 'nike'));
 
-      expect(parser.parse('/shoe/blue/colour/red/colour/adidas/Brand/nike/Brand').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/shoe/blue/colour/red/colour/adidas/Brand/nike/Brand')).build()).to.eql(query.build());
     });
 
     it('should extract value refinements from URL without reference keys', () => {
       beautifier.config.useReferenceKeys = false;
       query.withSelectedRefinements(refinement('colour', 'blue'), refinement('colour', 'red'), refinement('Brand', 'adidas'), refinement('Brand', 'nike'));
 
-      expect(parser.parse('/blue/colour/red/colour/adidas/Brand/nike/Brand').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/blue/colour/red/colour/adidas/Brand/nike/Brand')).build()).to.eql(query.build());
     });
 
     it('should extract unmapped query from URL parameters', () => {
       query.withSelectedRefinements(refinement('height', '20in'), refinement('price', 20, 30));
 
-      expect(parser.parse('/?refinements=height%3A20in~price%3A20..30').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/?refinements=height%3A20in~price%3A20..30')).build()).to.eql(query.build());
     });
 
     it('should extract query and range refinements from URL without reference key', () => {
@@ -319,14 +320,14 @@ describe('query URL beautifier', () => {
       query.withQuery('long red dress')
         .withSelectedRefinements(refinement('category', 'evening wear'), refinement('category', 'formal'), refinement('price', 50, 200));
 
-      expect(parser.parse('/long-red-dress/evening-wear/category/formal/category?refinements=price:50..200').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/long-red-dress/evening-wear/category/formal/category?refinements=price:50..200')).build()).to.eql(query.build());
     });
 
     it('should extract page size from URL', () => {
       const pageSize = 5;
       query.withPageSize(pageSize);
 
-      expect(parser.parse(`/?page_size=${pageSize}`).build()).to.eql(query.build());
+      expect(parser.parse(parseUri(`/?page_size=${pageSize}`)).build()).to.eql(query.build());
     });
 
     it('should extract page from URL', () => {
@@ -334,7 +335,7 @@ describe('query URL beautifier', () => {
       const page = 2;
       query.skip(skip);
 
-      expect(parser.parse(`/?page=${page}`).build()).to.eql(query.build());
+      expect(parser.parse(parseUri(`/?page=${page}`)).build()).to.eql(query.build());
     });
 
     it('should extract page and page size from URL', () => {
@@ -344,7 +345,7 @@ describe('query URL beautifier', () => {
       query.skip(skip)
         .withPageSize(pageSize);
 
-      expect(parser.parse(`/?page=${page}&page_size=${pageSize}`).build()).to.eql(query.build());
+      expect(parser.parse(parseUri(`/?page=${page}&page_size=${pageSize}`)).build()).to.eql(query.build());
     });
 
     it('should ignore suffix', () => {
@@ -352,7 +353,7 @@ describe('query URL beautifier', () => {
       beautifier.config.suffix = 'index.html';
       query.withSelectedRefinements(refinement('height', '20in'), refinement('price', 20, 30));
 
-      expect(parser.parse('/20in/h/index.html?refinements=price%3A20..30').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/20in/h/index.html?refinements=price%3A20..30')).build()).to.eql(query.build());
     });
 
     it('should extract mapped and unmapped refinements with query and suffix', () => {
@@ -362,7 +363,7 @@ describe('query URL beautifier', () => {
       beautifier.config.queryToken = 'n';
       beautifier.config.suffix = 'index.html';
 
-      const request = parser.parse('/power-drill/orange/Drills/nsc/index.html?nav=brand%3ADeWalt').build();
+      const request = parser.parse(parseUri('/power-drill/orange/Drills/nsc/index.html?nav=brand%3ADeWalt')).build();
 
       expect(request.query).to.eql('power drill');
       expect(request.refinements).to.have.deep.members(refs);
@@ -374,11 +375,11 @@ describe('query URL beautifier', () => {
       query.withQuery('power drill')
         .withSelectedRefinements(refinement('brand', 'DeWalt'), refinement('category', 'Drills'), refinement('colour', 'orange'));
 
-      expect(parser.parse('/power-drill/DeWalt/brand/Drills/category/orange/colour/index.html').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/power-drill/DeWalt/brand/Drills/category/orange/colour/index.html')).build()).to.eql(query.build());
     });
 
     it('should extract deeply nested URL', () => {
-      const request = parser.parse('http://example.com/my/nested/path/power-drill/q').build();
+      const request = parser.parse(parseUri('http://example.com/my/nested/path/power-drill/q')).build();
 
       expect(request.query).to.eql('power drill');
     });
@@ -389,20 +390,20 @@ describe('query URL beautifier', () => {
       Object.assign(beautifier.searchandiserConfig, { area, collection });
       query.withQuery('drills').withConfiguration({ area, collection });
 
-      expect(parser.parse('/drills/q').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/drills/q')).build()).to.eql(query.build());
     });
 
     describe('error states', () => {
       it('should error on invalid reference keys', () => {
         beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
 
-        expect(() => parser.parse('/power-drill/orange/Drills/qccb').build()).to.throw('token reference is invalid');
+        expect(() => parser.parse(parseUri('/power-drill/orange/Drills/qccb')).build()).to.throw('token reference is invalid');
       });
 
       it('should error on unrecognized key', () => {
         beautifier.config.refinementMapping.push({ c: 'colour' });
 
-        expect(() => parser.parse('/Drills/b').build()).to.throw('unexpected token \'b\' found in reference');
+        expect(() => parser.parse(parseUri('/Drills/b')).build()).to.throw('unexpected token \'b\' found in reference');
       });
     });
   });
@@ -420,28 +421,28 @@ describe('query URL beautifier', () => {
     it('should convert from query object to a URL and back with reference keys', () => {
       const url = '/dress/h%26m/qb';
       beautifier.config.refinementMapping.push({ b: 'brand' });
-      expect(parser.parse(generator.build(query))).to.eql(query);
+      expect(parser.parse(parseUri(generator.build(query)))).to.eql(query);
     });
 
     it('should convert from URL to a query and back with reference keys', () => {
       const url = '/dress/h%26m/qb';
       beautifier.config.refinementMapping.push({ b: 'brand' });
 
-      expect(generator.build(parser.parse(url))).to.eq(url);
+      expect(generator.build(parser.parse(parseUri(url)))).to.eq(url);
     });
 
     it('should convert from query object to a URL and back without reference keys', () => {
       const url = '/dress/h%26m/brand';
       beautifier.config.useReferenceKeys = false;
 
-      expect(parser.parse(generator.build(query))).to.eql(query);
+      expect(parser.parse(parseUri(generator.build(query)))).to.eql(query);
     });
 
     it('should convert from URL to a query and back without reference keys', () => {
       const url = '/dress/h%26m/brand';
       beautifier.config.useReferenceKeys = false;
 
-      expect(generator.build(parser.parse(url))).to.eq(url);
+      expect(generator.build(parser.parse(parseUri(url)))).to.eq(url);
     });
   });
 
