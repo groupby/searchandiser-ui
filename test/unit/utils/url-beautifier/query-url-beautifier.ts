@@ -6,6 +6,8 @@ import { refinement } from '../../../utils/fixtures';
 describe('query URL beautifier', () => {
   let beautifier: UrlBeautifier;
   let query: Query;
+  let generator: QueryUrlGenerator;
+  let parser: QueryUrlParser;
 
   beforeEach(() => {
     beautifier = new UrlBeautifier();
@@ -13,8 +15,6 @@ describe('query URL beautifier', () => {
   });
 
   describe('query URL generator', () => {
-    let generator: QueryUrlGenerator;
-
     beforeEach(() => generator = new QueryUrlGenerator(beautifier));
 
     it('should convert a simple query to a URL', () => {
@@ -217,8 +217,6 @@ describe('query URL beautifier', () => {
   });
 
   describe('query URL parser', () => {
-    let parser: QueryUrlParser;
-
     beforeEach(() => parser = new QueryUrlParser(beautifier));
 
     it('should parse simple query URL', () => {
@@ -411,37 +409,39 @@ describe('query URL beautifier', () => {
 
   describe('compatibility', () => {
 
-    beforeEach(() => beautifier = new UrlBeautifier(<any>{
-      url: {
-        beautifier: {
-          refinementMapping: [{ b: 'brand' }, { f: 'fabric' }],
-          queryToken: 'k',
-          extraRefinementsParam: 'refs',
-          suffix: 'index.html'
-        }
-      }
-    }));
-
-    it('should convert from query to a URL and back', () => {
-      query.withQuery('duvet cover')
-        .withSelectedRefinements(
-        refinement('brand', 'Duvet King'),
-        refinement('fabric', 'linen'),
-        refinement('price', 10, 40));
-
-      const origRequest = query.build();
-      const convertedRequest = beautifier.parse(beautifier.build(query)).build();
-
-      expect(convertedRequest.query).to.eql(origRequest.query);
-      expect(convertedRequest.refinements).to.have.deep.members(origRequest.refinements);
+    beforeEach(() => {
+      generator = new QueryUrlGenerator(beautifier);
+      parser = new QueryUrlParser(beautifier);
+      query = new Query();
+      query.withQuery('dress')
+        .withSelectedRefinements(refinement('brand', 'h&m'));
     });
 
-    it('should convert from URL to a query and back', () => {
-      const url = '/duvet-cover/Duvet-King/linen/kbf/index.html?refs=price%3A10..40';
+    it('should convert from query object to a URL and back with reference keys', () => {
+      const url = '/dress/h%26m/qb';
+      beautifier.config.refinementMapping.push({ b: 'brand' });
+      expect(parser.parse(generator.build(query))).to.eql(query);
+    });
 
-      const convertedUrl = beautifier.build(beautifier.parse(url));
+    it('should convert from URL to a query and back with reference keys', () => {
+      const url = '/dress/h%26m/qb';
+      beautifier.config.refinementMapping.push({ b: 'brand' });
 
-      expect(convertedUrl).to.eq(url);
+      expect(generator.build(parser.parse(url))).to.eq(url);
+    });
+
+    it('should convert from query object to a URL and back without reference keys', () => {
+      const url = '/dress/h%26m/brand';
+      beautifier.config.useReferenceKeys = false;
+
+      expect(parser.parse(generator.build(query))).to.eql(query);
+    });
+
+    it('should convert from URL to a query and back without reference keys', () => {
+      const url = '/dress/h%26m/brand';
+      beautifier.config.useReferenceKeys = false;
+
+      expect(generator.build(parser.parse(url))).to.eq(url);
     });
   });
 

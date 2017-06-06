@@ -1,17 +1,14 @@
 import { expect } from 'chai';
-import { Query } from 'groupby-api';
 import { UrlBeautifier, DetailUrlGenerator, DetailUrlParser, Detail } from '../../../../src/utils/url-beautifier';
 import { refinement } from '../../../utils/fixtures';
 
 describe('detail URL beautifier', () => {
   let beautifier: UrlBeautifier;
-  let query: Query;
   let generator: DetailUrlGenerator;
   let parser: DetailUrlParser;
 
   beforeEach(() => {
     beautifier = new UrlBeautifier();
-    query = new Query();
   });
 
   describe('detail URL generator', () => {
