@@ -11,7 +11,7 @@ export class DetailUrlGenerator {
   build(detail: Detail): string {
     let paths = [detail.productTitle];
 
-    if (detail.refinements) {
+    if (detail.refinements.length !== 0) {
       if (this.config.useReferenceKeys) {
         let referenceKeys = '';
         const refinementsToKeys = this.config.refinementMapping.reduce((map, mapping) => {
@@ -65,10 +65,6 @@ export class DetailUrlParser {
 
     const name = paths.shift();
     const id = paths.pop();
-    const result = {
-      productTitle: name,
-      productID: id
-    };
 
     let refinements = [];
 
@@ -107,9 +103,12 @@ export class DetailUrlParser {
           });
         }
       }
-      result['refinements'] = refinements;
     }
 
-    return result;
+    return {
+      productTitle: name,
+      productID: id,
+      refinements: refinements
+    };
   }
 }

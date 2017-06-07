@@ -28,5 +28,5 @@ export interface BeautifierConfig {
 export interface Detail {
   productTitle: string;
   productID: string;
-  refinements?: SelectedValueRefinement[];
+  refinements: SelectedValueRefinement[];
 }

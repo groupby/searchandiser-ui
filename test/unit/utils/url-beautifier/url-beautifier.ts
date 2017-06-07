@@ -46,7 +46,8 @@ describe('URL beautifier', () => {
     it('should call detail url generator', () => {
       const detail = {
         productTitle: 'Apples',
-        productID: '12345'
+        productID: '12345',
+        refinements: []
       };
       const build = stub(DetailUrlGenerator.prototype, 'build');
 

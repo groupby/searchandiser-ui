@@ -17,17 +17,29 @@ describe('detail URL beautifier', () => {
     beforeEach(() => generator = new DetailUrlGenerator(beautifier));
 
     it('should convert a simple detail to a URL', () => {
-      expect(generator.build({ productTitle: 'red and delicious apples', productID: '1923' }))
+      expect(generator.build({
+        productTitle: 'red and delicious apples',
+        productID: '1923',
+        refinements: []
+      }))
         .to.eq('/red-and-delicious-apples/1923');
     });
 
     it('should encode special characters + in detail', () => {
-      expect(generator.build({ productTitle: 'red+and+delicious+apples', productID: '1923' }))
+      expect(generator.build({
+        productTitle: 'red+and+delicious+apples',
+        productID: '1923',
+        refinements: []
+      }))
         .to.eq('/red%2Band%2Bdelicious%2Bapples/1923');
     });
 
     it('should encode special characters / in detail', () => {
-      expect(generator.build({ productTitle: 'red/and/delicious/apples', productID: '1923' }))
+      expect(generator.build({
+        productTitle: 'red/and/delicious/apples',
+        productID: '1923',
+        refinements: []
+      }))
         .to.eq('/red%2Fand%2Fdelicious%2Fapples/1923');
     });
 
@@ -94,19 +106,31 @@ describe('detail URL beautifier', () => {
     });
 
     it('should parse a simple URL and return a detail object', () => {
-      const expectedDetail = { productTitle: 'apples', productID: '1923' };
+      const expectedDetail = {
+        productTitle: 'apples',
+        productID: '1923',
+        refinements: []
+      };
 
       expect(parser.parse(parseUri('/apples/1923'))).to.eql(expectedDetail);
     });
 
     it('should parse a simple URL, replace \'-\' with \' \' and return a detail object', () => {
-      const expectedDetail = { productTitle: 'red and delicious apples', productID: '1923' };
+      const expectedDetail = {
+        productTitle: 'red and delicious apples',
+        productID: '1923',
+        refinements: []
+      };
 
       expect(parser.parse(parseUri('/red-and-delicious-apples/1923'))).to.eql(expectedDetail);
     });
 
     it('should parse a simple URL, decode special characters and return a detail object', () => {
-      const expectedDetail = { productTitle: 'red+and+delicious+apples', productID: '1923' };
+      const expectedDetail = {
+        productTitle: 'red+and+delicious+apples',
+        productID: '1923',
+        refinements: []
+      };
 
       expect(parser.parse(parseUri('/red%2Band%2Bdelicious%2Bapples/1923'))).to.eql(expectedDetail);
     });
