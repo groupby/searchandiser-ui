@@ -1,6 +1,5 @@
-import { Query } from 'groupby-api';
 import { Beautifier, BeautifierConfig } from './interfaces';
-import * as parseUri from 'parseUri';
+import { Query } from 'groupby-api';
 
 export class NavigationUrlGenerator {
   config: BeautifierConfig;

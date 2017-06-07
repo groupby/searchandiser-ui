@@ -1,7 +1,6 @@
-import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import { Beautifier, BeautifierConfig } from './interfaces';
 import { CONFIGURATION_MASK, SearchandiserConfig } from '../../searchandiser';
-import * as parseUri from 'parseUri';
+import { Beautifier, BeautifierConfig } from './interfaces';
+import { Query, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
 import * as queryString from 'query-string';
 
 export class QueryUrlGenerator {
@@ -50,7 +49,7 @@ export class QueryUrlGenerator {
       }
     } else {
       // add refinements
-      let valueRefinements = [], rangeRefinement = [];
+      let valueRefinements = [];
       for (let i = origRefinements.length - 1; i >= 0; --i) {
         if (origRefinements[i].type === 'Value') {
           valueRefinements.push(...origRefinements.splice(i, 1));
@@ -79,7 +78,8 @@ export class QueryUrlGenerator {
 
     // add page
     if (query.raw.skip) {
-      uri.query[this.config.pageParam] = Math.floor(query.raw.skip/(query.raw.pageSize || this.config.defaultPageSize))+1;
+      uri.query[this.config.pageParam] =
+        Math.floor(query.raw.skip / (query.raw.pageSize || this.config.defaultPageSize)) + 1;
     }
 
     let url = `/${uri.path.map((path) => encodeURIComponent(path)).join('/')}`;
@@ -154,7 +154,8 @@ export class QueryUrlParser {
 
     if (paths[paths.length - 1] === this.config.suffix) paths.pop();
 
-    const query = this.config.useReferenceKeys ? this.parsePathWithReferenceKeys(paths) : this.parsePathWithoutReferenceKeys(paths);
+    const query = this.config.useReferenceKeys ?
+      this.parsePathWithReferenceKeys(paths) : this.parsePathWithoutReferenceKeys(paths);
 
     const queryVariables = queryString.parse(url.query);
     const unmappedRefinements = <string>queryVariables[this.config.extraRefinementsParam];

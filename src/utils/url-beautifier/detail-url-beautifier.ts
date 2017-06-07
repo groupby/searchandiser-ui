@@ -1,6 +1,5 @@
-import { SelectedValueRefinement } from 'groupby-api';
 import { Beautifier, BeautifierConfig, Detail } from './interfaces';
-import * as parseUri from 'parseUri';
+import { SelectedValueRefinement } from 'groupby-api';
 
 export class DetailUrlGenerator {
   config: BeautifierConfig;
@@ -101,7 +100,11 @@ export class DetailUrlParser {
         }
 
         while (paths.length) {
-          refinements.push({ navigationName: keysToRefinements[referenceKeys.shift()], value: paths.shift(), type: 'Value' });
+          refinements.push({
+            navigationName: keysToRefinements[referenceKeys.shift()],
+            value: paths.shift(),
+            type: 'Value'
+          });
         }
       }
       result['refinements'] = refinements;

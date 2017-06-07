@@ -1,7 +1,6 @@
+import { NavigationUrlGenerator, NavigationUrlParser, UrlBeautifier } from '../../../../src/utils/url-beautifier';
 import { expect } from 'chai';
 import { Query } from 'groupby-api';
-import { UrlBeautifier, NavigationUrlGenerator, NavigationUrlParser } from '../../../../src/utils/url-beautifier';
-import { refinement } from '../../../utils/fixtures';
 import * as parseUri from 'parseUri';
 
 describe('navigation URL beautifier', () => {
@@ -17,7 +16,7 @@ describe('navigation URL beautifier', () => {
     let generator: NavigationUrlGenerator;
 
     beforeEach(() => {
-      generator = new NavigationUrlGenerator(beautifier)
+      generator = new NavigationUrlGenerator(beautifier);
     });
 
     it('should convert a simple navigation name to a URL', () => {
@@ -30,7 +29,7 @@ describe('navigation URL beautifier', () => {
       beautifier.config.navigations['red apples'] = query;
 
       expect(generator.build('red apples')).to.be.eq('/red-apples');
-    })
+    });
 
     it('should encode special characters in navigation name', () => {
       beautifier.config.navigations['red&green apples/grapes'] = query;
@@ -71,7 +70,7 @@ describe('navigation URL beautifier', () => {
       beautifier.config.navigations[navigationName] = query;
 
       expect(parser.parse(parseUri('/' + encodeURIComponent(navigationName)))).to.be.eql(query);
-    })
+    });
 
     describe('error states', () => {
       it('should parse URL and throw an error if associated query is not found', () => {
@@ -80,7 +79,7 @@ describe('navigation URL beautifier', () => {
 
       it('should parse URL and throw an error if the path has more than one part', () => {
         expect(() => parser.parse(parseUri('/Apples/Orange'))).to.throw('path contains more than one part');
-      })
+      });
     });
   });
 });

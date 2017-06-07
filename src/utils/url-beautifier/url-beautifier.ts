@@ -1,9 +1,9 @@
-import { Query } from 'groupby-api';
-import { Beautifier, BeautifierConfig, Detail } from './interfaces';
-import { QueryUrlGenerator, QueryUrlParser } from './query-url-beautifier';
-import { NavigationUrlGenerator, NavigationUrlParser } from './navigation-url-beautifier';
-import { DetailUrlGenerator, DetailUrlParser } from './detail-url-beautifier';
 import { SearchandiserConfig } from '../../searchandiser';
+import { DetailUrlGenerator, DetailUrlParser } from './detail-url-beautifier';
+import { Beautifier, BeautifierConfig, Detail } from './interfaces';
+import { NavigationUrlGenerator, NavigationUrlParser } from './navigation-url-beautifier';
+import { QueryUrlGenerator, QueryUrlParser } from './query-url-beautifier';
+import { Query } from 'groupby-api';
 import * as parseUri from 'parseUri';
 
 export class UrlBeautifier implements Beautifier {
@@ -77,10 +77,6 @@ export class UrlBeautifier implements Beautifier {
     }
   }
 
-  private extractUnprefixedPathAndQuery(uri: Object, prefix: string): { path: string, query: string } {
-    return { path: uri.path.substr(prefix.length), query: uri.query };
-  }
-
   buildQueryUrl(query: Query) {
     return this.queryGenerator.build(query);
   }
@@ -95,5 +91,9 @@ export class UrlBeautifier implements Beautifier {
 
   build(query: Query) {
     return this.queryGenerator.build(query);
+  }
+
+  private extractUnprefixedPathAndQuery(uri: parseUri.UriStructure, prefix: string): { path: string, query: string } {
+    return { path: uri.path.substr(prefix.length), query: uri.query };
   }
 }

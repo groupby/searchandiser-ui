@@ -1,7 +1,11 @@
+import {
+  DetailUrlGenerator, DetailUrlParser,
+  NavigationUrlGenerator, NavigationUrlParser,
+  QueryUrlGenerator, QueryUrlParser, UrlBeautifier
+} from '../../../../src/utils/url-beautifier';
+import { refinement } from '../../../utils/fixtures';
 import { expect } from 'chai';
 import { Query } from 'groupby-api';
-import { UrlBeautifier, QueryUrlGenerator, QueryUrlParser, NavigationUrlGenerator, NavigationUrlParser, DetailUrlGenerator, DetailUrlParser, Detail } from '../../../../src/utils/url-beautifier';
-import { refinement } from '../../../utils/fixtures';
 import * as parseUri from 'parseUri';
 
 describe('URL beautifier', () => {
@@ -82,12 +86,13 @@ describe('URL beautifier', () => {
 
     it('should extract mapped and unmapped refinements with query and suffix', () => {
       const refs = [refinement('category', 'Drills'), refinement('brand', 'DeWalt'), refinement('colour', 'orange')];
+      const url = 'http://example.com/query/power-drill/orange/Drills/nsc/index.html?nav=brand%3ADeWalt';
       beautifier.config.refinementMapping.push({ s: 'colour' }, { c: 'category' });
       beautifier.config.extraRefinementsParam = 'nav';
       beautifier.config.queryToken = 'n';
       beautifier.config.suffix = 'index.html';
 
-      const request = beautifier.parse('http://example.com/query/power-drill/orange/Drills/nsc/index.html?nav=brand%3ADeWalt').build();
+      const request = beautifier.parse(url).build();
 
       expect(request.query).to.eql('power drill');
       expect(request.refinements).to.have.deep.members(refs);

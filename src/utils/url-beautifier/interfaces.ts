@@ -1,5 +1,5 @@
-import { SelectedValueRefinement, Query } from 'groupby-api';
 import { SearchandiserConfig } from '../../searchandiser';
+import { SelectedValueRefinement } from 'groupby-api';
 
 export interface Beautifier {
   config: BeautifierConfig;
