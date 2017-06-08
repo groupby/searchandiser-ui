@@ -43,27 +43,9 @@ export class UrlBeautifier implements Beautifier {
     for (let mapping of this.config.refinementMapping) {
       const key = Object.keys(mapping)[0];
       this.validateToken(key, keys);
-      // if (key.length !== 1) {
-      //   throw new Error('refinement mapping token must be a single character');
-      // }
-      // if (key.match(/[aeiouy]/)) {
-      //   throw new Error('refinement mapping token must not be a vowel');
-      // }
-      // if (keys.indexOf(key) > -1) {
-      //   throw new Error('refinement mapping tokens must be unique');
-      // }
       keys.push(key);
     }
     this.validateToken(this.config.queryToken, keys);
-    // if (this.config.queryToken.length !== 1) {
-    //   throw new Error('query token must be a single character');
-    // }
-    // if (this.config.queryToken.match(/[aeiouy]/)) {
-    //   throw new Error('query token must not be a vowel');
-    // }
-    // if (keys.indexOf(this.config.queryToken) > -1) {
-    //   throw new Error('query token must be unique from refinement tokens');
-    // }
   }
 
   parse(rawUrl: string): any {
@@ -80,7 +62,7 @@ export class UrlBeautifier implements Beautifier {
     }
   }
 
-  validateToken(token, keys) {
+  validateToken(token: string, keys: string[]) {
     if (token.length !== 1) {
       throw new Error('token must be a single character');
     }
