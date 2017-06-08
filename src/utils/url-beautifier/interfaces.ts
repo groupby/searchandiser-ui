@@ -10,15 +10,17 @@ export interface Beautifier {
 
 export interface BeautifierConfig {
   refinementMapping?: any[];
-  extraRefinementsParam?: string;
-  pageSizeParam?: string;
-  pageParam?: string;
-  defaultPageSize?: number;
+  params?: {
+    page?: string;
+    pageSize?: string;
+    refinements?: string;
+    sort?: string;
+  };
   queryToken?: string;
   suffix?: string;
   useReferenceKeys?: boolean;
-  navigations?: Object;
-  prefix: {
+  navigations?: any;
+  routes: {
     query: string,
     detail: string,
     navigation: string
@@ -27,6 +29,6 @@ export interface BeautifierConfig {
 
 export interface Detail {
   productTitle: string;
-  productID: string;
+  productId: string;
   refinements: SelectedValueRefinement[];
 }

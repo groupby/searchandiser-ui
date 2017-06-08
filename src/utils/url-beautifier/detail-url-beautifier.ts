@@ -20,27 +20,27 @@ export class DetailUrlGenerator {
           return map;
         }, {});
 
-        detail.refinements.sort(this.refinementsComparator).forEach((refinement) => {
-          if (!(refinement.navigationName in refinementsToKeys))
-            throw new Error(`no mapping found for navigation "${refinement.navigationName}"`);
-          paths.push(refinement.value);
-          referenceKeys += (refinementsToKeys[refinement.navigationName]);
-        });
+        detail.refinements.sort(DetailUrlGenerator.refinementsComparator)
+          .forEach((refinement) => {
+            if (!(refinement.navigationName in refinementsToKeys)) {
+              throw new Error(`no mapping found for navigation '${refinement.navigationName}'`);
+            }
+
+            paths.push(refinement.value);
+            referenceKeys += refinementsToKeys[refinement.navigationName];
+          });
 
         paths.push(referenceKeys);
       } else {
-        detail.refinements.forEach((ref) => {
-          paths.push(ref.value);
-          paths.push(ref.navigationName);
-        });
+        detail.refinements.forEach(({ value, navigationName }) => paths.push(value, navigationName));
       }
     }
 
-    paths.push(detail.productID);
+    paths.push(detail.productId);
     return `/${paths.map((path) => encodeURIComponent(path.replace(/\s/g, '-'))).join('/')}`;
   }
 
-  private refinementsComparator(refinement1: SelectedValueRefinement, refinement2: SelectedValueRefinement): number {
+  static refinementsComparator(refinement1: SelectedValueRefinement, refinement2: SelectedValueRefinement): number {
     let comparison = refinement1.navigationName.localeCompare(refinement2.navigationName);
     if (comparison === 0) {
       comparison = refinement1.value.localeCompare(refinement2.value);
@@ -57,7 +57,7 @@ export class DetailUrlParser {
   }
 
   parse(url: { path: string, query: string}): Detail {
-    let paths = url.path.split('/').filter((val) => val).map((val) => decodeURIComponent(val).replace(/-/g, ' '));
+    const paths = url.path.split('/').filter((val) => val).map((val) => decodeURIComponent(val).replace(/-/g, ' '));
 
     if (paths.length < 2) {
       throw new Error('path has less than two parts');
@@ -66,15 +66,15 @@ export class DetailUrlParser {
     const name = paths.shift();
     const id = paths.pop();
 
-    let refinements = [];
+    const refinements = [];
 
-    if (paths.length) {
+    if (paths.length !== 0) {
       if (!this.config.useReferenceKeys) {
         if (paths.length % 2 !== 0) {
           throw new Error('path has an odd number of parts');
         }
 
-        while (paths.length) {
+        while (paths.length !== 0) {
           const value = paths.shift();
           const navigationName = paths.shift();
           refinements.push({ navigationName, value, type: 'Value' });
@@ -95,20 +95,18 @@ export class DetailUrlParser {
           throw new Error('token reference is invalid');
         }
 
-        while (paths.length) {
-          refinements.push({
-            navigationName: keysToRefinements[referenceKeys.shift()],
-            value: paths.shift(),
-            type: 'Value'
-          });
-        }
+        paths.forEach((value) => refinements.push({
+          value,
+          navigationName: keysToRefinements[referenceKeys.shift()],
+          type: 'Value'
+        }));
       }
     }
 
     return {
       productTitle: name,
-      productID: id,
-      refinements: refinements
+      productId: id,
+      refinements
     };
   }
 }

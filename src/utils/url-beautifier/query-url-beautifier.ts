@@ -17,8 +17,7 @@ export class QueryUrlGenerator {
       path: [],
       query: {}
     };
-    // let url = '';
-    const origRefinements = Array.of(...request.refinements);
+    const origRefinements = [...request.refinements];
 
     // add query
     if (request.query) {
@@ -30,18 +29,16 @@ export class QueryUrlGenerator {
       const { map, keys } = this.generateRefinementMap(origRefinements);
 
       // add refinements
-      for (let key of keys) {
+      keys.forEach((key) => {
         const refinements = <SelectedRefinement[]>map[key];
         countMap[key] = refinements.length;
         refinements.map(this.convertToSelectedValueRefinement)
           .sort(this.refinementsComparator)
-          .forEach((selectedValueRefinement) => {
-            uri.path.push(selectedValueRefinement.value);
-          });
-      }
+          .forEach((selectedValueRefinement) => uri.path.push(selectedValueRefinement.value));
+      });
 
       // add reference key
-      if (keys.length || request.query) {
+      if (keys.length !== 0 || request.query) {
         let referenceKey = '';
         if (request.query) referenceKey += this.config.queryToken;
         keys.forEach((key) => referenceKey += key.repeat(countMap[key]));
@@ -49,37 +46,36 @@ export class QueryUrlGenerator {
       }
     } else {
       // add refinements
-      let valueRefinements = [];
+      const valueRefinements = [];
       for (let i = origRefinements.length - 1; i >= 0; --i) {
         if (origRefinements[i].type === 'Value') {
           valueRefinements.push(...origRefinements.splice(i, 1));
         }
       }
 
-      valueRefinements.map(this.convertToSelectedValueRefinement)
-        .sort(this.refinementsComparator)
+      valueRefinements.map(QueryUrlGenerator.convertToSelectedValueRefinement)
+        .sort(QueryUrlGenerator.refinementsComparator)
         .forEach((selectedValueRefinement) => {
           uri.path.push(selectedValueRefinement.value, selectedValueRefinement.navigationName);
         });
     }
 
     // add remaining refinements
-    if (origRefinements.length) {
-      uri.query[this.config.extraRefinementsParam] = origRefinements
+    if (origRefinements.length !== 0) {
+      uri.query[this.config.params.refinements] = origRefinements
         .sort((lhs, rhs) => lhs.navigationName.localeCompare(rhs.navigationName))
-        .map(this.stringifyRefinement)
+        .map(QueryUrlGenerator.stringifyRefinement)
         .join('~');
     }
 
     // add page size
     if (query.raw.pageSize) {
-       uri.query[this.config.pageSizeParam] = query.raw.pageSize;
+       uri.query[this.config.params.pageSize] = query.raw.pageSize;
     }
 
     // add page
     if (query.raw.skip) {
-      uri.query[this.config.pageParam] =
-        Math.floor(query.raw.skip / (query.raw.pageSize || this.config.defaultPageSize)) + 1;
+      uri.query[this.config.params.page] = Math.floor(query.raw.skip / query.raw.pageSize) + 1;
     }
 
     let url = `/${uri.path.map((path) => encodeURIComponent(path)).join('/')}`;
@@ -102,7 +98,7 @@ export class QueryUrlGenerator {
     for (let mapping of this.config.refinementMapping) {
       const key = Object.keys(mapping)[0];
       const matchingRefinements = refinements.filter((refinement) => refinement.navigationName === mapping[key]);
-      if (matchingRefinements.length) {
+      if (matchingRefinements.length !== 0) {
         refinementKeys.push(key);
         refinementMap[key] = matchingRefinements;
         matchingRefinements.forEach((ref) => refinements.splice(refinements.indexOf(ref), 1));
@@ -111,7 +107,7 @@ export class QueryUrlGenerator {
     return { map: refinementMap, keys: refinementKeys };
   }
 
-  private convertToSelectedValueRefinement(refinement: SelectedRefinement): SelectedValueRefinement {
+  static convertToSelectedValueRefinement(refinement: SelectedRefinement): SelectedValueRefinement {
     if (refinement.type === 'Value') {
       return <SelectedValueRefinement>refinement;
     } else {
@@ -119,7 +115,7 @@ export class QueryUrlGenerator {
     }
   }
 
-  private stringifyRefinement(refinement: SelectedRefinement): string {
+  static stringifyRefinement(refinement: SelectedRefinement): string {
     const name = refinement.navigationName;
     if (refinement.type === 'Value') {
       return `${name}:${(<SelectedValueRefinement>refinement).value}`;
@@ -128,7 +124,7 @@ export class QueryUrlGenerator {
     }
   }
 
-  private refinementsComparator(refinement1: SelectedValueRefinement, refinement2: SelectedValueRefinement): number {
+  static refinementsComparator(refinement1: SelectedValueRefinement, refinement2: SelectedValueRefinement): number {
     let comparison = refinement1.navigationName.localeCompare(refinement2.navigationName);
     if (comparison === 0) {
       comparison = refinement1.value.localeCompare(refinement2.value);
@@ -152,15 +148,17 @@ export class QueryUrlParser {
   parse(url: { path: string, query: string}): Query {
     const paths = url.path.split('/').filter((val) => val);
 
-    if (paths[paths.length - 1] === this.config.suffix) paths.pop();
+    if (paths[paths.length - 1] === this.config.suffix) {
+      paths.pop();
+    }
 
     const query = this.config.useReferenceKeys ?
       this.parsePathWithReferenceKeys(paths) : this.parsePathWithoutReferenceKeys(paths);
 
     const queryVariables = queryString.parse(url.query);
-    const unmappedRefinements = <string>queryVariables[this.config.extraRefinementsParam];
-    const pageSize = parseInt(<string>queryVariables[this.config.pageSizeParam], 10);
-    const page = parseInt(<string>queryVariables[this.config.pageParam], 10);
+    const unmappedRefinements = <string>queryVariables[this.config.params.refinements];
+    const pageSize = parseInt(<string>queryVariables[this.config.params.pageSize], 10);
+    const page = parseInt(<string>queryVariables[this.config.params.page], 10);
     if (unmappedRefinements) {
       query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
     }
@@ -168,7 +166,7 @@ export class QueryUrlParser {
       query.withPageSize(pageSize);
     }
     if (page) {
-      query.skip((query.raw.pageSize || this.config.defaultPageSize) * (page - 1));
+      query.skip(query.raw.pageSize * (page - 1));
     }
 
     return query;
@@ -177,14 +175,15 @@ export class QueryUrlParser {
   private parsePathWithReferenceKeys(path: string[]): Query {
     const query = new Query().withConfiguration(this.searchandiserConfig, CONFIGURATION_MASK);
     const keys = (path.pop() || '').split('');
+    if (path.length < keys.length) {
+      throw new Error('token reference is invalid');
+    }
     const map = this.generateRefinementMapping();
-    for (let key of keys) {
+    keys.forEach((key) => {
       if (!(key in map || key === this.config.queryToken)) {
         throw new Error(`unexpected token '${key}' found in reference`);
       }
-    }
-
-    if (path.length < keys.length) throw new Error('token reference is invalid');
+    });
 
     // remove prefixed paths
     path.splice(0, path.length - keys.length);

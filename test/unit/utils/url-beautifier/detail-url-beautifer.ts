@@ -19,7 +19,7 @@ describe('detail URL beautifier', () => {
     it('should convert a simple detail to a URL', () => {
       expect(generator.build({
         productTitle: 'red and delicious apples',
-        productID: '1923',
+        productId: '1923',
         refinements: []
       }))
         .to.eq('/red-and-delicious-apples/1923');
@@ -28,7 +28,7 @@ describe('detail URL beautifier', () => {
     it('should encode special characters + in detail', () => {
       expect(generator.build({
         productTitle: 'red+and+delicious+apples',
-        productID: '1923',
+        productId: '1923',
         refinements: []
       }))
         .to.eq('/red%2Band%2Bdelicious%2Bapples/1923');
@@ -37,7 +37,7 @@ describe('detail URL beautifier', () => {
     it('should encode special characters / in detail', () => {
       expect(generator.build({
         productTitle: 'red/and/delicious/apples',
-        productID: '1923',
+        productId: '1923',
         refinements: []
       }))
         .to.eq('/red%2Fand%2Fdelicious%2Fapples/1923');
@@ -47,7 +47,7 @@ describe('detail URL beautifier', () => {
       beautifier.config.useReferenceKeys = false;
       const url = generator.build({
         productTitle: 'satin shiny party dress',
-        productID: '293014',
+        productId: '293014',
         refinements: [ refinement('colour', 'red') ]
       });
 
@@ -58,7 +58,7 @@ describe('detail URL beautifier', () => {
       beautifier.config.useReferenceKeys = false;
       const url = generator.build({
         productTitle: 'satin shiny party dress',
-        productID: '293014',
+        productId: '293014',
         refinements: [refinement('colour', 'red+green/blue')]
       });
 
@@ -69,7 +69,7 @@ describe('detail URL beautifier', () => {
       beautifier.config.refinementMapping.push({ c: 'colour' });
       const url = generator.build({
         productTitle: 'dress',
-        productID: '293014',
+        productId: '293014',
         refinements: [refinement('colour', 'red')]
       });
 
@@ -80,7 +80,7 @@ describe('detail URL beautifier', () => {
       beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
       const url = generator.build({
         productTitle: 'dress',
-        productID: '293014',
+        productId: '293014',
         refinements: [refinement('colour', 'red'), refinement('brand', 'h&m') ]
       });
 
@@ -91,7 +91,7 @@ describe('detail URL beautifier', () => {
       it('should throw an error if no reference key found for refinement navigation name', () => {
         const build = () => generator.build({
           productTitle: 'dress',
-          productID: '293014',
+          productId: '293014',
           refinements: [refinement('colour', 'red')]
         });
 
