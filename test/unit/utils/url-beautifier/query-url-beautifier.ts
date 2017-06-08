@@ -1,26 +1,34 @@
-import { UrlBeautifier, UrlGenerator, UrlParser } from '../../../src/utils/url-beautifier';
-import { refinement } from '../../utils/fixtures';
+import { QueryUrlGenerator, QueryUrlParser, UrlBeautifier } from '../../../../src/utils/url-beautifier';
+import { refinement } from '../../../utils/fixtures';
 import { expect } from 'chai';
 import { Query } from 'groupby-api';
+import * as parseUri from 'parseUri';
 
-describe('URL beautifier', () => {
+describe('query URL beautifier', () => {
   let beautifier: UrlBeautifier;
   let query: Query;
+  let generator: QueryUrlGenerator;
+  let parser: QueryUrlParser;
 
   beforeEach(() => {
     beautifier = new UrlBeautifier();
     query = new Query();
   });
 
-  describe('URL generator', () => {
-    let generator: UrlGenerator;
-
-    beforeEach(() => generator = new UrlGenerator(beautifier));
+  describe('query URL generator', () => {
+    beforeEach(() => generator = new QueryUrlGenerator(beautifier));
 
     it('should convert a simple query to a URL', () => {
       query.withQuery('red apples');
 
-      expect(generator.build(query)).to.eq('/red+apples/q');
+      expect(generator.build(query)).to.eq('/red-apples/q');
+    });
+
+    it('should convert a simple query to a URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('red apples');
+
+      expect(generator.build(query)).to.eq('/red-apples');
     });
 
     it('should convert query with a slash to a URL', () => {
@@ -56,6 +64,27 @@ describe('URL beautifier', () => {
       expect(generator.build(query)).to.eq('/DeWalt/Henson/bb');
     });
 
+    it('should convert a multiple refinements on same field a URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('tool')
+        .withSelectedRefinements(refinement('brand', 'DeWalt'), refinement('brand', 'Henson'));
+
+      expect(generator.build(query)).to.eq('/tool/DeWalt/brand/Henson/brand');
+    });
+
+    it('should convert a sorted refinements list on same field a URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('shoe')
+        .withSelectedRefinements(
+          refinement('colour', 'blue'),
+          refinement('Brand', 'nike'),
+          refinement('Brand', 'adidas'),
+          refinement('colour', 'red')
+        );
+
+      expect(generator.build(query)).to.eq('/shoe/adidas/Brand/nike/Brand/blue/colour/red/colour');
+    });
+
     it('should convert a refinement with a slash to a URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'De/Walt'));
@@ -74,7 +103,7 @@ describe('URL beautifier', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' }, { h: 'height' });
       query.withSelectedRefinements(refinement('brand', 'Farmer John'), refinement('height', '20in'));
 
-      expect(generator.build(query)).to.eq('/Farmer+John/20in/bh');
+      expect(generator.build(query)).to.eq('/Farmer-John/20in/bh');
     });
 
     it('should convert query and refinements to a URL', () => {
@@ -82,7 +111,7 @@ describe('URL beautifier', () => {
       query.withQuery('cool sneakers')
         .withSelectedRefinements(refinement('colour', 'green'));
 
-      expect(generator.build(query)).to.eq('/cool+sneakers/green/qc');
+      expect(generator.build(query)).to.eq('/cool-sneakers/green/qc');
     });
 
     it('should not convert range refinements to a URL', () => {
@@ -95,7 +124,62 @@ describe('URL beautifier', () => {
     it('should convert unmapped refinements to a query parameter', () => {
       query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
 
-      expect(generator.build(query)).to.eq('/?refinements=colour%3Ddark+purple~price%3A100..220');
+      expect(generator.build(query)).to.eq('/?refinements=colour%3Adark-purple~price%3A100..220');
+    });
+
+    it('should convert pageSize to a query parameter', () => {
+      query.withPageSize(24);
+
+      expect(generator.build(query)).to.eq('/?page_size=24');
+    });
+
+    it('should convert skip to a query parameter', () => {
+      const skip = 32;
+      const page = 4;
+
+      query.skip(skip);
+
+      expect(generator.build(query)).to.eq(`/?page=${page}`);
+    });
+
+    it('should convert skip and pageSize to a query parameter', () => {
+      const pageSize = 30;
+      const skip = 32;
+      const page = 2;
+
+      query.withPageSize(pageSize);
+      query.skip(skip);
+
+      expect(generator.build(query)).to.eq(`/?page=${page}&page_size=${pageSize}`);
+    });
+
+    it('should convert query with skip, page size and unmapped refinements to a URL without reference keys', () => {
+      const pageSize = 6;
+      const skip = 6;
+      const page = 2;
+
+      beautifier.config.useReferenceKeys = false;
+      query.withPageSize(pageSize);
+      query.skip(skip);
+      query.withQuery('red apples')
+        .withSelectedRefinements(refinement('colour', 'dark purple'), refinement('price', 100, 220));
+
+      expect(generator.build(query))
+        .to.eq(`/red-apples/dark-purple/colour?page=${page}&page_size=${pageSize}&refinements=price%3A100..220`);
+    });
+
+    it('should convert query with unmapped refinements to a URL with reference keys', () => {
+      beautifier.config.refinementMapping.push({ c: 'category' });
+      query.withQuery('long red dress')
+        .withSelectedRefinements(
+          refinement('category', 'evening wear'),
+          refinement('category', 'formal'),
+          refinement('size', 'large'),
+          refinement('shipping', 'true')
+        );
+
+      expect(generator.build(query))
+        .to.eq(`/long-red-dress/evening-wear/formal/qcc?refinements=shipping%3Atrue~size%3Alarge`);
     });
 
     describe('canonical URLs', () => {
@@ -139,74 +223,79 @@ describe('URL beautifier', () => {
 
         const url = generator.build(query);
 
-        expect(url).to.eq('/power+drill/DeWalt/Drills/sbc/index.php?refs=colour%3Dorange');
+        expect(url).to.eq('/power-drill/DeWalt/Drills/sbc/index.php?refs=colour%3Aorange');
         expect(url).to.eq(generator.build(otherQuery));
       });
     });
   });
 
-  describe('URL parser', () => {
-    let parser: UrlParser;
-
-    beforeEach(() => parser = new UrlParser(beautifier));
+  describe('query URL parser', () => {
+    beforeEach(() => parser = new QueryUrlParser(beautifier));
 
     it('should parse simple query URL', () => {
       query.withQuery('apples');
 
-      expect(parser.parse('/apples/q').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/apples/q')).build()).to.eql(query.build());
     });
 
     it('should parse URL with a slash in the query', () => {
       query.withQuery('red/apples');
 
-      expect(parser.parse('/red%2Fapples/q').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/red%2Fapples/q')).build()).to.eql(query.build());
     });
 
     it('should parse URL with a plus in the query', () => {
       query.withQuery('red+apples');
 
-      expect(parser.parse('/red%2Bapples/q').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/red%2Bapples/q')).build()).to.eql(query.build());
+    });
+
+    it('should parse simple query URL with dash and without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('red apples');
+
+      expect(parser.parse(parseUri('/red-apples')).build()).to.eql(query.build());
     });
 
     it('should parse simple query URL with custom token', () => {
       beautifier.config.queryToken = 'c';
 
-      expect(parser.parse('/sneakers/c').build()).to.eql(new Query('sneakers').build());
+      expect(parser.parse(parseUri('/sneakers/c')).build()).to.eql(new Query('sneakers').build());
     });
 
     it('should extract a value refinement from URL', () => {
       beautifier.config.refinementMapping.push({ c: 'colour' });
       query.withSelectedRefinements(refinement('colour', 'green'));
 
-      expect(parser.parse('/green/c').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/green/c')).build()).to.eql(query.build());
     });
 
     it('should extract a multiple value refinements for field from URL', () => {
       beautifier.config.refinementMapping.push({ c: 'colour' });
       query.withSelectedRefinements(refinement('colour', 'green'), refinement('colour', 'blue'));
 
-      expect(parser.parse('/green/blue/cc').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/green/blue/cc')).build()).to.eql(query.build());
     });
 
     it('should extract a value refinement with a slash from URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'De/Walt'));
 
-      expect(parser.parse('/De%2FWalt/b').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/De%2FWalt/b')).build()).to.eql(query.build());
     });
 
     it('should extract a value refinement with a plus from URL', () => {
       beautifier.config.refinementMapping.push({ b: 'brand' });
       query.withSelectedRefinements(refinement('brand', 'De+Walt'));
 
-      expect(parser.parse('/De%2BWalt/b').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/De%2BWalt/b')).build()).to.eql(query.build());
     });
 
     it('should extract multiple refinements from URL', () => {
       beautifier.config.refinementMapping.push({ c: 'colour', b: 'brand' });
       query.withSelectedRefinements(refinement('colour', 'dark purple'), refinement('brand', 'Wellingtons'));
 
-      expect(parser.parse('/dark+purple/Wellingtons/cb').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/dark-purple/Wellingtons/cb')).build()).to.eql(query.build());
     });
 
     it('should extract a query and refinement from URL', () => {
@@ -214,13 +303,77 @@ describe('URL beautifier', () => {
       query.withQuery('sneakers')
         .withSelectedRefinements(refinement('colour', 'green'));
 
-      expect(parser.parse('/sneakers/green/qc').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/sneakers/green/qc')).build()).to.eql(query.build());
+    });
+
+    it('should extract query and value refinements from URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('shoe')
+        .withSelectedRefinements(
+          refinement('colour', 'blue'),
+          refinement('colour', 'red'),
+          refinement('Brand', 'adidas'),
+          refinement('Brand', 'nike')
+        );
+
+      expect(parser.parse(parseUri('/shoe/blue/colour/red/colour/adidas/Brand/nike/Brand')).build())
+        .to.eql(query.build());
+    });
+
+    it('should extract value refinements from URL without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+      query.withSelectedRefinements(
+        refinement('colour', 'blue'),
+        refinement('colour', 'red'),
+        refinement('Brand', 'adidas'),
+        refinement('Brand', 'nike')
+      );
+
+      expect(parser.parse(parseUri('/blue/colour/red/colour/adidas/Brand/nike/Brand')).build()).to.eql(query.build());
     });
 
     it('should extract unmapped query from URL parameters', () => {
       query.withSelectedRefinements(refinement('height', '20in'), refinement('price', 20, 30));
 
-      expect(parser.parse('/?refinements=height%3D20in~price%3A20..30').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/?refinements=height%3A20in~price%3A20..30')).build()).to.eql(query.build());
+    });
+
+    it('should extract query and range refinements from URL without reference key', () => {
+      const url = '/long-red-dress/evening-wear/category/formal/category?refinements=price:50..200';
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('long red dress')
+        .withSelectedRefinements(
+          refinement('category', 'evening wear'),
+          refinement('category', 'formal'),
+          refinement('price', 50, 200)
+        );
+
+      expect(parser.parse(parseUri(url)).build()).to.eql(query.build());
+    });
+
+    it('should extract page size from URL', () => {
+      const pageSize = 5;
+      query.withPageSize(pageSize);
+
+      expect(parser.parse(parseUri(`/?page_size=${pageSize}`)).build()).to.eql(query.build());
+    });
+
+    it('should extract page from URL', () => {
+      const skip = 10;
+      const page = 2;
+      query.skip(skip);
+
+      expect(parser.parse(parseUri(`/?page=${page}`)).build()).to.eql(query.build());
+    });
+
+    it('should extract page and page size from URL', () => {
+      const page = 3;
+      const pageSize = 6;
+      const skip = (page - 1) * pageSize;
+      query.skip(skip)
+        .withPageSize(pageSize);
+
+      expect(parser.parse(parseUri(`/?page=${page}&page_size=${pageSize}`)).build()).to.eql(query.build());
     });
 
     it('should ignore suffix', () => {
@@ -228,7 +381,7 @@ describe('URL beautifier', () => {
       beautifier.config.suffix = 'index.html';
       query.withSelectedRefinements(refinement('height', '20in'), refinement('price', 20, 30));
 
-      expect(parser.parse('/20in/h/index.html?refinements=price%3A20..30').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/20in/h/index.html?refinements=price%3A20..30')).build()).to.eql(query.build());
     });
 
     it('should extract mapped and unmapped refinements with query and suffix', () => {
@@ -238,14 +391,28 @@ describe('URL beautifier', () => {
       beautifier.config.queryToken = 'n';
       beautifier.config.suffix = 'index.html';
 
-      const request = parser.parse('/power+drill/orange/Drills/nsc/index.html?nav=brand%3DDeWalt').build();
+      const request = parser.parse(parseUri('/power-drill/orange/Drills/nsc/index.html?nav=brand%3ADeWalt')).build();
 
       expect(request.query).to.eql('power drill');
       expect(request.refinements).to.have.deep.members(refs);
     });
 
+    it('should extract mapped and unmapped refinements with query and suffix from URL without reference keys', () => {
+      const url = '/power-drill/DeWalt/brand/Drills/category/orange/colour/index.html';
+      beautifier.config.suffix = 'index.html';
+      beautifier.config.useReferenceKeys = false;
+      query.withQuery('power drill')
+        .withSelectedRefinements(
+          refinement('brand', 'DeWalt'),
+          refinement('category', 'Drills'),
+          refinement('colour', 'orange')
+        );
+
+      expect(parser.parse(parseUri(url)).build()).to.eql(query.build());
+    });
+
     it('should extract deeply nested URL', () => {
-      const request = parser.parse('http://example.com/my/nested/path/power+drill/q').build();
+      const request = parser.parse(parseUri('http://example.com/my/nested/path/power-drill/q')).build();
 
       expect(request.query).to.eql('power drill');
     });
@@ -256,57 +423,58 @@ describe('URL beautifier', () => {
       Object.assign(beautifier.searchandiserConfig, { area, collection });
       query.withQuery('drills').withConfiguration({ area, collection });
 
-      expect(parser.parse('/drills/q').build()).to.eql(query.build());
+      expect(parser.parse(parseUri('/drills/q')).build()).to.eql(query.build());
     });
 
     describe('error states', () => {
       it('should error on invalid reference keys', () => {
         beautifier.config.refinementMapping.push({ c: 'colour' }, { b: 'brand' });
 
-        expect(() => parser.parse('/power+drill/orange/Drills/qccb').build()).to.throw('token reference is invalid');
+        expect(() => parser.parse(parseUri('/power-drill/orange/Drills/qccb')).build())
+          .to.throw('token reference is invalid');
       });
 
       it('should error on unrecognized key', () => {
         beautifier.config.refinementMapping.push({ c: 'colour' });
 
-        expect(() => parser.parse('/Drills/b').build()).to.throw('unexpected token \'b\' found in reference');
+        expect(() => parser.parse(parseUri('/Drills/b')).build()).to.throw('unexpected token \'b\' found in reference');
       });
     });
   });
 
   describe('compatibility', () => {
 
-    beforeEach(() => beautifier = new UrlBeautifier(<any>{
-      url: {
-        beautifier: {
-          refinementMapping: [{ b: 'brand' }, { f: 'fabric' }],
-          queryToken: 'k',
-          extraRefinementsParam: 'refs',
-          suffix: 'index.html'
-        }
-      }
-    }));
-
-    it('should convert from query to a URL and back', () => {
-      query.withQuery('duvet cover')
-        .withSelectedRefinements(
-        refinement('brand', 'Duvet King'),
-        refinement('fabric', 'linen'),
-        refinement('price', 10, 40));
-
-      const origRequest = query.build();
-      const convertedRequest = beautifier.parse(beautifier.build(query)).build();
-
-      expect(convertedRequest.query).to.eql(origRequest.query);
-      expect(convertedRequest.refinements).to.have.deep.members(origRequest.refinements);
+    beforeEach(() => {
+      generator = new QueryUrlGenerator(beautifier);
+      parser = new QueryUrlParser(beautifier);
+      query = new Query();
+      query.withQuery('dress')
+        .withSelectedRefinements(refinement('brand', 'h&m'));
     });
 
-    it('should convert from URL to a query and back', () => {
-      const url = '/duvet+cover/Duvet+King/linen/kbf/index.html?refs=price%3A10..40';
+    it('should convert from query object to a URL and back with reference keys', () => {
+      beautifier.config.refinementMapping.push({ b: 'brand' });
+      expect(parser.parse(parseUri(generator.build(query)))).to.eql(query);
+    });
 
-      const convertedUrl = beautifier.build(beautifier.parse(url));
+    it('should convert from URL to a query and back with reference keys', () => {
+      const url = '/dress/h%26m/qb';
+      beautifier.config.refinementMapping.push({ b: 'brand' });
 
-      expect(convertedUrl).to.eq(url);
+      expect(generator.build(parser.parse(parseUri(url)))).to.eq(url);
+    });
+
+    it('should convert from query object to a URL and back without reference keys', () => {
+      beautifier.config.useReferenceKeys = false;
+
+      expect(parser.parse(parseUri(generator.build(query)))).to.eql(query);
+    });
+
+    it('should convert from URL to a query and back without reference keys', () => {
+      const url = '/dress/h%26m/brand';
+      beautifier.config.useReferenceKeys = false;
+
+      expect(generator.build(parser.parse(parseUri(url)))).to.eq(url);
     });
   });
 
