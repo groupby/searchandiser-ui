@@ -10,15 +10,16 @@ export class UrlBeautifier implements Beautifier {
 
   config: BeautifierConfig = {
     refinementMapping: [],
-    extraRefinementsParam: 'refinements',
-    pageSizeParam: 'page_size',
-    pageParam: 'page',
-    defaultPageSize: 10,
+    params: {
+      refinements: 'refinements',
+      page: 'page',
+      pageSize: 'page_size'
+    },
     queryToken: 'q',
     suffix: '',
     useReferenceKeys: true,
     navigations: {},
-    prefix: {
+    routes: {
       query: '/query',
       detail: '/detail',
       navigation: '/navigation'
@@ -68,12 +69,12 @@ export class UrlBeautifier implements Beautifier {
   parse(rawUrl: string): any {
     const uri = parseUri(rawUrl);
     const path = uri.path;
-    if (path.indexOf(this.config.prefix.query) === 0) {
-      return this.queryParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.prefix.query));
-    } else if (path.indexOf(this.config.prefix.detail) === 0) {
-      return this.detailParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.prefix.detail));
-    } else if (path.indexOf(this.config.prefix.navigation) === 0) {
-      return this.navigationParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.prefix.navigation));
+    if (path.indexOf(this.config.routes.query) === 0) {
+      return this.queryParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.routes.query));
+    } else if (path.indexOf(this.config.routes.detail) === 0) {
+      return this.detailParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.routes.detail));
+    } else if (path.indexOf(this.config.routes.navigation) === 0) {
+      return this.navigationParser.parse(this.extractUnprefixedPathAndQuery(uri, this.config.routes.navigation));
     } else {
       throw new Error('invalid prefix');
     }

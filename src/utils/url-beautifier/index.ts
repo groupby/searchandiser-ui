@@ -5,9 +5,13 @@ import { QueryUrlGenerator, QueryUrlParser } from './query-url-beautifier';
 import { UrlBeautifier } from './url-beautifier';
 
 export {
-  BeautifierConfig, Detail,
-  DetailUrlGenerator, DetailUrlParser,
-  NavigationUrlGenerator, NavigationUrlParser,
-  QueryUrlGenerator, QueryUrlParser,
+  BeautifierConfig,
+  Detail,
+  DetailUrlGenerator,
+  DetailUrlParser,
+  NavigationUrlGenerator,
+  NavigationUrlParser,
+  QueryUrlGenerator,
+  QueryUrlParser,
   UrlBeautifier
 };

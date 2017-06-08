@@ -17,8 +17,7 @@ export class QueryUrlGenerator {
       path: [],
       query: {}
     };
-    // let url = '';
-    const origRefinements = Array.of(...request.refinements);
+    const origRefinements = [...request.refinements];
 
     // add query
     if (request.query) {
@@ -30,15 +29,13 @@ export class QueryUrlGenerator {
       const { map, keys } = this.generateRefinementMap(origRefinements);
 
       // add refinements
-      for (let key of keys) {
+      keys.forEach((key) => {
         const refinements = <SelectedRefinement[]>map[key];
         countMap[key] = refinements.length;
         refinements.map(this.convertToSelectedValueRefinement)
           .sort(this.refinementsComparator)
-          .forEach((selectedValueRefinement) => {
-            uri.path.push(selectedValueRefinement.value);
-          });
-      }
+          .forEach((selectedValueRefinement) => uri.path.push(selectedValueRefinement.value));
+      });
 
       // add reference key
       if (keys.length || request.query) {
@@ -65,7 +62,7 @@ export class QueryUrlGenerator {
 
     // add remaining refinements
     if (origRefinements.length) {
-      uri.query[this.config.extraRefinementsParam] = origRefinements
+      uri.query[this.config.params.refinements] = origRefinements
         .sort((lhs, rhs) => lhs.navigationName.localeCompare(rhs.navigationName))
         .map(this.stringifyRefinement)
         .join('~');
@@ -73,13 +70,12 @@ export class QueryUrlGenerator {
 
     // add page size
     if (query.raw.pageSize) {
-       uri.query[this.config.pageSizeParam] = query.raw.pageSize;
+       uri.query[this.config.params.pageSize] = query.raw.pageSize;
     }
 
     // add page
     if (query.raw.skip) {
-      uri.query[this.config.pageParam] =
-        Math.floor(query.raw.skip / (query.raw.pageSize || this.config.defaultPageSize)) + 1;
+      uri.query[this.config.params.page] = Math.floor(query.raw.skip / query.raw.pageSize) + 1;
     }
 
     let url = `/${uri.path.map((path) => encodeURIComponent(path)).join('/')}`;
@@ -158,9 +154,9 @@ export class QueryUrlParser {
       this.parsePathWithReferenceKeys(paths) : this.parsePathWithoutReferenceKeys(paths);
 
     const queryVariables = queryString.parse(url.query);
-    const unmappedRefinements = <string>queryVariables[this.config.extraRefinementsParam];
-    const pageSize = parseInt(<string>queryVariables[this.config.pageSizeParam], 10);
-    const page = parseInt(<string>queryVariables[this.config.pageParam], 10);
+    const unmappedRefinements = <string>queryVariables[this.config.params.refinements];
+    const pageSize = parseInt(<string>queryVariables[this.config.params.pageSize], 10);
+    const page = parseInt(<string>queryVariables[this.config.params.page], 10);
     if (unmappedRefinements) {
       query.withSelectedRefinements(...this.extractUnmapped(unmappedRefinements));
     }
@@ -168,7 +164,7 @@ export class QueryUrlParser {
       query.withPageSize(pageSize);
     }
     if (page) {
-      query.skip((query.raw.pageSize || this.config.defaultPageSize) * (page - 1));
+      query.skip(query.raw.pageSize * (page - 1));
     }
 
     return query;
